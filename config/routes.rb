@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   root to: "static#home"
-  
+
   resources :users do
     resources :reviews
   end
 
   resources :user_favorites, only: [:create, :destroy]
   resources :coffeeshops, only: [:new, :create, :show, :index] do
-    resources :reviews, only[:index]
+    resources :reviews, only: [:index]
   end
 
   get 'sessions/new', to: 'sessions#new', as: 'login'
