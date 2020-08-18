@@ -1,16 +1,16 @@
 Rails.application.routes.draw do
-  get 'coffeeshop/new'
-  get 'coffeeshop/create'
-  get 'coffeeshop/index'
-  get 'coffeeshop/show'
-  get 'user_favorites/create'
-  get 'user_favorites/destroy'
-  resources :reviews
-  resources :users
-  get 'sessions/new'
-  get 'sessions/create'
-  get 'sessions/destroy'
-  get 'static/home'
-  get 'static/search'
+  root to: "static#home"
+  resources :users do
+    resources :user_favorites, only: [:create, :destroy]
+    resources :reviews
+  end
+  resource :coffeeshop, only: [:new, :create, :show, :index]
+
+  get 'sessions/new', to: 'sessions#new', as: 'login'
+  post 'sessions/create', to: 'session#create'
+  delete 'sessions/destroy', to: 'sessions#destroy', as: 'logout'
+  get 'static/home', to: 'static#home', as: 'home'
+  get 'static/search', to: 'static#search', as: 'search'
+  
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
