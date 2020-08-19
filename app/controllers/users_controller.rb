@@ -26,7 +26,7 @@ class UsersController < ApplicationController
     end
 
     def require_login
-        if !logged_in
+        if !session[:user_id]
             redirect_to login_path
         end
     end

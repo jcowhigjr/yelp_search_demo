@@ -6,6 +6,16 @@
         </div>
         <div class="container">
             <%= form_for sessions_path do |f| %>
+            <div class="row center user-form">
+                <%= f.label :email %>
+                <%= f.text_field :email%>
+                <%= f.label :password %>
+                <%= f.text_field :password%>
+            </div>
+            <div class="row center">
+                <%= f.submit "Log In", class: "btn-large" %>
+            </div>
+            <% end %>
         </div>
     </div>
 </body>
