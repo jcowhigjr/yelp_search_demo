@@ -11,8 +11,8 @@ Rails.application.routes.draw do
     resources :reviews, only: [:index]
   end
 
-  get 'sessions/new', to: 'sessions#new', as: 'login'
-  post 'sessions/create', to: 'session#create'
-  delete 'sessions/destroy', to: 'sessions#destroy', as: 'logout'
+  get '/login', to: 'sessions#new', as: 'login'
+  post 'sessions/', to: 'session#create', as: 'sessions'
+  delete 'sessions/', to: 'sessions#destroy'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
