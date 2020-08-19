@@ -1,15 +1,12 @@
 class CoffeeshopsController < ApplicationController
-
   def index
     if params[:query]
-      @coffeeshops = helpers.get_search_results(params[:query])
+      @coffeeshops = Coffeeshop.get_search_results(params[:query])
     else
-
+      @coffeeshops = Coffeeshop.all
     end
   end
 
   def show
   end
-
-
 end

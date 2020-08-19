@@ -1,12 +1,13 @@
 Rails.application.routes.draw do
-  root to: "static#home"
+  
+  get '/', to: "static#home"
 
   resources :users do
     resources :reviews
   end
 
   resources :user_favorites, only: [:create, :destroy]
-  resources :coffeeshops, only: [:show, :index] do
+  resources :coffeeshops, only: [:index, :show] do
     resources :reviews, only: [:index]
   end
 
