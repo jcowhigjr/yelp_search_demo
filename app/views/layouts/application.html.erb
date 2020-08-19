@@ -10,8 +10,8 @@
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-<!--
-  <% #if logged_in? %>
+
+  <% if logged_in? %>
   <nav class="transparentBG">
     <div class="nav-wrapper">
       <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
@@ -22,8 +22,8 @@
       </ul>
     </div>
   </nav>
-  <% #end %>
--->
+  <% end %>
+
   <body>
 
     <%= yield %>

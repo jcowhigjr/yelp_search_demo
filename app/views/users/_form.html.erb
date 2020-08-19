@@ -1,14 +1,21 @@
 <div class="form-group">
- <%= form_for @user do |f|%>
-    <div class="row center user-form">
-        <%= f.text_field :name, placeholder: "Username" %>
-        <%= f.text_field :location, placeholder: "Location" %>
-        <%= f.email_field :email, placeholder: "Email" %>
-        <%= f.password_field :password, placeholder: "Password" %>
-        <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
-    </div>
-    <div class="row center">
-        <%= f.submit "Sign Up", class: "btn-large" %>
-    </div>
+    <% if flash[:errors] %>
+        <% flash[:errors].each do |error| %>
+        <ul>
+            <li class="error"><%= error %></li>
+        </ul>
+        <% end %>
+    <% end %>
+    <%= form_for @user do |f|%>
+        <div class="row center user-form">
+            <%= f.text_field :name, placeholder: "Username" %>
+            <%= f.text_field :location, placeholder: "Location" %>
+            <%= f.email_field :email, placeholder: "Email" %>
+            <%= f.password_field :password, placeholder: "Password" %>
+            <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
+        </div>
+        <div class="row center">
+            <%= f.submit "Sign Up", class: "btn-large" %>
+        </div>
     <% end %>
 </div>
