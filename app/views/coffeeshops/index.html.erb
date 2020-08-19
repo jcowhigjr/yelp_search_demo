@@ -1,5 +1,8 @@
-<h1>Coffeeshop#index</h1>
-<p>Find me in app/views/coffeeshop/index.html.erb</p>
-<% @coffeeshops.each do |coffeeshop| %>
-<%= coffeeshop.name %>
-<% end %>
+<div class="container">
+    <h1>Coffeeshops in <%= @search %></h1>
+
+    <% @coffeeshops.each do |coffeeshop| %>
+    <%= render coffeeshop, locals: {coffeeshop: coffeeshop} %>
+    <% end %>
+
+</div>

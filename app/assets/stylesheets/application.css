@@ -17,7 +17,7 @@
     font-family: 'Nunito', sans-serif;
  }
  .transparentBG{
-   background-color: rgba(0,0,0,0);
+   background-color: #373737;
  }
  .nav-logo{
    max-width: 150px;
@@ -34,4 +34,8 @@
      border: 1px #000 solid;
      padding: 5px 5px 5px 25px;
      display: inline-block;
+ }
+
+ .landing-logo{
+    margin-top: 50px;
  }
