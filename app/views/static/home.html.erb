@@ -5,7 +5,7 @@
             <h1 class="white-text">Search by city to find your new favorite coffeeshop.</h1>
         </div>
         <div class="form-group">
-          <%= form_with url: coffeeshops_path do%>
+          <%= form_with url: coffeeshops_path, method: 'get' do%>
             <div class="row center search-bar">
                 <%= text_field_tag 'query', nil, class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)'%>
             </div>
