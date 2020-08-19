@@ -1,3 +1,21 @@
-<div class="coffeeshop-card">
-    <h1><%= coffeeshop.name %></h1>
+<div class="container">
+    <div class="row center">
+        <div class="card">
+            <div class="card-image">
+                <%= link_to coffeeshop do%>
+                    <%= image_tag coffeeshop.image_url, class: "card-img" %>
+                <% end %>
+            </div>
+            <div class="card-stacked">
+                <div class="card-content">
+                    <%= coffeeshop.address %>
+                    <%= coffeeshop.rating %>
+                    <%= coffeeshop.phone_number %>
+                </div>
+                <div class="card-action">
+                    <%= button_to "View On Yelp", coffeeshop.yelp_url, class: "btn-large"%>
+                </div>
+            </div>
+         </div>
+    </div>
 </div>
