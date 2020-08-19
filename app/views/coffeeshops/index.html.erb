@@ -1,6 +1,10 @@
 <div class="container">
-    <h1>Coffeeshops in <%= @search %></h1>
-    <% @coffeeshops.each do |coffeeshop| %>
-        <%= render coffeeshop, locals: {coffeeshop: coffeeshop} %>
-    <% end %>
+    <div class="row center">
+        <h1>Top Rated Coffeeshops in <%= @search %></h1>
+    </div>
+    <div class="row center">
+        <% @coffeeshops.each do |coffeeshop| %>
+                <%= render coffeeshop, locals: {coffeeshop: coffeeshop} %>
+        <% end %>
+    </div>
 </div>
