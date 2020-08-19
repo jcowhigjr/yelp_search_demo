@@ -25,10 +25,4 @@ class UsersController < ApplicationController
         params.require(:user).permit(:name, :location, :email, :password, :password_confirmation)
     end
 
-    def require_login
-        if !session[:user_id]
-            redirect_to login_path
-        end
-    end
-
 end
