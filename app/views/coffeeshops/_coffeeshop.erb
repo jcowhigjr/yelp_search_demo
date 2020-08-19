@@ -1,21 +1,27 @@
-<div class="container">
-    <div class="row center">
-        <div class="card">
+
+<div class="row center">
+    <div class="col l6 m6 s12">
+        <div class="card large">
+        <div class="row center">
             <div class="card-image">
-                <%= link_to coffeeshop do%>
-                    <%= image_tag coffeeshop.image_url, class: "card-img" %>
-                <% end %>
+                    <%= link_to coffeeshop do%>
+                        <%= image_tag coffeeshop.image_url%>
+                    <% end %>
             </div>
-            <div class="card-stacked">
-                <div class="card-content">
+            <div class="card-content">
+                <div class="row center">
                     <%= coffeeshop.address %>
+                </div>
+                <div class="row center">
                     <%= coffeeshop.rating %>
+                </div>
+                <div class="row center">
                     <%= coffeeshop.phone_number %>
                 </div>
                 <div class="card-action">
                     <%= button_to "View On Yelp", coffeeshop.yelp_url, class: "btn-large"%>
                 </div>
             </div>
-         </div>
+        </div>
     </div>
 </div>

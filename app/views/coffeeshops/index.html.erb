@@ -1,8 +1,6 @@
 <div class="container">
     <h1>Coffeeshops in <%= @search %></h1>
-
     <% @coffeeshops.each do |coffeeshop| %>
-    <%= render coffeeshop, locals: {coffeeshop: coffeeshop} %>
+        <%= render coffeeshop, locals: {coffeeshop: coffeeshop} %>
     <% end %>
-
 </div>
