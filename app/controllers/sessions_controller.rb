@@ -9,8 +9,11 @@ class SessionsController < ApplicationController
     else
       flash[:errors] = "Incorrect email or password."
       redirect_to login_path
+    end
   end
 
   def destroy
+    session.clear
+    redirect_to root_path
   end
 end
