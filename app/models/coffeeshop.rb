@@ -3,6 +3,7 @@ class Coffeeshop < ApplicationRecord
     has_many :reviews
     has_many :users, through: :reviews
     has_many :user_favorites
+    belongs_to :search
 
     def self.get_search_results(query)
         response = RestClient::Request.execute(

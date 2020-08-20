@@ -1,15 +1,15 @@
 Rails.application.routes.draw do
   
-  get 'searches/new'
-  get 'searches/create'
+  
   root to: "static#home"
-  get '/search', to: "static#search", as: 'search'
+  resources :searches, only: [:create, :show]
 
   resources :users do
     resources :reviews
   end
 
   resources :user_favorites, only: [:create, :destroy]
+
   resources :coffeeshops, only: [:index, :show] do
     resources :reviews, only: [:index]
   end
