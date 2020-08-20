@@ -3,10 +3,25 @@
         <div class="row center">
             <%= image_tag "jitter_logo.png", class: "responsive-img"%>
             <h1 class="white-text">Search by city to find your new favorite coffeeshop.</h1>
+        
+        <% if flash[:error] %>
+          <div>
+            <p class="error"> <%= flash[:error] %> </p>
+          </div>
+        <% end %>
         </div>
             <%= render 'searches/form' %>
         
         </div>
       
     </div>
+        <% if @search %> 
+            
+            <div class="search-results">
+                <div class="row center">
+                    <h1 class="white-text">Top Rated Coffeeshops in <%= @search.query %></h1>
+                </div>
+                <%= render partial: 'searches/results', locals: {search: @search} %>
+            </div>
+        <% end %>
 </body>

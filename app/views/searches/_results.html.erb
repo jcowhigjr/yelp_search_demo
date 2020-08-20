@@ -1,0 +1,7 @@
+<div class="container">
+    <div class="row center">
+        <% search.coffeeshops.each do |coffeeshop| %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
+        <% end %>
+    </div>
+</div>

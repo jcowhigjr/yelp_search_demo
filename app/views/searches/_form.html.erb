@@ -1,5 +1,6 @@
    <div class="form-group">
-          <%= form_tag url: searches_url do%>
+    
+          <%= form_tag searches_path do%>
             <div class="row center search-bar">
                 <%= text_field_tag 'query', nil, class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)'%>
             </div>
