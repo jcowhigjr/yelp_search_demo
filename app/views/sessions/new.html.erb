@@ -15,7 +15,12 @@
             <div class="row center">
                 <%= f.submit "Log In", class: "btn-large" %>
             </div>
+             <div class="row center">
+                <%= button_to "Login with Google", "/auth/google_oauth2", class: "btn-large" do%>
+                    <i class="material-icon"></i>
+            </div>
             <% end %>
+           
         </div>
     </div>
 </body>
