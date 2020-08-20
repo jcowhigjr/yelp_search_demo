@@ -10,7 +10,7 @@
                     <p class= "truncate"> <i class="material-icons">place</i>   <%= coffeeshop.address %></p>
                 </div>
                 <div class="card-action">
-                    <%= button_to "More Info", coffeeshop, class: "btn-large"%>
+                    <%= link_to "More Info", coffeeshop_path(coffeeshop), class: "btn-large"%>
                 </div>
             </div>
         </div>
