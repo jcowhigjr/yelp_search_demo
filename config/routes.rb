@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   
   root to: "static#home"
-  resources :searches, only: [:create, :show]
+  resources :searches, only: [:new, :create, :show]
 
   resources :users do
     resources :reviews

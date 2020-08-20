@@ -3,25 +3,39 @@
         <div class="row center">
             <h1 class="shop-name"><%= @coffeeshop.name %></h1>
         </div>
-        <div class="row center">
+        <div class="row">
             <div class="col s12 l6">
                 <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
             </div>
             <div class="col s12 l6">
-                  <p class="flow-text"><i class="material-icons">phone</i>     <%= @coffeeshop.phone_number %></p>
-            </div>
-            <div class="col s12 l6">
-                  <i class="material-icons">add</i>
-            </div>
-            <div class="col s12 l6">
-                  <i class="material-icons">add</i>
-            </div>
-            <div class="col s12 l6">
-                  <i class="material-icons">add</i>
-            </div>
-            <div class="col s12 l6">
-                  <i class="material-icons">add</i>
-            </div>
+                <div class="row">
+                  <span class="shop-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
+                </div>
+                <div class="row">
+                  <span class="shop-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>
+                </div>
+                <div class="row">
+                    <span class="shop-text"><i class="material-icons">add</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
+                </div>
+                <div class="row">
+                    <span class="shop-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
+                </div>  
+                <div class="row center">
+                    <% if !logged_in? %>
+                        <span class="shop-text"> <%= link_to "Login to add this shop to your favorites", login_path %></span>
+                    <% elsif current_user.user_favorites.where(coffeeshop: @coffeeshop)%>
+                        <%= form_tag user_favorite_path, method: 'delete' do %>
+                            <%= hidden_field_tag :coffeeshop_id, value: @coffeeshop.id %>
+                            <%= submit_tag "Remove this shop from my favorites.", class: "btn-large"%>
+                        <% end %>
+                    <% else %>
+                        <%= form_tag user_favorites_path do %>
+                            <%= hidden_field_tag :coffeeshop_id, value: @coffeeshop.id %>
+                            <%= submit_tag "Add this shop to my favorites.", class: "btn-large"%>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>  
         </div>
     </div>  
 </body>

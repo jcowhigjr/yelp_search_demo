@@ -1,1 +1,8 @@
 <%= current_user.name %> profile page
+Your favorites:
+<% if flash[:error] %>
+  <%= flash[:error] %>
+<% end %>
+<% current_user.user_favorites.each do |fav| %>
+<%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
+<% end %>
