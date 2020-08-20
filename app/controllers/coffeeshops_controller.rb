@@ -10,5 +10,6 @@ class CoffeeshopsController < ApplicationController
   end
 
   def show
+    @coffeeshop = Coffeeshop.find(params[:id])
   end
 end
