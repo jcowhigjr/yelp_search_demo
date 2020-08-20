@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
     redirect_to root_path
   end
 
-  def create_from_google
-    
+  def create_with_google
+
   end
 end
