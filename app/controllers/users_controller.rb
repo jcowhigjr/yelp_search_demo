@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+    before_action :redirect_if_logged_in, except: [:show]
+
     def new
         @user = User.new
     end
@@ -16,7 +18,6 @@ class UsersController < ApplicationController
     end
 
     def show
-        require_login
         @user = User.find(params[:id])
     end
 
@@ -26,8 +27,6 @@ class UsersController < ApplicationController
         params.require(:user).permit(:name, :location, :email, :password, :password_confirmation)
     end
     
-    def require_login
-        redirect_to login_path unless logged_in?
-    end
+    
 
 end

@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  before_action :redirect_if_logged_in
+
   def new
   end
 
@@ -14,7 +16,6 @@ class SessionsController < ApplicationController
 
   def destroy
     session.clear
-    Search.destroy_all
     redirect_to root_path
   end
 
