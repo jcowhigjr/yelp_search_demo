@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   
+  get 'searches/new'
+  get 'searches/create'
   root to: "static#home"
   get '/search', to: "static#search", as: 'search'
 

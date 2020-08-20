@@ -1,7 +1,8 @@
 class CoffeeshopsController < ApplicationController
   def index
     if params[:query]
-      @coffeeshops = Coffeeshop.get_search_results(params[:query])
+      Coffeeshop.get_search_results(params[:query])
+      @coffeeshops = Coffeeshop.ordered_by_rating
       @search = params[:query]
     else
       @coffeeshops = Coffeeshop.all
