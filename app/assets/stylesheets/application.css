@@ -40,3 +40,18 @@
  .landing-logo{
     margin-top: 50px;
  }
+.page-container{
+    background-color: white;
+    margin-top: 50px;
+    border-radius: 25px;
+    padding: 50px;
+    margin-bottom: 50px;
+}
+.page-text{
+  font-size: 30px;
+  padding: 20px;
+}
+.page-name{
+  font-size: 100px;
+  margin-bottom: 40px;
+}

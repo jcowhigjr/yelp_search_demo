@@ -1,7 +1,7 @@
 <body class="landing-body">
-    <div class="container coffeeshop">
+    <div class="container page-container">
         <div class="row center">
-            <h1 class="shop-name"><%= @coffeeshop.name %></h1>
+            <h1 class="page-name"><%= @coffeeshop.name %></h1>
         </div>
         <div class="row">
             <div class="col s12 l6">
@@ -9,28 +9,28 @@
             </div>
             <div class="col s12 l6">
                 <div class="row">
-                  <span class="shop-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
+                  <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
                 </div>
                 <div class="row">
-                  <span class="shop-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>
+                  <span class="page-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>
                 </div>
                 <div class="row">
-                    <span class="shop-text"><i class="material-icons">add</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
+                    <span class="page-text"><i class="material-icons">add</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
                 </div>
                 <div class="row">
-                    <span class="shop-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
+                    <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
                 </div>  
                 <div class="row center">
                     <% if !logged_in? %>
-                        <span class="shop-text"> <%= link_to "Login to add this shop to your favorites", login_path %></span>
+                        <span class="page-text"> <%= link_to "Login to add this shop to your favorites", login_path %></span>
                     <% elsif current_user.user_favorites.where(coffeeshop: @coffeeshop)%>
                         <%= form_tag user_favorite_path, method: 'delete' do %>
-                            <%= hidden_field_tag :coffeeshop_id, value: @coffeeshop.id %>
+                            <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Remove this shop from my favorites.", class: "btn-large"%>
                         <% end %>
                     <% else %>
                         <%= form_tag user_favorites_path do %>
-                            <%= hidden_field_tag :coffeeshop_id, value: @coffeeshop.id %>
+                            <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Add this shop to my favorites.", class: "btn-large"%>
                         <% end %>
                     <% end %>

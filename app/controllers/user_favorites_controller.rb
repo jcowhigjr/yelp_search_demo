@@ -10,5 +10,14 @@ class UserFavoritesController < ApplicationController
   end
 
   def destroy
+    set_user_favorite
+    @user_favorite.destroy
+    redirect_to current_user
+  end
+
+  private
+
+  def set_user_favorite
+    @user_favorite = UserFavorite.find_by(coffeeshop_id: params[:coffeeshop_id], user_id: current_user.id)
   end
 end

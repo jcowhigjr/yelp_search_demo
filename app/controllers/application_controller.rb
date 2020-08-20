@@ -17,4 +17,6 @@ class ApplicationController < ActionController::Base
         redirect_to current_user if logged_in?
     end
 
+    
+
 end

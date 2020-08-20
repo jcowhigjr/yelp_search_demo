@@ -1,8 +1,36 @@
-<%= current_user.name %> profile page
-Your favorites:
-<% if flash[:error] %>
-  <%= flash[:error] %>
-<% end %>
-<% current_user.user_favorites.each do |fav| %>
-<%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
-<% end %>
+<body class="landing-body">
+    <div class="container page-container">
+        <div class="row center">
+             <% if flash[:error] %>
+                <%= flash[:error] %>
+            <% end %>
+            <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
+        </div>
+        <% if current_user.user_favorites.empty? %>
+            <div class="row center">
+                <span class="page-text">You don't have any favorite shops yet!</span>
+            </div>
+            <br><br><br>
+            <div class="row center">
+                <span class="page-text"><%= link_to "Search for a shop to find one near you.", new_search_path%></span>
+            </div>
+        <% else %>
+        <div class="row center">
+            <span class="page-text">Here is a list of your current favorites:</span>
+        </div>
+            <% current_user.user_favorites.each do |fav| %>
+            <div class="row center">
+                <%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
+            </div>
+            <% end %>
+        <% end %>
+   
+    </div>
+
+</body>
+
+
+
+
+
+
