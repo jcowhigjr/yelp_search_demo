@@ -36,6 +36,7 @@ TODO 8/22:
 
 REAL TODO 8/20
     OAuthGoogle
+    validations
     Add Coffeeshop to favorites
     Display coffeeshops in order by rating
     Coffeeshop show page

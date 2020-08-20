@@ -14,6 +14,7 @@ class SessionsController < ApplicationController
 
   def destroy
     session.clear
+    Coffeeshop.destroy_all
     redirect_to root_path
   end
 
