@@ -23,12 +23,14 @@ TODO 8/20:
 
 TODO 8/21:
     Reviews
+    Error handling
     Full functionality test
 
 TODO 8/22:
     Finish styling
     Record walkthrough
     Write blog post
+    DRY check
     Submit
 
 
