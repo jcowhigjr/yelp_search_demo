@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
-  get '/', to: "static#home"
+  root to: "static#home"
+  get '/search', to: "static#search", as: 'search'
 
   resources :users do
     resources :reviews

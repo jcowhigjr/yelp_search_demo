@@ -16,9 +16,9 @@
     <div class="nav-wrapper">
       <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="sass.html">Log Out</a></li>
-        <li><a href="badges.html">My Profile</a></li>
-        <li><a href="collapsible.html">Search</a></li>
+        <li><%= link_to "Logout", sessions_path, method: :delete %></li>
+        <li><%= link_to "My Profile", user_path(current_user) %></li>
+        <li><%= link_to "Search", search_path %></li>
       </ul>
     </div>
   </nav>
