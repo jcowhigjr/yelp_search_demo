@@ -1,13 +1,13 @@
 
-    <div class="col l3 m6 s12">
+    <div class="col xl l6 m6 s12">
         <div class="card large coffeeshop-card">
             <div class="card-image">
                  <%= image_tag coffeeshop.image_url, class: "card-img responsive-img" %>
             </div>
             <div class="card-content">
-                <span class="card-title"><%= coffeeshop.name %></span>
+                <span class="card-title truncate"><%= coffeeshop.name %></span>
                 <div class="row center">
-                    <p> <i class="material-icons">place</i>   <%= coffeeshop.address %></p>
+                    <p class= "truncate"> <i class="material-icons">place</i>   <%= coffeeshop.address %></p>
                 </div>
                 <div class="card-action">
                     <%= button_to "More Info", coffeeshop, class: "btn-large"%>
