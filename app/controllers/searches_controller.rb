@@ -1,10 +1,15 @@
 class SearchesController < ApplicationController
 
+  def new
+    @search = Search.create
+    redirect_to @search
+  end
+
   def create
     @search = determine_search_type
-    Coffeeshop.get_search_results(params[:query]).each{|i| @search.coffeeshops << i}
+    associate_coffeeshops_to_search
     if @search.save
-      proper_path(@search)
+      proper_path
     else
       redirect_to root_path, error: "Something went wrong with your search please try again."
     end
@@ -20,11 +25,15 @@ class SearchesController < ApplicationController
     logged_in? ? Search.create(query: params[:query], user: current_user) : Search.create(query: params[:query])
   end
 
-  def proper_path(search)
+  def proper_path
     if logged_in?
-      redirect_to coffeeshops_path(@search.coffeeshops)
+      redirect_to @search
     else
       render "static/home", locals: {search: @search}
     end
+  end
+
+  def associate_coffeeshops_to_search
+    Coffeeshop.get_search_results(params[:query]).each{|i| @search.coffeeshops << i}
   end
 end
