@@ -43,3 +43,17 @@ REAL TODO 8/20
     User Show page
     Review functionality
 
+
+END OF DAY 8/20
+    Sort by rating
+    Review functionality
+    Validations
+    Error handling
+    Clean up search page
+
+TODO 8/21
+Sort by rating
+Reviews
+Clean up search page
+
+would be nice: get google maps to work, nav-bar toggle

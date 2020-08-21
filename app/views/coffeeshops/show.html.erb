@@ -26,12 +26,12 @@
                     <% elsif current_user.user_favorites.where(coffeeshop: @coffeeshop)%>
                         <%= form_tag user_favorite_path, method: 'delete' do %>
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                            <%= submit_tag "Remove this shop from my favorites.", class: "btn-large"%>
+                            <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
                         <% end %>
                     <% else %>
                         <%= form_tag user_favorites_path do %>
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                            <%= submit_tag "Add this shop to my favorites.", class: "btn-large"%>
+                            <%= submit_tag "Add to my favorites.", class: "btn-large"%>
                         <% end %>
                     <% end %>
                 </div>
