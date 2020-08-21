@@ -3,15 +3,11 @@ Rails.application.routes.draw do
   
   root to: "static#home"
   resources :searches, only: [:new, :create, :show]
-
-  resources :users do
-    resources :reviews
-  end
-
+  resources :users
   resources :user_favorites, only: [:create, :destroy]
 
   resources :coffeeshops, only: [:index, :show] do
-    resources :reviews, only: [:index]
+    resources :reviews, only: [ :new, :create]
   end
 
   get '/login', to: 'sessions#new', as: 'login'

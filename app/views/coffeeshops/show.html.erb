@@ -7,6 +7,7 @@
             <div class="col s12 l6">
                 <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
             </div>
+            <!-- Coffeeshop Info -->
             <div class="col s12 l6">
                 <div class="row">
                   <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
@@ -20,6 +21,7 @@
                 <div class="row">
                     <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
                 </div>  
+                <!-- Add to user favorites -->
                 <div class="row center">
                     <% if !logged_in? %>
                         <span class="page-text"> <%= link_to "Login to add this shop to your favorites", login_path %></span>
@@ -33,6 +35,18 @@
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Add to my favorites.", class: "btn-large"%>
                         <% end %>
+                    <% end %>
+                </div>
+                <!-- Reviews Section -->
+                <div class="row center">
+                    <% if @coffeeshop.reviews.empty? %>
+                    <div class="row center">
+                      <span class="page-text">This coffeeshop doesn't have any reviews yet!</span>
+                    </div>
+                    <div class="row center">
+                        <span class="page-text">Leave a review.</span>
+                        <%= render partial: "reviews/_form", locals: {coffeeshop: @coffeeshop} %>
+                    </div>
                     <% end %>
                 </div>
             </div>  
