@@ -1,3 +1,6 @@
-<div class="container review-form">
-    <%= form_tag url: %>
+<div class="form-group">
+    <%= form_tag coffeeshop_reviews_path(@coffeeshop) do%>
+        <%= text_field_tag :content%>
+        <%= submit_tag %>
+        <% end %>
 </div>

@@ -3,6 +3,9 @@
         <div class="row center">
             <h1 class="page-name"><%= @coffeeshop.name %></h1>
         </div>
+         <div class="row center">
+            <%= render partial: 'rating', locals: {rating: @coffeeshop.rating} %>
+        </div>
         <div class="row">
             <div class="col s12 l6">
                 <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
@@ -45,7 +48,7 @@
                     </div>
                     <div class="row center">
                         <span class="page-text">Leave a review.</span>
-                        <%= render partial: "reviews/_form", locals: {coffeeshop: @coffeeshop} %>
+                        <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
                     </div>
                     <% end %>
                 </div>
