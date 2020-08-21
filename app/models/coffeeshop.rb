@@ -27,4 +27,33 @@ class Coffeeshop < ApplicationRecord
             )
         end
     end
+
+    def get_rating_in_stars
+        # case self.rating
+        # when 0.5
+        #     <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 1
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 1.5
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star_halfr</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 2
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 2.5
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 3
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
+        # when 3.5
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i>
+        # when 4
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i>
+        # when 4.5
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i>
+        # when 5
+        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i>
+        # end
+
+    end
+
+
+
 end
