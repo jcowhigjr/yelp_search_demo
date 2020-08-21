@@ -9,7 +9,7 @@ class SearchesController < ApplicationController
     @search = determine_search_type
     associate_coffeeshops_to_search
     if @search.save
-      proper_path
+      redirect_to_proper_path
     else
       redirect_to root_path, error: "Something went wrong with your search please try again."
     end
@@ -25,7 +25,7 @@ class SearchesController < ApplicationController
     logged_in? ? Search.create(query: params[:query], user: current_user) : Search.create(query: params[:query])
   end
 
-  def proper_path
+  def redirect_to_proper_path
     if logged_in?
       redirect_to @search
     else
