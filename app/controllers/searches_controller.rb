@@ -36,4 +36,5 @@ class SearchesController < ApplicationController
   def associate_coffeeshops_to_search
     Coffeeshop.get_search_results(params[:query]).each{|i| @search.coffeeshops << i}
   end
+
 end
