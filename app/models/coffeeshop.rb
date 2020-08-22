@@ -18,25 +18,15 @@ class Coffeeshop < ApplicationRecord
     end
 
     def self.create_coffee_shops_from_results(results, search)
-        output = []
-        shops = results.each do |data|
-
-            shop = Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
-                c.name = data["name"]
-                c.rating = data["rating"]
-                c.yelp_url = data["url"]
-                c.image_url = data["image_url"]
-                c.phone_number = data["display_phone"]
-                c.search = search
+        results.each do |data|
+            search.coffeeshops.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
+                c.name = data["name"].empty? ?  "No name" : data["name"]
+                c.rating = data["rating"] ?  data["rating"] : 0
+                c.yelp_url = data["url"].empty? ? "https://yelp.com" : data["url"] 
+                c.image_url = data["image_url"].empty? ? "https://increasify.com.au/wp-content/uploads/2016/08/default-image.png" : data["image_url"] 
+                c.phone_number = data["display_phone"].empty? ?  "Unknown phone number." : data["display_phone"] 
             end
-            if shop.valid?
-                output << shop
-            else
-                shop.destroy
-            end
-        end 
-        output
-        byebug
+        end
     end
 
 

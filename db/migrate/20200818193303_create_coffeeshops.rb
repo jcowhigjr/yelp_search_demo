@@ -6,7 +6,7 @@ class CreateCoffeeshops < ActiveRecord::Migration[6.0]
       t.float :rating
       t.string :yelp_url
       t.string :image_url
-      t.string :phone_number
+      t.string :phone_number, default: "None"
       t.belongs_to :search
       t.timestamps
     end

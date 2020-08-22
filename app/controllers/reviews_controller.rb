@@ -3,12 +3,12 @@ class ReviewsController < ApplicationController
     helper_method :has_permission
     def create
         @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
-        @coffeeshop.reviews.build(review_params)
+        @review = @coffeeshop.reviews.create(review_params)
         if @coffeeshop.save
             redirect_to @coffeeshop
         else
-            flash[:error] = "Something went wrong creating review"
-            redirect_to @coffeeshop
+            flash[:review_error] = "Something went wrong with creating your review."
+            render @coffeeshop, locals: {review: @review}
         end
     end
 

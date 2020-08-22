@@ -12,8 +12,7 @@ class UsersController < ApplicationController
             session[:user_id] = @user.id
             redirect_to @user
         else
-            flash[:error] = "Handle this error."
-            render :new
+            render :new, error: "Something went wrong during registration."
         end
     end
 

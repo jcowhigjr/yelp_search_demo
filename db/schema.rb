@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2020_08_20_171414) do
     t.float "rating"
     t.string "yelp_url"
     t.string "image_url"
-    t.string "phone_number"
+    t.string "phone_number", default: "None"
     t.integer "search_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

@@ -7,7 +7,7 @@ class SearchesController < ApplicationController
 
   def create
     @search = determine_search_type
-    @coffeeshops = Coffeeshop.get_search_results(params[:query], @search)
+    Coffeeshop.get_search_results(params[:query], @search)
     if @search.save
       redirect_to_proper_path
     else

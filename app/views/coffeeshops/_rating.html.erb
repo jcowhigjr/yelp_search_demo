@@ -1,5 +1,7 @@
 <div class="rating">
-    <% if rating == 0.5 %>
+    <% if rating == 0 %>
+      <span class="page-text">No rating for this yet.</span>
+    <% elsif rating == 0.5 %>
         <i class='medium material-icons'>star_half</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i>
     <% elsif rating == 1.0 %>
         <i class='medium material-icons'>star</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i> <i class='medium material-icons'>star_border</i>
