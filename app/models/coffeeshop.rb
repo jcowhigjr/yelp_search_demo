@@ -17,43 +17,13 @@ class Coffeeshop < ApplicationRecord
 
     def self.create_coffee_shops_from_results(results)
         results.map do |data|
-            Coffeeshop.create(
-                name: data["name"],
-                address: data["location"]["display_address"].join(" "),
-                rating: data["rating"],
-                yelp_url: data["url"],
-                image_url: data["image_url"],
-                phone_number: data["display_phone"]
-            )
+            Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
+                c.name = data["name"]
+                c.rating = data["rating"]
+                c.yelp_url = data["url"]
+                c.image_url = data["image_url"]
+                c.phone_number = data["display_phone"]
+            end
         end
     end
-
-    def get_rating_in_stars
-        # case self.rating
-        # when 0.5
-        #     <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 1
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 1.5
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star_halfr</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 2
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 2.5
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 3
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i> <i class='material-icons'>star_border</i>
-        # when 3.5
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i> <i class='material-icons'>star_border</i>
-        # when 4
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_border</i>
-        # when 4.5
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star_half</i>
-        # when 5
-        #     <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i> <i class='material-icons'>star</i>
-        # end
-
-    end
-
-
-
 end
