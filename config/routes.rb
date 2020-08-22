@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   resources :user_favorites, only: [:create, :destroy]
 
-  resources :coffeeshops, only: [:index, :show] do
+  resources :coffeeshops, only: [:show] do
     resources :reviews, only: [ :new, :create]
   end
 
