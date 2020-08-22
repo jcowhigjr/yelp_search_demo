@@ -50,8 +50,14 @@
 .page-text{
   font-size: 30px;
   padding: 20px;
+  
 }
 .page-name{
   font-size: 60px;
   margin-bottom: 40px;
+}
+select{
+  display: block;
+  height: 50px;
+  font-size: 40px
 }

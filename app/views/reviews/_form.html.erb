@@ -1,6 +1,10 @@
-<div class="form-group">
-    <%= form_tag coffeeshop_reviews_path(@coffeeshop) do%>
-        <%= text_field_tag :content%>
-        <%= submit_tag %>
+<div class="row center" >
+    <%= form_with(model: [@coffeeshop, Review.new]) do |f|%>
+        <%=f.label :rating  %>
+        <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]))%>
+        <br><br>
+        <%=f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
+        <%= f.text_area :content, class: "materialize-textarea"%>
+        <%=f.submit  "Submit Review", class: "btn-large"%>
         <% end %>
 </div>

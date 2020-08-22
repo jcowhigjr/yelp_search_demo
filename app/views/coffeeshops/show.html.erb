@@ -40,19 +40,22 @@
                         <% end %>
                     <% end %>
                 </div>
+            </div> 
+        </div>
                 <!-- Reviews Section -->
-                <div class="row center">
-                    <% if @coffeeshop.reviews.empty? %>
-                    <div class="row center">
-                      <span class="page-text">This coffeeshop doesn't have any reviews yet!</span>
-                    </div>
-                    <div class="row center">
-                        <span class="page-text">Leave a review.</span>
-                        <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
-                    </div>
-                    <% end %>
+        <div class="row center">
+            <% if @coffeeshop.reviews.empty? %>
+            <div class="row center">
+                <span class="page-text red-text">This coffeeshop doesn't have any reviews yet!</span>
+            </div>
+            <div class="row center">
+                <span class="page-text">Leave a review.</span>
+                <div class="container review-form z-depth-2"> 
+                    <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
                 </div>
-            </div>  
+            </div>
+            <% end %>
+             </div> 
         </div>
     </div>  
 </body>
