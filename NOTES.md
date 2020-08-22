@@ -57,3 +57,11 @@ Reviews
 Clean up search page
 
 would be nice: get google maps to work, nav-bar toggle
+
+ToDo end of day 8/21
+
+    edit reviews if they are yours
+    fix user_favorites button on coffeeshop show
+    validations
+    error handling
+    sort reviews by most recent

@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   
   root to: "static#home"
   resources :searches, only: [:new, :create, :show]
-  resources :users
+
+  resources :users do
+    resources :reviews, only: [:edit, :destroy]
+  end
+
   resources :user_favorites, only: [:create, :destroy]
 
   resources :coffeeshops, only: [:index, :show] do

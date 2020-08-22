@@ -8,3 +8,13 @@
     <div class="row center">
         <span class="page-text">"<%= review.content %>"</span>
     </div>
+    <% if review.user == current_user %>
+    <div class="row center">
+        <div class="col s6">
+            <%= link_to "Edit this Review", edit_user_review_path(current_user, review), class: "btn-large" %>
+        </div>
+        <div class="col s6">
+            <%= link_to "Delete this Review", user_review_path(current_user, review), method: "delete", class: "btn-large" %>
+        </div>
+    </div>
+    <% end %>
