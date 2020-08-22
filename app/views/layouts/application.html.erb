@@ -33,9 +33,18 @@
               <span class= "white-text"><i class="tiny material-icons nav-icon">email</i><%=current_user.email%></span>
       </div>
       </li>
-      <li><%= link_to "Logout", sessions_path, method: :delete %></li>
-      <li><%= link_to "My Profile", user_path(current_user) %></li>
-      <li><%= link_to "Search", new_search_path %></li>
+      <li><%= link_to sessions_path, method: :delete  do%>
+          <i class="small material-icons">exit_to_app</i> Logout
+          <% end %>
+      </li>
+      <li><%= link_to user_path(current_user) do%>
+            <i class="small material-icons">person</i> My Profile
+            <% end %>
+      </li>
+      <li><%= link_to  new_search_path do%>
+             <i class="small material-icons">search</i> Search
+             <% end %>
+      </li>
   </ul>
   <% end %>
 
