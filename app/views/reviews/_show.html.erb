@@ -1,5 +1,10 @@
-<div class="review-container">
-<div class="row center">
-    <span class="page-text"><i class="material-icon">person</i> <%= result.user %></span>
-</div>
-</div>
+
+    <div class="row center">
+        <span class="page-text"><i class="material-icons">person</i> <%= review.user.name %></span>
+    </div>
+    <div class="row center">
+        <span class="page-text"><%= review.rating_in_stars %></span>
+    </div>
+    <div class="row center">
+        <span class="page-text">"<%= review.content %>"</span>
+    </div>

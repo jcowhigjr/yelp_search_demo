@@ -1,5 +1,8 @@
 <body class="landing-body">
     <div class="container page-container">
+    <% if flash[:errror] %>
+        <span class="page-text red-text"><%= flash[:error] %></span>
+    <% end %>
         <div class="row center">
             <h1 class="page-name"><%= @coffeeshop.name %></h1>
         </div>
@@ -53,8 +56,13 @@
                 <span class="page-text red-text">This coffeeshop doesn't have any reviews yet!</span>
             </div>
             <% else %>
+            <div class="row center">
+                <span class="page-text">Reviews:</span>
+            </div>
                 <% @coffeeshop.reviews.each do |review| %>
-                    <%= render partial: 'reviews/show', locals: {review: review} %>
+                    <div class="container review-container z-depth-1">
+                        <%= render partial: 'reviews/show', locals: {review: review} %>
+                    </div>
                     <% end %>
             <% end %>
             <div class="row center">

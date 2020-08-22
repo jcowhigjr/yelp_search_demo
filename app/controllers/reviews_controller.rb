@@ -1,10 +1,10 @@
 class ReviewsController < ApplicationController
 
     def create
-        @coffeehop = Coffeeshop.find(params[:coffeeshop_id])
+        @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
         @coffeeshop.reviews.build(review_params)
-        if @coffeshop.save
-            redirect_to @coffeshop
+        if @coffeeshop.save
+            redirect_to @coffeeshop
         else
             flash[:error] = "Something went wrong creating review"
             redirect_to @coffeeshop
