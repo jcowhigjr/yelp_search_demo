@@ -12,6 +12,7 @@
             </div>
             <!-- Coffeeshop Info -->
             <div class="col s12 l6">
+            <div class="shop-info">
                 <div class="row">
                   <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
                 </div>
@@ -24,6 +25,8 @@
                 <div class="row">
                     <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
                 </div>  
+            </div>
+                <br><br>
                 <!-- Add to user favorites -->
                 <div class="row center">
                     <% if !logged_in? %>
@@ -42,6 +45,7 @@
                 </div>
             </div> 
         </div>
+        <br><br>
                 <!-- Reviews Section -->
         <div class="row center">
             <% if @coffeeshop.reviews.empty? %>
@@ -49,7 +53,6 @@
                 <span class="page-text red-text">This coffeeshop doesn't have any reviews yet!</span>
             </div>
             <div class="row center">
-                <span class="page-text">Leave a review.</span>
                 <div class="container review-form z-depth-2"> 
                     <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
                 </div>
