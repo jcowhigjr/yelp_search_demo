@@ -17,9 +17,19 @@ class ReviewsController < ApplicationController
     end
 
     def update
+        @review.update(review_params)
+        if @review.save
+            redirect_to @review.coffeeshop
+        else
+            flash[:error] = "Error editing review."
+            redirect_to @review.coffeeshop
+        end
     end
 
     def destroy
+        @coffeeshop = @review.coffeeshop
+        @review.destroy
+        redirect_to @coffeeshop
     end
 
 

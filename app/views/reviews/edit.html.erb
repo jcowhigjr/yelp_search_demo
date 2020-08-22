@@ -1,9 +1,11 @@
 <body class="landing-body">
     <div class="container page-container z-depth-1">
+    <div class="row center">
          <span class="page-text">Edit your review for <%= @review.coffeeshop.name %></span>
+    </div>
 <br><br>
 <div class="row center" >
-    <%= form_with(model: [@review.user, @review]) do |f|%>
+    <%= form_with(model: [@review.user, @review], method: "patch") do |f|%>
         <%= f.hidden_field :user_id, value: current_user.id %>
         <%=f.label :rating  %>
         <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]))%>
