@@ -65,3 +65,15 @@ ToDo end of day 8/21
     validations
     error handling
     sort reviews by most recent
+
+
+validations:
+user presence: name password email
+user uniqueness: name password email
+coffeeshop presences: all fields
+coffeeshop uniqueness: address
+user_favorite presence: user_id, coffeeshop_id
+search presence: query
+review presence: rating, content
+
+
