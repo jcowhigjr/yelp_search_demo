@@ -52,12 +52,16 @@
             <div class="row center">
                 <span class="page-text red-text">This coffeeshop doesn't have any reviews yet!</span>
             </div>
+            <% else %>
+                <% @coffeeshop.reviews.each do |review| %>
+                    <%= render partial: 'reviews/show', locals: {review: review} %>
+                    <% end %>
+            <% end %>
             <div class="row center">
-                <div class="container review-form z-depth-1"> 
+                <div class="container review-container z-depth-1"> 
                     <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
                 </div>
             </div>
-            <% end %>
              </div> 
         </div>
     </div>  
