@@ -1,5 +1,8 @@
 <body class="landing-body">
     <div class="container page-container">
+    <% if flash[:error] %>
+    <span class="page-text"><%= flash[:error] %></span>
+    <% end %>
         <div class="row center">
             <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
             <span class="page-text"> Search for coffeeshops near you.</span>

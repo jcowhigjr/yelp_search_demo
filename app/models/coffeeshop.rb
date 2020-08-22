@@ -18,7 +18,8 @@ class Coffeeshop < ApplicationRecord
     end
 
     def self.create_coffee_shops_from_results(results)
-        results.map do |data|
+        shops = results.map do |data|
+
             Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
                 c.name = data["name"]
                 c.rating = data["rating"]
@@ -27,6 +28,7 @@ class Coffeeshop < ApplicationRecord
                 c.phone_number = data["display_phone"]
             end
         end
+        shops.select{|shop| shop.valid?}
     end
 
 
