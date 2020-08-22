@@ -14,12 +14,12 @@
 </body>
 
 <div>
-    <% if @search.query %>  
+    <% if @coffeeshops %>  
     <div class="search-results">
         <div class="row center">
             <h1 class="black-text">Top Rated Coffeeshops in <%= @search.query %></h1>
         </div>
-        <%= render partial: 'searches/results', locals: {search: @search} %>
+        <%= render partial: 'searches/results', locals: {coffeeshops: @coffeeshops} %>
     </div>
     <% end %>
     

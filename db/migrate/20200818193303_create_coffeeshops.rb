@@ -7,7 +7,7 @@ class CreateCoffeeshops < ActiveRecord::Migration[6.0]
       t.string :yelp_url
       t.string :image_url
       t.string :phone_number
-
+      t.belongs_to :search
       t.timestamps
     end
   end

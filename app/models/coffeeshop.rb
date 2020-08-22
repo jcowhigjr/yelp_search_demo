@@ -6,7 +6,7 @@ class Coffeeshop < ApplicationRecord
     has_many :user_favorites
     belongs_to :search
 
-    def self.get_search_results(query)
+    def self.get_search_results(query, search)
         response = RestClient::Request.execute(
             method: "GET",
             url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
@@ -14,10 +14,10 @@ class Coffeeshop < ApplicationRecord
         )
         results = JSON.parse(response)
         coffeeshops = results["businesses"]
-        create_coffee_shops_from_results(coffeeshops)
+        create_coffee_shops_from_results(coffeeshops, search)
     end
 
-    def self.create_coffee_shops_from_results(results)
+    def self.create_coffee_shops_from_results(results, search)
         shops = results.map do |data|
 
             Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
@@ -26,8 +26,9 @@ class Coffeeshop < ApplicationRecord
                 c.yelp_url = data["url"]
                 c.image_url = data["image_url"]
                 c.phone_number = data["display_phone"]
+                c.search = search
             end
-        end
+        end 
         shops.select{|shop| shop.valid?}
     end
 
