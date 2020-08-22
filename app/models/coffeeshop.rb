@@ -18,9 +18,10 @@ class Coffeeshop < ApplicationRecord
     end
 
     def self.create_coffee_shops_from_results(results, search)
-        shops = results.map do |data|
+        output = []
+        shops = results.each do |data|
 
-            Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
+            shop = Coffeeshop.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
                 c.name = data["name"]
                 c.rating = data["rating"]
                 c.yelp_url = data["url"]
@@ -28,8 +29,14 @@ class Coffeeshop < ApplicationRecord
                 c.phone_number = data["display_phone"]
                 c.search = search
             end
+            if shop.valid?
+                output << shop
+            else
+                shop.destroy
+            end
         end 
-        shops.select{|shop| shop.valid?}
+        output
+        byebug
     end
 
 
