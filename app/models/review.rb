@@ -1,4 +1,6 @@
 class Review < ApplicationRecord
+    validates :content, :rating, :user_id, :coffeeshop_id, presence: true
+    validates :rating, inclusion: {in: 1..5}
     belongs_to :user
     belongs_to :coffeeshop
 
