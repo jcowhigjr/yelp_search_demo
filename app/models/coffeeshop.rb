@@ -1,9 +1,6 @@
 class Coffeeshop < ApplicationRecord
-    has_many :reviews, -> {order created_at: :desc} 
-    has_many :users, through: :reviews
-    has_many :user_favorites
-    belongs_to :search
-
+    validates :name, :address, :rating, :yelp_url, :image_url, :phone_number, presence: true
+    
     def self.get_search_results(query)
         response = RestClient::Request.execute(
             method: "GET",
