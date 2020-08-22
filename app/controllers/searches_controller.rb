@@ -7,13 +7,10 @@ class SearchesController < ApplicationController
 
   def create
     @search = determine_search_type
-    associate_coffeeshops_to_search
-    
+    @coffeeshops = Coffeeshop.get_search_results(params[:query], @search)
     if @search.save
-      
       redirect_to_proper_path
     else
-      
       redirect_to root_path, error: "Something went wrong with your search please try again."
     end
   end
@@ -36,8 +33,5 @@ class SearchesController < ApplicationController
     end
   end
 
-  def associate_coffeeshops_to_search
-    Coffeeshop.get_search_results(params[:query]).each{|i| @search.coffeeshops << i}
-  end
 
 end
