@@ -1,0 +1,17 @@
+<body class="landing-body">
+    <div class="container page-container z-depth-1">
+         <span class="page-text">Edit your review for <%= @review.coffeeshop.name %></span>
+<br><br>
+<div class="row center" >
+    <%= form_with(model: [@review.user, @review]) do |f|%>
+        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%=f.label :rating  %>
+        <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]))%>
+        <br><br>
+        <%=f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
+        <%= f.text_area :content, class: "materialize-textarea"%>
+        <%=f.submit  "Submit Review", class: "btn-large"%>
+        <% end %>
+</div>
+    </div>
+</body>

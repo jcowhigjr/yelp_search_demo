@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :searches, only: [:new, :create, :show]
 
   resources :users do
-    resources :reviews, only: [:edit, :destroy]
+    resources :reviews, only: [:edit, :update, :destroy]
   end
 
   resources :user_favorites, only: [:create, :destroy]
