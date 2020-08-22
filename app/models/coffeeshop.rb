@@ -26,4 +26,6 @@ class Coffeeshop < ApplicationRecord
             end
         end
     end
+
+
 end

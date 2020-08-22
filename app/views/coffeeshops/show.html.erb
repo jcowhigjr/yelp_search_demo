@@ -34,7 +34,7 @@
                 <div class="row center">
                     <% if !logged_in? %>
                         <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
-                    <% elsif current_user.user_favorites.where(coffeeshop: @coffeeshop)%>
+                    <% elsif current_user.favorite?(@coffeeshop) %>
                         <%= form_tag user_favorite_path, method: 'delete' do %>
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
