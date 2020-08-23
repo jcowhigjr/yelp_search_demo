@@ -20,7 +20,8 @@ class Coffeeshop < ApplicationRecord
 
     def self.create_coffee_shops_from_results(results, search)
         results.each do |data|
-            search.coffeeshops.find_or_create_by(address: data["location"]["display_address"].join(" ")) do |c|
+            address = data["location"]["display_address"].join(" ")
+            search.coffeeshops << Coffeeshop.where(address: address).first_or_create do |c|
                 c.name = data["name"].empty? ?  "No name" : data["name"]
                 c.rating = data["rating"] ?  data["rating"] : 0
                 c.yelp_url = data["url"].empty? ? "https://yelp.com" : data["url"] 

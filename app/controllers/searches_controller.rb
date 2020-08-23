@@ -7,11 +7,12 @@ class SearchesController < ApplicationController
 
   def create
     @search = determine_search_type
-    Coffeeshop.get_search_results(params[:query], @search)
-    if @search.save
-      redirect_to_proper_path
-    else
-      redirect_to root_path, error: "Something went wrong with your search please try again."
+    if Coffeeshop.get_search_results(params[:query], @search).nil?
+      flash[:error] = "Something went wrong with your search, please try again."
+      redirect_to root_path
+    else 
+      @search.save
+      redirect_to_proper_path    
     end
   end
 
