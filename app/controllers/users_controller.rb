@@ -18,6 +18,7 @@ class UsersController < ApplicationController
     end
 
     def show
+        cookies[:last_viewed] = nil
         @user = User.find(params[:id])
     end
 

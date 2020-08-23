@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:email])
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect_to user
+      redirect_to_proper_path
     else
       flash[:error] =  "Your email or password do not match our records."
       redirect_to login_path
@@ -27,6 +27,15 @@ class SessionsController < ApplicationController
       u.password = SecureRandom.hex
     end
     session[:user_id] = user.id
-    redirect_to user_path(user)
+    redirect_to_proper_path
   end
+
+  def redirect_to_proper_path
+      if cookies[:last_visited]
+        redirect_to coffeeshop_path(cookies[:last_visited])
+      else
+        redirect_to current_user
+      end
+    end
+
 end
