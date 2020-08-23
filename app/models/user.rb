@@ -9,7 +9,7 @@ class User < ApplicationRecord
     has_many :searches
 
     def favorite?(coffeeshop)
-        !!self.user_favorites.where(coffeeshop: coffeeshop)
+        !!self.user_favorites.find_by(coffeeshop: coffeeshop)
     end
     
 end
