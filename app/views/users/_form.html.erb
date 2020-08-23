@@ -8,11 +8,11 @@
     <% end %>
     <%= form_for @user do |f|%>
         <div class="row center user-form">
-            <%= f.text_field :name, placeholder: "Username" %>
-            <%= f.text_field :location, placeholder: "Location" %>
-            <%= f.email_field :email, placeholder: "Email" %>
-            <%= f.password_field :password, placeholder: "Password" %>
-            <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
+            <%= f.text_field :name, placeholder: "Username", required: true %>
+            <%= f.text_field :location, placeholder: "Location", required: true %>
+            <%= f.email_field :email, placeholder: "Email", required: true %>
+            <%= f.password_field :password, placeholder: "Password", required: true %>
+            <%= f.password_field :password_confirmation, placeholder: "Confirm Password", required: true %>
         </div>
         <div class="row center">
             <%= f.submit "Sign Up", class: "btn-large" %>

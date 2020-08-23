@@ -8,7 +8,7 @@ class ReviewsController < ApplicationController
             redirect_to @coffeeshop
         else
             flash[:review_error] = "Something went wrong with creating your review."
-            render @coffeeshop, locals: {review: @review}
+            render @coffeeshop
         end
     end
 
@@ -22,14 +22,14 @@ class ReviewsController < ApplicationController
             redirect_to @review.coffeeshop
         else
             flash[:error] = "Error editing review."
-            redirect_to @review.coffeeshop
+            render @review.coffeeshop
         end
     end
 
     def destroy
         @coffeeshop = @review.coffeeshop
         @review.destroy
-        redirect_to @coffeeshop
+        render @coffeeshop
     end
 
 
