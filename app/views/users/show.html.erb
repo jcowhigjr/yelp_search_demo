@@ -18,13 +18,13 @@
             </div>
         <% else %>
         <div class="row center">
-            <span class="page-text">Here is a list of your current favorites:</span>
+            <span class="page-text">Your favorite shops:</span>
         </div>
+        <div class="row center">
             <% current_user.user_favorites.each do |fav| %>
-            <div class="row center">
                 <%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
-            </div>
             <% end %>
+        </div>
         <% end %>
    
     </div>

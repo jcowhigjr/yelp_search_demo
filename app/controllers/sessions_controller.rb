@@ -36,6 +36,6 @@ class SessionsController < ApplicationController
       else
         redirect_to current_user
       end
-    end
+  end
 
 end

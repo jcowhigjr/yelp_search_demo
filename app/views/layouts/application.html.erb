@@ -14,8 +14,8 @@
   </head>
 
   <% if logged_in? %>
- 
-  <nav class="transparentBG">
+ <div class="navbar-fixed">
+   <nav class="transparentBG">
     <div class="nav-wrapper">
       <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
       <a href="#" data-target="mobile-demo" class="right sidenav-trigger"><i class="material-icons">menu</i></a>
@@ -26,6 +26,8 @@
       </ul>
     </div>
   </nav>
+ </div>
+
    <ul class="sidenav" id="mobile-demo">
     <li>
       <div class="background" ></div>

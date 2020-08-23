@@ -10,7 +10,7 @@ class UsersController < ApplicationController
         if @user.valid?
             @user.save
             session[:user_id] = @user.id
-            redirect_to @user
+            redirect_to_proper_path
         else
             flash[:error] = "Something went wrong during signup."
             render :new
@@ -28,6 +28,13 @@ class UsersController < ApplicationController
         params.require(:user).permit(:name, :location, :email, :password, :password_confirmation)
     end
     
+    def redirect_to_proper_path
+        if cookies[:last_visited]
+          redirect_to coffeeshop_path(cookies[:last_visited])
+        else
+          redirect_to current_user
+        end
+    end
     
 
 end

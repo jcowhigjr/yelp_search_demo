@@ -58,7 +58,7 @@
                 <span class="page-text">Reviews:</span>
             </div>
                 <% @coffeeshop.reviews.each do |review| %>
-                    <div class="container review-container z-depth-1">
+                    <div class="review-container z-depth-1">
                         <%= render partial: 'reviews/show', locals: {review: review} %>
                     </div>
                     <% end %>
@@ -67,7 +67,7 @@
                   <span class="page-text red-text">You must be <%= link_to 'logged in', login_path %> to leave a review!</span>
             <% else %>
             <div class="row center">
-                <div class="container review-container z-depth-1"> 
+                <div class="review-container z-depth-1"> 
                     <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
                 </div>
             </div>
