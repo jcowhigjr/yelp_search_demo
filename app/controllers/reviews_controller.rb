@@ -1,5 +1,5 @@
 class ReviewsController < ApplicationController
-    before_action :set_review, except: [:create]
+    before_action :find_or_redirect, except: [:create]
     helper_method :has_permission
     def create
         @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
@@ -29,7 +29,7 @@ class ReviewsController < ApplicationController
     def destroy
         @coffeeshop = @review.coffeeshop
         @review.destroy
-        render @coffeeshop
+        redirect_to @coffeeshop
     end
 
 
@@ -40,10 +40,24 @@ private
     end
 
     def set_review
-        @review = Review.find(params[:id])
+        @review = Review.find_by(id: params[:id])
     end
 
     def has_permission
         @review.user == current_user
     end
+
+    def find_or_redirect
+        set_review
+        if @review.nil?
+            if params[:coffeeshop_id]
+                redirect_to coffeeshop_path(params[:coffeshop_id])
+            else
+                redirect_to root_path
+            end
+        end
+    end
+
+
+
 end
