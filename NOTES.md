@@ -67,6 +67,12 @@ ToDo end of day 8/21
     sort reviews by most recent
 
 
+ToDo end of day 8/22
+    display flash errors on validation failure
+    fix remove from favorites button
+    refactor for DRY and speed
+    blog post, walkthrough, submit
+
 validations:
 user presence: name password email
 user uniqueness: name password email
@@ -77,3 +83,8 @@ search presence: query
 review presence: rating, content
 
 
+TODO 8/23
+    display all flash errors
+    fix user_favorties button
+    refactor for DRY and speed
+    possibly change search back to 

@@ -12,6 +12,7 @@ class Coffeeshop < ApplicationRecord
             url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
             headers: { Authorization: "Bearer #{ENV['YELP_API_KEY']}"}
         )
+        return nil if !response.code == 200
         results = JSON.parse(response)
         coffeeshops = results["businesses"]
         create_coffee_shops_from_results(coffeeshops, search)
