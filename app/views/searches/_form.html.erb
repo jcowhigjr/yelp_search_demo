@@ -1,11 +1,11 @@
-   <div class="form-group">
-    
-          <%= form_tag searches_path do%>
-            <div class="row center search-bar">
-                <%= text_field_tag 'query', nil, class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)', required: true%>
-            </div>
-            <br><br>
-            <div class="row center">
-                <%= submit_tag "Search", class: "btn-large" %>
-            </div>
-        <% end %>
+<div class="form-group">
+    <%= form_tag searches_path do%>
+    <div class="row center search-bar">
+        <%= text_field_tag 'query', nil, class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)', required: true%>
+    </div>
+    <br><br>
+    <div class="row center">
+        <%= submit_tag "Search", class: "btn-large" %>
+    </div>
+    <% end %>
+</div>

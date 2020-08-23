@@ -6,7 +6,7 @@
          <div class="row center">
             <%= render partial: 'rating', locals: {rating: @coffeeshop.rating} %>
         </div>
-        <div class="row">
+        <div class="row center-align">
             <div class="col s12 l6">
                 <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
             </div>
@@ -14,7 +14,7 @@
             <div class="col s12 l6">
             <div class="shop-info z-depth-1">
                 <div class="row">
-                  <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "http://maps.google.com/?=#{@coffeeshop.address}", target: :blank  %></span>
+                  <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank  %></span>
                 </div>
                 <div class="row">
                   <span class="page-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>

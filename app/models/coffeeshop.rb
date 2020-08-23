@@ -31,5 +31,9 @@ class Coffeeshop < ApplicationRecord
         end
     end
 
+    def google_address_slug
+        self.address.gsub(/[ ,]/, " " => "+", ","  => "%2C")
+    end
+
 
 end
