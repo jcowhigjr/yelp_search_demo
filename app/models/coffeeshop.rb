@@ -7,13 +7,17 @@ class Coffeeshop < ApplicationRecord
     belongs_to :search
 
     def self.get_search_results(query, search)
-        response = RestClient::Request.execute(
-            method: "GET",
-            url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
-            headers: { Authorization: "Bearer #{ENV['YELP_API_KEY']}"}
-        )
-        return nil if !response.code == 200
-        results = JSON.parse(response)
+        begin
+            response = RestClient::Request.execute(
+                method: "GET",
+                url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
+                headers: { Authorization: "Bearer #{ENV['YELP_API_KEY']}"}
+            )
+            results = JSON.parse(response)
+        rescue RestClient::Exception => e
+            return "error"
+        end
+      
         coffeeshops = results["businesses"]
         create_coffee_shops_from_results(coffeeshops, search)
     end
