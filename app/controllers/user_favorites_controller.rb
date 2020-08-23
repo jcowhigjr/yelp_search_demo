@@ -1,7 +1,7 @@
 class UserFavoritesController < ApplicationController
   def create
-    current_user.user_favorites.build(coffeeshop_id: params[:coffeeshop_id])
-    if current_user.save
+    user_fav = current_user.user_favorites.build(coffeeshop_id: params[:coffeeshop_id])
+    if user_fav.save
       redirect_to current_user
     else
       flash[:error] = "Something went wrong when adding to your favorites."
