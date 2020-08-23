@@ -8,12 +8,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/27310f71ef.js" crossorigin="anonymous"></script>
-
+   
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <% if logged_in? %>
+ 
   <nav class="transparentBG">
     <div class="nav-wrapper">
       <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
@@ -52,14 +53,14 @@
     <div>
       <%= yield %>
     </div>
-
+  
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>  
-   const slide_menu = document.querySelectorAll(".sidenav");
-  M.Sidenav.init(slide_menu, {
-    edge: 'right'
-  });
+      const slide_menu = document.querySelectorAll(".sidenav");
+      M.Sidenav.init(slide_menu, {
+        edge: 'right'
+      });
   </script>
   </body>
 </html>
