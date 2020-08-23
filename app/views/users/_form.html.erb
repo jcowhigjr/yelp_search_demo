@@ -8,16 +8,9 @@
             </div>
         <% end %>
             <%= f.text_field :name, placeholder: "Username", required: true %>
-            <%= f.text_field :location, placeholder: "Location", required: true %>
             <%= f.email_field :email, placeholder: "Email", required: true %>
             <%= f.password_field :password, placeholder: "Password (must be at least 6 characters)", required: true %>
             <%= f.password_field :password_confirmation, placeholder: "Confirm Password", required: true %>
-             <div class="row center">
-                <span>Already have an account?</span>
-            </div>
-            <div class="row center">
-                <p><%= link_to "Login", login_path, class: "btn-small"%> </p>
-            </div>
         </div>
         <div class="row center">
             <%= f.submit "Sign Up", class: "btn-large" %>

@@ -17,23 +17,23 @@
                 <%= label_tag :password %>
                 <%= password_field_tag :password, nil, required: true%>
                 <br><br>
-            <div class="row center">
-                <span>Don't have an account?</span>
-            </div>
-            <div class="row center">
-                <p><%= link_to "Sign Up", new_user_path, class: "btn-small"%> </p>
-            </div>
+         
             </div>
             <div class="row center">
                 <%= submit_tag "Log In", class: "btn-large" %>
             </div>
             <% end %>
-               <div class="row center">
-                    <%= link_to '/auth/google_oauth2', class: 'btn-large' do%>
-                    <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Login With Google</b>
-                    <% end %>
-                </div>
-           
+            <div class="row center">
+                <%= link_to '/auth/google_oauth2', class: 'btn-large' do%>
+                <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Login With Google</b>
+                <% end %>
+            </div>
+            <div class="row center">
+                <span class="white-text form-link">Don't have an account?</span>
+            </div>
+            <div class="row center">
+                <p class="form-link"><%= link_to "Sign Up", new_user_path%> </p>
+            </div>
         </div>
     </div>
 </body>
