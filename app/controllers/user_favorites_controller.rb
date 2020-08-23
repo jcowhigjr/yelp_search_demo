@@ -4,7 +4,7 @@ class UserFavoritesController < ApplicationController
     if current_user.save
       redirect_to current_user
     else
-      flash[:error] = "Handle this error"
+      flash[:error] = "Something went wrong when adding to your favorites."
       redirect_to current_user
     end
   end

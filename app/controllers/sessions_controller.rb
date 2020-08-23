@@ -9,7 +9,8 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:password])
       redirect_to user
     else
-      redirect_to login_path, errors: "Something went wrong logging in."
+      flash[:error] =  "Your email or password do not match our records."
+      redirect_to login_path
     end
   end
 

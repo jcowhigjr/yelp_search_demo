@@ -12,6 +12,7 @@ class UsersController < ApplicationController
             session[:user_id] = @user.id
             redirect_to @user
         else
+            flash[:error] = "Something went wrong during signup."
             render :new
         end
     end

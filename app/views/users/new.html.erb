@@ -5,6 +5,11 @@
             <h1 class="white-text">Sign Up To Use Jitter</h1>
         </div>
         <div class="container">
+         <% if flash[:error] %>
+            <div class="row center">
+                <span class="page-text red-text"><%= flash[:error] %></span>
+            </div>
+        <% end %>
             <%= render 'form'%>
         </div>
          <div class="row center">

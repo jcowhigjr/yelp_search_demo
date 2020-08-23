@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   get '/login', to: 'sessions#new', as: 'login'
   get '/auth/google_oauth2/callback', to: "sessions#create_with_google"
-  post 'sessions/', to: 'session#create', as: 'sessions'
-  delete 'sessions/', to: 'sessions#destroy'
+  post '/sessions', to: 'sessions#create', as: 'sessions'
+  delete '/sessions', to: 'sessions#destroy'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

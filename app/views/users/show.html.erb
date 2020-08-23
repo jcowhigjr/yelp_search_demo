@@ -1,9 +1,11 @@
 <body class="landing-body">
     <div class="container page-container">
         <div class="row center">
-             <% if flash[:error] %>
-                <%= flash[:error] %>
-            <% end %>
+            <% if flash[:error] %>
+                <div class="row center">
+                    <span class="page-text red-text"><%= flash[:error] %></span>
+                </div>
+             <% end %>
             <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
         </div>
         <% if current_user.user_favorites.empty? %>
