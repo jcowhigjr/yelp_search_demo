@@ -13,4 +13,4 @@ Use the application at https://jitter-coffee.herokuapp.com
 https://medium.com/@seanslaughterthompson/jitter-a-ruby-on-rails-coffee-shop-locator-f14bbb919d7d
 
 # Youtube walkthrough:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VLgSinVM5ZQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://youtu.be/VLgSinVM5ZQ
