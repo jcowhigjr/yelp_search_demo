@@ -1,6 +1,6 @@
 # README
 
-Dependencies: googleoath2, restclient, json, dotenv
+
  
 # Description
 
