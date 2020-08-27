@@ -1,6 +1,5 @@
 class Coffeeshop < ApplicationRecord
     validates :name, :address, :rating, :yelp_url, :image_url, :phone_number, presence: true
-    scope :ordered_by_rating, -> { order(rating: :desc)}
     has_many :reviews
     has_many :users, through: :reviews
     has_many :user_favorites
