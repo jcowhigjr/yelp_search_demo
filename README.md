@@ -1,24 +1,10 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Dependencies: googleoath2, restclient, json, dotenv
 
-Things you may want to cover:
+#Description
 
-* Ruby version
+Jitter is a Ruby on Rails application that allows users to find the highest
+ranked coffee shops in any city, utilizing the Yelp Fusion API.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Use the application at https://jitter-coffee.herokuapp.com
