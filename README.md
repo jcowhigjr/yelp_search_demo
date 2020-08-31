@@ -1,24 +1,11 @@
-# README
+# Jitter
+Jitter is a Ruby on Rails application that allows users to find the highest
+ranked coffee shops in any city, utilizing the Yelp Fusion API.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Use the application at https://jitter-coffee.herokuapp.com
 
-Things you may want to cover:
+## Medium blog about development: 
+https://medium.com/@seanslaughterthompson/jitter-a-ruby-on-rails-coffee-shop-locator-f14bbb919d7d
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Youtube walkthrough:
+https://youtu.be/VLgSinVM5ZQ
