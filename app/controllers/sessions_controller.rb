@@ -22,9 +22,9 @@ class SessionsController < ApplicationController
 
   def create_with_google
     auth = request.env["omniauth.auth"]["info"]
-    user = User.find_or_create_by(email: auth["email"]) do |u|
+    user = User.find_or_create_by(email: auth["email"]) o |u|
       u.name = auth["name"]
-      u.password = SecureRandom.hex
+      u.password = SecureRandom.hexd
     end
     session[:user_id] = user.id
     redirect_to_proper_path
