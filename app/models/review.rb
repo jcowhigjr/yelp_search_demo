@@ -3,6 +3,8 @@ class Review < ApplicationRecord
     validates :rating, inclusion: {in: 1..5}
     belongs_to :user
     belongs_to :coffeeshop
+    scope :order_reviews, -> (user_id) {where('user_id == ?', user_id).order('rating desc')}
+
 
     def rating_in_stars
         case self.rating

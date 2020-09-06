@@ -1,6 +1,9 @@
 class ReviewsController < ApplicationController
-    before_action :find_or_redirect, except: [:create]
+    before_action :find_or_redirect, except: [:create, :index]
     helper_method :has_permission
+    def index
+        @reviews = Review.order_reviews(params[:user_id])
+    end
     def create
         @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
         @review = @coffeeshop.reviews.create(review_params)
@@ -21,7 +24,7 @@ class ReviewsController < ApplicationController
         if @review.save
             redirect_to @review.coffeeshop
         else
-            flash[:error] = "Error editing review."
+            flash[:error] = "Error editing review. Please try again."
             render @review.coffeeshop
         end
     end

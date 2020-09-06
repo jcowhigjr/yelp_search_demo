@@ -26,6 +26,9 @@
             <% end %>
         </div>
         <% end %>
+        <% if !current_user.reviews.empty? %>
+            <%= link_to "See all of your reviews", user_reviews_path(current_user) %>       
+        <% end %>
    
     </div>
 
