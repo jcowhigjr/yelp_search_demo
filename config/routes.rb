@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :searches, only: %i[new create show]
 
   resources :users do
-    resources :reviews, only: %i[edit update destroy]
+    resources :reviews, only: [:index, :edit, :update, :destroy]
   end
 
   resources :user_favorites, only: %i[create destroy]
