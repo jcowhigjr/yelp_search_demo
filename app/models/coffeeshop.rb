@@ -10,11 +10,12 @@ class Coffeeshop < ApplicationRecord
             response = RestClient::Request.execute(
                 method: "GET",
                 url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
-                headers: { Authorization: "Bearer #{ENV['YELP_API_KEY']}"}
+                headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}"}
+
             )
             results = JSON.parse(response)
         rescue RestClient::Exception => e
-            return "error"
+            return "error #{e.inspect}"
         end
       
         coffeeshops = results["businesses"]

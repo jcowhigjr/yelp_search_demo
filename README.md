@@ -20,6 +20,14 @@ hid pg gem in Gemfile because it was trying to install locally
 specified .node-version for nodenv to work around yarn crap with node-sass
 nodenv install 15.14.0
 https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand
+
+Edit and use credentials for yelp
+https://www.yelp.com/developers/documentation/v3/authentication
+bin/rails credentials:edit --environment development
+<!-- Rails.application.credentials.yelp[:api_key] -->
+https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
+
+
 Switch to using webpack:
 
 bundle add jsbundling-rails
@@ -28,3 +36,4 @@ bundle update
 
 now: Switch to using webpack and startup with
 foreman start -f Procfile.dev
+
