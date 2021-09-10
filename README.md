@@ -20,3 +20,11 @@ hid pg gem in Gemfile because it was trying to install locally
 specified .node-version for nodenv to work around yarn crap with node-sass
 nodenv install 15.14.0
 https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand
+Switch to using webpack:
+
+bundle add jsbundling-rails
+bundle update
+./bin/rails javascript:install:webpack
+
+now: Switch to using webpack and startup with
+foreman start -f Procfile.dev
