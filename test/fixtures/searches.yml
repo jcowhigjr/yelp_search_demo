@@ -1,9 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  belongs_to: 
   query: MyString
 
 two:
-  belongs_to: 
   query: MyString

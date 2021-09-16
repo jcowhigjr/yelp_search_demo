@@ -3,9 +3,7 @@
 one:
   user_id: 1
   coffeeshop_id: MyString
-  integer: MyString
 
 two:
   user_id: 1
   coffeeshop_id: MyString
-  integer: MyString
