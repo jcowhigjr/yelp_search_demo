@@ -78,3 +78,5 @@ gem 'jsbundling-rails'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "meta_request", "~> 0.7.3"
+
+gem "hotwire-rails", "~> 0.1.3"
