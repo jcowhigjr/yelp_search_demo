@@ -15,7 +15,6 @@ gem 'sass-rails'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 # gem 'webpacker'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
@@ -72,11 +71,10 @@ platforms :ruby do
   end
 end
 
-gem 'jsbundling-rails'
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "meta_request", "~> 0.7.3"
 
-gem "hotwire-rails", "~> 0.1.3"
+
+gem "importmap-rails", "~> 0.6.1"
