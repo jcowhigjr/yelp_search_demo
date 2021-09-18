@@ -78,3 +78,5 @@ gem "meta_request", "~> 0.7.3"
 
 
 gem "importmap-rails", "~> 0.6.1"
+
+gem "hotwire-rails", "~> 0.1.3"
