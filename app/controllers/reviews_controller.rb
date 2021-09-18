@@ -7,6 +7,7 @@ class ReviewsController < ApplicationController
     if @coffeeshop.save
       redirect_to @coffeeshop
     else
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(@review, partial: 'reviews/form', locals: { review: @review }) }
       flash[:review_error] = 'Something went wrong with creating your review.'
       render @coffeeshop
     end
@@ -24,6 +25,11 @@ class ReviewsController < ApplicationController
       flash[:error] = 'Error editing review.'
       render @review.coffeeshop
     end
+  end
+
+  def index
+    @reviews = Review.all.order(created_at: :desc)
+    @review = Review.new
   end
 
   def destroy

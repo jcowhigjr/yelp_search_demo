@@ -223,6 +223,7 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.2.5)
     regexp_parser (2.1.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -262,9 +263,6 @@ GEM
     tilt (2.0.10)
     turbo-rails (0.7.13)
       rails (>= 6.0.0)
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -306,13 +304,14 @@ DEPENDENCIES
   omniauth-rails_csrf_protection
   puma (~> 4.1)
   rails!
+  redis (~> 4.0)
   rest-client
   sass-rails
   selenium-webdriver
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3
-  turbolinks
+  turbo-rails
   tzinfo-data
   web-console (>= 3.3.0)
   webdrivers
