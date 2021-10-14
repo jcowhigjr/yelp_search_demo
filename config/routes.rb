@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  root to: 'static#home'
+  root to: 'static#home', as: 'static_home'
   resources :searches, only: %i[new create show]
 
   resources :users do
-    resources :reviews, only: [:index, :edit, :update, :destroy]
+    resources :reviews, only: %i[index edit update destroy]
   end
 
   resources :user_favorites, only: %i[create destroy]
