@@ -5,7 +5,7 @@ one:
   address: MyString
   rating: 1.5
   yelp_url: MyString
-  image_url: MyString
+  image_url: tea.png
   phone_number: MyString
 
 two:
@@ -13,5 +13,5 @@ two:
   address: MyString
   rating: 1.5
   yelp_url: MyString
-  image_url: MyString
+  image_url: tea.png
   phone_number: MyString
