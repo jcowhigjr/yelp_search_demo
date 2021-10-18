@@ -1,12 +1,12 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
-  test 'Static Home Has a Search field' do
+  test 'An anonymous user at the static home can search by zip to return a list of coffeeshops from yelp api' do
     visit static_home_url
-    fill_in('query', :with => '30312')
+    fill_in('query', with: '30312')
     click_button('Search')
-    #TODO: create a mock response from Yelp.
-    page.should have_selector('.search-results > .row.center > .white-text')
-    page.should have_content('Bellwood')
+    click_link('More Info', match: :first)
+    assert_current_path '/coffeeshops/980190981'
+    assert_text 'Holiday Bar'
   end
 end
