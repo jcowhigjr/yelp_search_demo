@@ -1,23 +1,23 @@
 class SessionsController < ApplicationController
   before_action :redirect_if_logged_in, except: [:destroy]
 
-  def new
-  end
+  def new; end
 
   def create
     user = User.find_by(email: params[:email])
-    if user && user.authenticate(params[:password])
+    if user&.authenticate(params[:password])
       session[:user_id] = user.id
       redirect_to_proper_path
     else
-      flash[:error] =  "Your email or password do not match our records."
+      flash[:error] = 'Your email or password do not match our records.'
       redirect_to login_path
     end
   end
 
   def destroy
     session.clear
-    redirect_to root_path
+    # redirect_to_proper_path
+    redirect_to static_home_path, notice: 'Goodbye'
   end
 
   def create_with_google
@@ -30,12 +30,21 @@ class SessionsController < ApplicationController
     redirect_to_proper_path
   end
 
+  private
+
   def redirect_to_proper_path
-      if cookies[:last_visited]
-        redirect_to coffeeshop_path(cookies[:last_visited])
-      else
-        redirect_to current_user
-      end
+    if cookies[:last_visited]
+      redirect_to coffeeshop_path(cookies[:last_visited])
+    else
+      render 'static/home', locals: { search: @search }
+    end
   end
 
+  # def redirect_to_proper_path
+  #   if logged_in?
+  #     redirect_to @search
+  #   else
+  #     render 'static/home', locals: { search: @search }
+  #   end
+  # end
 end

@@ -5,8 +5,12 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  id: 1
-  name: jaamal
-  email: me@example.com
+  name: user_one
+  email: user1@example.com
+  password_digest: <%= default_password_digest %>
+
 two:
-  name: kim
+  name: user_two
+  email: user2@example.com
+  password_digest: <%= default_password_digest %>
+
