@@ -6,7 +6,6 @@ class SearchesTest < ApplicationSystemTestCase
     fill_in('query', with: '30312')
     click_button('Search')
     click_link('More Info', match: :first)
-    assert_current_path '/coffeeshops/980190981'
-    assert_text 'Holiday Bar'
+    assert_current_path %r{^/coffeeshops/\d{9}}
   end
 end
