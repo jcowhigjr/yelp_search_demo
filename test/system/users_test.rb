@@ -29,6 +29,7 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test 'updating a User' do
+    # before login via session controller
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
