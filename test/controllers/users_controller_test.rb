@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @user = users(:one)
     @user_favorite = user_favorites(:one)
@@ -11,7 +10,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     get '/login'
   end
 
-  test "the truth" do
-    assert true
+  test '#create' do
+    assert_difference('User.count') do
+      post users_path, params: {
+        user: { name: 'new user', email: 'new_user@example.com', password: 'mypass', password_confirmation: 'mypass' }
+      }
+    end
+    assert_response :found
+    assert_redirected_to static_home_path
+    assert_equal 'User Created!', flash[:success]
   end
 end
