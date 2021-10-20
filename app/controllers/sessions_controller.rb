@@ -1,12 +1,14 @@
 class SessionsController < ApplicationController
   before_action :redirect_if_logged_in, except: [:destroy]
-
+  require 'debug'
   def new; end
 
   def create
-    user = User.find_by(email: params[:email])
-    if user&.authenticate(params[:password])
+    user = User.find_by(email: session_params[:email])
+
+    if user&.authenticate(session_params[:password])
       session[:user_id] = user.id
+      flash[:success] = 'Logged in!'
       redirect_to_proper_path
     else
       flash[:error] = 'Your email or password do not match our records.'
@@ -40,11 +42,9 @@ class SessionsController < ApplicationController
     end
   end
 
-  # def redirect_to_proper_path
-  #   if logged_in?
-  #     redirect_to @search
-  #   else
-  #     render 'static/home', locals: { search: @search }
-  #   end
-  # end
+  # UsersTest#test_updating_a_User:
+  # ActionController::ParameterMissing: param is missing or the value is empty: user
+  def session_params
+    params.permit(:email, :password, :password_confirmation)
+  end
 end
