@@ -12,13 +12,11 @@ gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'puma', '~> 4.1'
 # Use SCSS for stylesheets
 gem 'sass-rails'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-# gem 'webpacker'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
+gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 gem 'bcrypt'
 
@@ -82,10 +80,11 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'meta_request' # , '~> 0.7.3'
 
+#  To use the asset pipeline version of hotwire or turbo, you must have importmap-rails installed first and listed higher in the Gemfile.
+gem 'importmap-rails' # , '~> 0.6.1'
 
+gem 'hotwire-rails' # , '~> 0.1.3'
 
-gem "importmap-rails", "~> 0.6.1"
 gem 'guard-minitest' # , '~> 2.4'
 
-gem "hotwire-rails", "~> 0.1.3"
 gem 'guard' # , '~> 2.18'

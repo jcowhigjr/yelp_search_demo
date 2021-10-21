@@ -28,15 +28,23 @@ bin/rails credentials:edit --environment development
 https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
 
 
-Switch to using webpack:
 
-bundle add jsbundling-rails
-bundle update
-./bin/rails javascript:install:webpack
 
-now: Switch to using webpack and startup with
-foreman start -f Procfile.dev
+Actually...now switch to using importmaps which works well for the basic hotwire-rails setup.
+If more complex javascript comes along I plan to switch to using jsbundling-rails gem and esbuild instead of webpack.
+followed instructions from rails-turbo and importmap
 
+ bin/rails importmap:install
+ bin/rails hotwire:install
+ remove webpacker stuff rm bin/webpack-dev-server config/webpack* app/javascript/pack*
+ run system tests and disable the ujs stuff that broke with -> data-turbo="false" or data: { turbo: false }
+
+
+# TODO
+# So far only a few things were using ujs so disabling turbo as I see them and then will enable turbo after that.
+https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md
+Add something as a turbo frame
+https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames
 
 # Testing
   bundle exec guard
