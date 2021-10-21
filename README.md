@@ -37,3 +37,8 @@ bundle update
 now: Switch to using webpack and startup with
 foreman start -f Procfile.dev
 
+
+# Testing
+  bundle exec guard
+  system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
+  better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
