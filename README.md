@@ -27,9 +27,7 @@ bin/rails credentials:edit --environment development
 <!-- Rails.application.credentials.yelp[:api_key] -->
 https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
 
-
-
-
+# Hotwire - Rails
 Actually...now switch to using importmaps which works well for the basic hotwire-rails setup.
 If more complex javascript comes along I plan to switch to using jsbundling-rails gem and esbuild instead of webpack.
 followed instructions from rails-turbo and importmap
@@ -39,6 +37,24 @@ followed instructions from rails-turbo and importmap
  remove webpacker stuff rm bin/webpack-dev-server config/webpack* app/javascript/pack*
  run system tests and disable the ujs stuff that broke with -> data-turbo="false" or data: { turbo: false }
 
+# Ruby 3.1, Rails 7 and bundle update
+
+Plan is to keep this up to date with the latest version of Ruby Rails and most gems
+
+rbenv local
+
+3.1.0-dev
+
+bundle update
+
+bin/rails update
+<!-- https://msp-greg.github.io/rails_master/file.upgrading_ruby_on_rails.html -->
+# rails update assumes active storage is in use
+rm db/migrate/***create_active_storage_variant_records.active_storage.rb
+rm db/migrate/***add_service_name_to_active_storage_blobs.active_storage.rb
+bin/setup
+bin/rake db:test:prepare
+bin/rails test:all
 
 # TODO
 # So far only a few things were using ujs so disabling turbo as I see them and then will enable turbo after that.

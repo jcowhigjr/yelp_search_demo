@@ -54,6 +54,9 @@
 # Rails.application.config.active_storage.video_preview_arguments =
 #   "-vf 'select=eq(n\\,0)+eq(key\\,1)+gt(scene\\,0.015),loop=loop=-1:size=2,trim=start_frame=1' -frames:v 1 -f image2"
 
+# Automatically infer `inverse_of` for associations with a scope.
+# Rails.application.config.active_record.automatic_scope_inversing = true
+
 # Raise when running tests if fixtures contained foreign key violations
 # Rails.application.config.active_record.verify_foreign_keys_for_fixtures = true
 
@@ -83,3 +86,8 @@
 #
 # See https://guides.rubyonrails.org/action_controller_overview.html#cookies for more information.
 # Rails.application.config.action_dispatch.cookies_serializer = :hybrid
+
+# Enable parameter wrapping for JSON.
+# Previously this was set in an initializer. It's fine to keep using that initializer if you've customized it.
+# To disable parameter wrapping entirely, set this config to `false`.
+# Rails.application.config.action_controller.wrap_parameters_by_default = true
