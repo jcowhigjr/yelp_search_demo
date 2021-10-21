@@ -26,33 +26,35 @@ gem 'bcrypt'
 # gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.2', require: false
+gem 'bootsnap' # , '~> 1.9.1', require: false
 # gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 
-gem 'rest-client'
-gem 'json'
 gem 'dotenv-rails'
+gem 'json'
+gem 'rest-client'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # gem 'debug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'debug', '~> 1.0'
+  # bugem 'web-console', '~> 4.1'
 end
 
 group :development do
   # gem 'sqlite3', '~> 1.4'
-# Use Puma as the app server
+  # Use Puma as the app server
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen', '~> 3.2'
+  gem 'listen' # , '~> 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen' # , '~> 2.0'
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara'#, '~> 3.35'
-  gem 'selenium-webdriver'#, '~> 4.0'
+  gem 'capybara' # , '~> 3.35'
+  gem 'selenium-webdriver' # , '~> 4.0'
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'matrix'
   gem 'webdrivers'
@@ -78,12 +80,12 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem 'meta_request'#, '~> 0.7.3'
+gem 'meta_request' # , '~> 0.7.3'
 
 
 
 gem "importmap-rails", "~> 0.6.1"
-gem 'guard-minitest'#, '~> 2.4'
+gem 'guard-minitest' # , '~> 2.4'
 
 gem "hotwire-rails", "~> 0.1.3"
-gem 'guard'#, '~> 2.18'
+gem 'guard' # , '~> 2.18'
