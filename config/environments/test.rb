@@ -69,5 +69,5 @@ Rails.application.configure do
 # If you still want to run it in the test environment (and know
 # what you are doing), put this in your Rails application
 # configuration:
-  config.web_console.development_only = false
+  # config.web_console.development_only = false
 end
