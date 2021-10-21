@@ -17,10 +17,10 @@
                 <%= label_tag :password %>
                 <%= password_field_tag :password, nil, required: true%>
                 <br><br>
-         
+
             </div>
-            <div class="row center">
-                <%= submit_tag "Log In", class: "btn-large" %>
+            <div class="row center" >
+                <%= submit_tag "Log In", data: { turbo: false }, class: "btn-large" %>
             </div>
             <% end %>
             <div class="row center">

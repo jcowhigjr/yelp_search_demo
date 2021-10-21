@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: e21c38ed7f9161e07e73afe2899f26ab7a260231
+  revision: bcb2a112c75c38833926daef6ea0def239b9a340
   branch: main
   specs:
     actioncable (7.0.0.alpha2)
@@ -75,14 +75,13 @@ GIT
       activesupport (= 7.0.0.alpha2)
       bundler (>= 1.15.0)
       railties (= 7.0.0.alpha2)
-      sprockets-rails (>= 2.0.0)
     railties (7.0.0.alpha2)
       actionpack (= 7.0.0.alpha2)
       activesupport (= 7.0.0.alpha2)
       method_source
-      rake (>= 0.13)
+      rake (>= 12.2)
       thor (~> 1.0)
-      zeitwerk (~> 2.5.0.beta3)
+      zeitwerk (~> 2.5)
 
 GEM
   remote: https://rubygems.org/
@@ -90,7 +89,6 @@ GEM
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     bcrypt (3.1.16)
-    bindex (0.8.1)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -117,7 +115,7 @@ GEM
       dotenv (= 2.7.6)
       railties (>= 3.2)
     erubi (1.10.0)
-    faraday (1.7.2)
+    faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -165,21 +163,27 @@ GEM
       domain_name (~> 0.5)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    importmap-rails (0.6.1)
+    importmap-rails (0.8.1)
       rails (>= 6.0.0)
+    io-console (0.5.9)
+    io-wait (0.2.0)
+    irb (1.3.7)
+      reline (>= 0.2.7)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    json (2.5.1)
-    jwt (2.2.3)
+    json (2.6.0)
+    jwt (2.3.0)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    lumberjack (1.2.8)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    marcel (1.0.1)
+    marcel (1.0.2)
+    matrix (0.4.2)
     meta_request (0.7.3)
       rack-contrib (>= 1.1, < 3)
       railties (>= 3.0.0, < 7)
@@ -256,12 +260,16 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.5.1)
     regexp_parser (2.1.1)
+    reline (0.2.7)
+      io-console (~> 0.5)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rexml (3.2.5)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
@@ -291,11 +299,12 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    stimulus-rails (0.5.3)
+    stimulus-rails (0.7.1)
       rails (>= 6.0.0)
     thor (1.1.0)
     tilt (2.0.10)
-    turbo-rails (0.7.14)
+    timeout (0.2.0)
+    turbo-rails (7.1.1)
       rails (>= 6.0.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -311,36 +320,42 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.5.0.beta3)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bcrypt
-  bootsnap (>= 1.4.2)
-  byebug
-  capybara (>= 2.15)
+  bootsnap
+  capybara
+  debug (~> 1.0)
+  digest (~> 3.1.0pre2)
   dotenv-rails
   fast_sqlite
-  hotwire-rails (~> 0.1.3)
-  importmap-rails (~> 0.6.1)
+  guard
+  guard-minitest
+  hotwire-rails
+  importmap-rails
   jbuilder
   json
-  listen (~> 3.2)
-  meta_request (~> 0.7.3)
+  listen
+  matrix
+  meta_request
+  minitest-focus
+  net-smtp
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
   puma (~> 4.1)
   rails!
+  redis (~> 4.0)
   rest-client
   sass-rails
   selenium-webdriver
   spring
-  spring-watcher-listen (~> 2.0.0)
+  spring-watcher-listen
   sqlite3
   tzinfo-data
-  web-console (>= 3.3.0)
   webdrivers
 
 RUBY VERSION
