@@ -5,7 +5,7 @@ ruby '~> 3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails'
-gem "rails", github: "rails/rails", branch: "main"
+gem 'rails', github: 'rails/rails', branch: 'main'
 
 # Use sqlite3 as the database for Active Record
 
@@ -43,7 +43,6 @@ group :development do
   # gem 'sqlite3', '~> 1.4'
 # Use Puma as the app server
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.2'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
@@ -52,31 +51,39 @@ end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
+  gem 'capybara'#, '~> 3.35'
+  gem 'selenium-webdriver'#, '~> 4.0'
   # Easy installation and use of web drivers to run system tests with browsers
+  gem 'matrix'
   gem 'webdrivers'
+  # gem 'minitest-colorize'
+  gem 'minitest-focus'
 end
 
+# ruby 3.1.0dev
+# You have already activated digest 3.0.1.pre, but your Gemfile requires digest 3.0.0. Since digest is a default gem, you can either remove your dependency on it or try updating to a newer version of bundler that supports digest as a default gem. (Gem::LoadError)
+gem 'digest', '~> 3.1.0pre2'
+
+gem 'net-smtp'
+
 platforms :ruby do
-  if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'mysql2', '~> 0.5.0', require: false
-  end
-  if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'pg', '~> 1.0', require: false
-  end
+  gem 'mysql2', '~> 0.5', require: false if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
+  gem 'pg', '~> 1.0', require: false if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
   if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
-    gem 'sqlite3', require: false
     gem 'fast_sqlite', require: false
+    gem 'sqlite3', require: false
   end
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem "meta_request", "~> 0.7.3"
+gem 'meta_request'#, '~> 0.7.3'
+
 
 
 gem "importmap-rails", "~> 0.6.1"
+gem 'guard-minitest'#, '~> 2.4'
 
 gem "hotwire-rails", "~> 0.1.3"
+gem 'guard'#, '~> 2.18'
