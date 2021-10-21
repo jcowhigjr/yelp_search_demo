@@ -6,8 +6,6 @@ require "active_support/core_ext/integer/time"
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
-
-  # DEFAULT_HOST = "http://127.0.0.1"
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Turn false under Spring and add config.action_view.cache_template_loading = true
@@ -59,15 +57,4 @@ Rails.application.configure do
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
-
-#   Web Console is activated in the test environment. This is
-# usually a mistake. To ensure it's only activated in development
-# mode, move it to the development group of your Gemfile:
-
-#     gem 'web-console', group: :development
-
-# If you still want to run it in the test environment (and know
-# what you are doing), put this in your Rails application
-# configuration:
-  # config.web_console.development_only = false
 end
