@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: bcb2a112c75c38833926daef6ea0def239b9a340
+  revision: 35e79f05efad1579c409cdbf6972f4eddcaa18dc
   branch: main
   specs:
     actioncable (7.0.0.alpha2)
@@ -137,6 +137,7 @@ GEM
     fast_sqlite (0.0.1)
       sqlite3
     ffi (1.15.4)
+    foreman (0.87.2)
     formatador (0.3.0)
     globalid (0.5.2)
       activesupport (>= 5.0)
@@ -333,6 +334,7 @@ DEPENDENCIES
   digest (~> 3.1.0pre2)
   dotenv-rails
   fast_sqlite
+  foreman
   guard
   guard-minitest
   hotwire-rails
