@@ -2,8 +2,8 @@
 
 one:
   user_id: 1
-  coffeeshop_id: MyString
+  coffeeshop_id: 1
 
 two:
   user_id: 1
-  coffeeshop_id: MyString
+  coffeeshop_id: 2
