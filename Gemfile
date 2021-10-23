@@ -24,7 +24,7 @@ gem 'bcrypt'
 # gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap' # , '~> 1.9.1', require: false
+gem 'bootsnap', require: false # , '~> 1.9.1', require: false
 # gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
@@ -47,6 +47,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen' # , '~> 2.0'
+  gem 'foreman' # needed for bin/dev
 end
 
 group :test do
