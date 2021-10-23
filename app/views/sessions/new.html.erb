@@ -24,7 +24,7 @@
             </div>
             <% end %>
             <div class="row center">
-                <%= button_to '/auth/google_oauth2', class: 'btn-large' do%>
+                <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large' do%>
                 <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Login With Google</b>
                 <% end %>
             </div>

@@ -52,4 +52,15 @@ class UsersTest < ApplicationSystemTestCase
 
   #   assert_text 'User was successfully destroyed'
   # end
+
+  test 'partial sign in with Google' do
+    visit '/login'
+    click_button 'Login With Google'
+    # it prompts for user login instead and then says "This browser or app may not be secure."
+    # so we need to click on the "Continue" button
+    # click_on 'Continue'
+    # click_on 'My Profile'
+    # assert_text "Hello, #{@user.name}"
+    # click_link 'Logout'
+  end
 end
