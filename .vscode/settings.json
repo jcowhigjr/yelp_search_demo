@@ -1,0 +1,5 @@
+{
+  "rubyTestExplorer.logpanel": true,
+  "rubyTestExplorer.testFramework": "minitest",
+  "autoHide.autoHidePanel": false
+}
