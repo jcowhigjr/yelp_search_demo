@@ -8,7 +8,7 @@ class SearchesController < ApplicationController
     @search = determine_search_type
     if Coffeeshop.get_search_results(params[:query], @search) == 'error'
       flash[:error] = 'Something went wrong with your search, please try again.'
-      redirect_to root_path
+      redirect_to static_home_url
     else
       @search.save
       redirect_to_proper_path

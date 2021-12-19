@@ -5,13 +5,13 @@ ruby '~> 3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails'
-gem 'rails', github: 'rails/rails', branch: 'main'
-
+# gem 'rails', github: 'rails/rails', branch: 'main'
+gem "rails", ">= 7.0.0.rc1",  github: 'rails/rails', branch: '7-0-stable'
 # Use sqlite3 as the database for Active Record
-
+# gem 'propshaft'
 gem 'puma', '~> 4.1'
 # Use SCSS for stylesheets
-gem 'sass-rails'
+# gem 'sass-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
@@ -29,25 +29,26 @@ gem 'bootsnap', require: false # , '~> 1.9.1', require: false
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 
-gem 'dotenv-rails'
+# gem 'dotenv-rails'
 gem 'json'
 gem 'rest-client'
 group :development, :test do
+  # gem 'rack-mini-profiler'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'debug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'debug', '~> 1.0'
+
   # bugem 'web-console', '~> 4.1'
 end
 
 group :development do
-  # gem 'sqlite3', '~> 1.4'
-  # Use Puma as the app server
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'listen' # , '~> 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen' # , '~> 2.0'
   gem 'foreman' # needed for bin/dev
+
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "web-console", ">= 4.1.0"
+
+  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
+  # gem "rack-mini-profiler", ">= 2.3.3"
 end
 
 group :test do
@@ -59,6 +60,7 @@ group :test do
   gem 'webdrivers'
   # gem 'minitest-colorize'
   gem 'minitest-focus'
+  gem 'magic_test'
 end
 
 # ruby 3.1.0dev
@@ -79,13 +81,21 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
-gem 'meta_request' # , '~> 0.7.3'
+# gem 'meta_request', '>= 0.7.3'
+gem 'meta_request', github: 'jcowhigjr/rails_panel', branch: 'jcowhigjr-support-rails-7.0'
+# , glob: 'meta_request/meta_request.gemspec'
 
 #  To use the asset pipeline version of hotwire or turbo, you must have importmap-rails installed first and listed higher in the Gemfile.
 gem 'importmap-rails' # , '~> 0.6.1'
+gem 'propshaft'
 
 gem 'hotwire-rails' # , '~> 0.1.3'
 
 gem 'guard-minitest' # , '~> 2.4'
 
 gem 'guard' # , '~> 2.18'
+
+# rspotify is a gem for the Spotify Web API (https://developer.spotify.com/web-api/).
+#TODO: gem 'rspotify' should be upgraded
+# when public suffix and rest client are bumped in this gem
+gem 'rspotify', '>= 2.1'

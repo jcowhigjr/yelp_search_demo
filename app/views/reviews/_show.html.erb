@@ -11,10 +11,18 @@
     <% if review.user == current_user %>
     <div class="row center">
         <div class="col s6">
-            <%= link_to "Edit this Review", edit_user_review_path(current_user, review), class: "btn-large" %>
+            <%= link_to "Edit this Review", edit_user_review_path(current_user, review),
+                "data-turbo-method": :edit,
+                "data-turbo-confirm": "Are you sure?",
+                class: "btn-large"
+            %>
         </div>
         <div class="col s6">
-            <%= link_to "Delete this Review", user_review_path(current_user, review), method: "delete", class: "btn-large" %>
+            <!-- https://github.com/hotwired/turbo-rails/issues/259 -->
+            <%= button_to "Destroy", review_path(review), class: "btn-large", method: :delete %>
+            <%= button_to "Destroy User Path", user_review_path(current_user, review), class: "btn-large", method: :delete %>
+
+
         </div>
     </div>
     <% end %>

@@ -1,11 +1,11 @@
 require 'test_helper'
 
 class SearchesControllerTest < ActionDispatch::IntegrationTest
-
-  test "should redirect get search to post new" do
+  test 'should redirect get search to post new' do
     get new_search_path
+    id = Search.last.id
     assert_response :redirect
-    #TODO: test redirect search path ActionController::UrlGenerationError:  route matches {:action=>"show", :controller=>"searches"}, missing required keys: [:id]
-    # assert_redirected_to search_path
+    # TODO: test redirect search path ActionController::UrlGenerationError:  route matches {:action=>"show", :controller=>"searches"}, missing required keys: [:id]
+    assert_redirected_to search_url(action: 'new', id: id)
   end
 end

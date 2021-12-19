@@ -1,6 +1,11 @@
 class ReviewsController < ApplicationController
   before_action :find_or_redirect, except: [:create]
   helper_method :has_permission
+
+  def index
+    find_or_redirect
+  end
+
   def create
     @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
     @review = @coffeeshop.reviews.create(review_params)
@@ -35,7 +40,7 @@ class ReviewsController < ApplicationController
   private
 
   def review_params
-    params.require(:review).permit(:content, :rating, :user_id)
+    params.require(:review).permit(:content, :rating, :user_id, :coffeeshop_id)
   end
 
   def set_review
@@ -52,7 +57,7 @@ class ReviewsController < ApplicationController
       if params[:coffeeshop_id]
         redirect_to coffeeshop_path(params[:coffeshop_id])
       else
-        redirect_to root_path
+        redirect_to static_home_url
       end
     end
   end

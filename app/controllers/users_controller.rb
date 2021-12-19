@@ -23,6 +23,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def destroy
+    user = User.find(params[:id])
+    user.destroy
+    redirect_to user_path, notice: "User #{user.id} destroyed"
+  end
+
   private
 
   def user_params
@@ -34,7 +40,7 @@ class UsersController < ApplicationController
       redirect_to coffeeshop_path(cookies[:last_visited])
     else
       # TODO: create show user path and redirect to current_user
-      redirect_to static_home_path
+      redirect_to static_home_url
     end
   end
 end

@@ -5,11 +5,14 @@ class Coffeeshop < ApplicationRecord
   has_many :user_favorites
   belongs_to :search
 
+  broadcasts_to ->(coffeeshop) { [coffeeshop.search, :coffeeshops] },
+                target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
+
   def self.get_search_results(query, search)
     begin
       response = RestClient::Request.execute(
         method: 'GET',
-        url: "https://api.yelp.com/v3/businesses/search?term=coffee&location=#{query}",
+        url: "https://api.yelp.com/v3/businesses/search?term=taco&location=#{query}",
         headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" }
       )
       results = JSON.parse(response)

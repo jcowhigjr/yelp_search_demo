@@ -20,11 +20,17 @@
                   <span class="page-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>
                 </div>
                 <div class="row">
-                    <span class="page-text"><i class="material-icons">add</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
+                    <!-- #TODO: good candidate for turbo stream? -->
+                    <!-- https://turbo.hotwired.dev/handbook/drive#page-navigation-basics -->
+                    <!-- https://noelrappin.com/blog/2020/12/a-brief-hello-to-hotwire-and-turbo/  -->
+                    <span class="page-text"><i class="material-icons">favorite</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
                 </div>
                 <div class="row">
-                    <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
-                </div>  
+                    <span class="page-text"><i class="fab fa-facebook" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
+                </div>
+                <div class="row">
+                    <span class="page-text"><i class="fab fa-instagram" style="margin-right: 10px;"></i>  <%= link_to "View on Instagram", @coffeeshop.yelp_url%></span>
+                </div>
             </div>
                 <br><br>
                 <!-- Add to user favorites -->
@@ -32,6 +38,9 @@
                     <% if !logged_in? %>
                         <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
                     <% elsif current_user.favorite?(@coffeeshop) %>
+                    <td>
+                        <%= link_to "Remove from favorites", user_favorite_path(current_user, @coffeeshop), "data-turbo-method": :delete, "data-turbo-confirm": "are you sure?", class: "btn btn-small waves-effect waves-light red" %>
+                    </td>
                         <%= form_tag user_favorite_path, method: 'delete' do %>
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
@@ -43,11 +52,11 @@
                         <% end %>
                     <% end %>
                 </div>
-            </div> 
+            </div>
         </div>
         <br><br>
                 <!-- Reviews Section -->
-       
+
         <div class="row center">
             <% if @coffeeshop.reviews.empty? %>
             <div class="row center">
@@ -72,7 +81,7 @@
                 </div>
             </div>
             <% end %>
-             </div> 
+             </div>
         </div>
     </div>  
 

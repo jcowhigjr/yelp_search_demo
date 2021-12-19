@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_login
-    redirect_to root_path unless logged_in?
+    redirect_to static_home_url unless logged_in?
   end
 
   def redirect_if_logged_in

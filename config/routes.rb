@@ -5,11 +5,11 @@ Rails.application.routes.draw do
   resources :users do
     resources :reviews, only: %i[index edit update destroy]
   end
-
+  resources :reviews, only: :destroy
   resources :user_favorites, only: %i[create destroy]
 
   resources :coffeeshops, only: [:show] do
-    resources :reviews, only: %i[new create]
+    resources :reviews, only: %i[new create index]
   end
 
   get '/login', to: 'sessions#new', as: 'login'
