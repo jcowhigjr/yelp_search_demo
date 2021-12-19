@@ -17,7 +17,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       }
     end
     assert_response :found
-    assert_redirected_to static_home_path
+    assert_redirected_to static_home_url
     assert_equal 'User Created!', flash[:success]
   end
 end

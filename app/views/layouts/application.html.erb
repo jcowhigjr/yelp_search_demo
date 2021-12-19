@@ -9,10 +9,22 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/27310f71ef.js" crossorigin="anonymous"></script>
-   
+
+    <!-- Your application must load the Roboto and Material Icons fonts. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_importmap_tags "application", shim: false %>
     <%= javascript_importmap_tags %>
+    <%= render 'magic_test/support' if Rails.env.test? %>
+
   </head>
 
   <% if logged_in? %>
@@ -29,7 +41,6 @@
     </div>
   </nav>
  </div>
-
    <ul class="sidenav" id="mobile-demo">
     <li>
       <div class="background" ></div>
@@ -54,17 +65,9 @@
   <% end %>
 
   <body>
-    <div>
-      <%= yield %>
-    </div>
-  
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script>  
-      const slide_menu = document.querySelectorAll(".sidenav");
-      M.Sidenav.init(slide_menu, {
-        edge: 'right'
-      });
-  </script>
+
+    <%= yield %>
+
   </body>
+
 </html>

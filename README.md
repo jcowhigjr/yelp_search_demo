@@ -26,7 +26,9 @@ https://www.yelp.com/developers/documentation/v3/authentication
 bin/rails credentials:edit --environment development
 <!-- Rails.application.credentials.yelp[:api_key] -->
 https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
-
+# Yelp
+https://github.com/Yelp/yelp-ruby/tree/develop/spec
+https://www.yelp.com/developers/documentation/v3/business
 # Hotwire - Rails
 Actually...now switch to using importmaps which works well for the basic hotwire-rails setup.
 If more complex javascript comes along I plan to switch to using jsbundling-rails gem and esbuild instead of webpack.
@@ -67,3 +69,28 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
   bundle exec guard
   system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
   better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
+
+# Spotify Integration
+https://developer.spotify.com/dashboard/applications/8156e50c77c94ad880cccde9e7d85451
+App Status Development mode (what does this mean?)
+Client ID 8156e50c77c94ad880cccde9e7d85451
+Client Secret 77643b66155e4848b26223eab8c40cf8
+
+# rspotify
+https://github.com/guilhermesad/rspotify
+
+#LiveReload for css changes and importmaps
+https://www.colby.so/posts/live-reloading-with-esbuild-and-rails
+
+
+# FontAwesome
+bin/importmap pin fontawesome
+Pinning "fontawesome" to https://ga.jspm.io/npm:fontawesome@5.6.3/index.js
+
+# https://guillaumebriday.fr/introducing-stimulus-components
+
+#importmaps
+https://github.com/hotwired/stimulus-rails/pull/24
+
+
+https://guillaumebriday.fr/introducing-stimulus-components

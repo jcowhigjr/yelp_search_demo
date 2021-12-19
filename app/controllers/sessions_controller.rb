@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   before_action :redirect_if_logged_in, except: [:destroy]
-  require 'debug'
+
   def new; end
 
   def create
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
   def destroy
     session.clear
     # redirect_to_proper_path
-    redirect_to static_home_path, notice: 'Goodbye'
+    redirect_to static_home_url, notice: 'Goodbye'
   end
 
   def create_with_google

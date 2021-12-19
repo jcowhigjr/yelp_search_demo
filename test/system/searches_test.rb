@@ -5,7 +5,7 @@ class SearchesTest < ApplicationSystemTestCase
     visit static_home_url
     fill_in('query', with: '30312')
     click_button('Search')
-    click_link('More Info', match: :first)
-    assert_current_path %r{^/coffeeshops/\d{9}}
+    click_on('More Info', match: :first)
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
   end
 end

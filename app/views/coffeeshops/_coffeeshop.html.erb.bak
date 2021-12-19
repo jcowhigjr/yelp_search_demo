@@ -1,0 +1,6 @@
+<div class="coffeeshop">
+    <h1><%= coffeeshop.name %></h1>
+    <div class="card-action row center">
+        <%= link_to 'More Info', coffeeshop_url(coffeeshop), data: { turbo: false }, class: 'btn-floating btn-large waves-effect waves-light red' %>
+    </div>
+</div>

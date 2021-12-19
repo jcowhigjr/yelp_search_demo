@@ -1,1 +1,1 @@
-web: bin/rails server -p 3000
+web: bundle update && bin/setup && bin/rails db:seed && bin/rails server -p 3000
