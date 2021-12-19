@@ -7,10 +7,8 @@ GIT
       rack-contrib (>= 1.1, < 3)
       railties (>= 3.0.0, <= 7.1.0)
 
-GIT
-  remote: https://github.com/rails/rails.git
-  revision: 8f5b35b6107c28125b571b9842e248b13f804e5c
-  branch: 7-0-stable
+GEM
+  remote: https://rubygems.org/
   specs:
     actioncable (7.0.0)
       actionpack (= 7.0.0)
@@ -71,31 +69,6 @@ GIT
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    rails (7.0.0)
-      actioncable (= 7.0.0)
-      actionmailbox (= 7.0.0)
-      actionmailer (= 7.0.0)
-      actionpack (= 7.0.0)
-      actiontext (= 7.0.0)
-      actionview (= 7.0.0)
-      activejob (= 7.0.0)
-      activemodel (= 7.0.0)
-      activerecord (= 7.0.0)
-      activestorage (= 7.0.0)
-      activesupport (= 7.0.0)
-      bundler (>= 1.15.0)
-      railties (= 7.0.0)
-    railties (7.0.0)
-      actionpack (= 7.0.0)
-      activesupport (= 7.0.0)
-      method_source
-      rake (>= 12.2)
-      thor (~> 1.0)
-      zeitwerk (~> 2.5)
-
-GEM
-  remote: https://rubygems.org/
-  specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     bcrypt (3.1.16)
@@ -118,7 +91,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
-    debug (1.3.4)
+    debug (1.4.0)
       irb (>= 1.3.6)
       reline (>= 0.2.7)
     debug_inspector (1.1.0)
@@ -181,7 +154,7 @@ GEM
     io-wait (0.2.1)
     irb (1.3.7)
       reline (>= 0.2.7)
-    jbuilder (2.11.3)
+    jbuilder (2.11.4)
       activesupport (>= 5.0.0)
     json (2.6.1)
     jwt (2.3.0)
@@ -273,11 +246,32 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rails (7.0.0)
+      actioncable (= 7.0.0)
+      actionmailbox (= 7.0.0)
+      actionmailer (= 7.0.0)
+      actionpack (= 7.0.0)
+      actiontext (= 7.0.0)
+      actionview (= 7.0.0)
+      activejob (= 7.0.0)
+      activemodel (= 7.0.0)
+      activerecord (= 7.0.0)
+      activestorage (= 7.0.0)
+      activesupport (= 7.0.0)
+      bundler (>= 1.15.0)
+      railties (= 7.0.0)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
+    railties (7.0.0)
+      actionpack (= 7.0.0)
+      activesupport (= 7.0.0)
+      method_source
+      rake (>= 12.2)
+      thor (~> 1.0)
+      zeitwerk (~> 2.5)
     rake (13.0.6)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
@@ -303,12 +297,13 @@ GEM
       rubyzip (>= 1.2.2)
     shellany (0.0.1)
     sqlite3 (1.4.2)
-    stimulus-rails (1.0.0)
+    stimulus-rails (1.0.2)
       railties (>= 6.0.0)
     thor (1.1.0)
     timeout (0.2.0)
-    turbo-rails (7.1.1)
-      rails (>= 6.0.0)
+    turbo-rails (1.0.0)
+      actionpack (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -356,7 +351,7 @@ DEPENDENCIES
   omniauth-rails_csrf_protection
   propshaft
   puma (~> 4.1)
-  rails (>= 7.0.0.rc1)!
+  rails
   redis (~> 4.0)
   rest-client
   rspotify (>= 2.1)

@@ -6,7 +6,8 @@ ruby '~> 3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails'
 # gem 'rails', github: 'rails/rails', branch: 'main'
-gem "rails", ">= 7.0.0.rc1",  github: 'rails/rails', branch: '7-0-stable'
+gem "rails"
+# , ">= 7.0.0.rc1",  github: 'rails/rails', branch: '7-0-stable'
 # Use sqlite3 as the database for Active Record
 # gem 'propshaft'
 gem 'puma', '~> 4.1'
