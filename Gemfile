@@ -70,8 +70,8 @@ gem 'digest', '~> 3.1.0pre2'
 gem 'net-smtp'
 
 platforms :ruby do
-  gem 'mysql2', '~> 0.5', require: false if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
-  gem 'pg', '~> 1.0', require: false if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
+  gem 'sqlite3', '~> 0.5', require: false if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
+  gem 'sqlite3', '~> 1.0', require: false if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
   if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
     gem 'fast_sqlite', require: false
     gem 'sqlite3', require: false
