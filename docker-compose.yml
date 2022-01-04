@@ -6,11 +6,12 @@ services:
       context: .
       dockerfile: ./.dockerdev/Dockerfile
       args:
-        RUBY_VERSION: "3.1-rc"
+        RUBY_VERSION: "3.1"
         # PG_MAJOR: "13"
         # NODE_MAJOR: "12"
         # YARN_VERSION: "1.22.4"
-    image: jitter_docker:1.0.5
+        BUNDLER_VERSION: '2.3.3'
+    image: jitter_docker:1.0.6
     tmpfs:
       - /tmp
 
@@ -26,7 +27,7 @@ services:
       # - packs:/app/public/packs
       # - .dockerdev/.psqlrc:/root/.psqlrc:ro
       # - .dockerdev/.bashrc:/root/.bashrc:ro
-    environment:
+    environment: &backend_environment
       # - NODE_ENV=development
       - RAILS_ENV=${RAILS_ENV:-development}
       # - DATABASE_URL=postgres://postgres:postgres@postgres:5432
@@ -36,9 +37,12 @@ services:
       - HISTFILE=/app/log/.bash_history
       # - PSQL_HISTFILE=/app/log/.psql_history
       - EDITOR=vi
-    # depends_on:
-      # - postgres
-      # - webpacker
+      - CHROME_URL=http://chrome:3333
+    # depends_on: &backend_depends_on
+    #   # postgres:
+    #   #   condition: service_healthy
+    #   # redis:
+    #   #   condition: service_healthy
     env_file: .env
 
   runner:
@@ -81,7 +85,30 @@ services:
       # - NODE_ENV=${NODE_ENV:-development}
       # - RAILS_ENV=${RAILS_ENV:-development}
       # - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-
+  # Separate definition for system tests to add Chrome as a dependency
+  system_test:
+    <<: *backend
+    ports:
+      - '3000:3000'
+    # environment:
+    #   <<: *backend_environment
+    depends_on:
+      # <<: *backend_depends_on
+      chrome:
+        condition: service_started
+    # networks:
+    #   default:
+    #     aliases:
+    #       - anycable.test
+  chrome:
+    image: browserless/chrome:1.31-chrome-stable
+    ports:
+      - '3333:3333'
+    environment:
+      PORT: 3333
+      # Set connection timeout for debugging
+      # https://docs.browserless.io/docs/docker.html#connection-timeout
+      CONNECTION_TIMEOUT: 600000
 volumes:
   # postgres:
   bundle:

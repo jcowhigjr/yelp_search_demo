@@ -27,6 +27,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_text('this place is bad')
     assert_selector('#review_rating', text: '★★★★☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_button 'Delete'
+    assert_text("This coffeeshop doesn't have any reviews yet!")
     click_button('Add to my favorites.')
     assert_current_path %r{^/users/\d{1,9}}
     assert_text('Your favorite shops:')

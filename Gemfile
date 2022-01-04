@@ -5,8 +5,8 @@ ruby '~> 3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails'
-# gem 'rails', github: 'rails/rails', branch: 'main'
-gem "rails"
+gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+# gem "rails"
 # , ">= 7.0.0.rc1",  github: 'rails/rails', branch: '7-0-stable'
 # Use sqlite3 as the database for Active Record
 # gem 'propshaft'
@@ -47,7 +47,7 @@ group :development do
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console", ">= 4.1.0"
-
+  gem "brakeman"
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler", ">= 2.3.3"
 end
@@ -62,6 +62,10 @@ group :test do
   # gem 'minitest-colorize'
   gem 'minitest-focus'
   gem 'magic_test'
+  gem 'cuprite'
+  gem 'evil_systems'
+  gem 'net-pop'
+  gem 'net-imap'
 end
 
 # ruby 3.1.0dev
@@ -69,6 +73,7 @@ end
 gem 'digest', '~> 3.1.0pre2'
 
 gem 'net-smtp'
+
 
 platforms :ruby do
   gem 'sqlite3', '~> 0.5', require: false if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']

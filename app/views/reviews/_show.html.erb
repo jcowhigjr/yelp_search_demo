@@ -19,8 +19,7 @@
         </div>
         <div class="col s6">
             <!-- https://github.com/hotwired/turbo-rails/issues/259 -->
-            <%= button_to "Destroy", review_path(review), class: "btn-large", method: :delete %>
-            <%= button_to "Destroy User Path", user_review_path(current_user, review), class: "btn-large", method: :delete %>
+            <%= button_to "Delete", user_review_path(current_user, review), class: "btn-large", method: :delete %>
 
 
         </div>

@@ -22,18 +22,16 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     login(@user)
     assert_difference('Review.count') do
       puts Review.count
-      post  coffeeshop_reviews_path(@coffeeshop),
-            params:  {
-              review: {
-                rating: @review.rating,
-                content: @review.content,
-                user_id: @user.id,
-                coffeeshop_id: @review.coffeeshop_id
-              }
-            }
+      post coffeeshop_reviews_path(@coffeeshop),
+           params: {
+             review: {
+               user_id: @user.id,
+               rating: @review.rating,
+               content: @review.content
+             }
+           }
     end
     assert_redirected_to coffeeshop_path(@coffeeshop)
-
   end
 
   # test 'should show review' do
@@ -46,20 +44,26 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
-  # test 'should update review' do
-  #   get user_reviews_path(@user, @review),
-  #   params:  {
-  #     review: {
-  #       rating: @review.rating,
-  #       content: @review.content,
-  #       user_id: @review.user_id,
-  #       coffeeshop_id: @review.coffeeshop_id
-  #     }
-  #   }
-  #   # assert_redirected_to review_path(@review)
-  # end
+  test 'should edit this review' do
+    login(@user)
+    assert_no_difference('Review.count') do
+      assert_difference('Review.find(@review.id).content', 'edited') do
+        puts Review.count
+        put coffeeshop_reviews_path(@coffeeshop),
+            params: {
+              review: {
+                user_id: @user.id,
+                rating: @review.rating,
+                content: "#{@review.content}edited"
+              }
+            }
+      end
+    end
 
-  test 'should destroy the user review' do  # test for destroy
+    assert_redirected_to coffeeshop_path(@coffeeshop)
+  end
+
+  test 'should destroy the user review' do # test for destroy
     # login(@user)
     assert_difference('Review.count', -1) do
       delete user_review_path(@user, @review) # delete ReviewsController#:destroy
