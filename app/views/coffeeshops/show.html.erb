@@ -38,9 +38,6 @@
                     <% if !logged_in? %>
                         <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
                     <% elsif current_user.favorite?(@coffeeshop) %>
-                    <td>
-                        <%= link_to "Remove from favorites", user_favorite_path(current_user, @coffeeshop), "data-turbo-method": :delete, "data-turbo-confirm": "are you sure?", class: "btn btn-small waves-effect waves-light red" %>
-                    </td>
                         <%= form_tag user_favorite_path, method: 'delete' do %>
                             <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
                             <%= submit_tag "Remove from my favorites.", class: "btn-large"%>

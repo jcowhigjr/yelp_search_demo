@@ -5,6 +5,8 @@ FROM ruby:$RUBY_VERSION-slim
 ARG PG_MAJOR
 # ARG NODE_MAJOR
 # ARG YARN_VERSION
+ARG BUNDLER_VERSION
+
 
 # 共通の依存関係
 RUN apt-get update -qq \
@@ -58,9 +60,29 @@ ENV BUNDLE_APP_CONFIG=$BUNDLE_PATH\
 ENV PATH /app/bin:$BUNDLE_BIN:$PATH
 
 
+# Uncomment this line if you store Bundler settings in the project's root
+# ENV BUNDLE_APP_CONFIG=.bundle
+
+# Uncomment this line if you want to run binstubs without prefixing with `bin/` or `bundle exec`
+# ENV PATH /app/bin:$PATH
+
+# Upgrade RubyGems and install required Bundler version
+# See https://github.com/evilmartians/terraforming-rails/pull/24 for discussion
+RUN gem install bundler --conservative
+  # if test -z "$BUNDLER_VERSION"; then \
+  #         gem update --system; \
+  #       else \
+  #         gem update --system \
+  #       && rm /usr/local/lib/ruby/gems/*/specifications/default/bundler-*.gemspec \
+  #       && gem uninstall bundler \
+  #       && gem install bundler -v $BUNDLER_VERSION; \
+  #     fi
+
 # RubyGemsをアップグレードして必要なバージョンのbundlerをインストール
-RUN gem update --system &&\
-    gem install rails &&\
-    mkdir -p /app
+# RUN gem update --system &&\
+#     gem install rails &&\
+#     mkdir -p /app
+
+RUN mkdir -p /app
 
 WORKDIR /app

@@ -17,7 +17,7 @@ interaction:
   bundle:
     description: Run bundler command
     service: backend
-    command: bundle
+    command: bin/bundle
     compose_run_options: [no-deps]
 
   rake:
@@ -41,12 +41,18 @@ interaction:
   #   command: yarn
   #   compose_run_options: [no-deps]
 
-  minitest:
+  test:
     description: Run minitest
     service: backend
     environment:
       RAILS_ENV: test
-    command: bundle exec rails test
+    command: bin/rails test
+    subcommands:
+      system:
+        description: Run Rails system tests
+        service: system_test
+        command: bin/rails test:system
+        compose_run_options: [service-ports]
 
   cop:
     description: Run rubocop
@@ -70,11 +76,16 @@ interaction:
     command: bundle exec brakeman
 
 provision:
-  - dip down --remove-orphans --volumes --rmi all
-  - dip build app
+  # - dip down --remove-orphans --volumes --rmi all
+  # - dip build app
+  # - dip bundle update --bundler
+  # - dip sh -c 'gem install rails'
   # - dip sh -c 'bin/rails new .'
-  - dip bundle update
-  - dip sh -c 'bin/rails app:update'
+  # - dip sh -c 'gem install specific_install'
+  # - dip sh -c "gem specific_install -l 'https://github.com/rails/rails.git' -b '7-0-stable'"
+  # - dip sh -c 'rails new .'
+  - dip bundle install
+  # - dip sh -c 'bin/rails app:update'
   # - dip compose up -d postgres
   # - dip compose up -d webpacker
   # - dip yarn install --check-files
