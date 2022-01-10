@@ -1,14 +1,17 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '~> 3'
+ruby ENV['RUBY_VERSION'] || '~> 3.1.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-# gem 'rails'
-gem "rails", github: "rails/rails", branch: "main"
+# gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+gem 'rails', '~> 7.0.1'
 
-# Use sqlite3 as the database for Active Record
+# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+# gem "sprockets-rails"
+gem "propshaft"
 
+<<<<<<< HEAD
 gem 'puma', '~> 4.1'
 # Use SCSS for stylesheets
 gem 'sass-rails'
@@ -29,55 +32,83 @@ gem 'bcrypt'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+=======
+>>>>>>> dockerize
 # gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
 gem 'omniauth-google-oauth2'
+
 gem 'omniauth-rails_csrf_protection'
 
-gem 'rest-client'
 gem 'json'
-gem 'dotenv-rails'
+gem 'rest-client'
+# Use the Puma web server [https://github.com/puma/puma]
+gem "puma", "~> 5.0"
+
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "importmap-rails"
+
+# Use Redis adapter to run Action Cable in production
+# gem "redis", "~> 4.0"
+
+# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+# gem "kredis"
+
+platforms :ruby do
+  gem 'sqlite3', require: false if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
+  if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
+    gem 'fast_sqlite', require: false
+    gem 'sqlite3', require: false
+    gem 'pg', require: false
+  end
+end
+# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+gem "bcrypt", "~> 3.1.7"
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+
+# Reduces boot times through caching; required in config/boot.rb
+gem "bootsnap", require: false
+
+# Use Sass to process CSS
+# gem "sassc-rails"
+
+gem 'hotwire-rails' # , '~> 0.1.3'
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+# gem "image_processing", "~> 1.2"
+
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem 'meta_request', github: 'jcowhigjr/rails_panel', branch: 'jcowhigjr-support-rails-7.0'
+
 end
 
+
 group :development do
-  # gem 'sqlite3', '~> 1.4'
-# Use Puma as the app server
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "web-console"
+
+  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
+  # gem "rack-mini-profiler"
+
+  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
+  # gem "spring"
+
+  gem 'guard' # , '~> 2.18'
+  gem 'guard-minitest' # , '~> 2.4'
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
+  gem 'capybara' # , '~> 3.35'
+  gem 'selenium-webdriver' # , '~> 4.0'
   # Easy installation and use of web drivers to run system tests with browsers
+  gem 'matrix'
   gem 'webdrivers'
+  # gem 'minitest-colorize'
+  gem 'minitest-focus'
+  gem 'magic_test'
+  gem 'cuprite'
+  gem 'evil_systems'
 end
-
-platforms :ruby do
-  if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'mysql2', '~> 0.5.0', require: false
-  end
-  if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'pg', '~> 1.0', require: false
-  end
-  if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
-    gem 'sqlite3', require: false
-    gem 'fast_sqlite', require: false
-  end
-end
-
-gem 'jsbundling-rails'
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-gem "meta_request", "~> 0.7.3"
-
-gem "hotwire-rails", "~> 0.1.3"

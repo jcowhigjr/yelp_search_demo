@@ -1,7 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  query: MyString
+  id: 1
+  query: 30312
 
 two:
-  query: MyString
+  id: 2
+  query: 30312

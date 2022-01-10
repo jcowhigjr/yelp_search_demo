@@ -5,7 +5,7 @@
     <% end %>
         <div class="row center">
             <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
-            <span class="page-text"> Search for coffeeshops near you.</span>
+            <span class="page-text"> Search for searchs near you.</span>
         </div>
         <div class="row center">
             <%= render 'form' %>
@@ -14,12 +14,16 @@
 </body>
 
 <div>
-    <% if @search.query %>  
+    <% if @search.query %>
+
     <div class="search-results">
         <div class="row center">
-            <h1 class="white-text">Top Rated Coffeeshops in <%= @search.query %></h1>
+            <h1 class="white-text">Top Rated Searchs in <%= @search.query %></h1>
         </div>
-        <%= render partial: 'searches/results', locals: {search: @search} %>
+        <%= turbo_stream_from "searches" %>
+        <%= turbo_frame_tag "search_form" do %>
+            <%= render partial: 'searches/results', locals: {search: @search} %>
+        <% end %>
     </div>
     <% end %>
     
