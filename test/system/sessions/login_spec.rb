@@ -6,7 +6,6 @@ describe "Log in", auth: false do
   # fixtures :workspaces
 
   it "I should login before visiting the workspace" do
-    # visit sessions_path
-
+    visit login_url
   end
 end

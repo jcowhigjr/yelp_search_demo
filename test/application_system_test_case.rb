@@ -1,15 +1,14 @@
 require 'test_helper'
-require "capybara/cuprite"
+require 'capybara/cuprite'
 require 'evil_systems'
 EvilSystems.initial_setup
-
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   if ENV['CUPRITE'] == 'true'
     driven_by :cuprite, screen_size: [1400, 1400], options:
      { js_errors: false,
-                                                    inspector: true,
-                                                    headless: false } do |driver_option|
+       inspector: false,
+       headless: true } do |driver_option|
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
       driver_option.add_extension('capycorder102.crx')
       driver_option.add_extension('RailsPanel.crx')
@@ -17,7 +16,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     # driven_by :cuprite
     include EvilSystems::Helpers
   elsif ENV['HEADLESS'] == 'true'
-    driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
+    driven_by :selenium, using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome), screen_size: [1400, 1400]
   else
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
     # TODO: This can run headless  https://github.com/hotwired/turbo-rails/blob/bb5cfcbc7eb9e96668803dd9fad50fdabd8cd6aa/test/application_system_test_case.rb
@@ -31,12 +30,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # Enable debugging capabilities
 
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      driver_option.add_extension('capycorder102.crx')
-      driver_option.add_extension('RailsPanel.crx')
+      # driver_option.add_extension('capycorder102.crx')
+      # driver_option.add_extension('RailsPanel.crx')
     end
+    include MagicTest::Support
+
   end
 
-  include MagicTest::Support
 
   # Capybara.configure do |config|
   #   config.server = :puma, { Silent: true }

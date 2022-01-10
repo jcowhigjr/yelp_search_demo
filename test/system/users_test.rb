@@ -16,7 +16,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password_confirmation',	with: 'sadfkjs342'
     click_on 'commit'
     assert_text 'Hello, john!'
-    click_link 'Logout'
+    click_button 'Logout'
   end
   test 'sign in and sign out' do
     visit '/login'
@@ -25,7 +25,7 @@ class UsersTest < ApplicationSystemTestCase
     click_button 'Log In'
     click_on 'My Profile'
     assert_text "Hello, #{@user.name}"
-    click_link 'Logout'
+    click_button 'Logout'
   end
 
   test 'updating a User' do

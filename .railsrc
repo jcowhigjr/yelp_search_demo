@@ -1,0 +1,5 @@
+--database=sqlite3
+--skip-active-storage
+--javascript=importmap
+--css=tailwind
+--edge
