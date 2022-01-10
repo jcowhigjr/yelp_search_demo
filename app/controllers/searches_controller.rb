@@ -1,5 +1,4 @@
 class SearchesController < ApplicationController
-
   def new
     @search = Search.create
     redirect_to @search
@@ -7,12 +6,12 @@ class SearchesController < ApplicationController
 
   def create
     @search = determine_search_type
-    if Coffeeshop.get_search_results(params[:query], @search) == "error"
-      flash[:error] = "Something went wrong with your search, please try again."
-      redirect_to root_path
-    else 
+    if Coffeeshop.get_search_results(params[:query], @search) == 'error'
+      flash[:error] = 'Something went wrong with your search, please try again.'
+      redirect_to static_home_url
+    else
       @search.save
-      redirect_to_proper_path    
+      redirect_to_proper_path
     end
   end
 
@@ -30,9 +29,7 @@ class SearchesController < ApplicationController
     if logged_in?
       redirect_to @search
     else
-      render "static/home", locals: {search: @search}
+      render 'static/home', locals: { search: @search }
     end
   end
-
-
 end

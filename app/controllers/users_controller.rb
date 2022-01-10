@@ -10,6 +10,7 @@ class UsersController < ApplicationController
     if @user.valid?
       @user.save
       session[:user_id] = @user.id
+      flash[:success] = 'User Created!'
       redirect_to_proper_path
     else
       flash[:error] = 'Something went wrong during signup.'
@@ -22,17 +23,24 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def destroy
+    user = User.find(params[:id])
+    user.destroy
+    redirect_to user_path, notice: "User #{user.id} destroyed"
+  end
+
   private
 
   def user_params
-    params.require(:user).permit(:name, :location, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
 
   def redirect_to_proper_path
     if cookies[:last_visited]
       redirect_to coffeeshop_path(cookies[:last_visited])
     else
-      redirect_to current_user
+      # TODO: create show user path and redirect to current_user
+      redirect_to static_home_url
     end
   end
 end

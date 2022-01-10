@@ -1,17 +1,20 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  id: 1
+  name: Coffeshop 1
   address: MyString
   rating: 1.5
   yelp_url: MyString
-  image_url: MyString
+  image_url: tea.png
   phone_number: MyString
 
 two:
-  name: MyString
-  address: MyString
-  rating: 1.5
-  yelp_url: MyString
-  image_url: MyString
-  phone_number: MyString
+  id: 2
+  name: Bellwood Coffee
+  address: 1366 Glenwood Ave SE Atlanta, GA 30316
+  rating: 5.0
+  yelp_url: https://www.yelp.com/biz/bellwood-coffee-atlanta-2?adjust_creative=w5PTbzPdJ3ga3COoPOz9DA&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=w5PTbzPdJ3ga3COoPOz9DA
+  image_url: tea.png
+  phone_number: Unknown phone number.
+  search_id: 1

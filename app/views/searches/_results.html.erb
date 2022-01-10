@@ -1,7 +1,10 @@
 <div class="container">
     <div class="row center">
         <% @search.coffeeshops.each do |coffeeshop| %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
+        <%= turbo_stream_from "coffeeshops" %>
+        <%= turbo_frame_tag "coffeeshops" do %>
+            <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
+        <% end %>
         <% end %>
     </div>
 </div>
