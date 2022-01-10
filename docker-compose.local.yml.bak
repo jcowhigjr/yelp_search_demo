@@ -1,21 +1,21 @@
 version: "3.8"
 
 services:
-  app: &app
-    build:
-      context: .
-      dockerfile: ./.dockerdev/Dockerfile
-      args:
-        RUBY_VERSION: "3.1"
-        # PG_MAJOR: "13"
-        # NODE_MAJOR: "12"
-        # YARN_VERSION: "1.22.4"
-        BUNDLER_VERSION: '2.3.3'
-    image: jitter_docker:1.0.6
-    tmpfs:
-      - /tmp
+  # x-app: &app
+  #   build:
+  #     context: .
+  #     dockerfile: ./.dockerdev/Dockerfile
+  #     args:
+  #       RUBY_VERSION: "3.1"
+  #       # PG_MAJOR: "13"
+  #       # NODE_MAJOR: "12"
+  #       # YARN_VERSION: "1.22.4"
+  #       BUNDLER_VERSION: '2.3.3'
+  #   image: jitter_docker:1.0.7
+  #   tmpfs:
+  #     - /tmp
 
-  backend: &backend
+  x-backend: &backend
     <<: *app
     stdin_open: true
     tty: true
@@ -43,7 +43,7 @@ services:
     #   #   condition: service_healthy
     #   # redis:
     #   #   condition: service_healthy
-    env_file: .env
+    # env_file: .env
 
   runner:
     <<: *backend

@@ -2,90 +2,14 @@
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
  * vendor/assets/stylesheets directory can be referenced here using a relative path.
  *
  * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
  *= require_self
  */
- 
- body{
-    font-family: 'Nunito', sans-serif;
- }
- .transparentBG{
-   background-color: #373737;
- }
- .nav-logo{
-   max-width: 200px;
-   margin-left: 20px;
- }
-
- .btn-large{
-     background-color: #1c5b82;
- }
- .btn-small{
-    background-color: #1c5b82;
- }
- .search-bar{
-     background-color: whitesmoke;
-     width: 100%;
-     border-radius: 15px;
-     border: 1px #000 solid;
-     padding: 5px 5px 5px 25px;
-     display: inline-block;
- }
-
- .landing-logo{
-    margin-top: 100px;
- 
- }
-.page-container{
-    background-color: white;
-    margin-top: 50px;
-    border-radius: 25px;
-    padding: 50px;
-    margin-bottom: 50px;
-}
-.page-text{
-  font-size: 30px;
-  padding: 20px;
-  
-}
-.page-name{
-  font-size: 60px;
-  margin-bottom: 40px;
-}
-select{
-  display: block;
-  height: 50px;
-  font-size: 40px
-}
-.nav-icon{
-  margin-right: 10px;
-}
-.form-link{
-  font-size: 20px;
-}
-
-#flash-message{
-  margin-top: 20px;
-}
-
-#notice {
-  border-radius: 6px;
-  padding: 6px;
-  color: white;
-  background: green;
-}
-
-#alert {
-  border-radius: 6px;
-  padding: 6px;
-  color: white;
-  background: red;
-}
