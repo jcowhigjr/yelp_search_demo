@@ -3,6 +3,8 @@ require 'test_helper'
 class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get index" do
+    skip "not implemented"
+
     assert_login_access(url: '/users/1') do
       assert_redirected_to static_home_url
     end
@@ -15,14 +17,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = users(:two)
-    @user.password = 'mypass'
-    @user.password_confirmation = 'mypass'
+    @user.password = default_password
+    @user.password_confirmation = default_password
     @user.save!
   end
 
   test 'should sign in user' do
     post sessions_path, params: {
-      email: @user.email, password: 'mypass'
+      email: @user.email, password: default_password
     }
     assert_response :ok
     assert_equal 'Logged in!', flash[:success]

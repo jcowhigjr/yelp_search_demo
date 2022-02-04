@@ -9,10 +9,9 @@ class ReviewsController < ApplicationController
   def create
     @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
     @review = @coffeeshop.reviews.create(review_params)
-    if @coffeeshop.save
+    if @review.save
       redirect_to @coffeeshop
     else
-      format.turbo_stream { render turbo_stream: turbo_stream.replace(@review, partial: 'reviews/form', locals: { review: @review }) }
       flash[:review_error] = 'Something went wrong with creating your review.'
       render @coffeeshop
     end
@@ -27,6 +26,10 @@ class ReviewsController < ApplicationController
     if @review.save
       redirect_to @review.coffeeshop
     else
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
+                                                          locals: { review: review })
+      end
       flash[:error] = 'Error editing review.'
       render @review.coffeeshop
     end

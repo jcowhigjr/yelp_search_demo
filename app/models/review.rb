@@ -5,13 +5,10 @@ class Review < ApplicationRecord
   belongs_to :coffeeshop
   scope :order_reviews, ->(user_id) { where('user_id == ?', user_id).order('rating desc') }
 
-<<<<<<< HEAD
-  after_create_commit { broadcast_prepend_to :reviews }
-  after_update_commit { broadcast_replace_to 'reviews' }
-  after_destroy_commit { broadcast_remove_to 'reviews' }
+  # after_create_commit { broadcast_prepend_to 'reviews' }
+  # after_update_commit { broadcast_replace_to 'reviews' }
+  # after_destroy_commit { broadcast_remove_to 'reviews' }
 
-=======
->>>>>>> dockerize
   def rating_in_stars
     case rating
     when 1

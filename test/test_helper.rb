@@ -23,6 +23,7 @@ module LoginHelper
     }
   end
 
+  #SessionsController#destroy
   def logout
     delete logout_url
   end

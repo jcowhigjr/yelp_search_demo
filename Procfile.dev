@@ -1,1 +1,1 @@
-web: bundle update && bin/setup && bin/rails db:seed && bin/rails server -p 3000
+web: bundle update && bin/setup &&  bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server -p 3000
