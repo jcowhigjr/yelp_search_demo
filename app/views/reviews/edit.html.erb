@@ -1,4 +1,7 @@
-<body class="landing-body">
+
+<%= turbo_frame_tag @review do %>
+
+<%# <body class="landing-body"> %>
     <div class="container page-container z-depth-1">
     <div class="row center">
          <span class="page-text">Edit your review for <%= @review.coffeeshop.name %></span>
@@ -16,4 +19,6 @@
         <% end %>
 </div>
     </div>
-</body>
+<%# </body> %>
+
+<% end %>

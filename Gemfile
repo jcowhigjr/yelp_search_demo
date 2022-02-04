@@ -11,29 +11,6 @@ gem 'rails', '~> 7.0.1'
 # gem "sprockets-rails"
 gem "propshaft"
 
-<<<<<<< HEAD
-gem 'puma', '~> 4.1'
-# Use SCSS for stylesheets
-gem 'sass-rails'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-# gem 'webpacker'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbo-rails'
-gem 'importmap-rails'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder'
-# Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.0'
-# Use Active Model has_secure_password
-gem 'bcrypt'
-
-# Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
-
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.2', require: false
-=======
->>>>>>> dockerize
 # gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
 gem 'omniauth-google-oauth2'
 
@@ -97,6 +74,7 @@ group :development do
 
   gem 'guard' # , '~> 2.18'
   gem 'guard-minitest' # , '~> 2.4'
+  gem 'guard-livereload', require: false # , '~> 2.4'
 end
 
 group :test do
@@ -108,6 +86,7 @@ group :test do
   gem 'webdrivers'
   # gem 'minitest-colorize'
   gem 'minitest-focus'
+  gem 'minitest-retry'
   gem 'magic_test'
   gem 'cuprite'
   gem 'evil_systems'

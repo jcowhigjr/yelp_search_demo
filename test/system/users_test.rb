@@ -24,7 +24,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'Password', with: default_password
     click_button 'Log In'
     click_on 'My Profile'
-    assert_text "Hello, #{@user.name}"
+    assert_text "person#{@user.name}"
     click_button 'Logout'
   end
 

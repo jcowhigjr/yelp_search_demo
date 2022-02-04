@@ -8,19 +8,21 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     driven_by :cuprite, screen_size: [1400, 1400], options:
      { js_errors: false,
        inspector: false,
-       headless: true } do |driver_option|
+       headless:
+       ENV['SHOW_TESTS'] ? false : true } do |driver_option|
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      driver_option.add_extension('capycorder102.crx')
-      driver_option.add_extension('RailsPanel.crx')
+      if ENV['SHOW_TESTS']
+        driver_option.add_extension('capycorder102.crx')
+        driver_option.add_extension('RailsPanel.crx')
+        # driver_option.add_extension('LiveReload.crx')
+      end
     end
     # driven_by :cuprite
     include EvilSystems::Helpers
-  elsif ENV['HEADLESS'] == 'true'
-    driven_by :selenium, using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome), screen_size: [1400, 1400]
   else
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
     # TODO: This can run headless  https://github.com/hotwired/turbo-rails/blob/bb5cfcbc7eb9e96668803dd9fad50fdabd8cd6aa/test/application_system_test_case.rb
-    driven_by :selenium, using: :chrome, screen_size: [1400, 1400] do |driver_option|
+    driven_by :selenium, using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome), screen_size: [1400, 1400] do |driver_option|
       # https://edgeapi.rubyonrails.org/classes/ActionDispatch/SystemTestCase.html
       # https://dev.to/doctolib/loading-chrome-extensions-in-capybara-integration-tests-3880
       # driver_option.add_extension('/Users/temp/Library/Application Support/Google/Chrome/Default/Extensions/niijdolnjmjdjakbanogihdlhcbhfkho/1.0.2_0.crx')
@@ -30,13 +32,58 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # Enable debugging capabilities
 
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      # driver_option.add_extension('capycorder102.crx')
-      # driver_option.add_extension('RailsPanel.crx')
+      if ENV['SHOW_TESTS']
+        driver_option.add_extension('capycorder102.crx')
+        driver_option.add_extension('RailsPanel.crx')
+        # driver_option.add_extension('LiveReload.crx')
+      end
     end
     include MagicTest::Support
 
   end
 
+  # Minitest::Retry.on_failure do |klass, test_name, result|
+  #   # retry if Capybara::ElementNotFound
+  #   if result.exception.is_a?(Capybara::ElementNotFound)
+  #     puts "ElementNotFound: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraError
+  #   if result.exception.is_a?(Capybara::CapybaraError)
+  #     puts "CapybaraError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraInternalServerError
+  #   if result.exception.is_a?(Capybara::CapybaraInternalServerError)
+  #     puts "CapybaraInternalServerError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraNetworkError
+  #   if result.exception.is_a?(Capybara::CapybaraNetworkError)
+  #     puts "CapybaraNetworkError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraNotSupportedError
+  #   if result.exception.is_a?(Capybara::CapybaraNotSupportedError)
+  #     puts "CapybaraNotSupportedError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraServerError
+  #   if result.exception.is_a?(Capybara::CapybaraServerError)
+  #     puts "CapybaraServerError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraTimeoutError
+  #   if result.exception.is_a?(Capybara::CapybaraTimeoutError)
+  #     puts "CapybaraTimeoutError: #{result.exception.message}"
+  #     retry
+  #   end
+  #   # retry if Capybara::CapybaraUnsupportedFeatureError
+  #   if result.exception.is_a?(Capybara::CapybaraUnsupportedFeatureError)
+  #     puts "CapybaraUnsupportedFeatureError"
+  #     retry
+  #   end
+  # end
 
   # Capybara.configure do |config|
   #   config.server = :puma, { Silent: true }

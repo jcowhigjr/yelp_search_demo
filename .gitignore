@@ -37,3 +37,6 @@
 
 /config/credentials/test.key
 /.byebug_history
+
+LiveReload.crx
+nil

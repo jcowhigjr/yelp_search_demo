@@ -76,6 +76,16 @@ App Status Development mode (what does this mean?)
 Client ID 8156e50c77c94ad880cccde9e7d85451
 Client Secret 77643b66155e4848b26223eab8c40cf8
 
+# Sign in with Google
+https://console.cloud.google.com/apis/credentials?project=coffeeshop-325618
+see client_id and client_secret in rails credentials:edit --development
+git ignore config/master.key and kep in a safe place
+git add development key is probably safe
+
+# Propshaft assets https://github.com/rails/propshaft/issues/36#issuecomment-982933727
+One thing you should be careful is that if you run rails assets:precompile in your computer and then ./bin/dev Propshaft will use the static resolver, not the dynamic one. And since the static resolver reads files from public/assets, any change you make to your source files in app/assets will not take an effect when you reload the page.
+
+To solve that, run rails assets:clobber. It will remove all files from public/assets and force Propshaft back to the dynamic resolver.
 # rspotify
 https://github.com/guilhermesad/rspotify
 
