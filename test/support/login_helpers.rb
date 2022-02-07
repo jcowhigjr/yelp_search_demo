@@ -20,7 +20,7 @@ module LoginHelpers
   end
 end
 
-RSpec.configure do |config|
+Minitest.configure do |config|
   config.include LoginHelpers::System, type: :system
   config.include LoginHelpers::Controller, type: :controller
 
