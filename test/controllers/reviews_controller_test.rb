@@ -42,7 +42,6 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test 'should create review' do
-    login(@user)
     assert_difference('Review.count') do
       post coffeeshop_reviews_path(@coffeeshop),
            params: {
@@ -70,7 +69,6 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
 
  test 'should edit this review' do
   skip "not implemented"
-    login(@user)
     assert_no_difference('Review.count') do
       assert_difference('Review.find(@review.id).content', 'edited') do
         patch user_review_path(@user, @review),

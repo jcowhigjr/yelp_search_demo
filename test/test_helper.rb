@@ -16,18 +16,20 @@ module TestPasswordHelper
   end
 end
 
-module LoginHelper
-  def login(user)
-    post sessions_path, params: {
-      email: user.email, password: 'mypass', password_confirmation: 'mypass'
-    }
-  end
+# module LoginHelper
+#   def login(user)
+#     raise 'user required' unless user.is_a? User
 
-  #SessionsController#destroy
-  def logout
-    delete logout_url
-  end
-end
+#     post sessions_path, params: {
+#       email: user.email, password: 'TerriblePassword', password_confirmation: 'TerriblePassword'
+#     }
+#   end
+
+#   #SessionsController#destroy
+#   def logout
+#     delete logout_url
+#   end
+# end
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -45,7 +47,7 @@ class ActiveSupport::TestCase
 
   include ActiveJob::TestHelper
 
-  include LoginHelper
+  # include LoginHelper
 end
 
 ActionCable.server.config.logger = Logger.new(STDOUT)
