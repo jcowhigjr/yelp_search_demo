@@ -33,22 +33,26 @@
                 </div>
             </div>
                 <br><br>
-                <!-- Add to user favorites -->
-                <div class="row center">
-                    <% if !logged_in? %>
-                        <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
-                    <% elsif current_user.favorite?(@coffeeshop) %>
-                        <%= form_tag user_favorite_path, method: 'delete' do %>
-                            <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                            <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
-                        <% end %>
-                    <% else %>
-                        <%= form_tag user_favorites_path do %>
-                            <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                            <%= submit_tag "Add to my favorites.", class: "btn-large"%>
-                        <% end %>
+                <% if !logged_in? %>
+                  <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
+                <% else %>
+                    <!-- Add to user favorites -->
+                    <%= turbo_frame_tag :user_favorite do  %>
+                        <div class="row center">
+                            <% if current_user.favorite?(@coffeeshop) %>
+                                <%= form_tag user_favorite_path, method: 'delete' do %>
+                                    <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
+                                    <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
+                                <% end %>
+                            <% else %>
+                                <%= form_tag user_favorites_path do %>
+                                    <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
+                                    <%= submit_tag "Add to my favorites.", class: "btn-large"%>
+                                <% end %>
+                            <% end %>
+                        </div>
                     <% end %>
-                </div>
+                <% end %>
             </div>
         </div>
         <br><br>
