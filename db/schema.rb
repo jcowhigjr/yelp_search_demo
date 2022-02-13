@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_20_171414) do
-
+ActiveRecord::Schema[7.0].define(version: 2020_08_20_171414) do
   create_table "coffeeshops", force: :cascade do |t|
     t.string "name"
     t.string "address"
@@ -20,8 +19,8 @@ ActiveRecord::Schema.define(version: 2020_08_20_171414) do
     t.string "image_url"
     t.string "phone_number", default: "None"
     t.integer "search_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["search_id"], name: "index_coffeeshops_on_search_id"
   end
 
@@ -30,8 +29,8 @@ ActiveRecord::Schema.define(version: 2020_08_20_171414) do
     t.float "rating"
     t.integer "user_id"
     t.integer "coffeeshop_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["coffeeshop_id"], name: "index_reviews_on_coffeeshop_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
@@ -39,16 +38,16 @@ ActiveRecord::Schema.define(version: 2020_08_20_171414) do
   create_table "searches", force: :cascade do |t|
     t.integer "user_id"
     t.string "query"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
   create_table "user_favorites", force: :cascade do |t|
     t.integer "user_id"
     t.integer "coffeeshop_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["coffeeshop_id"], name: "index_user_favorites_on_coffeeshop_id"
     t.index ["user_id"], name: "index_user_favorites_on_user_id"
   end
@@ -57,8 +56,8 @@ ActiveRecord::Schema.define(version: 2020_08_20_171414) do
     t.string "name"
     t.string "email"
     t.string "password_digest"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
