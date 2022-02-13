@@ -11,7 +11,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_button('Search')
     click_link('More Info', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
-    click_link('Login')
+    click_on 'Login to add this shop to your favorites!'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
@@ -31,13 +31,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
     click_button('Add to my favorites.')
-    assert_current_path %r{^/users/\d{1,9}}
-    assert_text('Your favorite shops:')
-    click_link('More Info', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button('Remove from my favorites.')
-    assert_current_path %r{^/users/\d{1,9}}
-    click_link('More Info', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
   end
 end
