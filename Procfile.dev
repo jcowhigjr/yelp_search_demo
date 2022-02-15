@@ -1,1 +1,2 @@
 web: bundle update && bin/setup &&  bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server -p 3000
+css: bin/rails tailwindcss:watch

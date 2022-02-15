@@ -91,3 +91,5 @@ group :test do
   gem 'cuprite'
   gem 'evil_systems'
 end
+
+gem "tailwindcss-rails", "~> 2.0"
