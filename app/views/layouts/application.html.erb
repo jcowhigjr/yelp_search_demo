@@ -8,6 +8,7 @@
 
     <%# https://github.com/bullet-train-co/magic_test %>
     <%= render 'magic_test/support', "data-turbo-track": "reload"  if !!ENV['MAGIC_TEST'] && Rails.env.test? %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -53,7 +54,9 @@
   </ul>
 
   <% end %>
-
+    <main class="container mx-auto mt-28 px-5 flex">
+  
     <%= yield %>
+    </main>
   </body>
 </html>
