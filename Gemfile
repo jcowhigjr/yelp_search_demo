@@ -13,6 +13,10 @@ gem "propshaft"
 
 # gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
 gem 'omniauth-google-oauth2'
+# bug in faraday 3.0
+# # FIXME: Remove this after 1.4.9+ is released
+# c.f. https://github.com/oauth-xx/oauth2/issues/572#issuecomment-1045088365
+gem "oauth2", github: "oauth-xx/oauth2", branch: "1-4-stable"
 
 gem 'omniauth-rails_csrf_protection'
 
