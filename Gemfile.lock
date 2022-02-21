@@ -263,6 +263,8 @@ GEM
     rack (2.2.3)
     rack-contrib (2.3.0)
       rack (~> 2.0)
+    rack-livereload (0.3.17)
+      rack
     rack-protection (2.2.0)
       rack
     rack-test (1.1.0)
@@ -375,6 +377,7 @@ DEPENDENCIES
   pg
   propshaft
   puma (~> 5.0)
+  rack-livereload (~> 0.3.17)
   rails (~> 7.0.1)
   rest-client
   selenium-webdriver

@@ -14,7 +14,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       if ENV['SHOW_TESTS']
         driver_option.add_extension('capycorder102.crx')
         driver_option.add_extension('RailsPanel.crx')
-        # driver_option.add_extension('LiveReload.crx')
+        driver_option.add_extension('LiveReload.crx')
       end
     end
     # driven_by :cuprite
@@ -35,7 +35,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       if ENV['SHOW_TESTS']
         driver_option.add_extension('capycorder102.crx')
         driver_option.add_extension('RailsPanel.crx')
-        # driver_option.add_extension('LiveReload.crx')
+        driver_option.add_extension('LiveReload.crx')
       end
     end
     include MagicTest::Support
