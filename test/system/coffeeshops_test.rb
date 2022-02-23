@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class CoffeeshopsTest < ApplicationSystemTestCase
   setup do
-    @user = users(:one)
+    @user = users(:two)
   end
 
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
@@ -19,7 +19,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     fill_in('review[content]', with: 'this place is great')
     click_button('Submit Review')
     assert_text('this place is great')
-    click_link('Edit this Review')
+    click_link('Edit this Review', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     find('#review_rating').find(:xpath, 'option[4]').select_option
     fill_in('review[content]', match: :first, with: 'this place is bad')
@@ -27,12 +27,13 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_text('this place is bad')
     assert_selector('#review_rating', text: '★★★★☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_button 'Delete', match: :first
     click_button 'Delete'
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
-    click_button('Add to my favorites.')
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button('Remove from my favorites.')
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_button('Add to my favorites.')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
   end
 end

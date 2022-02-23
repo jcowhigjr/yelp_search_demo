@@ -1,14 +1,4 @@
+<%# the reveiews are rendered in the coffeeshops show page %>
 <!-- <% @reviews.each do |review| %>
     <%= render partial: 'show', locals: {review: review} %>
 <% end %> -->
-
-
-<%= turbo_stream_from :reviews %>
-
-<%= turbo_frame_tag :review_form do %>
-  <%= render 'reviews/form', review: @review %>
-<% end %>
-
-<%= turbo_frame_tag :reviews do %>
-  <%= render @reviews %>
-<% end %>

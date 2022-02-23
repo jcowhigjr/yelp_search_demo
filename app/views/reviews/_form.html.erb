@@ -1,7 +1,7 @@
 <span class="page-text">Leave a review</span>
 <br><br>
 <div class="row center" >
-    <%= form_with(model: [@coffeeshop, Review.new]) do |f|%>
+    <%= form_with(model: [@coffeeshop, review], id: "#{dom_id(review)}_form") do |f|%>
         <%= f.hidden_field :user_id, value: current_user.id %>
         <%=f.label :rating  %>
         <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]), required: true) %>
