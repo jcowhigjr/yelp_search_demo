@@ -14,10 +14,10 @@
 #  $ ln -s config/Guardfile .
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
-ENV['MAGIC_TEST'] = 'true'
-ENV['SHOW_TESTS'] = 'true'
+ENV['MAGIC_TEST'] ||= 'true'
+ENV['SHOW_TESTS'] ||= 'true'
 
-guard :minitest, all_after_pass: false, all_on_start: false, focus_failed: true, retry_failed: true do
+guard :minitest, all_after_pass: true, all_on_start: false, focus_failed: true, retry_failed: true do
   # with Minitest::Unit
   watch(%r{^test/(.*)\/?test_(.*)\.rb$})
   watch(%r{^lib/(.*/)?([^/]+)\.rb$})     { |m| "test/#{m[1]}test_#{m[2]}.rb" }
@@ -37,8 +37,10 @@ guard :minitest, all_after_pass: false, all_on_start: false, focus_failed: true,
   watch(%r{^test/.+_test\.rb$})
   watch(%r{^test/test_helper\.rb$}) { 'test' }
 
-  watch(%r{^app/views/.+\.(erb|haml|slim)}) { 'test/system' }
-#  { |m| "test/system/#{m[1]}_test.rb" }
+# https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
+  # watch(%r{^app/views/.+\.(erb|haml|slim)}) { 'test/system' }
+
+  #  { |m| "test/system/#{m[1]}_test.rb" }
   # Rails < 4
   # watch(%r{^app/controllers/(.*)\.rb$}) { |m| "test/functional/#{m[1]}_test.rb" }
   # watch(%r{^app/helpers/(.*)\.rb$})     { |m| "test/helpers/#{m[1]}_test.rb" }

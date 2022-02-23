@@ -74,7 +74,10 @@ group :development do
 
   gem 'guard' # , '~> 2.18'
   gem 'guard-minitest' # , '~> 2.4'
+
+  # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
   gem 'guard-livereload', require: false # , '~> 2.4'
+  gem "rack-livereload", "~> 0.3.17"
 end
 
 group :test do
@@ -91,3 +94,6 @@ group :test do
   gem 'cuprite'
   gem 'evil_systems'
 end
+
+gem "tailwindcss-rails", "~> 2.0"
+

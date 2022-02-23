@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
 
     <%# https://github.com/bullet-train-co/magic_test %>
     <%= render 'magic_test/support', "data-turbo-track": "reload"  if !!ENV['MAGIC_TEST'] && Rails.env.test? %>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -51,9 +55,11 @@
              <% end %>
       </li>
   </ul>
-
   <% end %>
+    <%# <main class="container flex px-4 mx-auto text-red-500 mt-28"> %>
+      <%= yield %>
+    <%# </main> %>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-    <%= yield %>
   </body>
 </html>
