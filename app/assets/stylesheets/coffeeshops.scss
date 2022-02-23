@@ -1,0 +1,32 @@
+// Place all the styles related to the Coffeeshops controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.card-img{
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 700px;
+}
+
+.coffeeshop-card{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.rating {
+    margin-bottom: 20px;
+}
+
+.shop-image{
+    border-radius: 10px;
+    margin-bottom: 60px;
+}
+.shop-info{
+    border: #302b2b solid 1px;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+
+
