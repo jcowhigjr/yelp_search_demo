@@ -78,7 +78,7 @@
             <% else %>
             <div class="row center">
                 <div class="review-container z-depth-1"> 
-                    <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop} %>
+                    <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop, review: Review.new} %>
                 </div>
             </div>
             <% end %>

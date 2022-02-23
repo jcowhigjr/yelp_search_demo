@@ -1,21 +1,25 @@
-<div id="<%= dom_id @review %>">
-    <div class="row center">
-        <span class="page-text"><i class="material-icons">person</i> <%= @review.user.name %></span>
-    </div>
-    <div class="row center">
-        <span class="page-text"><%= @review.rating_in_stars %></span>
-    </div>
-    <div class="row center">
-        <span class="page-text">"<%= @review.content %>"</span>
-    </div>
-    <% if @review.user == current_user %>
-    <div class="row center">
-        <div class="col s6">
-            <%= link_to "Edit this Review", edit_user_review_path(current_user, @review), class: "btn-large" %>
+<%# <%= turbo_stream_from @review %> %>
+<li>
+    <div id="<%= dom_id @review %>">
+        <div class="row center">
+            <span class="page-text"><i class="material-icons">person</i> <%= @review.user.name %></span>
         </div>
-        <div class="col s6">
-            <%= link_to "Delete this Review", user_review_path(current_user, @review), method: "delete", class: "btn-large" %>
+        <div class="row center">
+            <span class="page-text"><%= @review.rating_in_stars %></span>
         </div>
+        <div class="row center">
+            <span class="page-text">"<%= @review.content %>"</span>
+        </div>
+        <% if @review.user == current_user %>
+        <div class="row center">
+            <div class="col s6">
+                <%= link_to "Edit this Review", edit_user_review_path(current_user, @review), class: "btn-large" %>
+            </div>
+            <div class="col s6">
+                <%= link_to "Delete this Review", user_review_path(current_user, @review), method: "delete", class: "btn-large" %>
+            </div>
+        </div>
+        <% end %>
     </div>
-    <% end %>
-</div>
+
+ </li>
