@@ -16,7 +16,7 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'person My Profile'
+    click_on 'My Profile'
     click_on 'Search'
     click_on 'Logout'
     fill_in 'query', with: '30312'
