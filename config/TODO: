@@ -39,3 +39,11 @@ Done
 # DONE:  Remove the extra space above the search bar was jitter logo
 # IDEAS: Coffee.near.me set up subdomain with tacos x y z near me
 #
+# TODO:	  change the search bar to set a radius near me.
+  -- https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features/
+# TODO:	  Add a way to chose what to search for instead of just Coffee.
+# TODO:	  See what it looks like on my phone
+## TODO:	Store something that yelp does not store... like for example..?
+
+
+# TODO:	  update the controller to use lat and long if available https://jasoncharnes.com/changed-attributes-rails/
