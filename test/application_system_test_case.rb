@@ -1,15 +1,19 @@
 require 'test_helper'
+require 'capybara'
 require 'capybara/cuprite'
+
 require 'evil_systems'
 EvilSystems.initial_setup
 
+# some features for example geolocation require https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features/
+# in this case the remote testing feature where the server is hosted on the .local network for testing is not a secure origin  https://github.com/ParamagicDev/evil_systems
+# APP_HOST=127.0.0.1 SHOW_TESTS=1 CUPRITE=true bin/rails test:system fixed it
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   if ENV['CUPRITE'] == 'true'
     driven_by :cuprite, screen_size: [1400, 1400], options:
      { js_errors: false,
        inspector: false,
-       headless:
-       ENV['SHOW_TESTS'] ? false : true } do |driver_option|
+       headless: ENV['SHOW_TESTS'] ? false : true } do |driver_option|
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
       if ENV['SHOW_TESTS']
         driver_option.add_extension('capycorder102.crx')

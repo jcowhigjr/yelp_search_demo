@@ -1,2 +1,2 @@
-web: bundle update && bin/setup && bin/rails db:environment:set RAILS_ENV=test && bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server -p 3000
+web: bundle update && bin/setup && bin/rails db:environment:set RAILS_ENV=test && bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server -p 3000 -b 'ssl://localhost:3000?key=config/ssl/localhost.temp.key&cert=config/ssl/localhost.temp.crt'
 css: sleep 60; bin/rails assets:clobber --trace; bin/rails tailwindcss:watch --trace RAILS_ENV=development
