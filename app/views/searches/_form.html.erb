@@ -1,11 +1,25 @@
+  <footer style="padding-top: 50px;">
+    <div class="d-flex justify-content-center">
+      <div class="container">
+        <div class="text-center row">
+
+        </div>
+      </div>
+    </div>
+  </footer>
 <div class="form-group">
     <%= form_tag searches_path do%>
-    <div class="row center search-bar">
-        <%= text_field_tag 'query', nil, class: 'search-text', placeholder: '!Enter a city to search for coffeeshops (ex. Milwaukee)', required: true%>
-    </div>
-    <br><br>
-    <div class="row center" >
-        <%= submit_tag "Search", data: { turbo: false }, class: "btn-large" %>
-    </div>
+        <div class="row center search-bar">
+            <%= text_field_tag 'query', 'tacos', class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)', required: true%>
+        </div>
+        <div data-controller="geolocation">
+            <div class="row center" >
+                <%= submit_tag "Search", data: { turbo: false }, class: "btn-large" %>
+            </div>
+            <%# <button class: "btn-large",  data-action="click->geolocation#geolocate">Searching near your location: </button> %>
+            <input type="hidden" name="latitude"  data-geolocation-target="latitude">
+            <input type="hidden" name="longitude"  data-geolocation-target="longitude">
+        </div>
+
     <% end %>
 </div>
