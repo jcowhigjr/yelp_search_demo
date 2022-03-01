@@ -7,8 +7,10 @@ class SearchesTest < ApplicationSystemTestCase
     fill_in('query', with: 'seafood')
     assert_selector(:field, 'query', with: 'seafood')
     sleep 4
-    # assert_selector(:field, 'latitude', with: '36.91')
-    # assert_selector(:field, 'longitude', with: '-79.99')
+
+    # need to stub the geolocation api call
+    # assert_selector(:field, 'latitude', type: 'hidden', with: '35.91')
+    # assert_selector(:field, 'longitude', type: 'hidden',  with: '-78.99')
 
     click_button('Search')
 

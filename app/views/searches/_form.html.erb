@@ -17,8 +17,8 @@
                 <%= submit_tag "Search", data: { turbo: false }, class: "btn-large" %>
             </div>
             <%# <button class: "btn-large",  data-action="click->geolocation#geolocate">Searching near your location: </button> %>
-            <input type="text" name="latitude" id="latitude" data-geolocation-target="latitude">
-            <input type="text" name="longitude" id="longitude" data-geolocation-target="longitude">
+            <input type="hidden" name="latitude"  data-geolocation-target="latitude">
+            <input type="hidden" name="longitude"  data-geolocation-target="longitude">
         </div>
 
     <% end %>
