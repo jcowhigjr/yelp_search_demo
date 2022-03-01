@@ -14,16 +14,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Setup Ruby 3
+        uses: actions/setup-ruby@v2
         with:
           ruby-version: 3.1.x
+          bundler-cache: true
       - name: Build and run test
         env:
           RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
         run: |
           bin/setup
           bin/rails test
