@@ -35,7 +35,6 @@
 /config/master.key
 /config/credentials/development.key
 
-/config/credentials/test.key
 /.byebug_history
 
 LiveReload.crx
