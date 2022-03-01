@@ -1,7 +1,6 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
-  focus
   test 'An anonymous user at the static home can search by zip to return a list of coffeeshops from yelp api' do
     visit static_home_url
     fill_in('query', with: 'seafood')
