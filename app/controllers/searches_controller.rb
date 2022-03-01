@@ -22,7 +22,14 @@ class SearchesController < ApplicationController
   private
 
   def determine_search_type
-    logged_in? ? Search.create(query: params[:query], user: current_user) : Search.create(query: params[:query])
+    if logged_in?
+      Search.create(query: params[:query], latitude: params[:latitude], longitude: params[:longitude],
+                    user: current_user)
+    else
+      Search.create(
+        latitude: params[:latitude], longitude: params[:longitude], query: params[:query]
+      )
+    end
   end
 
   def redirect_to_proper_path

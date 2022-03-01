@@ -9,10 +9,13 @@ class Coffeeshop < ApplicationRecord
                 target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
 
   def self.get_search_results(query, search)
+    lat = search.latitude
+    long = search.longitude
     begin
       response = RestClient::Request.execute(
         method: 'GET',
-        url: "https://api.yelp.com/v3/businesses/search?term=taco&location=#{query}",
+        # url: "https://api.yelp.com/v3/businesses/search?term=taco&location=#{query}",
+        url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
         headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" }
       )
       results = JSON.parse(response)
