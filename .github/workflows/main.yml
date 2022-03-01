@@ -17,9 +17,9 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v2
       - name: Setup Ruby 3
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1.x
+          ruby-version: 3.1
           bundler-cache: true
       - name: Build and run test
         env:
