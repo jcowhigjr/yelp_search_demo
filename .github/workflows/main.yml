@@ -27,4 +27,6 @@ jobs:
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
           bin/setup
+          # test prepare required for tailwind css file required in application erb
+          bin/rails test:prepare --trace
           bin/rails test
