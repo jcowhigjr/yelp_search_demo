@@ -30,3 +30,11 @@ jobs:
           # test prepare required for tailwind css file required in application erb
           bin/rails test:prepare --trace
           bin/rails test
+      - name: Build and run system tests
+        env:
+          RAILS_ENV: test
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          # test prepare is run for system tests automatically for tailwind css file required in application erb
+          bin/rails test:system --trace HEADLESS=true CUPRITE=true
+
