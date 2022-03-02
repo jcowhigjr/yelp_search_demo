@@ -8,6 +8,8 @@ class LogoutTest < ApplicationSystemTestCase
 
   setup do
     @user = users(:one)
+    @coffeeshops = coffeeshops(:one)
+    @search = searches(:one)
   end
 
   test "When I log out I can not leave a review" do
@@ -19,7 +21,8 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'My Profile'
     click_on 'Search'
     click_on 'Logout'
-    fill_in 'query', with: '30312'
+    fill_in 'query', with: 'tacos'
+    sleep 4
     click_on 'Search'
     click_on 'More Info', match: :first
     assert_text 'You must be logged in to leave a review!'

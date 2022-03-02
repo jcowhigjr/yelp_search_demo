@@ -7,7 +7,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
     visit static_home_url
-    fill_in('query', with: '30312')
+    fill_in('query', with: 'tacos')
+    sleep 5
     click_button('Search')
     click_link('More Info', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
@@ -24,16 +25,15 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     find('#review_rating').find(:xpath, 'option[4]').select_option
     fill_in('review[content]', match: :first, with: 'this place is bad')
     click_button('Submit Review', match: :first)
-    assert_text('this place is bad')
+    assert_text('"this place is bad"', count: 1)
     assert_selector('#review_rating', text: '★★★★☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button 'Delete', match: :first
-    click_button 'Delete'
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
-    click_button('Remove from my favorites.')
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button('Add to my favorites.')
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_button('Remove from my favorites.')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
   end
 end

@@ -5,7 +5,7 @@ class SearchesTest < ApplicationSystemTestCase
     visit static_home_url
     fill_in('query', with: 'seafood')
     assert_selector(:field, 'query', with: 'seafood')
-    sleep 4
+    sleep 5
 
     # need to stub the geolocation api call
     # assert_selector(:field, 'latitude', type: 'hidden', with: '35.91')
