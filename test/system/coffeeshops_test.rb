@@ -14,7 +14,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_link('More Info', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_on 'Login to add this shop to your favorites!'
-    fill_in 'email', with: @user.email
+    fill_in 'Email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
     assert_current_path %r{^/coffeeshops/\d{1,9}}
