@@ -38,7 +38,8 @@ Done
 
 # DONE:  Remove the extra space above the search bar was jitter logo
 # IDEAS: Coffee.near.me set up subdomain with tacos x y z near me
-#
+# TODO: fix the system tests to run headlessly with geolocation https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh
+
 # TODO:	  change the search bar to set a radius near me.
   -- https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features/
 # TODO:	  Add a way to chose what to search for instead of just Coffee.
@@ -46,4 +47,8 @@ Done
 ## TODO:	Store something that yelp does not store... like for example..?
 
 
-# TODO:	  update the controller to use lat and long if available https://jasoncharnes.com/changed-attributes-rails/
+# TODO:	  update the controller to use lat and long if availablehttps://guides.rubyonrails.org/active_model_basics.html https://jasoncharnes.com/changed-attributes-rails/
+
+# TODO: fix heroku build and teardown features for pull requests
+   https://devcenter.heroku.com/articles/github-integration-review-apps#the-postdeploy-script
+   automate this bin/rails db:prepare db:schema:load db:seed DISABLE_DATABASE_ENVIRONMENT_CHECK=1 
