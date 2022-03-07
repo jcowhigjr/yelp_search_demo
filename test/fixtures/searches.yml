@@ -2,8 +2,12 @@
 
 one:
   id: 1
-  query: 30312
+  query: tacos
+  latitude: 0.3591e2
+  longitude: -0.7899e2
 
 two:
   id: 2
-  query: 30312
+  query: tacos
+  latitude: 0.3591e2
+  longitude: -0.7899e2

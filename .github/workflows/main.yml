@@ -1,0 +1,40 @@
+# This workflow uses actions that are not certified by GitHub.  They are
+# provided by a third-party and are governed by separate terms of service,
+# privacy policy, and support documentation.
+#
+# This workflow will install a prebuilt Ruby version, install dependencies, and
+# run tests and linters.
+name: "Ruby on Rails CI"
+on:
+  push:
+    branches: [ feature/add_github_ci_cd  ]
+  pull_request:
+    branches: [ develop ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Setup Ruby 3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - name: Build and run test
+        env:
+          RAILS_ENV: test
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          bin/setup
+          # test prepare required for tailwind css file required in application erb
+          bin/rails test:prepare --trace
+          bin/rails test
+      - name: Build and run system tests
+        env:
+          RAILS_ENV: test
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          bin/rails test:system --trace HEADLESS=true CUPRITE=true
+          bin/rails test:system --trace APP_HOST='127.0.0.1'
+

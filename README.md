@@ -104,3 +104,15 @@ https://github.com/hotwired/stimulus-rails/pull/24
 
 
 https://guillaumebriday.fr/introducing-stimulus-components
+
+# Github
+github actions will run CI including a rails tests on a PR to develop see .github/workflows/main.yml
+
+# Deployment
+heroku pipelines will deploy a preview instance on a PR that has passed CI
+  -> BUNDLE_WITHOUT='development:test' BUNDLE_PATH=vendor/bundle BUNDLE_BIN=vendor/bundle/bin BUNDLE_DEPLOYMENT=1 bundle install -j4
+# Environment variables
+RAILS_ENV test/development/production are the only ones set externally
+# Secrets
+ An environment variable stored in github and heroku RAILS_**ENVIRONMENT**_KEY
+is used to decrypt those secretes stored in encrypted credential files for the api's used

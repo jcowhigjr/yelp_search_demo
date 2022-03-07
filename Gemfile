@@ -31,11 +31,11 @@ gem "importmap-rails"
 # gem "kredis"
 
 platforms :ruby do
-  gem 'sqlite3', require: false if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
+  gem 'pg', require: false
+
   if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
-    gem 'fast_sqlite', require: false
-    gem 'sqlite3', require: false
-    gem 'pg', require: false
+    gem 'fast_sqlite', require: false, group: :test
+    gem 'sqlite3', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]

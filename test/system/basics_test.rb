@@ -17,8 +17,8 @@ class BasicsTest < ApplicationSystemTestCase
 
   test "searching" do
     visit static_home_url
-    fill_in('query', with: '30312')
+    fill_in('query', with: 'tacos')
     click_button('Search')
-    assert_text "Top Rated Coffeeshops in 30312"
+    assert_text "Top Rated Coffeeshops in tacos"
   end
 end
