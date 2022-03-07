@@ -48,3 +48,7 @@ Done
 
 
 # TODO:	  update the controller to use lat and long if availablehttps://guides.rubyonrails.org/active_model_basics.html https://jasoncharnes.com/changed-attributes-rails/
+
+# TODO: fix heroku build and teardown features for pull requests
+   https://devcenter.heroku.com/articles/github-integration-review-apps#the-postdeploy-script
+   automate this bin/rails db:prepare db:schema:load db:seed DISABLE_DATABASE_ENVIRONMENT_CHECK=1 
