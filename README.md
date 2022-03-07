@@ -69,6 +69,7 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
   bundle exec guard
   system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
   better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
+  Insert 'magic_test' in system tests to BDD style improve the app.
 
 # Spotify Integration
 https://developer.spotify.com/dashboard/applications/8156e50c77c94ad880cccde9e7d85451
@@ -86,8 +87,6 @@ git add development key is probably safe
 One thing you should be careful is that if you run rails assets:precompile in your computer and then ./bin/dev Propshaft will use the static resolver, not the dynamic one. And since the static resolver reads files from public/assets, any change you make to your source files in app/assets will not take an effect when you reload the page.
 
 To solve that, run rails assets:clobber. It will remove all files from public/assets and force Propshaft back to the dynamic resolver.
-# rspotify
-https://github.com/guilhermesad/rspotify
 
 #LiveReload for css changes and importmaps
 https://www.colby.so/posts/live-reloading-with-esbuild-and-rails
