@@ -7,7 +7,7 @@
 name: "Ruby on Rails CI"
 on:
   push:
-    branches: [ feature/add_github_ci_cd  ]
+    branches: [ feature/test_me ]
   pull_request:
     branches: [ develop ]
 jobs:
