@@ -25,7 +25,6 @@ class BasicsTest < ApplicationSystemTestCase
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.', with: 'the cafe mocha is my fav'
     click_on 'Submit Review'
-    skip "the submit review is broken still"
     assert_text('the cafe mocha is my fav')
   end
 end
