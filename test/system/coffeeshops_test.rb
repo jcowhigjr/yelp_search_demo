@@ -33,15 +33,17 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_button 'Log In'
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     fill_in('review[content]', with: 'this place is great')
+    find('#review_rating', match: :first).find(:xpath, 'option[5]').select_option
     click_button('Submit Review')
     assert_text('this place is great')
+    assert_selector('#review_rating', text: '★★★★☆')
     click_link('Edit this Review', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
-    find('#review_rating').find(:xpath, 'option[4]').select_option
+    find('#review_rating', match: :first).find(:xpath, 'option[1]').select_option
     fill_in('review[content]', match: :first, with: 'this place is bad')
     click_button('Submit Review', match: :first)
     assert_text('"this place is bad"', count: 1)
-    assert_selector('#review_rating', text: '★★★★☆')
+    assert_selector('#review_rating', text: '★☆☆☆☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button 'Delete', match: :first
     # FIXME: This doesn't return without full page reload
