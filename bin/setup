@@ -27,7 +27,7 @@ FileUtils.chdir APP_ROOT do
 
 
   puts "\n== Preparing test database =="
-  system! "bin/rails db:test:prepare"
+  system! "bin/rails db:test:prepare" unless ENV['BUNDLE_DEPLOYMENT']
 
   puts "\n== Removing old logs and tempfiles =="
   system! "bin/rails log:clear tmp:clear"
