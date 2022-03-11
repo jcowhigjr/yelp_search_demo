@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root to: 'static#home', as: 'static_home'
-  resources :searches, only: %i[new create show]
+  # resources :searches, only: %i[new create show]
+
+  get 'searches', to: 'searches#new', as: 'new_search'
+  post 'searches', to: 'searches#create', as: 'searches'
+  get 'search/:id', to: 'searches#show', as: 'search'
 
   resources :users do
     resources :reviews, only: %i[index edit update destroy]

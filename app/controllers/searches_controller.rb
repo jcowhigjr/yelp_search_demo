@@ -1,16 +1,21 @@
 class SearchesController < ApplicationController
   def new
-    @search = Search.create
+    redirect_to Search.create
+  end
+
+  def update
+    @search = Search.find(params[:id])
+    @search.update(search_params)
     redirect_to @search
   end
 
   def create
     @search = determine_search_type
-    if Coffeeshop.get_search_results(params[:query], @search) == 'error'
+    if Coffeeshop.get_search_results(@search) == 'error'
       flash[:error] = 'Something went wrong with your search, please try again.'
       redirect_to static_home_url
     else
-      @search.save
+      @search.save!
       redirect_to_proper_path
     end
   end
@@ -21,14 +26,15 @@ class SearchesController < ApplicationController
 
   private
 
+  def search_params
+    params.permit(:search, :query, :latitude, :longitude)
+  end
+
   def determine_search_type
     if logged_in?
-      Search.create(query: params[:query], latitude: params[:latitude], longitude: params[:longitude],
-                    user: current_user)
+      Search.new(search_params.merge(user: current_user))
     else
-      Search.create(
-        latitude: params[:latitude], longitude: params[:longitude], query: params[:query]
-      )
+      Search.new(search_params)
     end
   end
 
@@ -36,7 +42,7 @@ class SearchesController < ApplicationController
     if logged_in?
       redirect_to @search
     else
-      render 'static/home', locals: { search: @search }
+      render 'static/home', locals: { search: @search }, notice: 'Search created, please login to save your search.'
     end
   end
 end

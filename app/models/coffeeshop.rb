@@ -8,13 +8,13 @@ class Coffeeshop < ApplicationRecord
   broadcasts_to ->(coffeeshop) { [coffeeshop.search, :coffeeshops] },
                 target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
 
-  def self.get_search_results(query, search)
+  def self.get_search_results(search)
+    query = search.query
     lat = search.latitude
     long = search.longitude
     begin
       response = RestClient::Request.execute(
         method: 'GET',
-        # url: "https://api.yelp.com/v3/businesses/search?term=taco&location=#{query}",
         url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
         headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" }
       )

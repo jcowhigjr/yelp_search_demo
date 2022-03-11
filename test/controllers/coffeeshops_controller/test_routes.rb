@@ -7,8 +7,12 @@ class CoffeeshopsController::RoutesTest < ActionController::TestCase
   # end
 
   def test_routes
-    # assert_routing '/posts',   controller: "posts", action: "index"
+    assert_routing '/', controller: 'static', action: 'home'
+    assert_routing '/searches', controller: 'searches', action: 'new'
+    assert_routing '/search/1', controller: 'searches', action: 'show', id: '1'
+
     assert_routing '/coffeeshops/1', controller: "coffeeshops", action: "show", id: "1"
+  
   end
 
   # test "should not get index" do

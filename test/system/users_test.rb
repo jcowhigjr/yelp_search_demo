@@ -25,6 +25,7 @@ class UsersTest < ApplicationSystemTestCase
     click_button 'Log In'
     click_on 'My Profile'
     assert_text "Hello, #{@user.name}!"
+
     click_button 'Logout'
   end
 
@@ -36,12 +37,6 @@ class UsersTest < ApplicationSystemTestCase
     click_button 'Log In'
     click_on 'My Profile'
     assert_text "Hello, #{@user.name}"
-
-    # fill_in 'Name', with: @user.name
-    # click_on 'Update User'
-
-    # assert_text 'User was successfully updated'
-    # click_on 'Back'
   end
 
   # test 'destroying a User' do
