@@ -1,5 +1,5 @@
 {
   "scripts": {
-    "postdeploy": "bin/setup",
+    "postdeploy": "bin/setup"
   }
 }
