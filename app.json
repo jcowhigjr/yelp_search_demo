@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "postdeploy": "bin/setup && bin/rails db:seed"
+  }
+}
