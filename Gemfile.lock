@@ -128,6 +128,7 @@ GEM
       concurrent-ruby (~> 1.1)
       websocket-driver (>= 0.6, < 0.8)
     ffi (1.15.5)
+    foreman (0.87.2)
     formatador (1.1.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
@@ -361,6 +362,7 @@ DEPENDENCIES
   debug
   evil_systems
   fast_sqlite
+  foreman
   guard
   guard-livereload
   guard-minitest
