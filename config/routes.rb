@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   resources :reviews, only: :destroy
   resources :user_favorites, only: %i[create destroy]
 
-  resources :coffeeshops, only: [:show] do
+  resources :coffeeshops, only: :show do
     resources :reviews, only: %i[new create index]
   end
 

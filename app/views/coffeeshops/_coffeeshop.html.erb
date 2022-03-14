@@ -4,34 +4,22 @@
             <%= image_tag coffeeshop.image_url, class: "card-img responsive-img" %>
         </div>
         <div class="card-content">
+            <div class="card-action row center">
+                <%= link_to "More Info" , coffeeshop_path(coffeeshop), data: { turbo: false }, class: "btn-small" %>
+            </div>
             <span class="truncate card-title">
                 <%= coffeeshop.name %>
             </span>
             <div class="row center">
-                <p class="truncate"> <i class="material-icons">place</i>
+            <address>
+                <a class="truncate"> <i class="material-icons">place</i>
                     <%= coffeeshop.address %>
-                </p>
+                </a>
+                <a class="tel"> <i class="material-icons">phone</i>
+                    <%= coffeeshop.phone_number %>
+                </a>
+            </address>
             </div>
-            <div class="card-action row center">
-                <%= link_to "More Info" , coffeeshop, data: { turbo: false }, class: "btn-small" %>
-            </div>
-
-            <!-- Add to user favorites
-            <div class="card-action row">
-                <% if !logged_in? %>
-                    <span class="page-text">
-                        <%= coffeeshop.user_favorites&.count %> favorites
-                    </span>
-                <% elsif current_user.favorite?(coffeeshop) %>
-                    # Remove from user favorites
-                    <%= link_to "Remove from favorites", user_favorite_path(current_user, coffeeshop), method: :delete, class: "btn-small" %>
-                <% else %>
-                    <%= form_tag user_favorites_path do %>
-                      <%= hidden_field_tag :coffeeshop_id, coffeeshop.id %>
-                      <%= submit_tag "Add to my favorites." , class: "btn-large" %>
-                    <% end %>
-                <% end %>
-            </div> -->
         </div>
     </div>
 </div>

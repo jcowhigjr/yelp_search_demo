@@ -14,11 +14,12 @@
             <div class="col s12 l6">
             <div class="shop-info z-depth-1">
                 <div class="row">
-                  <span class="page-text"><i class="material-icons">place</i><%= link_to "#{@coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank  %></span>
+                    <address>
+                        <i class="material-icons">place</i> <%= link_to "#{@coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank  %>
+                        <i class="material-icons">phone</i> <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
+                    </address>
                 </div>
-                <div class="row">
-                  <span class="page-text"><i class="material-icons">phone</i> <%= @coffeeshop.phone_number %></span>
-                </div>
+
                 <div class="row">
                     <!-- #TODO: good candidate for turbo stream? -->
                     <!-- https://turbo.hotwired.dev/handbook/drive#page-navigation-basics -->
@@ -34,7 +35,7 @@
             </div>
                 <br><br>
                 <% if !logged_in? %>
-                  <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path %></span>
+                  <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path%></span>
                 <% else %>
                     <!-- Add to user favorites -->
                     <%= turbo_frame_tag :user_favorite do  %>

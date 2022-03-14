@@ -42,7 +42,7 @@
               <span class= "white-text"><i class="tiny material-icons nav-icon">email</i><%=current_user.email%></span>
       </div>
       </li>
-      <li><%= link_to sessions_path, method: :delete  do%>
+      <li><%= button_to sessions_path, method: :delete  do%>
           <i class="small material-icons">exit_to_app</i> Logout
           <% end %>
       </li>
