@@ -6,8 +6,8 @@ class NavigationTest < ApplicationSystemTestCase
   end
 
   test 'A user can search and return using the back button' do
-    visit static_home_url
-    fill_in('query', with: 'tacos')
+    visit new_search_path
+    fill_in 'search[query]', with: 'tacos'
 
     if ENV['SHOW_TESTS'] && !ENV['CUPRITE']
       # sleeping for a second to allow the geolocation api call to complete
@@ -24,10 +24,11 @@ class NavigationTest < ApplicationSystemTestCase
 
     click_button 'Search'
 
-    assert_current_path searches_path
+    assert_current_path search_path(Search.last)
 
     go_back
 
-    assert_current_path static_home_path
+    assert_current_path new_search_path
+
   end
 end

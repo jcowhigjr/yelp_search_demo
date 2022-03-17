@@ -8,17 +8,19 @@
     </div>
   </footer>
 <div class="form-group">
-    <%= form_tag searches_path do%>
+    <%= form_for @search do |f| %>
         <div class="row center search-bar">
-            <%= text_field_tag 'query', 'tacos', class: 'search-text', placeholder: 'Enter a city to search for coffeeshops (ex. Milwaukee)', required: true%>
+            <%= f.text_field :query, placeholder: 'Enter a search term (ex. tacos)', required: true %>
         </div>
         <div data-controller="geolocation">
             <div class="row center" >
-                <%= submit_tag "Search", data: { turbo: false }, class: "btn-large" %>
+            <%# WARNGING: turbo true here results in extra search object creation %>
+                <%= f.submit "Search", data: { turbo: false } %>
             </div>
             <%# <button class: "btn-large",  data-action="click->geolocation#geolocate">Searching near your location: </button> %>
-            <input type="hidden" name="latitude" data-geolocation-target="latitude" value='0.0'>
-            <input type="hidden" name="longitude"  data-geolocation-target="longitude" value='0.0'>
+            <%= f.hidden_field :latitude, data: { geolocation: { target: 'latitude' } } %>
+           <%= f.hidden_field :longitude, data: { geolocation: { target: 'longitude' } } %>
+
         </div>
 
     <% end %>

@@ -1,30 +1,26 @@
 <body class="landing-body">
     <div class="container page-container">
-    <% if flash[:error] %>
-    <span class="page-text"><%= flash[:error] %></span>
-    <% end %>
-        <div class="row center">
-            <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
-            <span class="page-text">Search saves and sends your device location and query to yelp!</span>
-        </div>
-        <div class="row center">
-            <%= render 'form' %>
-        </div>
-    </div> 
-</body>
+        <% if flash[:error] %>
+        <span class="page-text"><%= flash[:error] %></span>
+        <% end %>
 
-<div>
-    <% if @search.query %>
-
-    <div class="search-results">
         <div class="row center">
-            <h1 class="white-text">Top Rated Searches for <%= @search.query %> near you</h1>
+            <%= render 'searches/form' %>
         </div>
-        <%= turbo_stream_from "searches" %>
-        <%= turbo_frame_tag "search_form" do %>
-            <%= render partial: 'searches/results', locals: {search: @search} %>
+
+        <% if @search.query %>
+
+        <div class="search-results">
+            <div class="row center">
+                <h1 class="white-text">Top Rated Searches for <%= @search.query %> near you</h1>
+            </div>
+            <%= turbo_stream_from "searches" %>
+            <%= turbo_frame_tag "search_form" do %>
+                <%= render partial: 'searches/results', locals: {search: @search} %>
+            <% end %>
+        </div>
+        
         <% end %>
     </div>
-    <% end %>
-    
- </div>
+
+ </body>

@@ -7,8 +7,10 @@ class SearchesTest < ApplicationSystemTestCase
     query = 'yoga'
 
     visit static_home_url
-    fill_in('query', with: query)
-    assert_selector(:field, 'query', with: query)
+
+    fill_in 'search[query]', with: query
+
+    assert_selector(:field, 'search_query', with: query)
 
     if ENV['SHOW_TESTS'] && !ENV['CUPRITE']
       # sleeping for a second to allow the geolocation api call to complete
@@ -29,5 +31,7 @@ class SearchesTest < ApplicationSystemTestCase
     click_on('More Info', match: :first)
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
+    go_back
+    assert_current_path "/searches/#{Search.last.id}"
   end
 end
