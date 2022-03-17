@@ -15,28 +15,28 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password',	with: 'sadfkjs342'
     fill_in 'user_password_confirmation',	with: 'sadfkjs342'
     click_on 'commit'
-    assert_text 'Hello, john!'
-    click_button 'Logout'
+    assert_current_path '/'
+    # click_button 'Logout' # this is not working
+    click_on 'Logout'
   end
+
   test 'sign in and sign out' do
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
-    click_on 'My Profile'
-    assert_text "Hello, #{@user.name}!"
-
     click_button 'Logout'
   end
 
-  test 'updating a User' do
+  test 'sign in and visit user profile' do
     # before login via session controller
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
     click_on 'My Profile'
-    assert_text "Hello, #{@user.name}"
+    assert_current_path "/users/#{@user.id}"
+    assert_text "Hello, #{@user.name}!"
   end
 
   # test 'destroying a User' do
