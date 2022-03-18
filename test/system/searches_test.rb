@@ -12,17 +12,25 @@ class SearchesTest < ApplicationSystemTestCase
 
     assert_selector(:field, 'search_query', with: query)
 
+    fill_in 'search[query]', with: query
+
+    # required fields are present
+    assert_selector(:field, 'search_query', with: query)
+
+    assert_selector(:field, 'search_latitude', type: 'hidden')
+    assert_selector(:field, 'search_longitude', type: 'hidden')
+
     if ENV['SHOW_TESTS'] && !ENV['CUPRITE']
       # sleeping for a second to allow the geolocation api call to complete
       sleep 3
       # need to stub the geolocation api call default is 0.0
-      assert_no_selector(:field, 'latitude', type: 'hidden', with: '0.0')
-      assert_no_selector(:field, 'longitude', type: 'hidden', with: '0.0')
+      assert_no_selector(:field, 'search_latitude', type: 'hidden', with: '0.0')
+      assert_no_selector(:field, 'search_longitude', type: 'hidden', with: '0.0')
 
     else
       # use default geolocation values
-      assert_selector(:field, 'latitude', type: 'hidden', with: '0.0')
-      assert_selector(:field, 'longitude', type: 'hidden', with: '0.0')
+      assert_selector(:field, 'search_latitude', type: 'hidden', with: '0.0')
+      assert_selector(:field, 'search_longitude', type: 'hidden', with: '0.0')
     end
     click_button 'Search'
 

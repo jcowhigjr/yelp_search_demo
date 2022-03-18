@@ -13,15 +13,12 @@
             <%= f.text_field :query, placeholder: 'Enter a search term (ex. tacos)', required: true %>
         </div>
         <div data-controller="geolocation">
-            <div class="row center" >
-            <%# WARNGING: turbo true here results in extra search object creation %>
-                <%= f.submit "Search", data: { turbo: false } %>
-            </div>
-            <%# <button class: "btn-large",  data-action="click->geolocation#geolocate">Searching near your location: </button> %>
-            <%= f.hidden_field :latitude, data: { geolocation: { target: 'latitude' } } %>
-           <%= f.hidden_field :longitude, data: { geolocation: { target: 'longitude' } } %>
-
+          <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
+          <%= f.hidden_field :longitude,  "data-geolocation-target": 'longitude' %>
         </div>
-
+        <div class="row center" >
+        <%# WARNGING: turbo true here results in extra search object creation %>
+          <%= f.submit "Search", data: { turbo: false } %>
+        </div>
     <% end %>
 </div>
