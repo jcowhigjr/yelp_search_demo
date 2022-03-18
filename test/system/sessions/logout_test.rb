@@ -26,6 +26,7 @@ class LogoutTest < ApplicationSystemTestCase
     fill_in 'search[query]', with: 'tacos'
 
     click_button 'Search'
+    assert_current_path search_path(Search.last.id)
 
     click_on 'More Info', match: :first
     assert_text 'You must be logged in to leave a review!'
