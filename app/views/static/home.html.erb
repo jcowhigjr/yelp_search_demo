@@ -9,17 +9,9 @@
         <% end %>
         </div>
             <%= render 'searches/form' %>
-        
+
         </div>
 
     </div>
-        <% if @search %> 
-            
-            <div class="search-results">
-                <div class="row center">
-                    <h1 class="white-text">Top Rated Searches for <%= @search.query %> near you!</h1>
-                </div>
-                <%= render partial: 'searches/results', locals: {search: @search} %>
-            </div>
-        <% end %>
+
 </body>

@@ -80,6 +80,7 @@ group :development do
   gem "rack-livereload", "~> 0.3.17"
   #foreman required to start bin/dev
   gem 'foreman', require: false
+  gem 'rubocop', require: false
 end
 
 group :test do

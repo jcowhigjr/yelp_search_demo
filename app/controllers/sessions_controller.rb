@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
     if cookies[:last_visited]
       redirect_to coffeeshop_path(cookies[:last_visited])
     else
-      render 'static/home', locals: { search: @search }
+      render 'searches/new', locals: { search: @search }
     end
   end
 

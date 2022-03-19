@@ -14,7 +14,6 @@ class LogoutTest < ApplicationSystemTestCase
 
   test 'When I log out I can not leave a review' do
 
-
     visit '/login'
 
     fill_in 'email', with: @user.email
@@ -24,21 +23,10 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'My Profile'
     click_link 'Search'
     click_on 'Logout'
-    fill_in 'query', with: 'tacos'
+    fill_in 'search[query]', with: 'tacos'
 
-    if ENV['SHOW_TESTS']  && !ENV['CUPRITE']
-      # sleeping for a second to allow the geolocation api call to complete
-      sleep 3
-      # need to stub the geolocation api call default is 0.0
-      assert_no_selector(:field, 'latitude', type: 'hidden', with: '0.0')
-      assert_no_selector(:field, 'longitude', type: 'hidden', with: '0.0')
-
-    else
-      # use default geolocation values
-      assert_selector(:field, 'latitude', type: 'hidden', with: '0.0')
-      assert_selector(:field, 'longitude', type: 'hidden', with: '0.0')
-    end
     click_button 'Search'
+    assert_current_path search_path(Search.last.id)
 
     click_on 'More Info', match: :first
     assert_text 'You must be logged in to leave a review!'
