@@ -37,6 +37,6 @@ export default class extends Controller {
 
   error(error) {
     console.log(error);
-    this.latitudeTarget.textContent = "Uh actually, maybe I don't.";
+    this.latitudeTarget.textContent = "check the console log for error";  // error.message
   }
 }
