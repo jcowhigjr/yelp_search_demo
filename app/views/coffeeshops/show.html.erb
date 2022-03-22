@@ -14,9 +14,13 @@
             <div class="col s12 l6">
             <div class="shop-info z-depth-1">
                 <div class="row">
-                    <address>
-                        <i class="material-icons">place</i> <%= link_to "#{@coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank  %>
-                        <i class="material-icons">phone</i> <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
+                   <address>
+                        <a class="truncate">
+                            <i class="material-icons">place</i> <%= link_to "#{@coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank  %>
+                        </a>
+                        <a class="truncate">
+                            <i class="material-icons">phone</i> <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
+                        </a>
                     </address>
                 </div>
 
@@ -28,9 +32,6 @@
                 </div>
                 <div class="row">
                     <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
-                </div>
-                <div class="row">
-                    <span class="page-text"><i class="fab fa-instagram" style="margin-right: 10px;"></i>  <%= link_to "View on Instagram", @coffeeshop.yelp_url%></span>
                 </div>
             </div>
                 <br><br>

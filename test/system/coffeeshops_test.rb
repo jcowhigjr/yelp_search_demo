@@ -5,6 +5,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
   end
+
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
 
     visit coffeeshop_path(@coffeeshop)

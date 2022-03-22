@@ -5,7 +5,6 @@ class NavigationTest < ApplicationSystemTestCase
     @user = users(:two)
   end
 
-  focus
   test 'A user can search and return using the back button' do
     visit new_search_path
     fill_in 'search[query]', with: 'tacos'
