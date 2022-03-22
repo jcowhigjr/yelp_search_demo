@@ -3,23 +3,23 @@
         <div class="card-image">
             <%= image_tag coffeeshop.image_url, class: "card-img responsive-img" %>
         </div>
-        <div class="card-content">
-            <div class="card-action row center">
-                <%= link_to "More Info" , coffeeshop_path(coffeeshop), data: { turbo: false }, class: "btn-small" %>
-            </div>
-            <span class="truncate card-title">
-                <%= coffeeshop.name %>
+        <div class="card-content row">
+            <span class="card-title">
+            <p>
+              <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %>
+            </p>
+            <p>
+              <%= link_to "More Info" , coffeeshop_path(coffeeshop), data: { turbo: false }, class: "btn-small" %>
+            </p>
             </span>
-            <div class="row center">
-            <address>
-                <a class="truncate"> <i class="material-icons">place</i>
-                    <%= coffeeshop.address %>
-                </a>
-                <a class="tel"> <i class="material-icons">phone</i>
-                    <%= coffeeshop.phone_number %>
-                </a>
-            </address>
-            </div>
         </div>
-    </div>
-</div>
+        <div class="card-content row">
+            <span>
+                <address class="text-sm card-action columns-2">
+                        <i class="material-icons">place</i><%= link_to "#{coffeeshop.address}", "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}", target: :blank, class: 'truncate' %>
+                        <i class="material-icons">phone</i><%= link_to number_to_phone(coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}", class: 'truncate'%>
+                </address>
+            </span>
+        </div>  <!-- .card-content -->
+    </div>  <!-- .card -->
+</div>  <!-- .col -->
