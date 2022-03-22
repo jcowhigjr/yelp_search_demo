@@ -22,7 +22,7 @@ class SearchesTest < ApplicationSystemTestCase
 
     if ENV['SHOW_TESTS'] && !ENV['CUPRITE']
       # sleeping for a second to allow the geolocation api call to complete
-      sleep 3
+      sleep 4
       # need to stub the geolocation api call default is 0.0
       assert_no_selector(:field, 'search_latitude', type: 'hidden', with: '0.0')
       assert_no_selector(:field, 'search_longitude', type: 'hidden', with: '0.0')
@@ -35,6 +35,8 @@ class SearchesTest < ApplicationSystemTestCase
     click_button 'Search'
 
     assert_text "Top Rated Searches for #{query}"
+
+    assert_selector('address')  # address is present')
 
     click_on('More Info', match: :first)
 
