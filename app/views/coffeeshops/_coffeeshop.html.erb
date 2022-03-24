@@ -17,8 +17,7 @@
             <span>
                 <address class="card-action columns-2">
                         <%= link_to  "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}", target: :blank, class: 'truncate material-icons' do %>
-                            <i class="material-icons">place</i>
-                            <a class="truncate"><%=coffeeshop.address%></a>
+                            <i class="material-icons">place</i> <a class="truncate"><%=coffeeshop.address%></a>
                         <% end %>
                         <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}", class: 'truncate' do %>
                             <i class="material-icons">phone</i>
