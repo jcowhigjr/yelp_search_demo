@@ -7,12 +7,15 @@ class CoffeeshopsTest < ApplicationSystemTestCase
   end
 
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
-
     visit coffeeshop_path(@coffeeshop)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
-    assert_link @coffeeshop.phone_number
-    assert_link @coffeeshop.address
+
+    assert_selector :link, text: 'phone'
+    assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
+    assert_selector :link, text: 'place'
+    assert_link 'place', href: "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+
     click_on 'Login to add this shop to your favorites!'
     fill_in 'Email', with: @user.email
     fill_in 'Password', with: default_password

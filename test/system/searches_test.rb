@@ -38,6 +38,11 @@ class SearchesTest < ApplicationSystemTestCase
 
     assert_selector('address')  # address is present')
 
+    assert_selector :link, text: 'phone'
+    # assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
+    assert_selector :link, text: 'place'
+    # assert_link 'place', href: "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+
     click_on('More Info', match: :first)
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
