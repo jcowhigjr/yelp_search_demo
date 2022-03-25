@@ -29,7 +29,7 @@
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><%= button_to "Logout", logout_path, method: :delete %></li>
         <li><%= link_to "My Profile", user_path(current_user) %></li>
-        <li><%= link_to "Search", new_search_path %></li>
+        <li><%= link_to "New Search", new_search_path, method: :get %></li>
       </ul>
     </div>
   </nav>

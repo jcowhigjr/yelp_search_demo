@@ -18,7 +18,9 @@
         </div>
         <div class="row center" >
         <%# WARNGING: turbo true here results in extra search object creation %>
-          <%= f.submit "Search", data: { turbo: false} %>
+          <%= f.button :submit, data: { turbo: false} do %>
+            <i class="material-icons">search</i>Search
+          <% end %>
         </div>
     <% end %>
 </div>

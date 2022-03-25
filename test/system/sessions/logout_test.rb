@@ -13,19 +13,19 @@ class LogoutTest < ApplicationSystemTestCase
   end
 
   test 'When I log out I can not leave a review' do
-
     visit '/login'
-
     fill_in 'email', with: @user.email
     click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
     click_on 'My Profile'
-    click_link 'Search'
+    click_link 'New Search'
+    assert_current_path '/searches/new'
     click_on 'Logout'
+    assert_current_path '/'
     fill_in 'search[query]', with: 'tacos'
-
     click_button 'Search'
+    assert_text 'Top Rated Searches for tacos near you'
     assert_current_path search_path(Search.last.id)
     click_on 'More Info', match: :first
     assert_text 'Login to add this shop to your favorites!'
