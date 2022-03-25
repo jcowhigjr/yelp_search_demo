@@ -35,6 +35,5 @@ jobs:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
-          bin/rails test:system --trace HEADLESS=true CUPRITE=true
-          bin/rails test:system --trace APP_HOST='127.0.0.1'
+          bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
 
