@@ -25,6 +25,7 @@ class LogoutTest < ApplicationSystemTestCase
     assert_current_path '/'
     fill_in 'search[query]', with: 'tacos'
     click_button 'Search'
+    assert_text 'MORE INFO'
     assert_text 'Top Rated Searches for tacos near you'
     assert_current_path search_path(Search.last.id)
     click_on 'More Info', match: :first
