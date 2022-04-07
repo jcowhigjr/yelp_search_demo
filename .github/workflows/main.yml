@@ -39,7 +39,7 @@ jobs:
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
       - name: Upload failed tests
         if: ${{ failure() }}
-        uses: edunad/actions-image@v1.0.1
+        uses: jcowhigjr/actions-image@v1.0.1
         with:
             path: './tmp/capybara/screenshots/failures_*.png'
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
