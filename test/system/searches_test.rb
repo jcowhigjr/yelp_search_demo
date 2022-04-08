@@ -10,10 +10,6 @@ class SearchesTest < ApplicationSystemTestCase
 
     fill_in 'search[query]', with: query
 
-    assert_selector(:field, 'search_query', with: query)
-
-    fill_in 'search[query]', with: query
-
     # required fields are present
     assert_selector(:field, 'search_query', with: query)
 
