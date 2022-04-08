@@ -12,25 +12,7 @@ on:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning' 
-        type: choice
-        options:
-        - info
-        - warning
-        - debug 
-      tags:
-        description: 'Test scenario tags'
-        required: false 
-        type: boolean
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -59,11 +41,6 @@ jobs:
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
-      - name: Upload failed system test images
-        uses: actions/upload-artifact@v3
-        if: steps.system-test.outcome=='failure'         # check the step outcome, retry 1st time
-        with:
-          path: ./tmp/capybara/screenshots/failures_*.png
       - name: system-test-retry
         id: system-test-retry-1
         continue-on-error: true          # make the step always success and set status later
@@ -73,22 +50,18 @@ jobs:
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
+      - name: Upload failed system test images
+        uses: actions/upload-artifact@v3
+        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure'       # check the step outcome, retry 1st time
+        with:
+          path: ./tmp/capybara/screenshots/failures_*.png
       - name: set the status              # set the workflow status if command failed
-        if: always()
+        if: steps.system-test.outcome=='failure'
         run: |
-          if ${{ steps.system-test.outcome=='success' || steps.system-test-retry-1.outcome=='success' }}; then
-             echo github.event.workflow
+          if ${{ steps.system-test-retry-1.outcome=='success' }}; then
+             echo 'the first system test failed, but the second one passed'
           else
+             echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
-      - name: log the inputs from manual job
-        if: always()
-        run: |
-          echo "Log level: $LEVEL"
-          echo "Tags: $TAGS"
-          echo "Environment: $ENVIRONMENT"
-        env:
-          LEVEL: ${{ github.event.inputs.logLevel }}
-          TAGS: ${{ github.event.inputs.tags }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
 
