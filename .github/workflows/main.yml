@@ -41,7 +41,6 @@ jobs:
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}
         with:
-          name: test-failure-screenshots
           path: ./tmp/capybara/screenshots/failures_*.png
       - name: Build and re-run system tests on failure
         if: ${{ failure() }}
