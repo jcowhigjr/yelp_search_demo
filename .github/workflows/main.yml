@@ -82,6 +82,7 @@ jobs:
              exit 1
           fi
       - name: log the inputs from manual job
+        if: always()
         run: |
           echo "Log level: $LEVEL"
           echo "Tags: $TAGS"
