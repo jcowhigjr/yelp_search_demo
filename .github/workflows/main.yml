@@ -4,12 +4,15 @@
 #
 # This workflow will install a prebuilt Ruby version, install dependencies, and
 # run tests and linters.
+#  NOTE: https://github.community/t/retry-for-failed-steps/17136/7
+
 name: "Ruby on Rails CI"
 on:
   push:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -30,10 +33,35 @@ jobs:
           # test prepare required for tailwind css file required in application erb
           bin/rails test:prepare --trace
           bin/rails test
-      - name: Build and run system tests
+      - name: system-tests
+        id: system-test
+        continue-on-error: true          # make the step always success and set status later
         env:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
+      - name: system-test-retry
+        id: system-test-retry-1
+        continue-on-error: true          # make the step always success and set status later
+        if: steps.system-test.outcome=='failure'         # check the step outcome, retry 1st time
+        env:
+          RAILS_ENV: test
+          RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
+      - name: Upload failed system test images
+        uses: actions/upload-artifact@v3
+        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure'       # check the step outcome, retry 1st time
+        with:
+          path: ./tmp/capybara/screenshots/failures_*.png
+      - name: set the status              # set the workflow status if command failed
+        if: steps.system-test.outcome=='failure'
+        run: |
+          if ${{ steps.system-test-retry-1.outcome=='success' }}; then
+             echo 'the first system test failed, but the second one passed'
+          else
+             echo 'the first system test failed, and the second one also failed'
+             exit 1
+          fi
 
