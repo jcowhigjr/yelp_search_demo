@@ -23,7 +23,8 @@ class LogoutTest < ApplicationSystemTestCase
     assert_current_path '/searches/new'
     click_on 'Logout'
     assert_current_path '/'
-    fill_in 'search_query', with: 'coffee'
+    fill_in 'search_query', with: 'yoga'
+    assert_selector(:field, 'search_query', with: 'yoga')
     click_on 'Search'
     assert_text 'MORE INFO'
     assert_text 'Top Rated Searches for coffee near you'
