@@ -16,7 +16,7 @@ class SearchesTest < ApplicationSystemTestCase
 
     # required fields are present
     assert_selector(:field, 'search_query', with: query)
-    assert false
+
     assert_selector(:field, 'search_latitude', type: 'hidden')
     assert_selector(:field, 'search_longitude', type: 'hidden')
 
