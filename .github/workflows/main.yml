@@ -4,6 +4,8 @@
 #
 # This workflow will install a prebuilt Ruby version, install dependencies, and
 # run tests and linters.
+#  NOTE: https://github.community/t/retry-for-failed-steps/17136/7
+
 name: "Ruby on Rails CI"
 on:
   push:
@@ -30,7 +32,9 @@ jobs:
           # test prepare required for tailwind css file required in application erb
           bin/rails test:prepare --trace
           bin/rails test
-      - name: system-test
+      - name: system-tests
+        id: system-test
+        continue-on-error: true          # make the step always success and set status later
         env:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -38,11 +42,13 @@ jobs:
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
       - name: Upload failed system test images
         uses: actions/upload-artifact@v3
-        if: ${{ failure() }}
+        if: steps.system-test.outcome=='failure'         # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
       - name: system-test-retry
-        if: ${{ failure() }}
+        id: system-test-retry-1
+        continue-on-error: true          # make the step always success and set status later
+        if: steps.system-test.outcome=='failure'         # check the step outcome, retry 1st time
         env:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -51,7 +57,7 @@ jobs:
       - name: set the status              # set the workflow status if command failed
         if: always()
         run: |
-          if ${{ steps.system-test.outcome=='success' || steps.system-test-retry.outcome=='success' }}; then
+          if ${{ steps.system-test.outcome=='success' || steps.system-test-retry-1.outcome=='success' }}; then
              echo fine
           else
              exit 1
