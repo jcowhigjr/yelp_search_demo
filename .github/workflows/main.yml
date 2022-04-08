@@ -12,6 +12,25 @@ on:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+      tags:
+        description: 'Test scenario tags'
+        required: false 
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -58,8 +77,17 @@ jobs:
         if: always()
         run: |
           if ${{ steps.system-test.outcome=='success' || steps.system-test-retry-1.outcome=='success' }}; then
-             echo fine
+             echo github.event.workflow
           else
              exit 1
           fi
+      - name: log the inputs from manual job
+        run: |
+          echo "Log level: $LEVEL"
+          echo "Tags: $TAGS"
+          echo "Environment: $ENVIRONMENT"
+        env:
+          LEVEL: ${{ github.event.inputs.logLevel }}
+          TAGS: ${{ github.event.inputs.tags }}
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
 
