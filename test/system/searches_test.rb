@@ -43,11 +43,16 @@ class SearchesTest < ApplicationSystemTestCase
     click_on('More Info', match: :first)
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
+
     go_back
+
     assert_current_path "/searches/#{Search.last.id}"
 
     # try a second search
     click_on 'clear'
+
+    assert_selector(:field, 'search_query', with: "")
+
 
     query2 = 'coffee'
 
