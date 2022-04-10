@@ -4,7 +4,7 @@
             <%= f.search_field(:query, placeholder: 'Enter a search term (ex. tacos)', required: true, data: {turbo: false}) do %>
 
             <% end %>
-            <%= f.button :submit, data: { turbo: true} do %>
+            <%= f.button :submit, data: { turbo: false} do %>
               <i class="flex-col material-icons" aria-label="search">search</i>
             <% end %>
             <%= link_to(new_search_path, method: :get, class: 'pull-right') do  %>
