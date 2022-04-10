@@ -77,10 +77,12 @@ group :development do
 
   # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
   gem 'guard-livereload', require: false # , '~> 2.4'
-  gem "rack-livereload", "~> 0.3.17"
+  gem "rack-livereload"
   #foreman required to start bin/dev
   gem 'foreman', require: false
   gem 'rubocop', require: false
+
+  # gem 'solargraph', require: false
 end
 
 group :test do
