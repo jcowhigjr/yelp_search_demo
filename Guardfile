@@ -14,11 +14,11 @@
 #  $ ln -s config/Guardfile .
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
-ENV['MAGIC_TEST'] ||= 'true'
-ENV['SHOW_TESTS'] ||= 'true'
+# ENV['MAGIC_TEST'] ||= 'true'
+# ENV['SHOW_TESTS'] ||= 'true'
 ENV['APP_HOST'] ||= '127.0.0.1'
 ENV['CUPRITE'] ||= 'true'
-# ENV['HEADLESS'] ||= 'true'
+ENV['HEADLESS'] ||= 'true'
 
 guard :minitest, all_after_pass: true, all_on_start: false, focus_failed: true, retry_failed: true do
   # with Minitest::Unit
