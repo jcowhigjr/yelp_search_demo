@@ -12,9 +12,6 @@ require "minitest/focus"
 class BasicsTest < ApplicationSystemTestCase
 
   test "home is a search page" do
-    visit static_home_url
-    fill_in('search_query', with: 'tacos')
-    click_on('Search')
-    assert_text "Top Rated Searches for tacos"
+    skip 'this is too redundant'
   end
 end
