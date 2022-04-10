@@ -6,11 +6,13 @@ class NavigationTest < ApplicationSystemTestCase
   end
 
   test 'A user can search and return using the back button' do
+    #  searches/new
     visit new_search_path
-    fill_in 'search[query]', with: 'tacos'
+    fill_in 'search_query', with: 'tacos'
 
-    click_button 'Search'
+    click_on 'search'
 
+    # searches/3 this 3rd seaarch doesn't save when using turbo true on the search button
     assert_current_path search_path(Search.last.id)
 
     click_on 'More Info', match: :first
@@ -19,6 +21,7 @@ class NavigationTest < ApplicationSystemTestCase
 
     go_back
 
+    # searches/3
     assert_current_path search_path(Search.last.id)
 
     go_back
