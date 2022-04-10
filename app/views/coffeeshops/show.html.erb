@@ -3,9 +3,7 @@
         <div class="row center">
             <h1 class="page-name"><%= @coffeeshop.name %></h1>
         </div>
-         <div class="row center">
-            <%= render partial: 'rating', locals: {rating: @coffeeshop.rating} %>
-        </div>
+
         <div class="row">
             <div class="col s12 l6">
                 <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
@@ -26,16 +24,30 @@
 
                     </address>
                 </span>
-
                 <div class="row">
                     <!-- #TODO: good candidate for turbo stream? -->
                     <!-- https://turbo.hotwired.dev/handbook/drive#page-navigation-basics -->
                     <!-- https://noelrappin.com/blog/2020/12/a-brief-hello-to-hotwire-and-turbo/  -->
-                    <span class="page-text"><i class="material-icons">favorite</i><%= @coffeeshop.user_favorites.size %> users have favorited this spot.</span>
+                    <span class="page-text">
+                    <% if @coffeeshop.user_favorites.size > 0 %>
+                        <i class="material-icons">favorite</i> <%= @coffeeshop.user_favorites.size %>
+                    <% end %>
+                    </span>
                 </div>
                 <div class="row">
-                    <span class="page-text"><i class="fab fa-yelp" style="margin-right: 10px;"></i>  <%= link_to "View on Yelp", @coffeeshop.yelp_url%></span>
+                    <span class="page-text">
+                    <style type="text/css">
+                        .yelp_color {
+                        color: #FF1A1A;
+                        }
+                    </style>
+                   <%= link_to @coffeeshop.yelp_url do %>
+                        <i class="fab fa-yelp">View on Yelp</i>
+                    <% end %>
                 </div>
+               <div class="row center">
+                   <%= render partial: 'rating', locals: {rating: @coffeeshop.rating} %>
+               </div>
             </div>
                 <br><br>
                 <% if !logged_in? %>
@@ -66,7 +78,10 @@
         <div class="row center">
             <% if @coffeeshop.reviews.empty? %>
             <div class="row center">
-                <span class="page-text red-text">This coffeeshop doesn't have any reviews yet!</span>
+                <span class="page-text red-text"></span>
+                <%= link_to @coffeeshop.yelp_url do %>
+                        <i class="fab fa-yelp yelp_color" style="margin-right: 10px;">Check out yelp for reviews!</i>
+                <% end %>
             </div>
             <% else %>
             <div class="row center">
