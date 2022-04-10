@@ -25,7 +25,7 @@ class LogoutTest < ApplicationSystemTestCase
     # there is a bug in the system that causes filling in search to not work sometimes
     fill_in 'search[query]',	with: 'yoga'
     assert_selector(:field, 'search_query', with: 'yoga')
-    click_on 'Search'
+    click_on 'search'
     assert_text 'MORE INFO'
     assert_text 'Top Rated Searches for yoga near you'
     assert_current_path search_path(Search.last.id)

@@ -1,9 +1,7 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
-
   test 'An anonymous user at the static home can search by zip to return a list of coffeeshops from yelp api' do
-
     query = 'yoga'
 
     visit static_home_url
@@ -28,11 +26,14 @@ class SearchesTest < ApplicationSystemTestCase
       assert_selector(:field, 'search_latitude', type: 'hidden', with: '0.0')
       assert_selector(:field, 'search_longitude', type: 'hidden', with: '0.0')
     end
-    click_button 'Search'
 
-    assert_text "Top Rated Searches for #{query}"
+    # submit the form
+    find('#search_query').native.send_keys(:return)
 
-    assert_selector('address')  # address is present')
+    # wait for the results to load
+    assert_text "Top Rated Searches for #{query} near you"
+
+    assert_selector('address') # address is present')
 
     assert_selector :link, text: 'phone'
     # assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
@@ -44,5 +45,22 @@ class SearchesTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     go_back
     assert_current_path "/searches/#{Search.last.id}"
+
+    # try a second search
+    click_on 'clear'
+
+    query2 = 'coffee'
+
+    fill_in 'search_query', with: query2
+
+    # required fields are present
+    assert_selector(:field, 'search_query', with: query2)
+
+    # submit the form
+    find('#search_query').native.send_keys(:return)
+
+    assert_text "Top Rated Searches for #{query2} near you"
+
+    assert_selector('address')  # address is present'
   end
 end

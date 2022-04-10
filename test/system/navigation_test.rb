@@ -7,9 +7,9 @@ class NavigationTest < ApplicationSystemTestCase
 
   test 'A user can search and return using the back button' do
     visit new_search_path
-    fill_in 'search[query]', with: 'tacos'
+    fill_in 'search_query', with: 'tacos'
 
-    click_button 'Search'
+    click_on 'search'
 
     assert_current_path search_path(Search.last.id)
 
