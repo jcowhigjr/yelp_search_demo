@@ -31,6 +31,8 @@ class SearchesTest < ApplicationSystemTestCase
     find('#search_query').native.send_keys(:return)
 
     # wait for the results to load
+    wait_for_network_idle! if ENV['CUPRITE']
+
     assert_text "Top Rated Searches for #{query} near you"
 
     assert_selector('address') # address is present')
@@ -53,7 +55,6 @@ class SearchesTest < ApplicationSystemTestCase
 
     assert_selector(:field, 'search_query', with: "")
 
-
     query2 = 'coffee'
 
     fill_in 'search_query', with: query2
@@ -64,6 +65,9 @@ class SearchesTest < ApplicationSystemTestCase
     # submit the form
     find('#search_query').native.send_keys(:return)
 
+    # wait for the results to load
+    wait_for_network_idle! if ENV['CUPRITE']
+    
     assert_text "Top Rated Searches for #{query2} near you"
 
     assert_selector('address')  # address is present'

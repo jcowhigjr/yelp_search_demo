@@ -71,6 +71,9 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
   better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
   Insert 'magic_test' in system tests to BDD style improve the app.
 
+# System Tests
+  [evil systems](https://github.com/ParamagicDev/evil_systems)
+
 # Spotify Integration
 https://developer.spotify.com/dashboard/applications/8156e50c77c94ad880cccde9e7d85451
 App Status Development mode (what does this mean?)
