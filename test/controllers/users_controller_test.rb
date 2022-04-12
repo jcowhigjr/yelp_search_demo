@@ -27,7 +27,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#destroy' do
+
     skip 'not implemented'
+
     user_one = login(:one)
     assert_equal 'Logged in!', user_one.flash[:success]
     assert_difference('User.count', -1) do
@@ -38,15 +40,25 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/login', user_one.current_path
   end
 
-  test '#:show, bug missing user' do
+  test '#:show, missing user' do
     user_one = login(:one)
     assert_equal 'Logged in!', user_one.flash[:success]
     User.find_by(id: user_one.session[:user_id]).destroy
-    skip 'this is the bug'
-    # ActiveRecord::RecordNotFound
-    # get '/users/1'
+
+    # rescue ActiveRecord::RecordNotFound
+    get '/users/1'
+    assert_redirected_to static_home_url
   end
 
+  test '#:show, cookie present missing current user' do
+    user_one = login(:one)
+    assert_equal 'Logged in!', user_one.flash[:success]
+    User.find_by(id: user_one.session[:user_id]).destroy
+
+    # rescue ActiveRecord::RecordNotFound
+    get static_home_url
+
+  end
 
   private
 

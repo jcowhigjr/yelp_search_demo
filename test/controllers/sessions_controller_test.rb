@@ -39,7 +39,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
-
+  test 'should redirect to home on missing user from cookie' do
+    skip 'not implemented'
+    
+  end
 
 
 
