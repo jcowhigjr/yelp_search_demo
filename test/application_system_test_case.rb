@@ -12,17 +12,22 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include EvilSystems::Helpers
 
   if ENV['CUPRITE'] == 'true'
+
     driven_by :cuprite, screen_size: [1400, 1400], options:
      { js_errors: ENV['CUPRITE_JS_ERRORS'] == 'true',
        inspector: false,
        headless: ENV['SHOW_TESTS'] ? false : true } do |driver_option|
-          # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-          if ENV['SHOW_TESTS']
-            driver_option.add_extension('capycorder102.crx')
-            driver_option.add_extension('RailsPanel.crx')
-            driver_option.add_extension('LiveReload.crx')
-          end
+        # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
+        if ENV['SHOW_TESTS']
+          driver_option.add_extension('capycorder102.crx')
+          driver_option.add_extension('RailsPanel.crx')
+          driver_option.add_extension('LiveReload.crx')
+        end
        end
+
+    # these seem to be missing on CI so we need to add them manually
+    include EvilSystems::CupriteHelpers
+
     # end driven_by :cuprite
   else
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
