@@ -9,24 +9,31 @@ EvilSystems.initial_setup
 # in this case the remote testing feature where the server is hosted on the .local network for testing is not a secure origin  https://github.com/ParamagicDev/evil_systems
 # APP_HOST=127.0.0.1 SHOW_TESTS=1 CUPRITE=true bin/rails test:system fixed it
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  include EvilSystems::Helpers
+
   if ENV['CUPRITE'] == 'true'
+
     driven_by :cuprite, screen_size: [1400, 1400], options:
-     { js_errors: false,
+     { js_errors: ENV['CUPRITE_JS_ERRORS'] == 'true',
        inspector: false,
        headless: ENV['SHOW_TESTS'] ? false : true } do |driver_option|
-      # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      if ENV['SHOW_TESTS']
-        driver_option.add_extension('capycorder102.crx')
-        driver_option.add_extension('RailsPanel.crx')
-        driver_option.add_extension('LiveReload.crx')
-      end
-    end
-    # driven_by :cuprite
-    include EvilSystems::Helpers
+        # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
+        if ENV['SHOW_TESTS']
+          driver_option.add_extension('capycorder102.crx')
+          driver_option.add_extension('RailsPanel.crx')
+          driver_option.add_extension('LiveReload.crx')
+        end
+       end
+
+    # these seem to be missing on CI so we need to add them manually
+    include EvilSystems::CupriteHelpers
+
+    # end driven_by :cuprite
   else
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
     # TODO: This can run headless  https://github.com/hotwired/turbo-rails/blob/bb5cfcbc7eb9e96668803dd9fad50fdabd8cd6aa/test/application_system_test_case.rb
-    driven_by :selenium, using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome), screen_size: [1400, 1400] do |driver_option|
+    driven_by :selenium, using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome),
+                         screen_size: [1400, 1400] do |driver_option|
       # https://edgeapi.rubyonrails.org/classes/ActionDispatch/SystemTestCase.html
       # https://dev.to/doctolib/loading-chrome-extensions-in-capybara-integration-tests-3880
       # driver_option.add_extension('/Users/temp/Library/Application Support/Google/Chrome/Default/Extensions/niijdolnjmjdjakbanogihdlhcbhfkho/1.0.2_0.crx')
@@ -40,9 +47,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
         driver_option.add_extension('capycorder102.crx')
         driver_option.add_extension('RailsPanel.crx')
         driver_option.add_extension('LiveReload.crx')
+        include MagicTest::Support
       end
     end
-    include MagicTest::Support
 
   end
 

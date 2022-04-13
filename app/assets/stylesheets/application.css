@@ -61,9 +61,11 @@
   margin-bottom: 40px;
 }
 select{
-  display: block;
-  height: 50px;
-  font-size: 40px
+  display: inline-block;
+  height: 60px;
+  font-size: 30px;
+  text-align: center;
+
 }
 .nav-icon{
   margin-right: 10px;
