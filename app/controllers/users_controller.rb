@@ -23,6 +23,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  rescue_from ActiveRecord::RecordNotFound do
+    flash[:error] = 'User not found'
+    redirect_to static_home_url
+  end
+
   def destroy
     user = User.find(params[:id])
     user.destroy
