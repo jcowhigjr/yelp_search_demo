@@ -32,7 +32,6 @@
     background-color: #1c5b82;
  }
  .search-bar{
-     background-color: whitesmoke;
      width: 100%;
      border-radius: 15px;
      border: 1px #000 solid;
@@ -45,7 +44,6 @@
  
  }
 .page-container{
-    background-color: white;
     margin-top: 50px;
     border-radius: 25px;
     padding: 50px;

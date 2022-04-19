@@ -19,7 +19,8 @@
   </head>
 
 
-  <body>
+  <body class="dark:bg-slate-900 dark:text-white">
+  <div>
   <% if logged_in? %>
  <div class="navbar-fixed">
    <nav class="transparentBG">
@@ -37,7 +38,7 @@
    <ul class="sidenav" id="mobile-demo">
     <li>
       <div class="background" ></div>
-      <div class="user-view"style="background-color:#373737">
+      <div class="user-view">
               <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%=current_user.name%></h6>
               <span class= "white-text"><i class="tiny material-icons nav-icon">email</i><%=current_user.email%></span>
       </div>
@@ -60,6 +61,6 @@
       <%= yield %>
     <%# </main> %>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
+  </div>
   </body>
 </html>

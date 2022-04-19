@@ -10,10 +10,7 @@
 
         <% if @search.query %>
 
-        <div class="search-results">
-            <div class="row center">
-                <h1 class="white-text">Top Rated Searches for <%= @search.query %> near you</h1>
-            </div>
+        <div class="search-results ">
             <%= turbo_stream_from "searches" %>
             <%= turbo_frame_tag "search_form" do %>
                 <%= render partial: 'searches/results', locals: {search: @search} %>
