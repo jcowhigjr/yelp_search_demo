@@ -1,0 +1,30 @@
+# This workflow uses actions that are not certified by GitHub.  They are
+# provided by a third-party and are governed by separate terms of service,
+# privacy policy, and support documentation.
+#
+# This workflow will install a prebuilt Ruby version, install dependencies, and
+# run tests and linters.
+#  NOTE: https://github.community/t/retry-for-failed-steps/17136/7
+
+name: "Deployment CD"
+on:
+  push:
+    branches: [ develop ]
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Setup Ruby 3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler-cache: true
+      - name: deploy to heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          gem install dpl && gem install faraday -v '~> 1.8.0'
+          dpl --provider=heroku --strategy=api --api_key $HEROKU_API_KEY --app $HEROKU_APP_NAME
