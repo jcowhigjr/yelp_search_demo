@@ -10,6 +10,8 @@ name: "Deployment CD"
 on:
   push:
     branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
 jobs:
   deployment:
     runs-on: ubuntu-latest
