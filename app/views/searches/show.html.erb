@@ -11,8 +11,8 @@
         <% if @search.query %>
 
         <div class="search-results ">
-            <%= turbo_stream_from "searches" %>
-            <%= turbo_frame_tag "search_form" do %>
+            <%= turbo_stream_from 'searches' %>
+            <%= turbo_frame_tag 'search_form' do %>
                 <%= render partial: 'searches/results', locals: {search: @search} %>
             <% end %>
         </div>

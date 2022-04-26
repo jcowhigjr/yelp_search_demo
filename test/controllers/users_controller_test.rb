@@ -5,6 +5,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     @user = users(:one)
     @user_favorite = user_favorites(:one)
     @user.name = 'John'
+
     # allow_any_instance_of(ActionDispatch::SystemTestCase).to receive(:current_user).and_return(users(:one))
     # @controller.stubs(:current_user).returns(users(:one))
     get '/login'
@@ -12,37 +13,38 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test '#create' do
     assert_difference('User.count') do
-      post users_path, params: {
-        user: { name: 'new user', email: 'new_user@example.com', password: 'mypass', password_confirmation: 'mypass' }
-      }
+      post users_path,
+           params: {
+             user: {
+               name: 'new user',
+               email: 'new_user@example.com',
+               password: 'mypass',
+               password_confirmation: 'mypass',
+             },
+           }
     end
-    assert_response :found
     assert_redirected_to static_home_url
-    assert_equal 'User Created!', flash[:success]
+    assert_equal 'Successfully created user.', flash[:success]
   end
 
   test '#show' do
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
+    assert_equal 'Successfully logged in.', user_one.flash[:success]
   end
 
   test '#destroy' do
-
     skip 'not implemented'
 
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
-    assert_difference('User.count', -1) do
-      user_one.delete '/users/1'
-    end
+    # assert_equal 'Successfully logged in.', user_one.flash[:success]
+    assert_difference('User.count', -1) { user_one.delete '/users/1' }
     assert_equal 'User 1 destroyed', user_one.flash[:notice]
-    assert_response :success
-    assert_equal '/login', user_one.current_path
+    assert_redirected_to '/login'
   end
 
   test '#:show, missing user' do
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
+    assert_equal 'Successfully logged in.', user_one.flash[:success]
     User.find_by(id: user_one.session[:user_id]).destroy
 
     # rescue ActiveRecord::RecordNotFound
@@ -52,12 +54,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test '#:show, cookie present missing current user' do
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
+    assert_equal 'Successfully logged in.', user_one.flash[:success]
     User.find_by(id: user_one.session[:user_id]).destroy
 
     # rescue ActiveRecord::RecordNotFound
     get static_home_url
-
   end
 
   private
@@ -65,7 +66,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   module CustomAssertions
     def favorite_coffeeshop(coffeeshop)
       # reference a named route, for maximum internal consistency!
-      post user_favorites_path, params: { coffeeshop_id: coffeeshop.id }, as: :turbo_stream
+      post user_favorites_path,
+           params: {
+             coffeeshop_id: coffeeshop.id,
+           },
+           as: :turbo_stream
       follow_redirect!
     end
 
@@ -85,8 +90,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       get '/login'
       assert_response :success
 
-      sess.post '/sessions', params: { email: who.email,
-                                       password: 'TerriblePassword' }
+      sess.post '/sessions',
+                params: {
+                  email: who.email,
+                  password: 'TerriblePassword',
+                }
     end
   end
 end

@@ -1,4 +1,4 @@
-require "test_helper"
+require 'test_helper'
 
 class Turbo::HelpersInInitializersTest < ActionDispatch::IntegrationTest
   # test "AC::Base has the helpers in place when initializers run" do

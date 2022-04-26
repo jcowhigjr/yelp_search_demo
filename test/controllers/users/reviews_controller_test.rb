@@ -1,20 +1,18 @@
 require 'test_helper'
 # frozen_string_literal: true
 
-require "test_helper"
 
 class ReviewsControllerTest < ActionDispatch::IntegrationTest
-
-
   def setup
     @coffeeshop = coffeeshops(:one)
     @current_user = users(:one)
+
     # @user_review = user_reviews(:one)
     @coffeeshop2 = coffeeshops(:two)
     # @user_favorite_params = {@user: {favorite: "light"}}
   end
 
-  test "should update user settings" do
+  test 'should update user settings' do
     true
     # assert_equal "dark", @current_user.theme
 
@@ -28,6 +26,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     #   assert_equal "light", @current_user.reload.theme
     # end
   end
+
   # test "should not get index" do
   #   #  fyi no route
   #   # get coffeeshops_index_url

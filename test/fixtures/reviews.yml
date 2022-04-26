@@ -5,14 +5,14 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
- id: 1,
- content: Bad coffee,
- rating: 1.0,
- user_id: 1,
- coffeeshop_id: 1,
+  id: 1,
+  content: Bad coffee,
+  rating: 1.0,
+  user_id: 1,
+  coffeeshop_id: 1,
 two:
- id: 2,
- content: Cold Brew is the best,
- rating: 2.0,
- user_id: 2,
- coffeeshop_id: 2,
+  id: 2,
+  content: Cold Brew is the best,
+  rating: 2.0,
+  user_id: 2,
+  coffeeshop_id: 2,

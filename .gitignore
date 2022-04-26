@@ -45,3 +45,6 @@ nil
 /config/credentials/production.key
 /config/credentials/test.key
 .env
+
+# node
+/node_modules

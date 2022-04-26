@@ -14,7 +14,7 @@
             </div>
             <br><br><br>
             <div class="row center">
-                <span class="page-text"><%= link_to "Search for a shop to find one near you.", new_search_url %></span>
+                <span class="page-text"><%= link_to 'Search for a shop to find one near you.', new_search_url %></span>
             </div>
         <% else %>
         <div class="row center">
@@ -22,7 +22,7 @@
         </div>
         <div class="row center">
             <% current_user.user_favorites.each do |fav| %>
-                <%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: fav.coffeeshop} %>
             <% end %>
         </div>
         <% end %>
@@ -30,9 +30,3 @@
     </div>
 
 </body>
-
-
-
-
-
-

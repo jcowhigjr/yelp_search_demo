@@ -10,14 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
 
     <%# https://github.com/bullet-train-co/magic_test %>
-    <%= render 'magic_test/support', "data-turbo-track": "reload"  if !!ENV['MAGIC_TEST'] && Rails.env.test? %>
-    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= render 'magic_test/support', 'data-turbo-track': 'reload'  if !ENV['MAGIC_TEST'].nil? && Rails.env.test? %>
+    <%= stylesheet_link_tag 'tailwind', 'inter-font', 'data-turbo-track': 'reload' %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
     <%= javascript_importmap_tags %>
 
   </head>
-
 
   <body class="dark:bg-slate-900 dark:text-white">
   <div>
@@ -25,33 +24,33 @@
  <div class="navbar-fixed">
    <nav class="transparentBG">
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
+      <a href="#" class="brand-logo"><%= image_tag 'jitter_logo.png', class: 'nav-logo' %></a>
       <a href="#" data-target="mobile-demo" class="right sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><%= button_to "Logout", logout_path, method: :delete %></li>
-        <li><%= link_to "My Profile", user_path(current_user) %></li>
-        <li><%= link_to "New Search", new_search_path, method: :get %></li>
+        <li><%= button_to 'Logout', logout_path, method: :delete %></li>
+        <li><%= link_to 'My Profile', user_path(current_user) %></li>
+        <li><%= link_to 'New Search', new_search_path, method: :get %></li>
       </ul>
     </div>
   </nav>
  </div>
    <ul class="sidenav" id="mobile-demo">
     <li>
-      <div class="background" ></div>
+      <div class="background"></div>
       <div class="user-view">
-              <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%=current_user.name%></h6>
-              <span class= "white-text"><i class="tiny material-icons nav-icon">email</i><%=current_user.email%></span>
+              <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
+              <span class="white-text"><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
       </div>
       </li>
-      <li><%= button_to sessions_path, method: :delete  do%>
+      <li><%= button_to sessions_path, method: :delete  do %>
           <i class="small material-icons">exit_to_app</i> Logout
           <% end %>
       </li>
-      <li><%= link_to current_user do%>
+      <li><%= link_to current_user do %>
             <i class="small material-icons">person</i> My Profile
             <% end %>
       </li>
-      <li><%= link_to  new_search_path do%>
+      <li><%= link_to  new_search_path do %>
              <i class="small material-icons">search</i> Search
              <% end %>
       </li>

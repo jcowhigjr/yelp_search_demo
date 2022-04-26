@@ -31,3 +31,21 @@
 
 en:
   hello: "Hello world"
+  coffeeshop: "Coffee Shop"
+  success:
+    create: "Successfully created %{model}."
+    update: "Successfully updated %{model}."
+    destroy: "Successfully destroyed %{model}."
+    login: "Successfully logged in."
+    logout: "Successfully logged out."
+  error:
+    missing_parameter: "Missing parameter %{parameter}"
+    invalid_parameter: "Invalid parameter %{parameter}"
+    something_went_wrong: "Something went wrong, please try again later"
+    unauthorized: "You are not authorized to perform this action"
+    not_found: "The requested resource was not found"
+    already_exists: "The %{model} already exists"
+    not_allowed: "You are not allowed to perform this action"
+    not_implemented: "This feature is not implemented yet"
+    invalid_token: "Invalid token"
+    invalid_login: "Invalid login or password"

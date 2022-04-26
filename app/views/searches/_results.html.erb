@@ -2,9 +2,9 @@
     <div class="row center">
         <h2 class="white-text">Top Rated Searches for <%= @search.query %> near you!</h2>
         <% @search.coffeeshops.each do |coffeeshop| %>
-            <%= turbo_stream_from "coffeeshops" %>
-            <%= turbo_frame_tag "coffeeshops" do %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
+            <%= turbo_stream_from 'coffeeshops' %>
+            <%= turbo_frame_tag 'coffeeshops' do %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:} %>
             <% end %>
         <% end %>
     </div>

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class SearchesControllerTest < ActionDispatch::IntegrationTest
-
   setup do
     @user = users(:two)
     @search = searches(:one)
@@ -17,18 +16,18 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
   test '#create' do
     assert_difference('Search.count') do
-      post searches_path, params: {
-        search: { query: 'tacos' }
-      }
+      post searches_path, params: { search: { query: 'tacos' } }
     end
     assert_response :found
-    assert_equal 'Search Created!', flash[:success]
+    assert_equal 'Successfully created search.', flash[:success]
   end
 
   test '#show' do
     get search_url(@search)
     assert_response :success
-    assert_select 'h2', "Top Rated Searches for #{@search.query} near you!", match: :second
+    assert_select 'h2',
+                  "Top Rated Searches for #{@search.query} near you!",
+                  match: :second
   end
 
   # test '#index' do
