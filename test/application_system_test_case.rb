@@ -6,7 +6,8 @@ require 'evil_systems'
 EvilSystems.initial_setup
 
 # some features for example geolocation require https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features/
-# in this case the remote testing feature where the server is hosted on the .local network for testing is not a secure origin  https://github.com/ParamagicDev/evil_systems
+# in this case the remote testing feature where the server is hosted on the .local network for testing is not a secure
+# origin  https://github.com/ParamagicDev/evil_systems
 # APP_HOST=127.0.0.1 SHOW_TESTS=1 CUPRITE=true bin/rails test:system fixed it
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include EvilSystems::Helpers

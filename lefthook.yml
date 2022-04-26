@@ -15,6 +15,9 @@ pre-push:
       files: git diff --name-only master
       glob: "*.rb"
       run: bundle exec rubocop --force-exclusion {files}
+    brakeman:
+      tags: backend security
+      run: bundle exec brakeman
 #
 pre-commit:
   parallel: true
@@ -22,21 +25,21 @@ pre-commit:
     js:
       glob: "*.{js,ts}"
       run: yarn prettier --write {staged_files} && git add {staged_files}
-    rubocop:
-      tags: backend style
-      glob: "*.rb"
-      exclude: "application.rb|routes.rb"
-      run: bundle exec rubocop --force-exclusion {all_files}
-#     govet:
-#       tags: backend style
-#       files: git ls-files -m
-#       glob: "*.go"
-#       run: go vet {files}
-    erb-lint:
-      tags: frontend style
-      files: git diff --name-only master
-      glob: "*.erb"
-      run: bundle exec erb-lint {files}
+    # rubocop:
+    #   tags: backend style
+    #   glob: "*.rb"
+    #   exclude: "application.rb|routes.rb"
+    #   run: bundle exec rubocop --force-exclusion {all_files}
+    #     govet:
+    #       tags: backend style
+    #       files: git ls-files -m
+    #       glob: "*.go"
+    #       run: go vet {files}
+    # erb-lint:
+    #   tags: frontend style
+    #   files: git diff --name-only master
+    #   glob: "*.erb"
+    #   run: bundle exec erblint {files}
     rails-tests:
       tags: backend tests
       run:  "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
@@ -52,6 +55,8 @@ fixer:
       run: bundle exec rubocop --force-exclusion --auto-correct {staged_files}
     erblint:
       run: bundle exec erblint -a {staged_files}
+    brakeman:
+      run: bundle exec brakeman -q -z -o brakeman.report {staged_files}
 # scripts:
 #     "hello.js":
 #       runner: node
