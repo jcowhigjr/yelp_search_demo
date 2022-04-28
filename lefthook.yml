@@ -47,9 +47,10 @@ fixer:
       glob: 'app/javascript/**.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}
     ruby-prettier:
-      run: bundle exec prettier --force-exclusion --auto-correct {all_files}
+      glob: 'app/**/*.rb'
+      run: bundle exec rbprettier --write {files}
     erblint:
-      run: bundle exec erblint --enable-all-linters --autocorrect --lint-all {all_files}
+      run: bundle exec erblint --autocorrect --lint-all {all_files}
     brakeman:
       # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
