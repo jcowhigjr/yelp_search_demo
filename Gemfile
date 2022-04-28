@@ -88,7 +88,7 @@ group :development do
   gem 'rubocop-performance', require: false
   gem 'prettier', require: false
   gem 'erb_lint', require: false
-  gem 'brakeman', github: 'presidentbeef/brakeman', require: false
+  gem 'brakeman', require: false
 
   # gem 'solargraph', require: false
   # gem 'solargraph-rails', require: false
