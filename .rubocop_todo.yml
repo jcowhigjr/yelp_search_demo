@@ -5,6 +5,10 @@
 # one by one as the offenses are removed from the code base.
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-minitest
 
 # Offense count: 1
 # This cop supports safe auto-correction (--auto-correct).

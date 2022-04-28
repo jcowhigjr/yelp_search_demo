@@ -95,13 +95,13 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/HashSyntax:
-  Description: 'Do not allow the new EnforcedShorthandSyntax dueo to brakemen compatibility bug'
+  Description: 'Do not allow the new EnforcedShorthandSyntax in nested EnforcedShorthandSyntax dueo to brakemen compatibility bug'
   EnforcedShorthandSyntax: always
 
 Style/IfUnlessModifier:
   Description: >-
-                 Favor modifier if/unless usage when you have a
-                 single-line body.
+    Favor modifier if/unless usage when you have a
+    single-line body.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier'
   Enabled: false
 
@@ -111,8 +111,8 @@ Style/InlineComment:
 
 Style/LineEndConcatenation:
   Description: >-
-                 Use \ instead of + or << to concatenate two string literals at
-                 line end.
+    Use \ instead of + or << to concatenate two string literals at
+    line end.
   Enabled: true
 
 Style/StringLiterals:
@@ -172,23 +172,23 @@ Layout/LineLength:
 
 Layout/MultilineOperationIndentation:
   Description: >-
-                 Checks indentation of binary operations that span more than
-                 one line.
+    Checks indentation of binary operations that span more than
+    one line.
   Enabled: true
   EnforcedStyle: indented
 
 Layout/MultilineMethodCallIndentation:
   Description: >-
-                 Checks indentation of method calls with the dot operator
-                 that span more than one line.
+    Checks indentation of method calls with the dot operator
+    that span more than one line.
   Enabled: true
   EnforcedStyle: indented
 
 # Rails Cops
 
-Rails/Delegate:
-  Description: 'Prefer delegate method for delegations.'
-  Enabled: false
+# Rails/Delegate:
+#   Description: 'Prefer delegate method for delegations.'
+#   Enabled: false
 
 # Bundler Cops
 

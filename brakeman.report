@@ -1,0 +1,40 @@
+
+== Brakeman Report ==
+
+Application Path: /Users/temp/src/ruby/jitter
+Rails Version: 7.0.2.3
+Brakeman Version: 5.2.2
+Scan Date: 2022-04-28 13:55:32 -0400
+Duration: 0.618059 seconds
+Checks Run: BasicAuth, BasicAuthTimingAttack, CSRFTokenForgeryCVE, ContentTag, CookieSerialization, CreateWith, CrossSiteScripting, DefaultRoutes, Deserialize, DetailedExceptions, DigestDoS, DynamicFinders, EOLRails, EOLRuby, EscapeFunction, Evaluation, Execute, FileAccess, FileDisclosure, FilterSkipping, ForgerySetting, HeaderDoS, I18nXSS, JRubyXML, JSONEncoding, JSONEntityEscape, JSONParsing, LinkTo, LinkToHref, MailTo, MassAssignment, MimeTypeDoS, ModelAttrAccessible, ModelAttributes, ModelSerialize, NestedAttributes, NestedAttributesBypass, NumberToCurrency, PageCachingCVE, PermitAttributes, QuoteTableName, Redirect, RegexDoS, Render, RenderDoS, RenderInline, ResponseSplitting, RouteDoS, SQL, SQLCVEs, SSLVerify, SafeBufferManipulation, SanitizeMethods, SelectTag, SelectVulnerability, Send, SendFile, SessionManipulation, SessionSettings, SimpleFormat, SingleQuotes, SkipBeforeFilter, SprocketsPathTraversal, StripTags, SymbolDoSCVE, TemplateInjection, TranslateBug, UnsafeReflection, UnsafeReflectionMethods, ValidationRegex, VerbConfusion, WithoutProtection, XMLDoS, YAMLParsing
+
+== Overview ==
+
+Controllers: 8
+Models: 6
+Templates: 20
+Errors: 0
+Security Warnings: 2
+
+== Warning Types ==
+
+Cross-Site Scripting: 2
+
+== Warnings ==
+
+Confidence: Weak
+Category: Cross-Site Scripting
+Check: LinkToHref
+Message: Potentially unsafe model attribute in `link_to` href
+Code: link_to(Coffeeshop.find(params[:id]).yelp_url)
+File: app/views/coffeeshops/show.html.erb
+Line: 45
+
+Confidence: Weak
+Category: Cross-Site Scripting
+Check: LinkToHref
+Message: Potentially unsafe model attribute in `link_to` href
+Code: link_to(Coffeeshop.find(params[:id]).yelp_url)
+File: app/views/coffeeshops/show.html.erb
+Line: 83
+

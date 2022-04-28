@@ -1,13 +1,36 @@
+---
 EnableDefaultLinters: true
+exclude:
+  - '**/vendor/**/*'
 linters:
+  RequireInputAutocomplete:
+    enabled: false
+  HardCodedString:
+    enabled: false
+    exclude:
+      # - '**/*.en.html.erb'
+  ErbSafety:
+    enabled: true
+    better_html_config: .better-html.yml
+
   Rubocop:
     enabled: true
     rubocop_config:
       inherit_from:
         - .rubocop.yml
-      Style/FrozenStringLiteralComment:
-        Enabled: false
       Layout/InitialIndentation:
         Enabled: false
+      Layout/LineLength:
+        Enabled: false
       Layout/TrailingEmptyLines:
+        Enabled: false
+      Layout/TrailingWhitespace:
+        Enabled: false
+      Naming/FileName:
+        Enabled: false
+      Style/FrozenStringLiteralComment:
+        Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
+      Rails/OutputSafety:
         Enabled: false

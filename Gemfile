@@ -11,7 +11,7 @@ gem 'rails', '~> 7.0.1'
 # gem "sprockets-rails"
 gem 'propshaft'
 
-# gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
+# gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: ' '
 gem 'omniauth-google-oauth2'
 
 gem 'omniauth-rails_csrf_protection'
@@ -95,6 +95,8 @@ group :development do
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
   # gem 'lefthook', require: false
+  gem 'better_html', require: false
+
 end
 
 group :test do

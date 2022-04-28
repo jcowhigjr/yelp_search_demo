@@ -4,59 +4,55 @@
 #
 pre-push:
   commands:
-#     packages-audit:
-#       tags: frontend security
-#       run: yarn audit
+    #     packages-audit:
+    #       tags: frontend security
+    #       run: yarn audit
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
     rubocop:
       tags: backend style
       files: git diff --name-only master
-      glob: "*.rb"
+      glob: '*.rb'
       run: bundle exec rubocop --force-exclusion {files}
     brakeman:
       tags: backend security
-      run: bundle exec brakeman
+      run: bundle exec brakeman --no-pager
 #
 pre-commit:
   parallel: true
   commands:
     js:
-      glob: "*.{js,ts}"
+      glob: '*.{js,ts}'
       run: yarn prettier --write {staged_files} && git add {staged_files}
-    # rubocop:
-    #   tags: backend style
-    #   glob: "*.rb"
-    #   exclude: "application.rb|routes.rb"
-    #   run: bundle exec rubocop --force-exclusion {all_files}
-    #     govet:
-    #       tags: backend style
-    #       files: git ls-files -m
-    #       glob: "*.go"
-    #       run: go vet {files}
-    # erb-lint:
-    #   tags: frontend style
-    #   files: git diff --name-only master
-    #   glob: "*.erb"
-    #   run: bundle exec erblint {files}
+    rubocop:
+      tags: backend style
+      glob: '*.rb'
+      exclude: 'application.rb|routes.rb'
+      run: bundle exec rubocop --force-exclusion {all_files}
+    erb-lint:
+      tags: frontend style
+      files: git diff --name-only master
+      glob: '*.erb'
+      run: bundle exec erblint --lint-all {files}
     rails-tests:
       tags: backend tests
-      run:  "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
+      run: "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
 
 fixer:
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion --auto-correct {staged_files}
+      run: bundle exec rubocop --force-exclusion --auto-correct {all_files}
     js-fixer:
       glob: 'app/javascript/**.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}
     ruby-prettier:
-      run: bundle exec rubocop --force-exclusion --auto-correct {staged_files}
+      run: bundle exec prettier --force-exclusion --auto-correct {all_files}
     erblint:
-      run: bundle exec erblint -a {staged_files}
+      run: bundle exec erblint --enable-all-linters --autocorrect --lint-all {all_files}
     brakeman:
-      run: bundle exec brakeman -q -z -o brakeman.report {staged_files}
+      # the pager was causing the tests to fail in parallel
+      run: bundle exec brakeman --no-pager
 # scripts:
 #     "hello.js":
 #       runner: node
