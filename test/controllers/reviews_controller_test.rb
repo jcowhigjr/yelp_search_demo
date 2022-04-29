@@ -1,7 +1,7 @@
 require 'test_helper'
 
-require "minitest/autorun"
-require "minitest/focus"
+require 'minitest/autorun'
+require 'minitest/focus'
 # require "minitest/retry"
 # Minitest::Retry.use!
 
@@ -9,7 +9,7 @@ require "minitest/focus"
 #   ENV['MAGIC_TEST'] = 'true'
 # end
 
-#FIXME: nested turbo streams need special treatment https://discuss.hotwired.dev/t/broadcasting-to-nested-turbo-frame-tag/3659/6
+# FIXME: nested turbo streams need special treatment https://discuss.hotwired.dev/t/broadcasting-to-nested-turbo-frame-tag/3659/6
 
 class ReviewsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -48,12 +48,12 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
              review: {
                user_id: @user.id,
                rating: @review.rating,
-               content: @review.content
-             }
+               content: @review.content,
+             },
            }
     end
     assert_redirected_to coffeeshop_path(@coffeeshop)
-    
+
     # assert_select 'p', text: @review.content
   end
 
@@ -67,18 +67,18 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
- test 'should edit this review' do
-  skip "not implemented"
+  test 'should edit this review' do
+    skip 'not implemented'
     assert_no_difference('Review.count') do
       assert_difference('Review.find(@review.id).content', 'edited') do
         patch user_review_path(@user, @review),
-          params: {
-              review: {
-                user_id: @user.id,
-                rating: @review.rating + 1,
-                content: "#{@review.content}edited"
+              params: {
+                review: {
+                  user_id: @user.id,
+                  rating: @review.rating + 1,
+                  content: "#{@review.content}edited",
+                },
               }
-            }
       end
       assert_select 'span', text: '★☆☆☆☆'
     end

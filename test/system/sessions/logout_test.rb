@@ -22,10 +22,11 @@ class LogoutTest < ApplicationSystemTestCase
     assert_current_path '/searches/new'
     click_on 'Logout'
     assert_current_path '/'
+
     # there is a bug in the system that causes filling in search to not work sometimes
     assert_selector(:field, 'search_query', with: '', visible: false)
 
-    fill_in 'search_query',	with: 'yoga'
+    fill_in 'search_query', with: 'yoga'
 
     assert_selector(:field, 'search_query', with: 'yoga')
     click_on 'search'

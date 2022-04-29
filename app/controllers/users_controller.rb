@@ -10,10 +10,10 @@ class UsersController < ApplicationController
     if @user.valid?
       @user.save
       session[:user_id] = @user.id
-      flash[:success] = 'User Created!'
+      flash[:success] = t('success.create', model: 'user')
       redirect_to_proper_path
     else
-      flash[:error] = 'Something went wrong during signup.'
+      flash[:error] = t('error.something_went_wrong')
       render :new
     end
   end
@@ -24,14 +24,14 @@ class UsersController < ApplicationController
   end
 
   rescue_from ActiveRecord::RecordNotFound do
-    flash[:error] = 'User not found'
+    flash[:error] = t('error.not_found')
     redirect_to static_home_url
   end
 
   def destroy
     user = User.find(params[:id])
     user.destroy
-    redirect_to user_path, notice: "User #{user.id} destroyed"
+    redirect_to user_path, notice: t.success.destroy(model: 'user')
   end
 
   private

@@ -14,18 +14,20 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
 
   test 'add favorite should remain on coffeeshop page' do
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
+    assert_equal 'Successfully logged in.', user_one.flash[:success]
     user_one.favorite_coffeeshop(@coffeeshop)
-    assert_equal 'Coffeeshop is added to your favorites.', user_one.flash[:success]
+    assert_equal 'Coffeeshop is added to your favorites.',
+                 user_one.flash[:success]
     assert_equal coffeeshop_path(@coffeeshop), user_one.path
   end
 
   test 'should destroy favorite' do
     user_one = login(:one)
-    assert_equal 'Logged in!', user_one.flash[:success]
+    assert_equal 'Successfully logged in.', user_one.flash[:success]
     assert_equal '/login', path
     user_one.unfavorite_coffeeshop(@coffeeshop)
-    assert_equal 'Coffeeshop is removed from your favorites.', user_one.flash[:success]
+    assert_equal 'Successfully destroyed coffeeshop.',
+                 user_one.flash[:success]
     assert_response :success
     assert_equal coffeeshop_path(@coffeeshop), user_one.path
   end
@@ -35,7 +37,11 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
   module CustomAssertions
     def favorite_coffeeshop(coffeeshop)
       # reference a named route, for maximum internal consistency!
-      post user_favorites_path, params: { coffeeshop_id: coffeeshop.id }, as: :turbo_stream
+      post user_favorites_path,
+           params: {
+             coffeeshop_id: coffeeshop.id,
+           },
+           as: :turbo_stream
       follow_redirect!
     end
 
@@ -55,8 +61,11 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
       get '/login'
       assert_response :success
 
-      sess.post '/sessions', params: { email: who.email,
-                                       password: 'TerriblePassword' }
+      sess.post '/sessions',
+                params: {
+                  email: who.email,
+                  password: 'TerriblePassword',
+                }
     end
   end
 end

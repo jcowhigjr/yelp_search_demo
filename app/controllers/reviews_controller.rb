@@ -1,6 +1,6 @@
 class ReviewsController < ApplicationController
   before_action :find_or_redirect, except: [:create]
-  helper_method :has_permission
+  helper_method :permission?
 
   def index
     find_or_redirect
@@ -12,7 +12,7 @@ class ReviewsController < ApplicationController
     if @review.save
       redirect_to @coffeeshop
     else
-      flash[:review_error] = 'Something went wrong with creating your review.'
+      flash[:review_error] = t('error.something_went_wrong')
       render @coffeeshop
     end
   end
@@ -28,16 +28,11 @@ class ReviewsController < ApplicationController
     else
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
-                                                          locals: { review: review })
+                                                           locals: { review: })
       end
-      flash[:error] = 'Error editing review.'
+      flash[:error] = t('error.something_went_wrong')
       render @review.coffeeshop
     end
-  end
-
-  def index
-    @reviews = Review.all.order(created_at: :desc)
-    @review = Review.new
   end
 
   def destroy
@@ -56,18 +51,19 @@ class ReviewsController < ApplicationController
     @review = Review.find_by(id: params[:id])
   end
 
-  def has_permission
+  def permission?
     @review.user == current_user
   end
 
   def find_or_redirect
     set_review
-    if @review.nil?
-      if params[:coffeeshop_id]
-        redirect_to coffeeshop_path(params[:coffeshop_id])
-      else
-        redirect_to static_home_url
-      end
+    return unless @review.nil?
+
+    if params[:coffeeshop_id]
+      redirect_to coffeeshop_path(params[:coffeshop_id])
+    else
+      redirect_to static_home_url
     end
+
   end
 end
