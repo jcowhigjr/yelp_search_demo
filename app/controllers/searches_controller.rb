@@ -17,11 +17,11 @@ class SearchesController < ApplicationController
     raise 'Search not valid' unless @search.valid?
 
     if Coffeeshop.get_search_results(@search) == 'error'
-      flash[:error] = 'Something went wrong with your search, please try again.'
+      flash[:error] = t('something_went_wrong')
       redirect_to static_home_url
     else
       @search.save
-      flash[:success] = 'Search Created!'
+      flash[:success] = t('success.create', model: 'search')
       redirect_to_proper_path
     end
   end
@@ -37,7 +37,6 @@ class SearchesController < ApplicationController
   #     @searches = Search.all
   #   end
   # end
-
 
   private
 

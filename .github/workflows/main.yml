@@ -9,9 +9,9 @@
 name: "Ruby on Rails CI"
 on:
   push:
-    branches: [ develop ]
+    branches: [develop]
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   test:
@@ -35,7 +35,7 @@ jobs:
           bin/rails test
       - name: system-tests
         id: system-test
-        continue-on-error: true          # make the step always success and set status later
+        continue-on-error: true # make the step always success and set status later
         env:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -43,8 +43,8 @@ jobs:
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
       - name: system-test-retry
         id: system-test-retry-1
-        continue-on-error: true          # make the step always success and set status later
-        if: steps.system-test.outcome=='failure'         # check the step outcome, retry 1st time
+        continue-on-error: true # make the step always success and set status later
+        if: steps.system-test.outcome=='failure' # check the step outcome, retry 1st time
         env:
           RAILS_ENV: test
           RAILS_TEST_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -52,10 +52,10 @@ jobs:
           bin/rails test:system --trace HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1'
       - name: Upload failed system test images
         uses: actions/upload-artifact@v3
-        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure'       # check the step outcome, retry 1st time
+        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
-      - name: set the status              # set the workflow status if command failed
+      - name: set the status # set the workflow status if command failed
         if: steps.system-test.outcome=='failure'
         run: |
           if ${{ steps.system-test-retry-1.outcome=='success' }}; then
@@ -84,6 +84,3 @@ jobs:
         run: |
           gem install dpl && gem install faraday -v '~> 1.8.0'
           dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}
-
-
-

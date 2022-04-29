@@ -6,20 +6,21 @@
 
         <div class="row">
             <div class="col s12 l6">
-                <%= image_tag @coffeeshop.image_url, class: "card-img responsive-img  shop-image z-depth-2" %>
+                <%= image_tag @coffeeshop.image_url, class: 'card-img responsive-img  shop-image z-depth-2' %>
             </div>
             <!-- Coffeeshop Info -->
             <div class="col s12 l6">
             <div class="shop-info z-depth-1">
                 <span>
                     <address class="card-action columns-2">
-                            <%= link_to  "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank do %>
+                            <%= link_to  "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}",
+target: :blank do %>
                                 <i class="material-icons">place</i>
-                                <a class="truncate"><%=@coffeeshop.address%></a>
+                                <a class="truncate"><%= @coffeeshop.address %></a>
                             <% end %>
                             <%= link_to "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" do %>
                                 <i class="material-icons">phone</i>
-                                <a class="truncate"><%=number_to_phone(@coffeeshop.phone_number, area_code: true)%></a>
+                                <a class="truncate"><%= number_to_phone(@coffeeshop.phone_number, area_code: true) %></a>
                             <% end %>
 
                     </address>
@@ -51,20 +52,20 @@
             </div>
                 <br><br>
                 <% if !logged_in? %>
-                  <span class="page-text"> <%= link_to "Login to add this shop to your favorites!", login_path%></span>
+                  <span class="page-text"> <%= link_to 'Login to add this shop to your favorites!', login_path %></span>
                 <% else %>
                     <!-- Add to user favorites -->
-                    <%= turbo_frame_tag :user_favorite do  %>
+                    <%= turbo_frame_tag :user_favorite do %>
                         <div class="row center">
                             <% if current_user.favorite?(@coffeeshop) %>
                                 <%= form_tag user_favorite_path, method: 'delete' do %>
                                     <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                                    <%= submit_tag "Remove from my favorites.", class: "btn-large"%>
+                                    <%= submit_tag 'Remove from my favorites.', class: 'btn-large' %>
                                 <% end %>
                             <% else %>
                                 <%= form_tag user_favorites_path do %>
                                     <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                                    <%= submit_tag "Add to my favorites.", class: "btn-large"%>
+                                    <%= submit_tag 'Add to my favorites.', class: 'btn-large' %>
                                 <% end %>
                             <% end %>
                         </div>
@@ -97,13 +98,13 @@
                   <span class="page-text red-text">You must be <%= link_to 'logged in', login_path %> to leave a review!</span>
             <% else %>
             <div class="row center">
-                <div class="review-container z-depth-1"> 
-                    <%= render partial: "reviews/form", locals: {coffeeshop: @coffeeshop, review: Review.new} %>
+                <div class="review-container z-depth-1">
+                    <%= render partial: 'reviews/form', locals: {coffeeshop: @coffeeshop, review: Review.new} %>
                 </div>
             </div>
             <% end %>
              </div>
         </div>
-    </div>  
+    </div>
 
 </body>

@@ -14,7 +14,9 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_selector :link, text: 'phone'
     assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
     assert_selector :link, text: 'place'
-    assert_link 'place', href: "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+    assert_link 'place',
+                href:
+                  "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
 
     click_on 'Login to add this shop to your favorites!'
     fill_in 'Email', with: @user.email
@@ -22,13 +24,17 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_button 'Log In'
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     fill_in('review[content]', with: 'this place is great')
-    find('#review_rating', match: :first).find(:xpath, 'option[5]').select_option
+    find('#review_rating', match: :first)
+      .find(:xpath, 'option[5]')
+      .select_option
     click_button('Submit Review')
     assert_text('this place is great')
     assert_selector('#review_rating', text: '★★★★☆')
     click_link('Edit this Review', match: :first)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
-    find('#review_rating', match: :first).find(:xpath, 'option[1]').select_option
+    find('#review_rating', match: :first)
+      .find(:xpath, 'option[1]')
+      .select_option
     fill_in('review[content]', match: :first, with: 'this place is bad')
     click_button('Submit Review', match: :first)
     assert_text('"this place is bad"', count: 1)
@@ -36,6 +42,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_button 'Delete', match: :first
     click_button 'Delete', match: :first
+
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
     click_button('Remove from my favorites.')

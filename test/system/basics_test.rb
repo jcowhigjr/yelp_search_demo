@@ -1,7 +1,7 @@
-require "application_system_test_case"
+require 'application_system_test_case'
 
-require "minitest/autorun"
-require "minitest/focus"
+require 'minitest/autorun'
+require 'minitest/focus'
 # require "minitest/retry"
 # Minitest::Retry.use!
 
@@ -10,8 +10,7 @@ require "minitest/focus"
 #   # ENV['CUPRITE'] = 'true'
 # end
 class BasicsTest < ApplicationSystemTestCase
-
-  test "home is a search page" do
+  test 'home is a search page' do
     skip 'this is too redundant'
   end
 end

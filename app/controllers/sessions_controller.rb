@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 
     if user&.authenticate(session_params[:password])
       session[:user_id] = user.id
-      flash[:success] = 'Logged in!'
+      flash[:success] = t('success.login')
       redirect_to_proper_path
     else
       flash[:error] = 'Your email or password do not match our records.'
@@ -18,16 +18,18 @@ class SessionsController < ApplicationController
 
   def destroy
     session.clear
+
     # redirect_to_proper_path
     redirect_to static_home_url, notice: 'Goodbye'
   end
 
   def create_with_google
     auth = request.env['omniauth.auth']['info']
-    user = User.find_or_create_by(email: auth['email']) do |u|
-      u.name = auth['name']
-      u.password = SecureRandom.hex
-    end
+    user =
+      User.find_or_create_by(email: auth['email']) do |u|
+        u.name = auth['name']
+        u.password = SecureRandom.hex
+      end
     session[:user_id] = user.id
     redirect_to_proper_path
   end

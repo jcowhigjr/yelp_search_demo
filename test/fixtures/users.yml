@@ -15,4 +15,3 @@ two:
   name: user_two
   email: user2@example.com
   password_digest: <%= default_password_digest %>
-

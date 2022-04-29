@@ -2,7 +2,7 @@ require 'test_helper'
 require 'minitest/autorun'
 
 class SearchTest < ActiveSupport::TestCase
-  test "the truth" do
+  test 'the truth' do
     assert true
   end
 
@@ -24,9 +24,8 @@ class SearchTest < ActiveSupport::TestCase
   test 'should save with a location and query' do
     search = Search.new
     search.query = 'yoga'
-    assert(search.latitude === 0.0)
-    assert(search.longitude === 0.0)
+    assert_in_delta(search.latitude, 0.0)
+    assert_in_delta(search.longitude, 0.0)
     assert search.save
   end
-
 end

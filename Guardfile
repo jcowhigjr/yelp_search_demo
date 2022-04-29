@@ -20,11 +20,15 @@ ENV['APP_HOST'] ||= '127.0.0.1'
 ENV['CUPRITE'] ||= 'true'
 ENV['HEADLESS'] ||= 'true'
 
-guard :minitest, all_after_pass: true, all_on_start: false, focus_failed: true, retry_failed: true do
+guard :minitest,
+      all_after_pass: true,
+      all_on_start: false,
+      focus_failed: true,
+      retry_failed: true do
   # with Minitest::Unit
-  watch(%r{^test/(.*)\/?test_(.*)\.rb$})
-  watch(%r{^lib/(.*/)?([^/]+)\.rb$})     { |m| "test/#{m[1]}test_#{m[2]}.rb" }
-  watch(%r{^test/test_helper\.rb$})      { 'test' }
+  watch(%r{^test/(.*)/?test_(.*)\.rb$})
+  watch(%r{^lib/(.*/)?([^/]+)\.rb$}) { |m| "test/#{m[1]}test_#{m[2]}.rb" }
+  watch(%r{^test/test_helper\.rb$}) { 'test' }
 
   # with Minitest::Spec
   # watch(%r{^spec/(.*)_spec\.rb$})
@@ -32,15 +36,19 @@ guard :minitest, all_after_pass: true, all_on_start: false, focus_failed: true, 
   # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
 
   # Rails 4
-  watch(%r{^app/(.+)\.rb$})                               { |m| "test/#{m[1]}_test.rb" }
+  watch(%r{^app/(.+)\.rb$}) { |m| "test/#{m[1]}_test.rb" }
   watch(%r{^app/controllers/application_controller\.rb$}) { 'test/controllers' }
-  watch(%r{^app/controllers/(.+)_controller\.rb$})        { |m| "test/integration/#{m[1]}_test.rb" }
-  watch(%r{^app/views/(.+)_mailer/.+})                    { |m| "test/mailers/#{m[1]}_mailer_test.rb" }
-  watch(%r{^lib/(.+)\.rb$})                               { |m| "test/lib/#{m[1]}_test.rb" }
+  watch(%r{^app/controllers/(.+)_controller\.rb$}) do |m|
+    "test/integration/#{m[1]}_test.rb"
+  end
+  watch(%r{^app/views/(.+)_mailer/.+}) do |m|
+    "test/mailers/#{m[1]}_mailer_test.rb"
+  end
+  watch(%r{^lib/(.+)\.rb$}) { |m| "test/lib/#{m[1]}_test.rb" }
   watch(%r{^test/.+_test\.rb$})
   watch(%r{^test/test_helper\.rb$}) { 'test' }
 
-# https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
+  # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
   # watch(%r{^app/views/.+\.(erb|haml|slim)}) { 'test/system' }
 
   #  { |m| "test/system/#{m[1]}_test.rb" }
@@ -61,30 +69,37 @@ guard 'livereload' do
     png: :png,
     gif: :gif,
     jpg: :jpg,
-    jpeg: :jpeg
+    jpeg: :jpeg,
     # less: :less, # uncomment if you want LESS stylesheets done in browser
   }
 
-  rails_view_exts = %w(erb haml slim)
+  rails_view_exts = %w[erb haml slim]
 
   # file types LiveReload may optimize refresh for
   compiled_exts = extensions.values.uniq
-  watch(%r{public/.+\.(#{compiled_exts * '|'})})
+  watch(%r{public/.+\.(#{compiled_exts * "|"})})
 
   extensions.each do |ext, type|
-    watch(%r{
+    watch(
+      %r{
           (?:app|vendor)
           (?:/assets/\w+/(?<path>[^.]+) # path+base without extension
            (?<ext>\.#{ext})) # matching extension (must be first encountered)
           (?:\.\w+|$) # other extensions
-          }x) do |m|
+          }x,
+    ) do |m|
       path = m[1]
       "/assets/#{path}.#{type}"
     end
   end
 
   # file needing a full reload of the page anyway
-  watch(%r{app/views/.+\.(#{rails_view_exts * '|'})$})
+  watch(%r{app/views/.+\.(#{rails_view_exts * "|"})$})
   watch(%r{app/helpers/.+\.rb})
   watch(%r{config/locales/.+\.yml})
+end
+
+guard :rubocop do
+  watch(/.+\.rb$/)
+  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
 end

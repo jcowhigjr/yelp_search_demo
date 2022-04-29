@@ -10,12 +10,13 @@ class UsersTest < ApplicationSystemTestCase
 
   test 'sign up and sign out' do
     visit 'users/new'
-    fill_in 'user_name',	with: 'john'
-    fill_in 'user_email',	with: 'john@example.com'
-    fill_in 'user_password',	with: 'sadfkjs342'
-    fill_in 'user_password_confirmation',	with: 'sadfkjs342'
+    fill_in 'user_name', with: 'john'
+    fill_in 'user_email', with: 'john@example.com'
+    fill_in 'user_password', with: 'sadfkjs342'
+    fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
     assert_current_path '/'
+
     # click_button 'Logout' # this is not working
     click_on 'Logout'
   end

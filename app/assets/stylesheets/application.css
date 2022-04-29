@@ -13,61 +13,58 @@
  *= require_tree .
  *= require_self
  */
- 
- body{
-    font-family: 'Nunito', sans-serif;
- }
- .transparentBG{
-   background-color: #373737;
- }
- .nav-logo{
-   max-width: 150px;
-   margin-left: 20px;
- }
 
- .btn-large{
-     background-color: #1c5b82;
- }
- .btn-small{
-    background-color: #1c5b82;
- }
- .search-bar{
-     width: 100%;
-     border-radius: 15px;
-     border: 1px #000 solid;
-     padding: 5px 5px 5px 25px;
-     display: inline-block;
- }
-
- .landing-logo{
-    margin-top: 100px;
- 
- }
-.page-container{
-    margin-top: 50px;
-    border-radius: 25px;
-    padding: 50px;
-    margin-bottom: 50px;
+body {
+  font-family: "Nunito", sans-serif;
 }
-.page-text{
+.transparentBG {
+  background-color: #373737;
+}
+.nav-logo {
+  max-width: 150px;
+  margin-left: 20px;
+}
+
+.btn-large {
+  background-color: #1c5b82;
+}
+.btn-small {
+  background-color: #1c5b82;
+}
+.search-bar {
+  width: 100%;
+  border-radius: 15px;
+  border: 1px #000 solid;
+  padding: 5px 5px 5px 25px;
+  display: inline-block;
+}
+
+.landing-logo {
+  margin-top: 100px;
+}
+.page-container {
+  margin-top: 50px;
+  border-radius: 25px;
+  padding: 50px;
+  margin-bottom: 50px;
+}
+.page-text {
   font-size: 30px;
   padding: 20px;
-  
 }
-.page-name{
+.page-name {
   font-size: 60px;
   margin-bottom: 40px;
 }
-select{
+select {
   display: inline-block;
   height: 60px;
   font-size: 30px;
   text-align: center;
-
 }
-.nav-icon{
+.nav-icon {
   margin-right: 10px;
 }
-.form-link{
+.form-link {
   font-size: 20px;
 }
