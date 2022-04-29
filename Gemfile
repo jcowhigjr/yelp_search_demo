@@ -89,7 +89,6 @@ group :development do
   gem 'prettier', require: false
   gem 'erb_lint', require: false
   gem 'brakeman', require: false
-
   # gem 'solargraph', require: false
   # gem 'solargraph-rails', require: false
 

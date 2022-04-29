@@ -96,7 +96,7 @@ Style/FrozenStringLiteralComment:
 
 Style/HashSyntax:
   Description: 'Do not allow the new EnforcedShorthandSyntax in nested EnforcedShorthandSyntax dueo to brakemen compatibility bug'
-  EnforcedShorthandSyntax: always
+  EnforcedShorthandSyntax: either
 
 Style/IfUnlessModifier:
   Description: >-

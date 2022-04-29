@@ -4,7 +4,7 @@
         <% @search.coffeeshops.each do |coffeeshop| %>
             <%= turbo_stream_from 'coffeeshops' %>
             <%= turbo_frame_tag 'coffeeshops' do %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:} %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
             <% end %>
         <% end %>
     </div>
