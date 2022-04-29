@@ -48,3 +48,7 @@ nil
 
 # node
 /node_modules
+
+# don't commit brakeman info which might give hackers a hint about the app
+brakeman.report
+brakeman.ignore
