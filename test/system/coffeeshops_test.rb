@@ -31,6 +31,9 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_text('this place is great')
     assert_selector('#review_rating', text: '★★★★☆')
     click_link('Edit this Review', match: :first)
+# without turbo frame
+    # assert_current_path %r{^/users/\d{1,9}/reviews/\d{1,9}/edit}
+# with turbo frame
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     find('#review_rating', match: :first)
       .find(:xpath, 'option[1]')
@@ -40,8 +43,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_text('"this place is bad"', count: 1)
     assert_selector('#review_rating', text: '★☆☆☆☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
-    click_button 'Delete', match: :first
-    click_button 'Delete', match: :first
+    click_on 'Delete', match: :first
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")

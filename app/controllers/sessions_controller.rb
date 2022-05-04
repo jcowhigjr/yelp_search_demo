@@ -39,8 +39,10 @@ class SessionsController < ApplicationController
   def redirect_to_proper_path
     if cookies[:last_visited]
       redirect_to coffeeshop_path(cookies[:last_visited])
-    else
+    elsif @search.present?
       render 'searches/new', locals: { search: @search }
+    else
+      render 'users/show', locals: { user: current_user }
     end
   end
 
