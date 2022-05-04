@@ -9,24 +9,25 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test 'sign up and sign out' do
+    visit '/'
     visit 'users/new'
     fill_in 'user_name', with: 'john'
     fill_in 'user_email', with: 'john@example.com'
     fill_in 'user_password', with: 'sadfkjs342'
     fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
-    assert_current_path '/'
 
-    # click_button 'Logout' # this is not working
-    click_on 'Logout'
+    click_on 'Logout' # this is not working
+    assert_current_path '/'
   end
 
-  test 'sign in and sign out' do
+  test 'manual sign in' do
+    Capybara.disable_animation = true
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
-    click_button 'Logout'
+    assert_text 'Hello, user_one!'
   end
 
   test 'sign in and visit user profile' do
@@ -35,6 +36,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
+
     click_on 'My Profile'
     assert_current_path "/users/#{@user.id}"
     assert_text "Hello, #{@user.name}!"
