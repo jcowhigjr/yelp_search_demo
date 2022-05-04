@@ -17,9 +17,11 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'My Profile'
-    click_link 'New Search'
+
+    # this breaks without the main is the main content area
+    click_on 'New Search'
     assert_current_path '/searches/new'
+
     click_on 'Logout'
     assert_current_path '/'
 

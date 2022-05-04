@@ -8,18 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
-
     <%# https://github.com/bullet-train-co/magic_test %>
     <%= render 'magic_test/support', 'data-turbo-track': 'reload'  if !ENV['MAGIC_TEST'].nil? && Rails.env.test? %>
     <%= stylesheet_link_tag 'tailwind', 'inter-font', 'data-turbo-track': 'reload' %>
-
     <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <script data-turbo-track="reload" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <%= javascript_importmap_tags %>
 
   </head>
 
-  <body class="dark:bg-slate-900 dark:text-white">
-  <div>
   <% if logged_in? %>
  <div class="navbar-fixed">
    <nav class="transparentBG">
@@ -54,12 +51,21 @@
              <i class="small material-icons">search</i> Search
              <% end %>
       </li>
-  </ul>
+    </ul>
   <% end %>
-    <%# <main class="container flex px-4 mx-auto text-red-500 mt-28"> %>
+
+  <body class="dark:bg-slate-900 dark:text-white">
+
       <%= yield %>
-    <%# </main> %>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  </div>
+    <div class="sidenav-overlay">
+
   </body>
+
+    <script data-turbo-track="reload">
+      const slide_menu = document.querySelectorAll(".sidenav");
+      M.Sidenav.init(slide_menu, {
+        edge: 'left'
+      });
+    </script>
+
 </html>
