@@ -28,7 +28,7 @@ class ReviewsController < ApplicationController
     else
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
-                                                           locals: { review: })
+                                                           locals: { review: @review })
       end
       flash[:error] = t('error.something_went_wrong')
       render @review.coffeeshop
