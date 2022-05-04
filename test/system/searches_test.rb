@@ -1,6 +1,7 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
+
   test 'An anonymous user at the static home can search by zip to return a list of coffeeshops from yelp api' do
     query = 'yoga'
 
