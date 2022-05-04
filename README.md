@@ -80,23 +80,25 @@ https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md
 Add something as a turbo frame
 https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames
 
-# Testing
+# Development
 
-bundle exec guard
+ git flow feature start xyz-feature
+
+ `be guard`  # run tests and linting, asset processing/live reload connection to browser while developing in the background
+ `bin/dev`   # run dev server and css processor
+
+ commit
+  see lefthook.yml
+
+ open a PR
+ `gh pr create`
+
+# System Tests
 system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
 better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
 Insert 'magic_test' in system tests to BDD style improve the app.
-
-# System Tests
-
+SHOW_TESTS=true MAGIC_TEST=true be guard
 [evil systems](https://github.com/ParamagicDev/evil_systems)
-
-# Spotify Integration
-
-https://developer.spotify.com/dashboard/applications/8156e50c77c94ad880cccde9e7d85451
-App Status Development mode (what does this mean?)
-Client ID 8156e50c77c94ad880cccde9e7d85451
-Client Secret 77643b66155e4848b26223eab8c40cf8
 
 # Sign in with Google
 

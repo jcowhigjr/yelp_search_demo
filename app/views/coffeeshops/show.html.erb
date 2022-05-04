@@ -90,7 +90,7 @@ target: :blank do %>
             </div>
                 <% @coffeeshop.reviews.each do |review| %>
                     <div class="review-container z-depth-1">
-                        <%= render partial: 'reviews/show', locals: {review: review} %>
+                        <%= render partial: 'reviews/show', locals: {review:} %>
                     </div>
                     <% end %>
             <% end %>
