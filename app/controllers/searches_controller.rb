@@ -5,8 +5,16 @@ class SearchesController < ApplicationController
 
   def update
     @search = Search.find(params[:id])
+    @search.coffeeshops = []
     @search.update!(search_params)
-    redirect_to @search
+    if Coffeeshop.get_search_results(@search) == 'error'
+      flash[:error] = t('something_went_wrong')
+      redirect_to static_home_url
+    else
+      @search.save
+      flash[:success] = t('success.update', model: 'search')
+      redirect_to_proper_path
+    end
   end
 
   def create
