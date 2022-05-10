@@ -12,12 +12,13 @@
         <%= f.hidden_field :user_id, value: current_user.id %>
         <%= f.label :rating %>
         <%= f.select(:rating,
-options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),  required: true) %>
+         options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
+         {}, { class: 'dark:bg-slate-900 dark:text-white' } ) %>
         <br><br>
         <%= f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
         <%= f.text_area :content, class: 'materialize-textarea', required: true %>
         <%= f.submit  'Submit Review', class: 'btn-large' %>
-        <% end %>
+    <% end %>
 </div>
     </div>
 <%# </body> %>
