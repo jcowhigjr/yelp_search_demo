@@ -14,10 +14,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   if ENV.fetch('CUPRITE', nil) == 'true'
     driven_by :cuprite,
-              screen_size: [1400, 1400],
+              screen_size: [375, 667],
               options: {
                 js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-                inspector: false,
+                inspector: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
                 headless: ENV['SHOW_TESTS'] ? false : true,
               } do |driver_option|
       # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
