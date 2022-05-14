@@ -9,29 +9,32 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
     <%# https://github.com/bullet-train-co/magic_test %>
-    <%= render 'magic_test/support', 'data-turbo-track': 'reload'  if !ENV['MAGIC_TEST'].nil? && Rails.env.test? %>
-    <%= stylesheet_link_tag 'tailwind', 'inter-font', 'data-turbo-track': 'reload' %>
-    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= render 'magic_test/support', "data-turbo-track": 'reload'  if !ENV['MAGIC_TEST'].nil? && Rails.env.test? %>
+    <%= stylesheet_link_tag 'tailwind', 'inter-font', "data-turbo-track": 'reload' %>
+    <%= stylesheet_link_tag 'application', "data-turbo-track": 'reload' %>
     <script data-turbo-track="reload" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <%= javascript_importmap_tags %>
 
   </head>
 
+  <body class="dark:bg-slate-900 dark:text-white">
+
   <% if logged_in? %>
  <div class="navbar-fixed">
    <nav class="transparentBG">
     <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
-      <a href="#" class="brand-logo"></a>
-      <a href="#" data-target="mobile-demo" class="right sidenav-trigger"><i class="material-icons">menu</i></a>
+      <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
+
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><%= button_to 'Logout', logout_path, method: :delete %></li>
-        <li><%= link_to 'My Profile', user_path(current_user) %></li>
-        <li><%= link_to 'New Search', new_search_path, method: :get %></li>
+        <li><%= button_to 'My Profile', user_path(current_user), method: :get %></li>
+        <li><%= button_to 'New Search', new_search_path, method: :get %></li>
       </ul>
     </div>
   </nav>
  </div>
-   <ul class="sidenav dark:bg-slate-900 dark:text-white" id="mobile-demo">
+ <div class="sidenav dark:bg-slate-900 dark:text-white" id="mobile-demo">
+   <ul>
     <li>
       <div class="background"></div>
       <div class="user-view">
@@ -43,31 +46,22 @@
           <i class="small material-icons">exit_to_app</i> Logout
           <% end %>
       </li>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to current_user do %>
+      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to current_user, data: { turbo: false} do %>
             <i class="small material-icons">person</i> My Profile
             <% end %>
            </p>
       </li>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to  new_search_path do %>
-             <i class="small material-icons">search</i> Search
+      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to  new_search_path, data: { turbo: false}  do %>
+             <i class="small material-icons">search</i>New Search
              <% end %>
           </p>
       </li>
     </ul>
+  </div>
   <% end %>
 
-  <body class="dark:bg-slate-900 dark:text-white">
-
-      <%= yield %>
-    <div class="sidenav-overlay">
+    <%= yield %>
 
   </body>
-
-    <script data-turbo-track="reload">
-      const slide_menu = document.querySelectorAll(".sidenav");
-      M.Sidenav.init(slide_menu, {
-        edge: 'left'
-      });
-    </script>
 
 </html>
