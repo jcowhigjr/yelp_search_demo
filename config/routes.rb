@@ -6,7 +6,10 @@ Rails.application.routes.draw do
   # post 'searches', to: 'searches#create', as: 'searches'
   # get 'searches/:id', to: 'searches#show', as: 'search'
 
-  resources :users do
+ get 'signup', to: 'users#new', as: 'signup'
+ resources :users, only: %i[show create]
+
+  resources :users, only: %i[] do
     resources :reviews, only: %i[index edit update destroy]
   end
   resources :reviews, only: :destroy

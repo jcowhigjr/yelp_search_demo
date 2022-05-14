@@ -19,6 +19,14 @@
 ENV['APP_HOST'] ||= '127.0.0.1'
 ENV['CUPRITE'] ||= 'true'
 ENV['HEADLESS'] ||= 'true'
+ENV['CUPRITE_JS_ERRORS'] ||= 'false'
+
+guard :rubocop, all_after_pass: true, all_on_start: true, focus_failed: true do
+  watch(/.+\.rb$/)
+  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
+end
+
+
 
 guard :minitest,
       all_after_pass: true,
@@ -99,7 +107,3 @@ guard 'livereload' do
   watch(%r{config/locales/.+\.yml})
 end
 
-guard :rubocop do
-  watch(/.+\.rb$/)
-  watch(%r{(?:.+/)?\.rubocop(?:_todo)?\.yml$}) { |m| File.dirname(m[0]) }
-end
