@@ -13,6 +13,7 @@ class LoginTest < ApplicationSystemTestCase
     click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
+    click_on 'menu'
     click_on 'My Profile'
     assert_text 'Your favorite spots:'
   end

@@ -93,9 +93,16 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
 
 # System Tests
 system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
+
+these are run by default on commit with a iphone 6/7/8 screen size to test mobile navigation
+be guard while developing
+
+To debug system tests:
+add 'focus' just above the test
+SHOW_TESTS=true MAGIC_TEST=true be guard
+
 better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
 Insert 'magic_test' in system tests to BDD style improve the app.
-SHOW_TESTS=true MAGIC_TEST=true be guard
 [evil systems](https://github.com/ParamagicDev/evil_systems)
 
 # Sign in with Google

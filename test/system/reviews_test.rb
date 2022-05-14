@@ -15,12 +15,13 @@ class BasicsTest < ApplicationSystemTestCase
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
   end
+
   test 'Adding a review' do
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-
+    click_on 'menu'
     click_on 'My Profile'
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
@@ -34,13 +35,13 @@ class BasicsTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-
+    click_on 'menu'
     click_on 'My Profile'
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
             with: 'the cafe mocha is my fav'
     #
-    skip 'create a javascript test to check that the side menu is still there'
+    # skip 'create a javascript test to check that the side menu is still there'
     click_on 'Submit Review'
     # # VM865:1 Uncaught SyntaxError: Identifier 'slide_menu' has already been declared
     # at oe.assignNewBody (turbo.es2017-esm.js:2407:27)
