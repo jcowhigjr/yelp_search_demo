@@ -20,7 +20,7 @@ Jitter totally vibed with me because my favorite place to code has been in coffe
 
 ## Changes/Rebranding:
 
-One day I decided I wanted to help find tacos and directions to a yoga studio so then i switched it up.
+One day, without research 🧐,  I decided I wanted to help find tacos and directions to a yoga studio so then i switched it up.
 
 Currently, I would say it has promise of a baby yelp with old school good enough features:
 
@@ -33,8 +33,27 @@ Currently, I would say it has promise of a baby yelp with old school good enough
  Click another button for directions.
  Link out to yelp for more features.
 
-Future Opportunities
-  Filter the favorites based on your location.
-
+Future Opportunities?
+  Remove unused features:
+    rating?
+  Extend used features:
+    pictures -- pull in more
+    user submitted photos?
+    teach me how to make this?
+  Yelpish: 
+    Filter the favorites based on your location.
+    Share with friends?
+    Help make a quick decision with a decision wheel.
+    Live Poll for the best choice.
+  Keep a tally of the places you've been.
+  Non-Yelpish:
+    specialize and white label by topic build community if there is traction
+      for example, make it local by neighborhood
+    become a tool for 
+    
 ## For Devs ->
+   Most of the work here was actually building out the CI/CD/Security/Update lifecycle of the project.
+ 
+ I have added some notes and resources here:
+ Resources.md  
  DevNotes.md
