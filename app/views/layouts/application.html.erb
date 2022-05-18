@@ -26,9 +26,10 @@
       <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
 
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <%# button_to for Logout still because of a turbo issue  %>
         <li><%= button_to 'Logout', logout_path, method: :delete %></li>
-        <li><%= button_to 'My Profile', user_path(current_user), method: :get %></li>
-        <li><%= button_to 'New Search', new_search_path, method: :get %></li>
+        <li><%= link_to 'My Profile', user_path(current_user), method: :get %></li>
+        <li><%= link_to 'New Search', new_search_path, method: :get %></li>
       </ul>
     </div>
   </nav>
@@ -42,16 +43,19 @@
               <span class="white-text"><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
       </div>
       </li>
+      <%# button_to for Logout still because of a turbo issue  %>
       <li><%= button_to sessions_path, method: :delete  do %>
           <i class="small material-icons">exit_to_app</i> Logout
           <% end %>
       </li>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to current_user, data: { turbo: false} do %>
+      <%# be careful turbo false is here to prevent breaking the slide-nav %>
+      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to user_path(current_user), data: { turbo: false} do %>
             <i class="small material-icons">person</i> My Profile
             <% end %>
            </p>
       </li>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to  new_search_path, data: { turbo: false}  do %>
+      <%# be careful turbo false is here to prevent breaking the slide-nav %>
+      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to new_search_path, data: { turbo: false}  do %>
              <i class="small material-icons">search</i>New Search
              <% end %>
           </p>
