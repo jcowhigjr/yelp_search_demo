@@ -24,6 +24,6 @@ autofocus: current_page?(root_url), id: 'home_query', class: 'home__search' %>
     <dd><%= text_field_tag :downloads, '', placeholder: '>20000', class: 'form__input' %></dd>
 
     <dt><%= label_tag :updated, t('.updated'), class: 'form__label' %></dt>
-    <dd><%= text_field_tag :updated, '', placeholder: ">#{1.week.ago.strftime('%F')}", class: 'form__input' %></dd>
+    <dd><%= text_field_tag :updated, '', placeholder: ">#{1.week.ago.strftime("%F")}", class: 'form__input' %></dd>
   </dl>
 </div>
