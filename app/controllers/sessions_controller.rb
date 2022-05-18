@@ -29,7 +29,7 @@ class SessionsController < ApplicationController
     user =
       User.find_or_create_by(email: auth['email']) do |u|
         u.name = auth['name']
-        u.password = SecureRandom.hex
+        u.password = u.password_confirmation = SecureRandom.hex(16)
       end
     session[:user_id] = user.id
     redirect_to_proper_path

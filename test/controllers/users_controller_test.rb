@@ -18,8 +18,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
              user: {
                name: 'new user',
                email: 'new_user@example.com',
-               password: 'mypass',
-               password_confirmation: 'mypass',
+               password: 'mylongerpassword',
+               password_confirmation: 'mylongerpassword',
              },
            }
     end

@@ -11,9 +11,9 @@
         <% end %>
             <%= render 'users/form' %>
         </div>
-         <div class="row center">
-            <%= link_to '/auth/google_oauth2', class: 'btn-large' do %>
-                <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Sign Up With Google</b>
+        <div class="row center">
+            <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large' do %>
+            <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Sign Up With Google</b>
             <% end %>
         </div>
         <div class="row center">

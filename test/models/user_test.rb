@@ -10,8 +10,8 @@ class UserTest < ActiveSupport::TestCase
       User.new(
         name: 'test',
         email: 'user@example.com',
-        password: 'password',
-        password_confirmation: 'password',
+        password: 'mylongerpassword',
+        password_confirmation: 'mylongerpassword',
       )
     assert_predicate user, :valid?
   end
