@@ -25,5 +25,6 @@ Rails.application.routes.draw do
       as: 'google_login'
   post '/sessions', to: 'sessions#create', as: 'sessions'
   delete '/sessions', to: 'sessions#destroy', as: 'logout'
+  get '/sessions', to: 'sessions#new', as: 'new_session'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
