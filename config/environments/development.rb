@@ -71,4 +71,7 @@ Rails.application.configure do
   unless ENV["BUNDLE_DEPLOYMENT"]
     config.middleware.insert_after ActionDispatch::Static, Rack::LiveReload
   end
+
+  # Enable a feature for everyone
+  Flipper.enable :decision_wheel, current_user: -> { current_user }
 end

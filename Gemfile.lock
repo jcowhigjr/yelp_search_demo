@@ -146,6 +146,10 @@ GEM
       concurrent-ruby (~> 1.1)
       websocket-driver (>= 0.6, < 0.8)
     ffi (1.15.5)
+    flipper (0.24.1)
+    flipper-active_record (0.24.1)
+      activerecord (>= 4.2, < 8)
+      flipper (~> 0.24.1)
     foreman (0.87.2)
     formatador (1.1.0)
     globalid (1.0.0)
@@ -433,6 +437,7 @@ DEPENDENCIES
   erb_lint
   evil_systems
   fast_sqlite
+  flipper-active_record
   foreman
   guard
   guard-livereload
