@@ -20,12 +20,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
                 inspector: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
                 headless: ENV['SHOW_TESTS'] ? false : true,
               } do |driver_option|
-      # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      if ENV['SHOW_TESTS']
-        driver_option.add_extension('capycorder102.crx')
-        driver_option.add_extension('RailsPanel.crx')
-        driver_option.add_extension('LiveReload.crx')
-      end
+               driver_option.add_emulation(device_name: 'iPhone 6')
+
+              # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
+              if ENV['SHOW_TESTS']
+                driver_option.add_extension('capycorder102.crx')
+                driver_option.add_extension('RailsPanel.crx')
+                driver_option.add_extension('LiveReload.crx')
+              end
     end
 
     # these seem to be missing on CI so we need to add them manually

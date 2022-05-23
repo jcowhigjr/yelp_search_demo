@@ -98,12 +98,19 @@ these are run by default on commit with a iphone 6/7/8 screen size to test mobil
 be guard while developing
 
 To debug system tests:
-add 'focus' just above the test
+add 'focus' just above the test that is failing
+add 'magic_test' just above the step that is failing
 SHOW_TESTS=true MAGIC_TEST=true be guard
 
 better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
 Insert 'magic_test' in system tests to BDD style improve the app.
 [evil systems](https://github.com/ParamagicDev/evil_systems)
+
+[browser testing](https://dev.to/nejremeslnici/migrating-selenium-system-tests-to-cuprite-42ah)
+  i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
+  https://testingbot.com/support/selenium/permission-popups#
+
+  https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
 
 # Sign in with Google
 
@@ -172,3 +179,35 @@ git co feature/xyz
 # pull in the changes
 git flow feature rebase
 git stash apply
+
+
+# ngrok and testing on your phone
+i use edge devtools vscode extention and the iphone SE profile to test
+The automated tests run with iPhone SE emulation because it is the smallest phone.
+
+# test locally using https://jitter.test
+brew install puma/puma/puma-dev
+sudo puma-dev -setup
+puma-dev -install
+ln -s /Users/temp/src/ruby/jitter ~/.puma-dev/.
+
+addjust Procfile.dev
+to start puma-dev
+
+start ngrok
+ngrok http https://jitter.test --host-header=jitter.test
+and note your random generated host
+
+edit config/development.rb or .env.development
+
+NGROK_HOST=683e-108-77-85-43.ngrok.io
+see ->
+config.hosts << "683e-108-77-85-43.ngrok.io"
+
+# restart the rack server to allow the new config host access
+touch tmp/restart.txt
+# test remotely over and iternet tunnel
+
+
+Your ngrok dashboard is at http://127.0.0.1:4040/
+

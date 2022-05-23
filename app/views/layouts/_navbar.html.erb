@@ -1,0 +1,38 @@
+<%# https://materializecss.com/navbar.html %>
+<div class="navbar-fixed">
+  <nav class="transparentBG">
+    <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
+      <a href="#" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul id="nav-mobile" class="left hide-on-med-and-down">
+        <li><%= link_to 'Logout', logout_path, method: :delete %></li>
+        <li><%= link_to 'My Profile', user_path(current_user), method: :get %></li>
+        <li><%= link_to 'New Search', new_search_path, method: :get %></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+<div class="sidenav dark:bg-slate-900 dark:text-white" id="mobile-demo">
+  <ul>
+    <li>
+      <div class="background"></div>
+      <div class="user-view">
+              <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
+              <span class="white-text"><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
+      </div>
+    </li>
+    <li><%= button_to sessions_path, method: :delete  do %>
+        <i class="small material-icons">exit_to_app</i> Logout
+        <% end %>
+    </li>
+    <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to current_user, data: { turbo: false} do %>
+          <i class="small material-icons">person</i> My Profile
+          <% end %>
+          </p>
+    </li>
+    <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to  new_search_path, data: { turbo: false}  do %>
+            <i class="small material-icons">search</i>New Search
+            <% end %>
+        </p>
+    </li>
+  </ul>
+</div>

@@ -1,11 +1,27 @@
 <div class="container">
     <div class="row center">
         <h2 class="white-text">Top Rated Searches for <%= @search.query %> near you!</h2>
+    </div>
+    <% if @search.coffeeshops.empty? %>
+        <div class="row center">
+            <span class="page-text red-text">No results found!</span>
+        </div>
+    <% else %>
+        <%# may replace this with https://codepen.io/sumeshkp18/pen/VGBPYg  %>
+        <%# https://pickerwheel.com/embed-tutorial/ %>
+        <% if true %>
+            <div>
+                <% choices = @search.coffeeshops.map(&:name).join(',') %>
+                <% puts choices %>
+                <iframe src="https://pickerwheel.com/emb?choices=<%= choices %>" width="100%" height="550px" scrolling="no" frameborder="0"></iframe>
+            </div>
+        <% end %>
+
         <% @search.coffeeshops.each do |coffeeshop| %>
             <%= turbo_stream_from 'coffeeshops' %>
             <%= turbo_frame_tag 'coffeeshops' do %>
                 <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:} %>
             <% end %>
         <% end %>
-    </div>
+    <% end %>
 </div>

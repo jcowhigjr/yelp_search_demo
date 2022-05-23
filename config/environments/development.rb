@@ -1,6 +1,14 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+
+  # Allow all ngrok hosts access
+  # config.hosts <<   if ENV['NGROK_HOST']
+  #                     ENV['NGROK_HOST']
+  #                   end
+
+  # config.hosts << ENV['PUMA_DEV_HOST'] if ENV['PUMA_DEV_HOST']
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
