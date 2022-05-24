@@ -95,7 +95,6 @@ group :development do
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
   # gem 'lefthook', require: false
   gem 'better_html', require: false
-
 end
 
 group :test do
@@ -116,3 +115,8 @@ group :test do
 end
 
 gem 'tailwindcss-rails', '~> 2.0'
+
+# gem 'flipper-active_record'
+gem 'flipper', require: 'flipper/adapters/pstore'
+
+ 

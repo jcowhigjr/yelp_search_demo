@@ -1,6 +1,14 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+
+  # Allow all ngrok hosts access
+  # config.hosts <<   if ENV['NGROK_HOST']
+  #                     ENV['NGROK_HOST']
+  #                   end
+
+  # config.hosts << ENV['PUMA_DEV_HOST'] if ENV['PUMA_DEV_HOST']
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded any time
@@ -71,4 +79,9 @@ Rails.application.configure do
   unless ENV["BUNDLE_DEPLOYMENT"]
     config.middleware.insert_after ActionDispatch::Static, Rack::LiveReload
   end
+
+  # Enable a feature for everyone
+  Flipper.enable :decision_wheel if ENV["FLIPPER_SPINNER_WHEEL"]
+  Flipper.enable :early_access_beta if ENV["FLIPPER_EARLY_ACCESS_BETA"]
+  Flipper.enable :early_access_preview if ENV["FLIPPER_EARLY_ACCESS_PREVIEW"]
 end

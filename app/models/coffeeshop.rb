@@ -5,8 +5,8 @@ class Coffeeshop < ApplicationRecord
   has_many :user_favorites, dependent: :destroy
   belongs_to :search
 
-  broadcasts_to ->(coffeeshop) { [coffeeshop.search, :coffeeshops] },
-                target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
+  # broadcasts_to ->(coffeeshop) { [coffeeshop.search, :coffeeshops] },
+  #               target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
 
   def self.get_search_results(search)
     query = search.query

@@ -8,14 +8,19 @@
             <%= render 'searches/form' %>
         </div>
 
-        <% if @search.query %>
+    <%# may replace this with https://codepen.io/sumeshkp18/pen/VGBPYg  %>
+    <%# https://pickerwheel.com/embed-tutorial/ %>
+    <% if @search&.query && current_user&.present? && Flipper.enabled?(:decision_wheel, current_user) %>
+        <%= render partial: 'searches/picker_wheel' %>
+    <% end %>
 
-        <div class="search-results ">
-            <%= turbo_stream_from 'searches' %>
-            <%= turbo_frame_tag 'search_form' do %>
-                <%= render partial: 'searches/results', locals: {search: @search} %>
-            <% end %>
-        </div>
+        <% if @search.query %>
+           <div class="search-results ">
+                <%= turbo_stream_from 'searches' %>
+                <%= turbo_frame_tag 'search_form' do %>
+                    <%= render partial: 'searches/results', locals: {search: @search} %>
+                <% end %>
+           </div>
 
         <% end %>
     </div>

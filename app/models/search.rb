@@ -9,5 +9,19 @@ class Search < ApplicationRecord
   validates :latitude, presence: true, numericality: { in: -90..90 }
   validates :longitude, presence: true, numericality: { in: -180..180 }
 
-  # broadcasts target: :coffeeshops, action: :create, channel: -> { "search_#{id}" }
+  #  this presentation logic should be in the controller
+
+  def picker_choices
+    names
+  end
+
+  private
+    def results
+      coffeeshops.order(rating: :desc).limit(10)
+    end
+
+    def names
+      results.map(&:name)
+    end
+
 end

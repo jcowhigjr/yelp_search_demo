@@ -6,9 +6,9 @@
                     <span class="page-text red-text"><%= flash[:error] %></span>
                 </div>
              <% end %>
-            <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
+            <h1 class="flow-text"> Hello, <%= current_user&.name || 'guest user' %>!   </h1>
         </div>
-        <% if current_user.user_favorites.empty? %>
+        <% if !current_user || current_user.user_favorites.empty? %>
             <div class="row center">
                 <span class="page-text">You don't have any favorite shops yet!</span>
             </div>

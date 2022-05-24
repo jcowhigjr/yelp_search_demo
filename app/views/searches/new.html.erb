@@ -8,12 +8,4 @@
 
          <%= render 'searches/form', locals: { search: @search } if @search %>
     </div>
-
-    <% if @search %>
-        <div class="search-results">
-            <%= render partial: 'searches/results', locals: {search: @search} %>
-        </div>
-    <% end %>
-
-    </div>  <!-- end of container -->
 </body>
