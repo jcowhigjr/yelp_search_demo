@@ -81,5 +81,7 @@ Rails.application.configure do
   end
 
   # Enable a feature for everyone
-  Flipper.enable :decision_wheel, current_user: -> { current_user }
+  Flipper.enable :decision_wheel if ENV["FLIPPER_SPINNER_WHEEL"]
+  Flipper.enable :early_access_beta if ENV["FLIPPER_EARLY_ACCESS_BETA"]
+  Flipper.enable :early_access_preview if ENV["FLIPPER_EARLY_ACCESS_PREVIEW"]
 end

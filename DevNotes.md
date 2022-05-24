@@ -211,3 +211,26 @@ touch tmp/restart.txt
 
 Your ngrok dashboard is at http://127.0.0.1:4040/
 
+# Evaluation of a new feature
+
+    user research: need a solution
+    push left: need to do this back to design
+      focus on how it integrates with the purpose of the user
+      how does it change the purpose of the user
+      what trade offs from the current purpose of the user
+      what trade offs from a system point of view.
+      without thinking implementation or technology discuss strategy
+      write a rough User Story if it still makes sense
+      sketh out the UI
+      brainstorm the data flow
+
+      demo on my machine a spike the minimal way to implement a prototype
+      brainstorm dependent technologies to bring the feature to users
+      repeat the cycle with the dependent features...
+
+    tech to mitigate the risks of being creative:
+
+       Limit the impact of change:
+        Follow a testable/component based integration pattern: trying view components
+        Follow a removable pattern: trying feature flags
+        yagni: say no to most things, get rid of unused things
