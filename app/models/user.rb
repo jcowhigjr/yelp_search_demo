@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :searches, dependent: :destroy
 
+  include Flipper::Identifier
+
   def favorite?(coffeeshop)
     !!user_favorites.find_by(coffeeshop:)
   end

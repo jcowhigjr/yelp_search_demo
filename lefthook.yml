@@ -15,9 +15,9 @@ pre-push:
       files: git diff --name-only master
       glob: '*.rb'
       run: bundle exec rubocop --force-exclusion {files}
-    brakeman:
-      tags: backend security
-      run: bundle exec brakeman --no-pager
+    # brakeman:
+    #   tags: backend security
+    #   run: bundle exec brakeman --no-pager
 #
 pre-commit:
   parallel: true
@@ -35,12 +35,12 @@ pre-commit:
       files: git diff --name-only master
       glob: '*.erb'
       run: bundle exec erblint --lint-all {files}
-    brakeman:
-      tags: backend security
-      run: bundle exec brakeman --no-pager
-    rails-tests:
-      tags: backend tests
-      run: "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
+    # brakeman:
+    #   tags: backend security
+    #   run: bundle exec brakeman --no-pager
+    # rails-tests:
+    #   tags: backend tests
+    #   run: "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
 
 fixer:
   commands:

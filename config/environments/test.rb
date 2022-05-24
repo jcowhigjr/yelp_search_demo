@@ -57,4 +57,13 @@ Rails.application.configure do
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
+
+
+  # enable Bullet in testing mode only if requested
+  # https://pawelurbanek.com/rails-n-1-queries
+  # config.after_initialize do
+  #   Bullet.enable = true
+  #   Bullet.raise = false
+  #   Bullet.bullet_logger = true
+  # end
 end

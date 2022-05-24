@@ -1,2 +1,6 @@
-web: bundle update && bin/setup && bin/rails db:environment:set RAILS_ENV=test && HEADLESS=true CUPRITE=true bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server -p3000
+#web: bundle update && bin/setup && bin/rails db:environment:set RAILS_ENV=test && HEADLESS=true CUPRITE=true bin/rails test:all RAILS_ENV=test && bin/rails db:seed && puma-dev
+web: bundle update && bin/setup && bin/rails db:environment:set RAILS_ENV=test && HEADLESS=true CUPRITE=true bin/rails test:all RAILS_ENV=test && bin/rails db:seed && bin/rails server
 css: sleep 80; bin/rails assets:clobber --trace; bin/rails tailwindcss:watch --trace RAILS_ENV=development
+#ngrok: killall ngrok exit; sleep 100 && ngrok start jitter-test
+#ngrok http https://jitter.test --host-header=jitter.test
+
