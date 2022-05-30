@@ -20,10 +20,9 @@ pre-push:
     #   run: bundle exec brakeman --no-pager
     rails-tests:
       tags: backend tests
-      run:
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
 
 pre-commit:
   parallel: true
@@ -46,10 +45,9 @@ pre-commit:
     #   run: bundle exec brakeman --no-pager
     rails-tests:
       tags: backend tests
-      run:
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace
-        - RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=false bin/rails test:all
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
 
 fixer:
   parallel: true
@@ -75,7 +73,10 @@ fixer:
       run: bundle audit update && bundle audit check
     rails-tests:
       tags: backend tests
-      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:all
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+
 # scripts:
 #     "hello.js":
 #       runner: node
