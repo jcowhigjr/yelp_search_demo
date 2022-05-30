@@ -19,7 +19,7 @@
 ENV['APP_HOST'] ||= '127.0.0.1'
 ENV['CUPRITE'] ||= 'true'
 ENV['HEADLESS'] ||= 'true'
-ENV['CUPRITE_JS_ERRORS'] ||= 'false'
+ENV['CUPRITE_JS_ERRORS'] ||= 'true'
 
 guard :rubocop, all_after_pass: true, all_on_start: true, focus_failed: true do
   watch(/.+\.rb$/)
