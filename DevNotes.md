@@ -233,4 +233,16 @@ Your ngrok dashboard is at http://127.0.0.1:4040/
        Limit the impact of change:
         Follow a testable/component based integration pattern: trying view components
         Follow a removable pattern: trying feature flags
-        yagni: say no to most things, get rid of unused things
+        yagni: say no to most things, get rid of unused
+
+# Security Updates
+
+  Dependabot alerts are resulting in very frequent security updates.. so much so that i should probably update the Gemfile.lock with a cronjob but so far its manageable.
+
+  For now every new feature i update the Gemfile.lock and make PRs to update when I see a dependabot alert.
+
+  Heroku recommended https://guides.rubyonrails.org/security.html changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
+
+  https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html
+  heroku config:set RAILS_MASTER_KEY=your-master-key
+  EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
