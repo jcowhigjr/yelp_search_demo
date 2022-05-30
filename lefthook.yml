@@ -18,7 +18,12 @@ pre-push:
     # brakeman:
     #   tags: backend security
     #   run: bundle exec brakeman --no-pager
-#
+    rails-tests:
+      tags: backend tests
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+
 pre-commit:
   parallel: true
   commands:
@@ -38,11 +43,14 @@ pre-commit:
     # brakeman:
     #   tags: backend security
     #   run: bundle exec brakeman --no-pager
-    # rails-tests:
-    #   tags: backend tests
-    #   run: "bin/rails test:prepare test test:system --trace HEADLESS=true APP_HOST='127.0.0.1' DATABASE_URL=nil CUPRITE=true"
+    rails-tests:
+      tags: backend tests
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
 
 fixer:
+  parallel: true
   commands:
     ruby-fixer:
       run: bundle exec rubocop --force-exclusion --auto-correct {all_files}
@@ -63,6 +71,12 @@ fixer:
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
+    rails-tests:
+      tags: backend tests
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+
 # scripts:
 #     "hello.js":
 #       runner: node
