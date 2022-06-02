@@ -21,7 +21,7 @@ class BasicsTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu'
+    click_on 'menu' if ENV['CUPRITE']
     click_on 'My Profile'
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
@@ -35,7 +35,7 @@ class BasicsTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu'
+    click_on 'menu' if ENV['CUPRITE']
     click_on 'My Profile'
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
