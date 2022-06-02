@@ -15,7 +15,7 @@ class NavigationTest < ApplicationSystemTestCase
 
     # searches/3 this 3rd seaarch doesn't save when using turbo true on the search button
     assert_current_path search_path(Search.last.id)
-
+    assert_text 'tacos'
     click_on 'More Info', match: :first
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
