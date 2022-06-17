@@ -48,12 +48,13 @@ pre-commit:
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
-
+    # i18n-tasks:
+    #   run: bundle exec i18n-tasks health en
 fixer:
   parallel: true
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion --auto-correct {all_files}
+      run: bundle exec rubocop --force-exclusion --autocorrect {all_files}
     js-fixer:
       glob: 'app/javascript/**.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}
@@ -76,6 +77,8 @@ fixer:
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:all
+    i18n-tasks:
+      run: bundle exec i18n-tasks health en missing unused
 
 # scripts:
 #     "hello.js":

@@ -1,0 +1,52 @@
+---
+pt-BR:
+  coffeeshop: Coffee Shop
+  dir: ltr
+  error:
+    already_exists: O %{model} já existe
+    invalid_login: Login ou senha inválidos
+    invalid_parameter: Parâmetro inválido %{parameter}
+    invalid_token: Token inválido
+    missing_parameter: Parâmetro ausente %{parameter}
+    not_allowed: Você não tem permissão para realizar esta ação
+    not_found: O recurso solicitado não foi encontrado
+    not_implemented: Este recurso ainda não foi implementado
+    something_went_wrong: Algo deu errado, tente novamente mais tarde
+    unauthorized: Você não está autorizado a realizar esta ação
+  hello: Olá Mundo
+  layouts:
+    footer:
+      language_name_of_locale: Portuguese
+  root:
+    title: Pesquisa de bobo
+  success:
+    create: "%{model} criado com sucesso."
+    destroy: "%{model} destruído com sucesso."
+    login: Logado com sucesso.
+    logout: Desconectado com sucesso.
+    update: "%{model} atualizado com sucesso."
+  views:
+    searches:
+      create: Procurar
+      destroy: Procurar
+      edit: Procurar
+      index: Procurar
+      new: Nova pesquisa
+      show: Procurar
+      update: Procurar
+    user_sessions:
+      create: Sessão do usuário
+      destroy: Sessão do usuário
+      edit: Sessão do usuário
+      index: Sessão do usuário
+      new: Sessão do usuário
+      show: Sessão do usuário
+      update: Sessão do usuário
+    users:
+      create: Do utilizador
+      destroy: Do utilizador
+      edit: Do utilizador
+      index: Do utilizador
+      new: Do utilizador
+      show: Do utilizador
+      update: Do utilizador

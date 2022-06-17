@@ -83,4 +83,11 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Devise mailer.
+  # config.action_mailer.default_url_options = {host: ENV["HOST"], locale: nil}
+
+  # Configure host for URL helpers.
+  Rails.application.routes.default_url_options = {host: ENV["HOST"], locale: nil}
+
 end
