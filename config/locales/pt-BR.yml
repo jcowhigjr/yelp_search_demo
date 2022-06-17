@@ -32,6 +32,7 @@ pt-BR:
       edit: Procurar
       index: Procurar
       new: Nova pesquisa
+      placeholder: Insira um termo de pesquisa (por exemplo, tacos)
       show: Procurar
       update: Procurar
     user_sessions:

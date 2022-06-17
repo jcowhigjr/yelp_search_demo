@@ -27,11 +27,11 @@ en:
     update: Successfully updated %{model}.
   views:
     searches:
-      create: Search
       destroy: Search
       edit: Search
       index: Search
       new: New Search
+      placeholder: Enter a search term (ex. tacos)
       show: Search
       update: Search
     user_sessions:
