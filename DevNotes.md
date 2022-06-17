@@ -249,3 +249,6 @@ Your ngrok dashboard is at http://127.0.0.1:4040/
 
   for github actions:
   add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key  (see main.yml)
+
+  # https://github.com/glebm/i18n-tasks
+  GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR

@@ -1,5 +1,10 @@
 class ApplicationController < ActionController::Base
+  include Locales
+
   helper_method :current_user, :logged_in?, :check_login
+
+  around_action :set_locale
+  helper_method :resolve_locale
 
   def current_user
     session[:user_id] ? User.find(session[:user_id]) : nil

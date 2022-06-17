@@ -66,4 +66,9 @@ Rails.application.configure do
   #   Bullet.raise = false
   #   Bullet.bullet_logger = true
   # end
+
+
+  # Configure host for URL helpers.
+  Rails.application.routes.default_url_options = {host: "localhost", port: 3000, locale: nil}
+
 end

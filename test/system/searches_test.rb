@@ -5,7 +5,7 @@ class SearchesTest < ApplicationSystemTestCase
   test 'An anonymous user at the static home can search by query and requery for businesses' do
     query = 'yoga'
 
-    visit static_home_url
+    visit '/'
 
     fill_in 'search[query]', with: query
 
@@ -84,7 +84,7 @@ class SearchesTest < ApplicationSystemTestCase
   test 'An anonymous user can update the query' do
     query = 'yoga'
 
-    visit static_home_url
+    visit '/'
 
     fill_in 'search[query]', with: query
 
