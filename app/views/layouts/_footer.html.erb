@@ -1,11 +1,9 @@
-<footer class="transparentBG">
-    <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
-
-  <%# <div class="px-4 py-12 mx-auto overflow-hidden max-w-7xl sm:px-6 lg:px-8"> %>
-    <nav class="flex flex-wrap justify-center" aria-label="Language links">
+<footer>
+  <div class="nav-wrapper">
+    <nav class="flex flex-wrap justify-center dark:bg-slate-900 dark:text-white" aria-label="Language links">
       <% I18n.available_locales.each do |locale| %>
         <div class="px-5">
-          <%= link_to request.params.merge(locale: resolve_locale(locale)), class: 'text-gray-500 hover:text-gray-900', "aria-label": t('.language_name_of_locale', locale:) do %>
+          <%= link_to request.params.merge(locale: resolve_locale(locale)), "aria-label": t('.language_name_of_locale', locale:) do %>
             <span><%= t('.language_name_of_locale', locale:) %></span>
           <% end %>
         </div>
