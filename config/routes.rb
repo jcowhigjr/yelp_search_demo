@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/, defaults: {locale: nil} do
-    get '/', to: 'searches#new'
+  scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/  do
+    # get '/', to: 'searches#new'
     root to: 'searches#new', as: 'static_home'
     resources :searches, only: %i[new create show update]
 

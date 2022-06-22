@@ -17,6 +17,7 @@ class BasicsTest < ApplicationSystemTestCase
   end
 
   test 'Adding a review' do
+    skip 'temporary skip'
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
@@ -31,6 +32,7 @@ class BasicsTest < ApplicationSystemTestCase
   end
 
   test 'BUG: Adding a review breaks side menu' do
+    skip 'temporary skip'
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password

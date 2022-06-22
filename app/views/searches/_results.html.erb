@@ -1,10 +1,10 @@
 <div class="container">
     <div class="row center">
-        <h2 class="white-text">Top Rated Searches for <%= @search.query %> near you!</h2>
+        <h2 class="white-text"><%= t('views.searches.results', query: @search.query ) %></h2>
     </div>
     <% if @search.coffeeshops.empty? %>
         <div class="row center">
-            <span class="page-text red-text">No results found!</span>
+            <span class="page-text red-text"><%= t('.no-results-found') %></span>
         </div>
     <% else %>
         <% @search.coffeeshops.each do |coffeeshop| %>

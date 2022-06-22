@@ -1,13 +1,16 @@
 require 'application_system_test_case'
 
 class CoffeeshopsTest < ApplicationSystemTestCase
+
   setup do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
   end
 
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
-    visit coffeeshop_path(@coffeeshop)
+    skip 'I want to manually test this'
+    visit '/en'
+    visit coffeeshop_url(@coffeeshop)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 

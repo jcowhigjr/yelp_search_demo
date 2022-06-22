@@ -1,7 +1,25 @@
 ---
 pt-BR:
   coffeeshop: Coffee Shop
+  coffeeshops:
+    coffeeshop:
+      more-info: Mais informações
+      phone: telefone
+      place: Lugar, colocar
+    show:
+      add-to-my-favor: ADICIONAR AOS MEUS FAVORITOS
+      log-in: Conecte-se
+      login-to-add-th: Faça login para adicionar esta loja aos seus favoritos!
+      remove-from-my-favor: RETIRAR DOS MEUS FAVORITOS
+      reviews:
+        index: Avaliações
+      to-leave-a-revi: para deixar um comentário
+      you-must-be-les: Você deve estar <%= link_to 'logado', login_path %> para deixar um comentário!
+      you-must-be-les-0: para deixar um comentário!
+  confirm-passwor: Confirme a Senha
   dir: ltr
+  earlyaccess: Recurso de visualização ativado
+  email: E-mail
   error:
     already_exists: O %{model} já existe
     invalid_login: Login ou senha inválidos
@@ -17,14 +35,44 @@ pt-BR:
   layouts:
     footer:
       language_name_of_locale: Portuguese
+    navbar:
+      coming-soon-sig: 'Em breve: inscreva-se para acesso antecipado'
+      logout: Sair
+      my-profile: Meu perfil
+  more-info: Mais informações
+  password-must-b: Senha (deve ter pelo menos 6 caracteres)
+  phone: telefone
+  place: Lugar, colocar
+  reviews:
+    form:
+      leave-a-review: Deixe um comentário!
+      please-give-a-b: Por favor, dê uma breve descrição de sua experiência no Caliente Bistro Kitchen.
+      rating: Avaliação
+      submit-review: ENVIAR REVISÃO
   root:
     title: Pesquisa de bobo
+  searches:
+    results:
+      no-results-found: Nenhum resultado encontrado!
   success:
     create: "%{model} criado com sucesso."
     destroy: "%{model} destruído com sucesso."
     login: Logado com sucesso.
     logout: Desconectado com sucesso.
     update: "%{model} atualizado com sucesso."
+  top-rated-searches-for: Pesquisas mais bem avaliadas para <%= @search.query %> perto de você!
+  username: Nome de usuário
+  users:
+    form:
+      confirm-passwor: Confirme a Senha
+      email: o email
+      password-must-b: Senha (deve ter pelo menos 6 caracteres)
+      username: Nome
+    show:
+      guest-user: usuário convidado
+      hello-0: Olá,
+      search-for-a-sh: Procure uma loja para encontrar uma perto de você.
+      you-dont-have-a: Você ainda não tem nenhuma loja favorita!
   views:
     searches:
       create: Procurar
@@ -33,6 +81,7 @@ pt-BR:
       index: Procurar
       new: Nova pesquisa
       placeholder: Insira um termo de pesquisa (por exemplo, tacos)
+      results: Pesquisas mais votadas por %{query} perto de você!
       show: Procurar
       update: Procurar
     user_sessions:
