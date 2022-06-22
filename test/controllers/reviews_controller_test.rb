@@ -43,7 +43,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create review' do
     assert_difference('Review.count') do
-      post coffeeshop_reviews_path(@coffeeshop),
+      post coffeeshop_reviews_path(@coffeeshop, locale: nil),
            params: {
              review: {
                user_id: @user.id,
@@ -89,7 +89,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   test 'should destroy the user review' do # test for destroy
     # login(@user)
     assert_difference('Review.count', -1) do
-      delete user_review_path(@user, @review) # delete ReviewsController#:destroy
+      delete user_review_path(@user, @review, locale: nil) # delete ReviewsController#:destroy
     end
 
     assert_redirected_to coffeeshop_path(@coffeeshop)

@@ -1,7 +1,28 @@
 ---
 en:
+  add-to-my-favor: Add to my favorites.
   coffeeshop: Coffee Shop
+  coffeeshops:
+    coffeeshop:
+      more-info: More Info
+      reviews: Reviews
+    reviews:
+      form:
+        leave-a-review: Leave a review!
+    show:
+      add-to-my-favor: ADD TO MY FAVORITES
+      log-in: Log In
+      login-to-add-th: Login to add this shop to your favorites!
+      remove-from-my-favor: REMOVE FROM MY FAVORITES
+      reviews:
+        index: Reviews
+      to-leave-a-revi: to leave a review
+      you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
+      you-must-be-les-0: to leave a review!
+  confirm-passwor: Confirm Password
   dir: ltr
+  earlyaccess: Preview Feature Enabled
+  email: Email
   error:
     already_exists: The %{model} already exists
     invalid_login: Invalid login or password
@@ -13,25 +34,64 @@ en:
     not_implemented: This feature is not implemented yet
     something_went_wrong: Something went wrong, please try again later
     unauthorized: You are not authorized to perform this action
-  hello: Hello world
   layouts:
     footer:
       language_name_of_locale: English
+    navbar:
+      coming-soon-sig: 'Coming Soon: Sign up for Early Access'
+      logout: Logout
+      my-profile: My Profile
+  log-in: Log in
+  login-to-add-th: Login to add this shop to your favorites!
+  more-info: More Info
+  password-must-b: Password (must be at least 6 characters)
+  phone: phone
+  place: place
+  please-give-a-b: 'Please give a brief description of your experience at #{@coffeeshop.name}.'
+  rating: ":rating"
+  reviews:
+    form:
+      leave-a-review: Leave a review!
+      please-give-a-b: Please give a brief description of your experience at Caliente Bistro Kitchen.
+      rating: rating
+      submit-review: SUBMIT REVIEW
+    index: 'Reviews:'
   root:
     title: Dorkbob Search
+  search-for-a-sh: Search for a shop to find one near you.
+  searches:
+    results:
+      no-results-found: No Results Found!
+  submit-review: Submit Review
   success:
     create: Successfully created %{model}.
     destroy: Successfully destroyed %{model}.
     login: Successfully logged in.
     logout: Successfully logged out.
     update: Successfully updated %{model}.
+  to-leave-a-revi: to leave a review
+  username: Username
+  users:
+    form:
+      confirm-passwor: Confirm Password
+      email: email
+      password-must-b: Password (must be at least 6 characters)
+      username: Name
+    show:
+      guest-user: guest user
+      hello-0: Hello,
+      search-for-a-sh: Search for a shop to find one near you.
+      you-dont-have-a: You don't have any favorite shops yet!
   views:
+    reviews:
+      leave-a-review: Leave a review
     searches:
       destroy: Search
       edit: Search
       index: Search
       new: New Search
       placeholder: Enter a search term (ex. tacos)
+      results: Top Rated Searches for %{query} near you!
       show: Search
       update: Search
     user_sessions:
@@ -50,3 +110,6 @@ en:
       new: User
       show: User
       update: User
+  you-dont-have-a: You don't have any favorite shops yet!
+  you-must-be-les: to leave a review!
+  you-must-be-les-0: you-must-be-les
