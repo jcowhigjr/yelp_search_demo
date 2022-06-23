@@ -1,0 +1,115 @@
+---
+fr:
+  add-to-my-favor: Ajouter à mes favoris.
+  coffeeshop: Café
+  coffeeshops:
+    coffeeshop:
+      more-info: Plus d'informations
+      reviews: Commentaires
+    reviews:
+      form:
+        leave-a-review: Laisser un commentaire!
+    show:
+      add-to-my-favor: AJOUTER À MES FAVORIS
+      log-in: Connexion
+      login-to-add-th: Connectez-vous pour ajouter cette boutique à vos favoris !
+      remove-from-my-favor: SUPPRIMER DE MES FAVORIS
+      reviews:
+        index: Commentaires
+      to-leave-a-revi: laisser un avis
+      you-must-be-les: Vous devez être <%= link_to 'logged in', login_path %> pour laisser un avis !
+      you-must-be-les-0: pour laisser un avis !
+  confirm-passwor: Confirmez le mot de passe
+  dir: ltr
+  earlyaccess: Fonction d'aperçu activée
+  email: E-mail
+  error:
+    already_exists: Le %{model} existe déjà
+    invalid_login: Nom d'utilisateur ou mot de passe incorrect
+    invalid_parameter: Paramètre invalide %{parameter}
+    invalid_token: Jeton invalide
+    missing_parameter: Paramètre manquant %{parameter}
+    not_allowed: Vous n'êtes pas autorisé à effectuer cette action
+    not_found: La ressource demandée n'a pas été trouvée
+    not_implemented: Cette fonctionnalité n'est pas encore implémentée
+    something_went_wrong: Quelque chose c'est mal passé. Merci d'essayer plus tard
+    unauthorized: Vous n'êtes pas autorisé à effectuer cette action
+  layouts:
+    footer:
+      language_name_of_locale: Français
+    navbar:
+      coming-soon-sig: 'Prochainement : inscrivez-vous pour un accès anticipé'
+      logout: Se déconnecter
+      my-profile: Mon profil
+  log-in: Connexion
+  login-to-add-th: Connectez-vous pour ajouter cette boutique à vos favoris !
+  more-info: Plus d'informations
+  password-must-b: Le mot de passe doit être au moins de 6 caractères)
+  phone: téléphoner
+  place: place
+  please-give-a-b: 'Veuillez décrire brièvement votre expérience chez #{@coffeeshop.name}.'
+  rating: ":évaluation"
+  reviews:
+    form:
+      leave-a-review: Laisser un commentaire!
+      please-give-a-b: Veuillez décrire brièvement votre expérience chez Caliente Bistro Kitchen.
+      rating: évaluation
+      submit-review: POSTER LE COMMENTAIRE
+    index: 'Commentaires:'
+  root:
+    title: Recherche Dorkbob
+  search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
+  searches:
+    results:
+      no-results-found: Aucun résultat trouvé !
+  submit-review: Poster le commentaire
+  success:
+    create: "%{model} a été créé avec succès."
+    destroy: "%{model} détruit avec succès."
+    login: Connexion réussie.
+    logout: Déconnexion réussie.
+    update: "%{model} a été mis à jour avec succès."
+  to-leave-a-revi: laisser un avis
+  username: Nom d'utilisateur
+  users:
+    form:
+      confirm-passwor: Confirmez le mot de passe
+      email: e-mail
+      password-must-b: Le mot de passe doit être au moins de 6 caractères)
+      username: Nom
+    show:
+      guest-user: utilisateur invité
+      hello-0: Bonjour,
+      search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
+      you-dont-have-a: Vous n'avez pas encore de boutiques préférées !
+  views:
+    reviews:
+      leave-a-review: Laisser un commentaire
+    searches:
+      destroy: Chercher
+      edit: Chercher
+      index: Chercher
+      new: Nouvelle recherche
+      placeholder: Entrez un terme de recherche (ex. tacos)
+      results: Recherches les mieux notées pour %{query} près de chez vous !
+      show: Chercher
+      update: Chercher
+    user_sessions:
+      create: Session utilisateur
+      destroy: Session utilisateur
+      edit: Session utilisateur
+      index: Session utilisateur
+      new: Session utilisateur
+      show: Session utilisateur
+      update: Session utilisateur
+    users:
+      create: Utilisateur
+      destroy: Utilisateur
+      edit: Utilisateur
+      index: Utilisateur
+      new: Utilisateur
+      show: Utilisateur
+      update: Utilisateur
+  you-dont-have-a: Vous n'avez pas encore de boutiques préférées !
+  you-must-be-les: pour laisser un avis !
+  you-must-be-les-0: vous-devez-être-les

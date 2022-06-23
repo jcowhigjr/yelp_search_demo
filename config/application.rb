@@ -22,7 +22,7 @@ module Jitter
     # config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
 
     # Set permitted locales
-    config.i18n.available_locales = [:en, :"pt-BR"]
+    config.i18n.available_locales = [:en, :es, :fr, :"pt-BR"]
     # Set default locale
     config.i18n.default_locale = :en
 

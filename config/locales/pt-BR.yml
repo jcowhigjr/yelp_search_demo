@@ -34,7 +34,7 @@ pt-BR:
   hello: Olá Mundo
   layouts:
     footer:
-      language_name_of_locale: Portuguese
+      language_name_of_locale: Português (Brasil)
     navbar:
       coming-soon-sig: 'Em breve: inscreva-se para acesso antecipado'
       logout: Sair
