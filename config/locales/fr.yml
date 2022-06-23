@@ -1,4 +1,3 @@
----
 fr:
   add-to-my-favor: Ajouter à mes favoris.
   coffeeshop: Café
@@ -17,7 +16,7 @@ fr:
       reviews:
         index: Commentaires
       to-leave-a-revi: laisser un avis
-      you-must-be-les: Vous devez être <%= link_to 'logged in', login_path %> pour laisser un avis !
+      you-must-be-les: "Vous devez être <%= link_to 'logged in', login_path %> pour laisser un avis\_!"
       you-must-be-les-0: pour laisser un avis !
   confirm-passwor: Confirmez le mot de passe
   dir: ltr
@@ -38,7 +37,7 @@ fr:
     footer:
       language_name_of_locale: Français
     navbar:
-      coming-soon-sig: 'Prochainement : inscrivez-vous pour un accès anticipé'
+      coming-soon-sig: "Prochainement\_: inscrivez-vous pour un accès anticipé"
       logout: Se déconnecter
       my-profile: Mon profil
   log-in: Connexion
@@ -48,11 +47,11 @@ fr:
   phone: téléphoner
   place: place
   please-give-a-b: 'Veuillez décrire brièvement votre expérience chez #{@coffeeshop.name}.'
-  rating: ":évaluation"
+  rating: ':évaluation'
   reviews:
     form:
       leave-a-review: Laisser un commentaire!
-      please-give-a-b: Veuillez décrire brièvement votre expérience chez Caliente Bistro Kitchen.
+      please-give-a-b: Veuillez décrire brièvement votre expérience chez %(nom).
       rating: évaluation
       submit-review: POSTER LE COMMENTAIRE
     index: 'Commentaires:'
@@ -61,14 +60,14 @@ fr:
   search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
   searches:
     results:
-      no-results-found: Aucun résultat trouvé !
+      no-results-found: "Aucun résultat trouvé\_!"
   submit-review: Poster le commentaire
   success:
-    create: "%{model} a été créé avec succès."
-    destroy: "%{model} détruit avec succès."
+    create: '%{model} a été créé avec succès.'
+    destroy: '%{model} détruit avec succès.'
     login: Connexion réussie.
     logout: Déconnexion réussie.
-    update: "%{model} a été mis à jour avec succès."
+    update: '%{model} a été mis à jour avec succès.'
   to-leave-a-revi: laisser un avis
   username: Nom d'utilisateur
   users:
@@ -81,7 +80,7 @@ fr:
       guest-user: utilisateur invité
       hello-0: Bonjour,
       search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
-      you-dont-have-a: Vous n'avez pas encore de boutiques préférées !
+      you-dont-have-a: "Vous n'avez pas encore de boutiques préférées\_!"
   views:
     reviews:
       leave-a-review: Laisser un commentaire
@@ -91,7 +90,7 @@ fr:
       index: Chercher
       new: Nouvelle recherche
       placeholder: Entrez un terme de recherche (ex. tacos)
-      results: Recherches les mieux notées pour %{query} près de chez vous !
+      results: "Recherches les mieux notées pour %{query} près de chez vous\_!"
       show: Chercher
       update: Chercher
     user_sessions:
@@ -110,6 +109,6 @@ fr:
       new: Utilisateur
       show: Utilisateur
       update: Utilisateur
-  you-dont-have-a: Vous n'avez pas encore de boutiques préférées !
+  you-dont-have-a: "Vous n'avez pas encore de boutiques préférées\_!"
   you-must-be-les: pour laisser un avis !
   you-must-be-les-0: vous-devez-être-les

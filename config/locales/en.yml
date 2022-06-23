@@ -47,12 +47,11 @@ en:
   password-must-b: Password (must be at least 6 characters)
   phone: phone
   place: place
-  please-give-a-b: 'Please give a brief description of your experience at #{@coffeeshop.name}.'
   rating: ":rating"
   reviews:
     form:
       leave-a-review: Leave a review!
-      please-give-a-b: Please give a brief description of your experience at Caliente Bistro Kitchen.
+      please-give-a-b: Please give a brief description of your experience at %{name}.
       rating: rating
       submit-review: SUBMIT REVIEW
     index: 'Reviews:'

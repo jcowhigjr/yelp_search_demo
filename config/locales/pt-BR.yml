@@ -1,4 +1,3 @@
----
 pt-BR:
   coffeeshop: Coffee Shop
   coffeeshops:
@@ -14,7 +13,9 @@ pt-BR:
       reviews:
         index: Avaliações
       to-leave-a-revi: para deixar um comentário
-      you-must-be-les: Você deve estar <%= link_to 'logado', login_path %> para deixar um comentário!
+      you-must-be-les: >-
+        Você deve estar <%= link_to 'logado', login_path %> para deixar um
+        comentário!
       you-must-be-les-0: para deixar um comentário!
   confirm-passwor: Confirme a Senha
   dir: ltr
@@ -46,7 +47,7 @@ pt-BR:
   reviews:
     form:
       leave-a-review: Deixe um comentário!
-      please-give-a-b: Por favor, dê uma breve descrição de sua experiência no Caliente Bistro Kitchen.
+      please-give-a-b: Por favor, dê uma breve descrição de sua experiência em %(name).
       rating: Avaliação
       submit-review: ENVIAR REVISÃO
   root:
@@ -55,11 +56,11 @@ pt-BR:
     results:
       no-results-found: Nenhum resultado encontrado!
   success:
-    create: "%{model} criado com sucesso."
-    destroy: "%{model} destruído com sucesso."
+    create: '%{model} criado com sucesso.'
+    destroy: '%{model} destruído com sucesso.'
     login: Logado com sucesso.
     logout: Desconectado com sucesso.
-    update: "%{model} atualizado com sucesso."
+    update: '%{model} atualizado com sucesso.'
   top-rated-searches-for: Pesquisas mais bem avaliadas para <%= @search.query %> perto de você!
   username: Nome de usuário
   users:

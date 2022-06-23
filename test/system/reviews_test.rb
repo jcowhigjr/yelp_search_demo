@@ -2,13 +2,7 @@ require 'application_system_test_case'
 
 require 'minitest/autorun'
 require 'minitest/focus'
-# require "minitest/retry"
-# Minitest::Retry.use!
 
-# Minitest::Retry.on_failure do |klass, test_name, result|
-#   ENV['SHOW_TESTS'] = 'false'
-#   # ENV['CUPRITE'] = 'true'
-# end
 class BasicsTest < ApplicationSystemTestCase
   setup do
     @user = users(:one)
@@ -17,34 +11,33 @@ class BasicsTest < ApplicationSystemTestCase
   end
 
   test 'Adding a review' do
-    skip 'temporary skip'
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu' if ENV['CUPRITE']
+    click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'My Profile'
-    visit '/coffeeshops/1'
+    visit coffeeshop_path(@coffeeshop, locale: nil)
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
             with: 'the cafe mocha is my fav'
-    click_on 'Submit Review'
+    click_on 'SUBMIT REVIEW'
     assert_text('the cafe mocha is my fav')
   end
 
   test 'BUG: Adding a review breaks side menu' do
-    skip 'temporary skip'
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu' if ENV['CUPRITE']
+    click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'My Profile'
     visit '/coffeeshops/1'
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
             with: 'the cafe mocha is my fav'
     #
     # skip 'create a javascript test to check that the side menu is still there'
-    click_on 'Submit Review'
+    click_on 'SUBMIT REVIEW'
+
     # # VM865:1 Uncaught SyntaxError: Identifier 'slide_menu' has already been declared
     # at oe.assignNewBody (turbo.es2017-esm.js:2407:27)
     # at turbo.es2017-esm.js:2369:18

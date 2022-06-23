@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <nav class="flex flex-wrap justify-center dark:bg-slate-900 dark:text-white" aria-label="Language links">
       <% I18n.available_locales.each do |locale| %>
-        <div class="px-5">
+        <div class="px-5 text-sm">
           <%= link_to request.params.merge(locale: resolve_locale(locale)), "aria-label": t('.language_name_of_locale', locale:) do %>
             <span><%= t('.language_name_of_locale', locale:) %></span>
           <% end %>
