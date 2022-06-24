@@ -48,5 +48,10 @@ class ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   # include LoginHelper
+  # https://github.com/rails/rails/pull/39582
+  def default_url_options
+    Rails.application.routes.default_url_options
+  end
+
 end
 

@@ -1,0 +1,6 @@
+<%= turbo_stream.append "reviews" do %>
+  <%= render @review %>
+<% end %>
+<%= turbo_stream.update "new_review" do %>
+  <%= render "conversations/new_review", conversation: @conversation, review: @new_review %>
+<% end %>

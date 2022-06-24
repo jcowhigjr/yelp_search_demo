@@ -7,7 +7,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
   end
 
   test 'A logged in user can favorite, review, edit, delete reviews coffeeshop' do
-    visit coffeeshop_path(@coffeeshop)
+    visit coffeeshop_path(@coffeeshop, locale: nil)
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
@@ -27,7 +27,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     find('#review_rating', match: :first)
       .find(:xpath, 'option[5]')
       .select_option
-    click_button('Submit Review')
+
+    click_on 'SUBMIT REVIEW'
     assert_text('this place is great')
     assert_selector('#review_rating', text: '★★★★☆')
     click_link('Edit this Review', match: :first)
@@ -45,12 +46,16 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     click_on 'Delete', match: :first
     assert_current_path %r{^/coffeeshops/\d{1,9}}
-
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
-    click_button('Remove from my favorites.')
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
-    click_button('Add to my favorites.')
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
+
+
+    page.driver.scroll_to(0, 100)
+
+    click_on 'REMOVE FROM MY FAVORITES'
+    # assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_button('ADD TO MY FAVORITES')
+    # assert_current_path %r{^/coffeeshops/\d{1,9}}
+
   end
 end

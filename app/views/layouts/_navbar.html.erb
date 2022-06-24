@@ -5,13 +5,13 @@
       <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
 
       <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li class="text-red-400"><%= Flipper[:early_access_preview].enabled? ? 'Early Access User' : 'Coming Soon: Sign up for Early Access' %></li>
+        <li class="text-red-400"><%= Flipper[:early_access_preview].enabled? ? t('earlyaccess'): t('.coming-soon-sig') %></li>
       </ul>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <%# button_to for Logout still because of a turbo issue  %>
-        <li><%= button_to 'Logout', logout_path, method: :delete %></li>
-        <li><%= link_to 'My Profile', user_path(current_user), method: :get %></li>
-        <li><%= link_to 'New Search', new_search_path, method: :get %></li>
+        <li><%= button_to t('.logout'), logout_path, method: :delete %></li>
+        <li><%= link_to t('.my-profile'), user_path(current_user), method: :get %></li>
+        <li><%= link_to t('views.searches.new'), new_search_path, method: :get %></li>
       </ul>
     </div>
   </nav>

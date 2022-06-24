@@ -6,15 +6,15 @@
                     <span class="page-text red-text"><%= flash[:error] %></span>
                 </div>
              <% end %>
-            <h1 class="flow-text"> Hello, <%= current_user&.name || 'guest user' %>!   </h1>
+            <h1 class="flow-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
         </div>
         <% if !current_user || current_user.user_favorites.empty? %>
             <div class="row center">
-                <span class="page-text">You don't have any favorite shops yet!</span>
+                <span class="page-text"><%= t('.you-dont-have-a') %></span>
             </div>
             <br><br><br>
             <div class="row center">
-                <span class="page-text"><%= link_to 'Search for a shop to find one near you.', new_search_url %></span>
+                <span class="page-text"><%= link_to t('.search-for-a-sh'), new_search_url %></span>
             </div>
         <% else %>
         <div class="row center">
@@ -26,7 +26,5 @@
             <% end %>
         </div>
         <% end %>
-
     </div>
-
 </body>

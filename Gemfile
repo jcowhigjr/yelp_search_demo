@@ -95,6 +95,9 @@ group :development do
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
   # gem 'lefthook', require: false
   gem 'better_html', require: false
+
+  gem 'i18n-tasks', require: false
+  gem 'easy_translate', require: false
 end
 
 group :test do

@@ -1,51 +1,114 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   "true": "foo"
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
+---
 en:
-  hello: "Hello world"
-  coffeeshop: "Coffee Shop"
-  success:
-    create: "Successfully created %{model}."
-    update: "Successfully updated %{model}."
-    destroy: "Successfully destroyed %{model}."
-    login: "Successfully logged in."
-    logout: "Successfully logged out."
+  add-to-my-favor: Add to my favorites.
+  coffeeshop: Coffee Shop
+  coffeeshops:
+    coffeeshop:
+      more-info: More Info
+      reviews: Reviews
+    reviews:
+      form:
+        leave-a-review: Leave a review!
+    show:
+      add-to-my-favor: ADD TO MY FAVORITES
+      log-in: Log In
+      login-to-add-th: Login to add this shop to your favorites!
+      remove-from-my-favor: REMOVE FROM MY FAVORITES
+      reviews:
+        index: Reviews
+      to-leave-a-revi: to leave a review
+      you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
+      you-must-be-les-0: to leave a review!
+  confirm-passwor: Confirm Password
+  dir: ltr
+  earlyaccess: Preview Feature Enabled
+  email: Email
   error:
-    missing_parameter: "Missing parameter %{parameter}"
-    invalid_parameter: "Invalid parameter %{parameter}"
-    something_went_wrong: "Something went wrong, please try again later"
-    unauthorized: "You are not authorized to perform this action"
-    not_found: "The requested resource was not found"
-    already_exists: "The %{model} already exists"
-    not_allowed: "You are not allowed to perform this action"
-    not_implemented: "This feature is not implemented yet"
-    invalid_token: "Invalid token"
-    invalid_login: "Invalid login or password"
+    already_exists: The %{model} already exists
+    invalid_login: Invalid login or password
+    invalid_parameter: Invalid parameter %{parameter}
+    invalid_token: Invalid token
+    missing_parameter: Missing parameter %{parameter}
+    not_allowed: You are not allowed to perform this action
+    not_found: The requested resource was not found
+    not_implemented: This feature is not implemented yet
+    something_went_wrong: Something went wrong, please try again later
+    unauthorized: You are not authorized to perform this action
+  layouts:
+    footer:
+      language_name_of_locale: English
+    navbar:
+      coming-soon-sig: 'Coming Soon: Sign up for Early Access'
+      logout: Logout
+      my-profile: My Profile
+  log-in: Log in
+  login-to-add-th: Login to add this shop to your favorites!
+  more-info: More Info
+  password-must-b: Password (must be at least 6 characters)
+  phone: phone
+  place: place
+  rating: ":rating"
+  reviews:
+    form:
+      leave-a-review: Leave a review!
+      please-give-a-b: Please give a brief description of your experience at %{name}.
+      rating: rating
+      submit-review: SUBMIT REVIEW
+    index: 'Reviews:'
+  root:
+    title: Dorkbob Search
+  search-for-a-sh: Search for a shop to find one near you.
+  searches:
+    results:
+      no-results-found: No Results Found!
+  submit-review: Submit Review
+  success:
+    create: Successfully created %{model}.
+    destroy: Successfully destroyed %{model}.
+    login: Successfully logged in.
+    logout: Successfully logged out.
+    update: Successfully updated %{model}.
+  to-leave-a-revi: to leave a review
+  username: Username
+  users:
+    form:
+      confirm-passwor: Confirm Password
+      email: email
+      password-must-b: Password (must be at least 6 characters)
+      username: Name
+    show:
+      guest-user: guest user
+      hello-0: Hello,
+      search-for-a-sh: Search for a shop to find one near you.
+      you-dont-have-a: You don't have any favorite shops yet!
+  views:
+    reviews:
+      leave-a-review: Leave a review
+    searches:
+      destroy: Search
+      edit: Search
+      index: Search
+      new: New Search
+      placeholder: Enter a search term (ex. tacos)
+      results: Top Rated Searches for %{query} near you!
+      show: Search
+      update: Search
+    user_sessions:
+      create: User Session
+      destroy: User Session
+      edit: User Session
+      index: User Session
+      new: User Session
+      show: User Session
+      update: User Session
+    users:
+      create: User
+      destroy: User
+      edit: User
+      index: User
+      new: User
+      show: User
+      update: User
+  you-dont-have-a: You don't have any favorite shops yet!
+  you-must-be-les: to leave a review!
+  you-must-be-les-0: you-must-be-les

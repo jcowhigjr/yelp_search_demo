@@ -23,7 +23,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#show' do
-    get search_url(@search)
+    get search_url(@search, locale: nil)
     assert_response :success
     assert_select 'h2',
                   "Top Rated Searches for #{@search.query} near you!",

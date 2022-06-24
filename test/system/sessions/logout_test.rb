@@ -17,11 +17,11 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu' if ENV['CUPRITE']
+    click_on 'menu' if ENV['CUPRITE'] == 'true'
     # this breaks without the main is the main content area
     click_on 'New Search'
     assert_current_path '/searches/new'
-    click_on 'menu' if ENV['CUPRITE']
+    click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'Logout'
     assert_current_path '/'
 
@@ -34,7 +34,7 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'search'
     assert_text 'MORE INFO'
     assert_text 'Top Rated Searches for yoga near you'
-    assert_current_path search_path(Search.last.id)
+    assert_current_path search_path(Search.last.id, locale: nil)
     click_on 'More Info', match: :first
     assert_text 'Login to add this shop to your favorites!'
   end
