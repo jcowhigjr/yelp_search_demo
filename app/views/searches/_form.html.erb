@@ -1,7 +1,7 @@
 <div class="form-group">
     <%= form_for @search do |f| %>
         <div class="row center search-bar">
-            <%= f.search_field(:query, placeholder: 'Enter a search term (ex. tacos)', required: true,
+            <%= f.search_field(:query, placeholder: t('views.searches.placeholder'), required: true,
 data: {turbo: false}) do %>
 
             <% end %>

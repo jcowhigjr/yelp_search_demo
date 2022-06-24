@@ -5,6 +5,10 @@ class CoffeeshopsController::RoutesTest < ActionController::TestCase
     assert_routing '/', controller: 'searches', action: 'new'
     assert_routing '/login', controller: 'sessions', action: 'new'
     assert_routing '/users/1', controller: 'users', action: 'show', id: '1'
+    assert_routing '/pt-BR', locale: 'pt-BR', controller: 'searches', action: 'new'
+    assert_routing '/', controller: 'searches', action: 'new'
+    assert_routing '/login', controller: 'sessions', action: 'new'
+    assert_routing '/users/1', controller: 'users', action: 'show', id: '1'
   end
 
   def test_search_routes

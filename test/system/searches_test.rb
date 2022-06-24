@@ -5,7 +5,7 @@ class SearchesTest < ApplicationSystemTestCase
   test 'An anonymous user at the static home can search by query and requery for businesses' do
     query = 'yoga'
 
-    visit static_home_url
+    visit '/'
 
     fill_in 'search[query]', with: query
 
@@ -37,7 +37,7 @@ class SearchesTest < ApplicationSystemTestCase
     find('#search_query').native.send_keys(:return)
 
     # wait for the results to load
-    wait_for_network_idle! if ENV['CUPRITE']
+    wait_for_network_idle! if ENV['CUPRITE'] == 'true'
 
     assert_text "Top Rated Searches for #{query} near you"
 
@@ -74,7 +74,7 @@ class SearchesTest < ApplicationSystemTestCase
     find('#search_query').native.send_keys(:return)
 
     # wait for the results to load
-    wait_for_network_idle! if ENV['CUPRITE']
+    wait_for_network_idle! if ENV['CUPRITE'] == 'true'
 
     assert_text "Top Rated Searches for #{query2} near you"
 
@@ -84,7 +84,7 @@ class SearchesTest < ApplicationSystemTestCase
   test 'An anonymous user can update the query' do
     query = 'yoga'
 
-    visit static_home_url
+    visit '/'
 
     fill_in 'search[query]', with: query
 
@@ -94,7 +94,7 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(:field, 'search_latitude', type: 'hidden')
     assert_selector(:field, 'search_longitude', type: 'hidden')
 
-    if ENV.fetch('SHOW_TESTS', nil) && !ENV['CUPRITE']
+    if ENV.fetch('SHOW_TESTS', nil) && (ENV['CUPRITE'] != 'true')
       # sleeping for a second to allow the geolocation api call to complete
       sleep 4
 
@@ -116,7 +116,7 @@ class SearchesTest < ApplicationSystemTestCase
     find('#search_query').native.send_keys(:return)
 
     # wait for the results to load
-    wait_for_network_idle! if ENV['CUPRITE']
+    wait_for_network_idle! if ENV['CUPRITE'] == 'true'
 
     assert_text "Top Rated Searches for #{query} near you"
 
@@ -140,7 +140,7 @@ class SearchesTest < ApplicationSystemTestCase
     find('#search_query').native.send_keys(:return)
 
     # wait for the results to load
-    wait_for_network_idle! if ENV['CUPRITE']
+    wait_for_network_idle! if ENV['CUPRITE'] == 'true'
 
     assert_text "Top Rated Searches for #{query2} near you"
 

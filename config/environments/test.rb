@@ -9,6 +9,7 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
+  # Don't setup i18n reloader if config.cache_classes = true #44567
   config.cache_classes = true
 
   # Eager loading loads your whole application. When running a single test locally,
@@ -66,4 +67,14 @@ Rails.application.configure do
   #   Bullet.raise = false
   #   Bullet.bullet_logger = true
   # end
+
+
+  # Configure host for URL helpers.
+  # Rails.application.routes.default_url_options = { host: "localhost", port: 3000, locale: I18n.locale }
+
+    # Set default locale
+    config.i18n.default_locale = :en
+
+    # Use default language as fallback if translation is missing
+    config.i18n.fallbacks = false
 end
