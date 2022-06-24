@@ -119,6 +119,11 @@ see client_id and client_secret in rails credentials:edit --development
 git ignore config/master.key and kep in a safe place
 git add development key is probably safe
 
+#  Mobile vs Desktop
+generally I develop toward desktop but lefthook runs the same tests as CI/CD focus on mobile.
+to debug mobile tests:
+RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' be guard
+
 # Propshaft assets https://github.com/rails/propshaft/issues/36#issuecomment-982933727
 
 One thing you should be careful is that if you run rails assets:precompile in your computer and then ./bin/dev Propshaft will use the static resolver, not the dynamic one. And since the static resolver reads files from public/assets, any change you make to your source files in app/assets will not take an effect when you reload the page.

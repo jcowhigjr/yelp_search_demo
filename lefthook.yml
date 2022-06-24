@@ -76,7 +76,7 @@ fixer:
       tags: backend tests
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:all
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:all
     i18n-tasks:
       run: bundle exec i18n-tasks health en missing unused
 
