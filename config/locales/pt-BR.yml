@@ -13,6 +13,7 @@ pt-BR:
       reviews:
         index: Avaliações
       to-leave-a-revi: para deixar um comentário
+      view-on-yelp: Veja no Yelp
       you-must-be-les: >-
         Você deve estar <%= link_to 'logado', login_path %> para deixar um
         comentário!
@@ -50,6 +51,11 @@ pt-BR:
       please-give-a-b: Por favor, dê uma breve descrição de sua experiência em %(name).
       rating: Avaliação
       submit-review: ENVIAR REVISÃO
+    review:
+      edit-this-revie: Editar esta avaliação
+    show:
+      delete-this-rev: Excluir esta avaliação
+      edit-this-revie-0: Editar esta avaliação
   root:
     title: Pesquisa de bobo
   searches:

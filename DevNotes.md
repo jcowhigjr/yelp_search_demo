@@ -136,7 +136,10 @@ https://www.colby.so/posts/live-reloading-with-esbuild-and-rails
 # FontAwesome
 
 bin/importmap pin fontawesome
-Pinning "fontawesome" to https://ga.jspm.io/npm:fontawesome@5.6.3/index.js
+Pinning "fontawesome" to https://ga.jspm.io/npm:fontawesome@6.1.1/index.js
+
+if fontawesome icons are the very large, try this:
+bin/setup
 
 # https://guillaumebriday.fr/introducing-stimulus-components
 

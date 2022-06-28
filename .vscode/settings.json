@@ -1,5 +1,8 @@
 {
   "rubyTestExplorer.logpanel": true,
   "rubyTestExplorer.testFramework": "minitest",
-  "autoHide.autoHidePanel": false
+  "autoHide.autoHidePanel": false,
+  "i18n-ally.localesPaths": [
+    "config/locales"
+  ]
 }

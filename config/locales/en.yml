@@ -1,4 +1,3 @@
----
 en:
   add-to-my-favor: Add to my favorites.
   coffeeshop: Coffee Shop
@@ -17,6 +16,7 @@ en:
       reviews:
         index: Reviews
       to-leave-a-revi: to leave a review
+      view-on-yelp: View on Yelp
       you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
       you-must-be-les-0: to leave a review!
   confirm-passwor: Confirm Password
@@ -47,7 +47,7 @@ en:
   password-must-b: Password (must be at least 6 characters)
   phone: phone
   place: place
-  rating: ":rating"
+  rating: ':rating'
   reviews:
     form:
       leave-a-review: Leave a review!
@@ -55,6 +55,9 @@ en:
       rating: rating
       submit-review: SUBMIT REVIEW
     index: 'Reviews:'
+    show:
+      delete-this-rev: Delete this Review
+      edit-this-revie-0: Edit this Review
   root:
     title: Dorkbob Search
   search-for-a-sh: Search for a shop to find one near you.
@@ -81,6 +84,7 @@ en:
       hello-0: Hello,
       search-for-a-sh: Search for a shop to find one near you.
       you-dont-have-a: You don't have any favorite shops yet!
+  view-on-yelp: View on Yelp
   views:
     reviews:
       leave-a-review: Leave a review
