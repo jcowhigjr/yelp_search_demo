@@ -16,6 +16,7 @@ es:
       reviews:
         index: Reseñas
       to-leave-a-revi: dejar una reseña
+      view-on-yelp: Ver en Yelp
       you-must-be-les: >-
         ¡Debe estar <%= link_to 'conectado', login_path %> para dejar una
         reseña!
@@ -57,6 +58,11 @@ es:
       rating: clasificación
       submit-review: ENVIAR OPINIÓN
     index: 'Reseñas:'
+    review:
+      edit-this-revie: Editar esta revisión
+    show:
+      delete-this-rev: Eliminar esta revisión
+      edit-this-revie-0: Editar esta revisión
   root:
     title: Dorkbob Buscar
   search-for-a-sh: Busque una tienda para encontrar una cerca de usted.
