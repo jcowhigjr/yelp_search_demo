@@ -16,6 +16,7 @@ fr:
       reviews:
         index: Commentaires
       to-leave-a-revi: laisser un avis
+      view-on-yelp: Voir sur Yelp
       you-must-be-les: "Vous devez être <%= link_to 'logged in', login_path %> pour laisser un avis\_!"
       you-must-be-les-0: pour laisser un avis !
   confirm-passwor: Confirmez le mot de passe
@@ -55,6 +56,11 @@ fr:
       rating: évaluation
       submit-review: POSTER LE COMMENTAIRE
     index: 'Commentaires:'
+    review:
+      edit-this-revie: Modifier cet avis
+    show:
+      delete-this-rev: Supprimer cet avis
+      edit-this-revie-0: Modifier cet avis
   root:
     title: Recherche Dorkbob
   search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
