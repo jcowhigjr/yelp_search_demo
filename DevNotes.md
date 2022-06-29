@@ -264,3 +264,9 @@ Your ngrok dashboard is at http://127.0.0.1:4040/
   # Performance
   https://pawelurbanek.com/rails-gzip-brotli-compression
   https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
+
+  deferring js loading of materialize really sped things up
+  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/
+  First Byte 14.26s Fully Loaded 14.76s
+  First Byte 0.25s Fully Loaded 1.36s
+  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
