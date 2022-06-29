@@ -260,3 +260,7 @@ Your ngrok dashboard is at http://127.0.0.1:4040/
 
   # https://github.com/glebm/i18n-tasks
   GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
+
+  # Performance
+  https://pawelurbanek.com/rails-gzip-brotli-compression
+  https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
