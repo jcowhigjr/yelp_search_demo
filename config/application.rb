@@ -26,5 +26,8 @@ module Jitter
     # Set default locale
     config.i18n.default_locale = :en
 
+    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Brotli
+
   end
 end
