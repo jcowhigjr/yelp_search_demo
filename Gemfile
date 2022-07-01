@@ -56,6 +56,8 @@ gem 'hotwire-rails' # , '~> 0.1.3'
 
 gem 'brotli'
 gem 'rack-brotli'
+gem 'heroku-deflater', :group => :production
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
