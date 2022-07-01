@@ -56,7 +56,7 @@ gem 'hotwire-rails' # , '~> 0.1.3'
 
 gem 'brotli'
 gem 'rack-brotli'
-gem 'heroku-deflater', :group => :production
+gem 'heroku-deflater', git: 'https://github.com/romanbsd/heroku-deflater.git', :group => :production
 
 
 group :development, :test do
