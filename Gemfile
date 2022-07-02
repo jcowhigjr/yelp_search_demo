@@ -56,8 +56,9 @@ gem 'hotwire-rails' # , '~> 0.1.3'
 
 gem 'brotli'
 gem 'rack-brotli'
-gem 'heroku-deflater', git: 'https://github.com/romanbsd/heroku-deflater.git', :group => :production
+gem 'sprockets-exporters_pack'
 
+gem 'heroku-deflater', git: 'https://github.com/romanbsd/heroku-deflater.git', :group => :production
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

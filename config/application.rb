@@ -29,5 +29,9 @@ module Jitter
     config.middleware.use Rack::Deflater
     config.middleware.use Rack::Brotli
 
+
+    config.assets.configure do |env|
+      env.register_exporter %w(text/css application/javascript image/svg+xml), Sprockets::ExportersPack::BrotliExporter
+    end
   end
 end
