@@ -31,7 +31,8 @@ module Jitter
 
 
     config.assets.configure do |env|
-      env.register_exporter %w(text/css application/javascript image/svg+xml), Sprockets::ExportersPack::BrotliExporter
+      env.register_exporter %w[text/css application/javascript image/svg+xml], Sprockets::ExportersPack::BrotliExporter
     end
+
   end
 end
