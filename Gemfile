@@ -58,7 +58,7 @@ gem 'brotli'
 gem 'rack-brotli'
 gem 'sprockets-exporters_pack'
 gem 'smart_assets', group: :production
-gem 'heroku-deflater', git: 'https://github.com/romanbsd/heroku-deflater.git', :group => :production
+# gem 'heroku-deflater', git: 'https://github.com/romanbsd/heroku-deflater.git', :group => :production
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
