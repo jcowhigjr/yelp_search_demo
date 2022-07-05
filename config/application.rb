@@ -26,13 +26,6 @@ module Jitter
     # Set default locale
     config.i18n.default_locale = :en
 
-    # config.middleware.use Rack::Deflater
-    # config.middleware.use Rack::Brotli
-
-
-    # config.assets.configure do |env|
-    #   env.register_exporter %w[text/css application/javascript image/svg+xml], Sprockets::ExportersPack::BrotliExporter
-    # end
 
     # https://github.com/romanbsd/heroku-deflater/issues/54#issuecomment-803400481
     config.middleware.use Rack::Deflater,
