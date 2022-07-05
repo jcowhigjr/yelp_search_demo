@@ -396,6 +396,12 @@ GEM
       websocket (~> 1.0)
     shellany (0.0.1)
     smart_properties (1.17.0)
+    sprockets (4.1.1)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    sprockets-exporters_pack (0.1.2)
+      brotli (>= 0.2.0)
+      sprockets (>= 4.0.0.beta3)
     sqlite3 (1.4.4)
     stimulus-rails (1.0.4)
       railties (>= 6.0.0)
@@ -496,6 +502,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   selenium-webdriver
+  sprockets-exporters_pack
   sqlite3
   tailwindcss-rails (~> 2.0)
   tzinfo-data
