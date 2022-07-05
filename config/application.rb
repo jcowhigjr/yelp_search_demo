@@ -26,13 +26,26 @@ module Jitter
     # Set default locale
     config.i18n.default_locale = :en
 
-    config.middleware.use Rack::Deflater
-    config.middleware.use Rack::Brotli
+    # config.middleware.use Rack::Deflater
+    # config.middleware.use Rack::Brotli
 
 
-    config.assets.configure do |env|
-      env.register_exporter %w[text/css application/javascript image/svg+xml], Sprockets::ExportersPack::BrotliExporter
-    end
+    # config.assets.configure do |env|
+    #   env.register_exporter %w[text/css application/javascript image/svg+xml], Sprockets::ExportersPack::BrotliExporter
+    # end
+
+    config.middleware.use Rack::Deflater,
+      include: Rack::Mime::MIME_TYPES.select{|k, v| v =~ /text|json|javascript/ }.values.uniq,
+      if: lambda {|env, status, headers, body| body.body.length > 512 }
+
+    require 'rack/brotli'
+
+    config.middleware.use Rack::Brotli,
+      include: Rack::Mime::MIME_TYPES.select{|k, v| v =~ /text|json|javascript/ }.values.uniq,
+      if: lambda {|env, status, headers, body| body.body.length > 512 },
+      deflater: {
+        quality: 1
+      }
 
   end
 end

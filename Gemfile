@@ -58,7 +58,7 @@ gem 'brotli'
 gem 'rack-brotli'
 gem 'sprockets-exporters_pack'
 # gem 'smart_assets', group: :production
-gem 'heroku-deflater', git: 'https://github.com/pungerfreak/heroku-deflater.git', :group => :production
+# gem 'heroku-deflater', git: 'https://github.com/pungerfreak/heroku-deflater.git'
 
 
 group :development, :test do
