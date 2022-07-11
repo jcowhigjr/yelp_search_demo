@@ -1,0 +1,5 @@
+#build: dotenv -f .env.production 'rm -rvf public/assets && bin/rake assets:clobber && bin/rails tailwindcss:clobber && bin/rake  assets:reveal && bin/rails tailwindcss:build && bin/rake assets:reveal && touch tmp/restart.txt '
+web: dotenv -f .env.production puma-dev
+#ngrok: dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
+ngrok: bin/ngrok.sh && touch tmp/resetart.txt
+

@@ -1,0 +1,13 @@
+#!/usr/bin/env dotenv -f .env.production  bash
+
+if ! command -v foreman &> /dev/null
+then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+env
+bundle install -j4
+bin/rake assets:precompile
+bin/rake assets:clean
+foreman start -f Procfile.prod

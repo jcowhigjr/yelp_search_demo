@@ -85,8 +85,18 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
  `be guard`  # run tests and linting, asset processing/live reload connection to browser while developing in the background
  `bin/dev`   # run dev server and css processor
 
+ cleaning up before a commit
+   #stage what you want to commit
+     `git add related files`
+   #note tests passing in `be guard`
+   #stash unrelated files and confirm tests still passing
+     `git stash push --keep-index`
+
  commit
+   git commit
   see lefthook.yml
+
+
 
  open a PR
  `gh pr create`
@@ -193,31 +203,29 @@ git stash apply
 i use edge devtools vscode extention and the iphone SE profile to test
 The automated tests run with iPhone SE emulation because it is the smallest phone.
 
-# test locally using https://jitter.test
+# test locally using https://jitter.test or public internet ngrok urls
 brew install puma/puma/puma-dev
 sudo puma-dev -setup
 puma-dev -install
 ln -s /Users/temp/src/ruby/jitter ~/.puma-dev/.
+uncomment Procfile.dev regarding puma-dev
+the run bin/dev
 
-addjust Procfile.dev
-to start puma-dev
+or to run production like environment configuration
+Update .env.production with SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production PUMA_DEV_HOST=jitter.test
+then run  bin/prod
+# test remotely over through internet tunnel
+To create a public url and share local host over the internet
+dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
 
-start ngrok
-ngrok http https://jitter.test --host-header=jitter.test
-and note your random generated host
+and note your random generated host ->
 
-edit config/development.rb or .env.development
+edit .env.development or .env.production
+with NGROK_HOST
 
-NGROK_HOST=683e-108-77-85-43.ngrok.io
-see ->
-config.hosts << "683e-108-77-85-43.ngrok.io"
-
+then restart the server
 # restart the rack server to allow the new config host access
 touch tmp/restart.txt
-# test remotely over and iternet tunnel
-
-
-Your ngrok dashboard is at http://127.0.0.1:4040/
 
 # Evaluation of a new feature
 
@@ -270,3 +278,18 @@ Your ngrok dashboard is at http://127.0.0.1:4040/
   First Byte 14.26s Fully Loaded 14.76s
   First Byte 0.25s Fully Loaded 1.36s
   https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
+
+  # Assets
+
+  1) Ideally I would follow DHH lead mentioned in propshaft
+     1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps)
+     2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
+Trade-offs:  12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
+    a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.  
+
+
+rm -rvf public/assets && SECRET_KEY_BASE=1300b0d92cb1b9520e8590ae8b5db6a615d98c8654473328fef153b31625c504e57da9cbcf27ae977e3a7712aba958464946cf00498a7b9ee60d9f622f45d84d RAILS_ENV=production bin/rake assets:clobber tailwindcss:clobber assets:reveal tailwindcss:build assets:precompile assets:reveal && touch tmp/restart.txt
+
+
+Other notes:
+  debugging revealed fort awesome was being pulled in from application.js but when the network fails the entire compile failed...

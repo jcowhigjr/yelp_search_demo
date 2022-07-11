@@ -1,9 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env dotenv -f .env.development bash
 
 if ! command -v foreman &> /dev/null
 then
   echo "Installing foreman..."
   gem install foreman
 fi
+
+rm -rvf vendor/bundle
 
 foreman start -f Procfile.dev

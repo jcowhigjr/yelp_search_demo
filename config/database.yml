@@ -20,6 +20,9 @@ test:
   <<: *default
   database: db/test.sqlite3
 
+# production is postgresql
 production:
   <<: *default
+  database: jitter_production
   adapter: postgresql
+  encoding: unicode

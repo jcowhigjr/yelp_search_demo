@@ -2,12 +2,7 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
 
-  # Allow all ngrok hosts access
-  # config.hosts <<   if ENV['NGROK_HOST']
-  #                     ENV['NGROK_HOST']
-  #                   end
-
-  # config.hosts << ENV['PUMA_DEV_HOST'] if ENV['PUMA_DEV_HOST']
+  config.hosts << 'jitter.test'
 
   # Settings specified here will take precedence over those in config/application.rb.
 
