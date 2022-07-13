@@ -90,5 +90,6 @@ Rails.application.configure do
   # Configure host for URL helpers.
   Rails.application.routes.default_url_options = {host: ENV["HOST"], locale: nil}
 
-  config.hosts = [ ENV["HOST"] , "#{ENV['HEROKU_APP_NAME']}.heroukuapp.com" , ]
+  config.hosts <<  ENV["HOST"]
+  config.hosts << "#{ENV['HEROKU_APP_NAME']}.heroukuapp.com"
 end
