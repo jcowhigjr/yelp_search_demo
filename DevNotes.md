@@ -26,6 +26,11 @@ Edit and use credentials for yelp
 https://www.yelp.com/developers/documentation/v3/authentication
 bin/rails credentials:edit --environment development
 
+NOTE: in non local environments use RAILS_MASTER_KEY and SECRET_KEY_BASE, locally don't set these and config/credentials/development.key will be used
+
+# ENV variables are managed by dotenv-rails gem
+NOTE: .env.production can be set to look like heroku and .env.test can be set to look like CI testing.  beware .env can confuse things since it will be used in all environments if present
+
 <!-- Rails.application.credentials.yelp[:api_key] -->
 
 https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
@@ -198,7 +203,6 @@ git co feature/xyz
 git flow feature rebase
 git stash apply
 
-
 # ngrok and testing on your phone
 i use edge devtools vscode extention and the iphone SE profile to test
 The automated tests run with iPhone SE emulation because it is the smallest phone.
@@ -211,9 +215,14 @@ ln -s /Users/temp/src/ruby/jitter ~/.puma-dev/.
 uncomment Procfile.dev regarding puma-dev
 the run bin/dev
 
-or to run production like environment configuration
-Update .env.production with SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production PUMA_DEV_HOST=jitter.test
-then run  bin/prod
+Local Prod like stack (postgresql, production.rb, built assets and vendored bundle)
+config/env.production.heroku.sample     to -> .env.production with SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production PUMA_DEV_HOST=jitter.prod
+
+then run  bin/puma-dev-prod
+or
+bin/ngrok-prod
+
+
 # test remotely over through internet tunnel
 To create a public url and share local host over the internet
 dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test

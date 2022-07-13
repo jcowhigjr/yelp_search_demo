@@ -129,4 +129,4 @@ gem 'tailwindcss-rails', '~> 2.0'
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'
 
- 
+gem 'dotenv-rails'

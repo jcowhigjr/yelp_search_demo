@@ -1,0 +1,17 @@
+#!/usr/bin/env dotenv -f .env.production ruby
+APP_ROOT = File.expand_path('..', __dir__)
+
+puts "https://jitter.prod"
+puts "== To see logs =="
+puts "tail -f ~/Library/Logs/puma-dev.log"
+# puts `env`
+
+Dir.chdir(APP_ROOT) do
+  begin
+    exec "puma-dev --stop -d prod && puma-dev --install -d prod && puma-dev -d prod", *ARGV
+  rescue Errno::ENOENT
+    $stderr.puts "/usr/local/bin/puma-dev executable was not detected in the system."
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+end
