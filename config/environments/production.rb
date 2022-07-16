@@ -91,5 +91,5 @@ Rails.application.configure do
   Rails.application.routes.default_url_options = {host: ENV["HOST"], locale: nil}
 
   config.hosts <<  ENV["HOST"]
-  config.hosts << "#{ENV['HEROKU_APP_NAME']}.heroukuapp.com"
+  config.hosts << ".heroukuapp.com"
 end
