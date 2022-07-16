@@ -6,6 +6,12 @@ then
   gem install foreman
 fi
 
-rm -rvf vendor/bundle
+rm .env
+# rm -rvf vendor/bundle/
+
+bundle config unset deployment
+bundle config unset frozen
+bundle config unset frozen_lockfile
+bundle install
 
 foreman start -f Procfile.dev

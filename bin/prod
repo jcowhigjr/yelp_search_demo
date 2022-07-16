@@ -1,4 +1,4 @@
-#!/usr/bin/env dotenv -f .env.production  bash
+#!/usr/bin/env dotenv -f .env.production bash
 
 if ! command -v foreman &> /dev/null
 then
@@ -6,8 +6,12 @@ then
   gem install foreman
 fi
 
+rm .env
 env
 bundle install -j4
 bin/rake assets:precompile
 bin/rake assets:clean
-foreman start -f Procfile.prod
+
+bin/puma-dev-prod
+
+# foreman start -f Procfile.prod
