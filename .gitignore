@@ -52,3 +52,4 @@ nil
 # don't commit brakeman info which might give hackers a hint about the app
 brakeman.report
 brakeman.ignore
+.env.production

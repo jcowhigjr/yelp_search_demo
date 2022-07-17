@@ -1,0 +1,61 @@
+#!/usr/bin/env dotenv -f ./config/.pumaenv ruby
+APP_ROOT = File.expand_path('..', __dir__)
+
+puts "ln -sf .env.production .env"
+puts "https://jitter.prod"
+puts "== To see logs =="
+puts "tail -f ~/Library/Logs/puma-dev.log"
+# puts `env`
+
+# puts `env`
+
+Dir.chdir(APP_ROOT) do
+  begin
+    `ln -sf .env.production .pumaenv`
+  rescue Errno::ENOENT
+    $stderr.puts "error with the symbolic link"
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+
+end
+
+Dir.chdir(APP_ROOT) do
+  begin
+    `pkill ngork && pkill puma-dev`
+  rescue Errno::ENOENT
+    $stderr.puts "error killing ngork and puma-dev"
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+end
+
+Dir.chdir(APP_ROOT) do
+  begin
+    `puma-dev --stop -d prod`
+  rescue Errno::ENOENT
+    $stderr.puts "error stopping puma-dev"
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+end
+
+Dir.chdir(APP_ROOT) do
+  begin
+    `puma-dev --uninstall -d prod && puma-dev --install -d prod && puma-dev --cleanup`
+  rescue Errno::ENOENT
+    $stderr.puts "error setting up puma-dev"
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+end
+
+Dir.chdir(APP_ROOT) do
+  begin
+    exec "puma-dev --debug -d prod && touch tmp/restart.txt"
+  rescue Errno::ENOENT
+    $stderr.puts "error running puma-dev"
+    $stderr.puts "Please run `brew install puma/puma/puma-dev` and try again."
+    exit 1
+  end
+end
