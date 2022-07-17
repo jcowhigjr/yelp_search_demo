@@ -88,8 +88,8 @@ Rails.application.configure do
   # config.action_mailer.default_url_options = {host: ENV["HOST"], locale: nil}
 
   # Configure host for URL helpers.
-  Rails.application.routes.default_url_options = {host: ENV["HOST"], locale: nil}
+  Rails.application.routes.default_url_options = {host: (ENV["HOST"] ||  "#{ENV['HEROKU_APP_NAME']}.heroukuapp.com"), locale: nil}
 
   config.hosts <<  ENV["HOST"]
-  config.hosts << ".heroukuapp.com"
+  config.hosts << "#{ENV['HEROKU_APP_NAME']}.heroukuapp.com"
 end
