@@ -56,6 +56,10 @@ gem 'hotwire-rails' # , '~> 0.1.3'
 
 gem 'brotli'
 gem 'rack-brotli'
+gem 'sprockets-exporters_pack'
+# gem 'smart_assets', group: :production
+# gem 'heroku-deflater', git: 'https://github.com/pungerfreak/heroku-deflater.git'
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -125,4 +129,4 @@ gem 'tailwindcss-rails', '~> 2.0'
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'
 
- 
+gem 'dotenv-rails'
