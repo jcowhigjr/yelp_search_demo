@@ -26,8 +26,9 @@ module Jitter
     # Set default locale
     config.i18n.default_locale = :en
 
+    # https://github.com/romanbsd/heroku-deflater/issues/54#issuecomment-803400481
     config.middleware.use Rack::Deflater
     config.middleware.use Rack::Brotli
-
+    
   end
 end

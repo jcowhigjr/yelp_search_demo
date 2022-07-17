@@ -8,6 +8,12 @@
           <% end %>
         </div>
       <% end %>
+        <%# display rails environment %>
+        <% if Rails.env.development? %>
+          <p>
+          Rails Environment: <%= Rails.env %>
+          </p>
+        <% end %>
     </nav>
   </div>
 </footer>
