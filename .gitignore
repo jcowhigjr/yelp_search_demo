@@ -53,3 +53,6 @@ nil
 brakeman.report
 brakeman.ignore
 .env.production
+
+vendor/bundle
+.pumaenv

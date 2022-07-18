@@ -4,5 +4,37 @@
   "autoHide.autoHidePanel": false,
   "i18n-ally.localesPaths": [
     "config/locales"
+  ],
+  "cSpell.enableFiletypes": [
+    "!asciidoc",
+    "!c",
+    "!cpp",
+    "!csharp",
+    "!elixir",
+    "!go",
+    "!graphql",
+    "!handlebars",
+    "!haskell",
+    "!jade",
+    "!java",
+    "!javascriptreact",
+    "!jsonc",
+    "!jupyter",
+    "!latex",
+    "!less",
+    "!markdown",
+    "!php",
+    "!plaintext",
+    "!pug",
+    "!python",
+    "!restructuredtext",
+    "!rust",
+    "!scala",
+    "!swift",
+    "!typescript",
+    "!typescriptreact",
+    "!vue",
+    "ruby",
+    "sql"
   ]
 }
