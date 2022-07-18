@@ -7,7 +7,6 @@ TLDR:
  Using Yelp for fusion API
  Using Google for sign in.
 
-
 Below are some other notes in order of the things I've changed.
 # get it working from where I picked it up on a Mac
 updated ruby (.ruby-version and Gemfile)
@@ -206,35 +205,37 @@ git stash apply
 # ngrok and testing on your phone
 i use edge devtools vscode extention and the iphone SE profile to test
 The automated tests run with iPhone SE emulation because it is the smallest phone.
+I think using the basic bin/dev plus the ngrok VS CODE plug in is the simplest approach for quick real phone testing
+Use the QR code to scan the random ngrok link (see plugin notes)
 
-# test locally using https://jitter.test or public internet ngrok urls
+# test local 'prod like' using https://jitter.prod
+
+cp config/env.production.heroku.sample .env.production
+update SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production HOST=jitter.prod
+
 brew install puma/puma/puma-dev
-sudo puma-dev -setup
+brew install postgres-unofficial
+
+<!-- sudo puma-dev -setup
 puma-dev -install
-ln -s /Users/temp/src/ruby/jitter ~/.puma-dev/.
-uncomment Procfile.dev regarding puma-dev
-the run bin/dev
+ln -s /Users/temp/src/ruby/jitter ~/.puma-prod/. -->
+bin/prod
 
-Local Prod like stack (postgresql, production.rb, built assets and vendored bundle)
-config/env.production.heroku.sample     to -> .env.production with SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production PUMA_DEV_HOST=jitter.prod
+Local Prod like stack will start (postgresql, production.rb, built assets and vendored bundle)
+click https://jitter.prod
 
-then run  bin/puma-dev-prod
-or
-bin/ngrok-prod
-
-
-# test remotely over through internet tunnel
+# test prod like remotely through internet tunnel
 To create a public url and share local host over the internet
 dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
 
 and note your random generated host ->
 
 edit .env.development or .env.production
-with NGROK_HOST
+with NGROK_HOST and add config.hosts << ENV['NGROK_HOST'] to rails config/environments/production.rb
 
 then restart the server
 # restart the rack server to allow the new config host access
-touch tmp/restart.txt
+touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 # Evaluation of a new feature
 

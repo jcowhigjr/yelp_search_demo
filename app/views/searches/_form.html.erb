@@ -2,8 +2,7 @@
     <%= form_for @search do |f| %>
         <div class="row center search-bar">
             <%= f.search_field(:query, placeholder: t('views.searches.placeholder'), required: true,
-data: {turbo: false}) do %>
-
+                data: {turbo: false}) do %>
             <% end %>
             <%= f.button :submit, data: { turbo: false} do %>
               <i class="flex-col material-icons" aria-label="search">search</i>
@@ -11,7 +10,6 @@ data: {turbo: false}) do %>
             <%= link_to(new_search_path, method: :get, class: 'pull-right') do %>
               <i class="flex-col material-icons" aria-label="Clear">clear</i>
             <% end %>
-
         </div>
         <div data-controller="geolocation">
           <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
