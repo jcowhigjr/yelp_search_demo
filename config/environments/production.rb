@@ -92,4 +92,5 @@ Rails.application.configure do
 
   config.hosts <<  ENV["HOST"]
   config.hosts << "#{ENV['HEROKU_APP_NAME']}.herokuapp.com"
+  config.hosts << "d3be-71-56-38-221.ngrok.io"
 end
