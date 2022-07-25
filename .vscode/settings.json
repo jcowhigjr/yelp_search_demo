@@ -36,5 +36,8 @@
     "!vue",
     "ruby",
     "sql"
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/temp/src/ruby/jitter/.github/workflows/auto-merge.yml"
+  }
 }
