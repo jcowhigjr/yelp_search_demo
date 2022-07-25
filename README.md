@@ -8,6 +8,14 @@ Use the application at https://dorkbob.herokuapp.com
 
 I was looking for a project to practice on when i had spare time and found.
 
+## For Devs ->
+   Most of the work here was actually building out the CI/CD/Security/Update lifecycle of the project.
+ 
+ I have added some notes and resources here:
+ [Resources.md](../develop/Resources.md) 
+ [DevNotes.md](../develop/DevNotes.md)
+ 
+
 ## Attribution
   Sean was kind enough to let me share it with potential employers and so that might be what you are seeing this.
 
@@ -51,9 +59,4 @@ Future Opportunities?
       for example, make it local by neighborhood
     become a tool for 
     
-## For Devs ->
-   Most of the work here was actually building out the CI/CD/Security/Update lifecycle of the project.
- 
- I have added some notes and resources here:
- Resources.md  
- DevNotes.md
+
