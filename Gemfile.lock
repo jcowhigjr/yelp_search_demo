@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/hotwired/turbo-rails.git
+  revision: 2b02587c6f5feff7e968e721f24eeb24e1abc779
+  branch: turbo-7-2-0
+  specs:
+    turbo-rails (1.2.0.beta1)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
+
+GIT
   remote: https://github.com/jcowhigjr/rails_panel.git
   revision: 4f45422de0a9ecbf80bd962287bd2f1e09283051
   branch: jcowhigjr-support-rails-7.0
@@ -435,10 +445,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.11)
     timeout (0.3.0)
-    turbo-rails (1.1.1)
-      actionpack (>= 6.0.0)
-      activejob (>= 6.0.0)
-      railties (>= 6.0.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -514,6 +520,7 @@ DEPENDENCIES
   sprockets-exporters_pack
   sqlite3
   tailwindcss-rails (~> 2.0)
+  turbo-rails!
   tzinfo-data
   web-console
   webdrivers
