@@ -1,14 +1,16 @@
 <div class="col xl l6 m12 s12">
-    <div class="card large dark:bg-slate-900 dark:text-white">
+    <div class="card large coffeeshop-card dark:bg-slate-900 dark:text-white">
         <div class="card-image">
-            <%= image_tag coffeeshop.image_url, class: 'card-img responsive-img' %>
+            <p>
+               <%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %>
+            </p>
         </div>
         <div class="card-content row">
             <span class="card-title">
-            <p>
+            <p class="center">
               <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %>
             </p>
-            <p>
+            <p class="center">
                <%= link_to t('.more-info'), coffeeshop_path(coffeeshop), data: { turbo: false }, class: 'btn-small' %>
             </p>
             </span>
