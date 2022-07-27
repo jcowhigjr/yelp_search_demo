@@ -40,6 +40,9 @@ class Coffeeshop < ApplicationRecord
     end
   end
 
+  def large_image_url
+    image_url.gsub(/o.jpg/, 'l.jpg')
+  end
   def google_address_slug
     address.gsub(/[ ,]/, ' ' => '+', ',' => '%2C')
   end
