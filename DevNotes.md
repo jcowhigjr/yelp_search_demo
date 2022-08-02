@@ -306,7 +306,7 @@ Trade-offs:  12-factor prod/cd/cd parity .. for me assets in ci/cd should work l
     a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.  
 
 
-rm -rvf public/assets && SECRET_KEY_BASE=1300b0d92cb1b9520e8590ae8b5db6a615d98c8654473328fef153b31625c504e57da9cbcf27ae977e3a7712aba958464946cf00498a7b9ee60d9f622f45d84d RAILS_ENV=production bin/rake assets:clobber tailwindcss:clobber assets:reveal tailwindcss:build assets:precompile assets:reveal && touch tmp/restart.txt
+rm -rvf public/assets && SECRET_KEY_BASE=504e57Z####################################### RAILS_ENV=production bin/rake assets:clobber tailwindcss:clobber assets:reveal tailwindcss:build assets:precompile assets:reveal && touch tmp/restart.txt
 
 
 Other notes:
