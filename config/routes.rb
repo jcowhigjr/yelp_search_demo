@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/  do
+  # rubocop:disable Metrics/BlockLength
+  scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/ do
     # get '/', to: 'searches#new'
     root to: 'searches#new', as: 'static_home'
     resources :searches, only: %i[new create show update]
@@ -30,4 +31,5 @@ Rails.application.routes.draw do
     get '/sessions', to: 'sessions#new', as: 'new_session'
     # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   end
+  # rubocop:enable Metrics/BlockLength
 end

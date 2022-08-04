@@ -50,17 +50,16 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   CountComments: false
   Max: 10
-  IgnoredMethods:
-    - context
-    - describe
-    - it
-    - shared_examples
-    - shared_examples_for
-    - namespace
+  AllowedMethods:
+    - test
     - draw
-    - configure
     - group
-  Enabled: false
+    - guard
+    - included
+    - extensions.each
+    - assert_no_difference
+
+  Enabled: true
 
 # Style Cops
 
