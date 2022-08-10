@@ -139,7 +139,7 @@ GEM
       smart_properties
     erubi (1.11.0)
     eventmachine (1.2.7)
-    evil_systems (1.1.1)
+    evil_systems (1.1.2)
       capybara
       zeitwerk (>= 2)
     faraday (2.4.0)
