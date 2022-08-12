@@ -420,9 +420,9 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (2.0.10-x86_64-darwin)
+    tailwindcss-rails (2.0.12-x86_64-darwin)
       railties (>= 6.0.0)
-    tailwindcss-rails (2.0.10-x86_64-linux)
+    tailwindcss-rails (2.0.12-x86_64-linux)
       railties (>= 6.0.0)
     temple (0.8.2)
     terminal-table (3.0.2)
