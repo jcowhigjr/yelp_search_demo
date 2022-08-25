@@ -7,7 +7,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' ||  github.actor == 'github-actions[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' ||  github.actor == 'dependabot[securitybot]' }}
     steps:
       - name: Dependabot metadata
         id: metadata
@@ -17,7 +17,9 @@ jobs:
       - name: Enable auto-merge for Dependabot PRs
       # if: ${{contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
         if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
-        run:  gh pr merge --merge --admin "$PR_URL"
+        uses: fastify/github-action-merge-dependabot@v3.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
