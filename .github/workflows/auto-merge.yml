@@ -17,7 +17,7 @@ jobs:
       - name: Enable auto-merge for Dependabot PRs
       # if: ${{contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
         if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
-        run:  gh pr merge --merge --auto --admin "$PR_URL"
+        run:  gh pr merge --merge --admin "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
