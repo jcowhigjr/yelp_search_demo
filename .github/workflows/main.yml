@@ -64,6 +64,18 @@ jobs:
              echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
+  auto-merge:
+        name: Auto-Merge PRs by Dependabot
+        needs: test
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: write
+            contents: write
+        steps:
+          - uses: fastify/github-action-merge-dependabot@v3.0.0
+            with:
+                github-token: ${{ secrets.GITHUB_TOKEN }}
+                target: minor
   deploy:
     needs: test
     if: ${{ github.ref == 'refs/heads/develop' }}
