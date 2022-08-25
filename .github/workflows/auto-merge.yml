@@ -3,6 +3,7 @@ on: pull_request
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   dependabot:
@@ -16,9 +17,24 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
       # if: ${{contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
-        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
-        run:  gh pr merge --merge --auto --admin "$PR_URL"
+        # if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
+        uses: fastify/github-action-merge-dependabot@v3.0.0
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+
+  # auto-merge:
+  #         name: Auto-Merge PRs by Dependabot
+  #         needs:
+  #             - dependabot
+  #         runs-on: ubuntu-latest
+  #         permissions:
+  #             pull-requests: write
+  #             contents: write
+  #         steps:
+  #           - uses: fastify/github-action-merge-dependabot@v3.0.0
+  #             with:
+  #                 github-token: ${{ secrets.GITHUB_TOKEN }}
+  #                 target: minor
 
