@@ -1,15 +1,16 @@
-# DorkBob
+# DorkBob needs a name
 
-DorkBob is a pretty generic Ruby on Rails application that allows users to find anything near them by topic, utilizing the Yelp Fusion API.
+A pretty generic Ruby on Rails 7 application that allows users to find anything near them by topic, utilizing the Yelp Fusion API.
 
 Use the application at https://dorkbob.herokuapp.com
 
 ## Motivation:
 
-I was looking for a project to practice on when i had spare time and found.
+I was looking for a project to practice on when i had spare time.
 
 ## For Devs ->
-   Most of the work here was actually building out the CI/CD/Security/Update lifecycle of the project.
+  Once I ran out of feature ideas, most of the work here was actually building out the CI/CD/Security and now
+  Automatic Updates
  
  I have added some notes and resources here:
  [Resources.md](../develop/Resources.md) 
@@ -17,7 +18,7 @@ I was looking for a project to practice on when i had spare time and found.
  
 
 ## Attribution
-  Sean was kind enough to let me share it with potential employers and so that might be what you are seeing this.
+  Sean was kind enough to let me share it with potential employers.
 
   Sean's blog and source code:
 
@@ -30,33 +31,38 @@ Jitter totally vibed with me because my favorite place to code has been in coffe
 
 One day, without research 🧐,  I decided I wanted to help find tacos and directions to a yoga studio so then i switched it up.
 
-Currently, I would say it has promise of a baby yelp with old school good enough features:
+Old school good enough features:
 
  Search for something near you.
- Decide what you want to try
+ Decide quickly with the 'Decision Wheel'
 
  Reuse the app day to day for favorite spots.
 
- Click a button and call them for example to order take out.
- Click another button for directions.
- Link out to yelp for more features.
+ Click telephone 📞 and call a human to order take out.
+ Click 🧭 for directions to open in your phone to get there.
+
+ Not sure about a place ..  link out to yelp for more features.
 
 Future Opportunities?
   Remove unused features:
-    rating?
+    seperate user rating? (this is not allowed by the yelp agreement anyway)
   Extend used features:
-    pictures -- pull in more
-    user submitted photos?
-    teach me how to make this?
+    pictures -- pull in more with click
+    user submitted photos .. hmm ActiveStorage could handle this.
+  
+  Add a business plan:
+  
   Yelpish: 
     Filter the favorites based on your location.
-    Share with friends?
-    Help make a quick decision with a decision wheel.
-    Live Poll for the best choice.
-  Keep a tally of the places you've been.
-  Non-Yelpish:
-    specialize and white label by topic build community if there is traction
-      for example, make it local by neighborhood
-    become a tool for 
+
+  Social:
+    Share with friends? 
+    Live Poll for where to go.
+  
+  Personal: Keep a tally of the places you've been.
+  
+  Community:
+    Specialize and white label by search term .. eg) coffee.dorkbob.com
+    Or make it local by neighborhood or club.    eg) taco-club.dorkbob.com
     
 
