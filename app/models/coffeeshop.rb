@@ -1,6 +1,6 @@
 class Coffeeshop < ApplicationRecord
   validates :name, :address, :rating, :yelp_url, :image_url, :phone_number, presence: true
-  validates :rating, inclusion: { in: (1..5) } # rating must be between 0 and 4
+  validates :rating, inclusion: { in: (1..5) }
   has_many :reviews, dependent: :destroy
   has_many :users, through: :reviews
   has_many :user_favorites, dependent: :destroy

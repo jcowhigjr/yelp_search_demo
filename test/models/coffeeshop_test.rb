@@ -11,7 +11,7 @@ class CoffeeshopTest < ActiveSupport::TestCase
     @coffeeshop.rating = nil
     assert_not @coffeeshop.valid?
   end
-  test 'coffeeshop rating must be between 1 and 4' do
+  test 'coffeeshop rating must be between 1 and 5' do
     assert_predicate @coffeeshop, :valid?
     @coffeeshop.rating = 0
     assert_not @coffeeshop.valid?
