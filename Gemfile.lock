@@ -382,7 +382,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.21.0)
       parser (>= 3.1.1.0)
-    rubocop-minitest (0.22.0)
+    rubocop-minitest (0.22.1)
       rubocop (>= 0.90, < 2.0)
     rubocop-performance (1.15.0)
       rubocop (>= 1.7.0, < 2.0)
@@ -446,7 +446,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
     version_gem (1.1.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
