@@ -178,8 +178,9 @@ GEM
     guard-rubocop (1.5.0)
       guard (~> 2.0)
       rubocop (< 2.0)
-    haml (5.2.2)
-      temple (>= 0.8.0)
+    haml (6.0.0)
+      temple (>= 0.8.2)
+      thor
       tilt
     hashie (5.0.0)
     highline (2.0.3)
@@ -291,7 +292,7 @@ GEM
     parser (3.1.2.1)
       ast (~> 2.4.1)
     pg (1.4.3)
-    prettier (3.2.1)
+    prettier (3.2.2)
       syntax_tree (>= 2.7.1)
       syntax_tree-haml (>= 1.1.0)
       syntax_tree-rbs (>= 0.2.0)
