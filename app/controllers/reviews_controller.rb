@@ -12,7 +12,7 @@ class ReviewsController < ApplicationController
     if @review.save
       redirect_to @coffeeshop
     else
-      flash[:review_error] = t('error.something_went_wrong')
+      flash.now[:review_error] = t('error.something_went_wrong')
       render @coffeeshop
     end
   end
@@ -30,7 +30,7 @@ class ReviewsController < ApplicationController
         render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
                                                            locals: { review: @review })
       end
-      flash[:error] = t('error.something_went_wrong')
+      flash.now[:error] = t('error.something_went_wrong')
       render @review.coffeeshop
     end
   end
