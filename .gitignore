@@ -56,3 +56,7 @@ brakeman.ignore
 
 vendor/bundle
 .pumaenv
+nil-0
+nil-1
+nil-2
+nil-3
