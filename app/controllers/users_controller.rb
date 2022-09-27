@@ -13,7 +13,7 @@ class UsersController < ApplicationController
       flash[:success] = t('success.create', model: 'user')
       redirect_to_proper_path
     else
-      flash[:error] = t('error.something_went_wrong')
+      flash.now[:error] = t('error.something_went_wrong')
       render :new
     end
   end
