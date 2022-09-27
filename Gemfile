@@ -52,7 +52,7 @@ gem 'bootsnap', require: false
 
 gem 'hotwire-rails'
 
-gem 'turbo-rails', github: 'hotwired/turbo-rails', branch: 'turbo-7-2-0'
+gem 'turbo-rails', '~> 1.3.0'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
