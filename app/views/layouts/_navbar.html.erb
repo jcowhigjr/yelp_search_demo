@@ -8,8 +8,8 @@
         <li class="text-red-400"><%= Flipper[:early_access_preview].enabled? ? t('earlyaccess'): t('.coming-soon-sig') %></li>
       </ul>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <%# button_to for Logout still because of a turbo issue  %>
-        <li><%= button_to t('.logout'), logout_path, method: :delete %></li>
+        <%# https://chimkan.com/rails-7-and-devise-issue-with-sign-out/ %>
+        <li><%= link_to t('.logout'), logout_path, data: { turbo_method: :delete } %></li>
         <li><%= link_to t('.my-profile'), user_path(current_user), method: :get %></li>
         <li><%= link_to t('views.searches.new'), new_search_path, method: :get %></li>
       </ul>
