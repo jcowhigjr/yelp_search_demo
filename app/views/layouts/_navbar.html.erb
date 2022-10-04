@@ -26,7 +26,7 @@
       </div>
       </li>
       <%# button_to for Logout still because of a turbo issue  %>
-      <li><%= button_to sessions_path, method: :delete  do %>
+      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to logout_path, data: { turbo_method: :delete }  do %>
           <i class="small material-icons">exit_to_app</i><%= t('.logout') %>
           <% end %>
       </li>
