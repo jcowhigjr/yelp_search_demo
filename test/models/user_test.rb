@@ -13,6 +13,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'mylongerpassword',
         password_confirmation: 'mylongerpassword',
       )
+
     assert_predicate user, :valid?
   end
 
@@ -23,6 +24,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'password',
         password_confirmation: 'password',
       )
+
     assert_not user.valid?
   end
 
@@ -33,6 +35,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'password',
         password_confirmation: 'password',
       )
+
     assert_not user.valid?
   end
 
@@ -43,12 +46,14 @@ class UserTest < ActiveSupport::TestCase
         email: 'myemail@example.com',
         password_confirmation: 'password',
       )
+
     assert_not user.valid?
   end
 
   test 'user cannot be created without a password confirmation' do
     user =
       User.new(name: 'test', email: 'myemail@example.com', password: 'password')
+
     assert_not user.valid?
   end
 
@@ -60,6 +65,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'pass',
         password_confirmation: 'pass',
       )
+
     assert_not user.valid?
   end
 
@@ -71,6 +77,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'password',
         password_confirmation: 'password1',
       )
+
     assert_not user.valid?
   end
 
@@ -90,6 +97,7 @@ class UserTest < ActiveSupport::TestCase
         password: 'password',
         password_confirmation: 'password',
       ) # try to create another user with the same email
+
     assert_not user2.valid?
   end
 end

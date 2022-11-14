@@ -23,12 +23,14 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
              },
            }
     end
+
     assert_redirected_to static_home_url
     assert_equal 'Successfully created user.', flash[:success]
   end
 
   test '#show' do
     user_one = login(:one)
+
     assert_equal 'Successfully logged in.', user_one.flash[:success]
   end
 
@@ -38,22 +40,26 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     user_one = login(:one)
     # assert_equal 'Successfully logged in.', user_one.flash[:success]
     assert_difference('User.count', -1) { user_one.delete '/users/1' }
+
     assert_equal 'User 1 destroyed', user_one.flash[:notice]
     assert_redirected_to '/login'
   end
 
   test '#:show, missing user' do
     user_one = login(:one)
+
     assert_equal 'Successfully logged in.', user_one.flash[:success]
     User.find_by(id: user_one.session[:user_id]).destroy
 
     # rescue ActiveRecord::RecordNotFound
     get '/users/1'
+
     assert_redirected_to static_home_url
   end
 
   test '#:show, cookie present missing current user' do
     user_one = login(:one)
+
     assert_equal 'Successfully logged in.', user_one.flash[:success]
     User.find_by(id: user_one.session[:user_id]).destroy
 
@@ -88,6 +94,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       sess.extend(CustomAssertions)
       who = users(who)
       get '/login'
+
       assert_response :success
 
       sess.post '/sessions',

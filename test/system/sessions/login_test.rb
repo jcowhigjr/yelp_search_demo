@@ -15,6 +15,7 @@ class LoginTest < ApplicationSystemTestCase
     click_on 'Log In'
     click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'My Profile'
+
     assert_text 'Your favorite spots:'
   end
 end

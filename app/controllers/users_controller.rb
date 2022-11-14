@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   before_action :redirect_if_logged_in, except: [:show]
 
+  def show
+    cookies[:last_viewed] = nil
+    @user = User.find(params[:id])
+  end
+
   def new
     @user = User.new
   end
@@ -16,11 +21,6 @@ class UsersController < ApplicationController
       flash.now[:error] = t('error.something_went_wrong')
       render :new
     end
-  end
-
-  def show
-    cookies[:last_viewed] = nil
-    @user = User.find(params[:id])
   end
 
   rescue_from ActiveRecord::RecordNotFound do
