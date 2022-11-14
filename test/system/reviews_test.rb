@@ -21,6 +21,7 @@ class BasicsTest < ApplicationSystemTestCase
     fill_in 'Please give a brief description of your experience at Coffeeshop 1.',
             with: 'the cafe mocha is my fav'
     click_on 'SUBMIT REVIEW'
+
     assert_text('the cafe mocha is my fav')
   end
 
