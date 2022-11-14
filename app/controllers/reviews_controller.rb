@@ -6,6 +6,10 @@ class ReviewsController < ApplicationController
     find_or_redirect
   end
 
+  def edit
+    @coffeeshop = Coffeeshop.find(@review.coffeeshop_id)
+  end
+
   def create
     @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
     @review = @coffeeshop.reviews.create(review_params)
@@ -15,10 +19,6 @@ class ReviewsController < ApplicationController
       flash.now[:review_error] = t('error.something_went_wrong')
       render @coffeeshop
     end
-  end
-
-  def edit
-    @coffeeshop = Coffeeshop.find(@review.coffeeshop_id)
   end
 
   def update

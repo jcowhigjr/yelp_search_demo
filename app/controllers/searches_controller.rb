@@ -1,20 +1,10 @@
 class SearchesController < ApplicationController
-  def new
-    @search = Search.new
+  def show
+    @search = Search.find(params[:id])
   end
 
-  def update
-    @search = Search.find(params[:id])
-    @search.coffeeshops = []
-    @search.update!(search_params)
-    if Coffeeshop.get_search_results(@search) == 'error'
-      flash[:error] = t('something_went_wrong')
-      redirect_to static_home_url
-    else
-      @search.save
-      flash[:success] = t('success.update', model: 'search')
-      redirect_to_proper_path
-    end
+  def new
+    @search = Search.new
   end
 
   def create
@@ -34,8 +24,18 @@ class SearchesController < ApplicationController
     end
   end
 
-  def show
+  def update
     @search = Search.find(params[:id])
+    @search.coffeeshops = []
+    @search.update!(search_params)
+    if Coffeeshop.get_search_results(@search) == 'error'
+      flash[:error] = t('something_went_wrong')
+      redirect_to static_home_url
+    else
+      @search.save
+      flash[:success] = t('success.update', model: 'search')
+      redirect_to_proper_path
+    end
   end
 
   # def index

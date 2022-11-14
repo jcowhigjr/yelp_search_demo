@@ -10,6 +10,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
   test '#new' do
     get new_search_url
+
     assert_response :success
     assert_select 'form'
   end
@@ -18,12 +19,14 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Search.count') do
       post searches_path, params: { search: { query: 'tacos' } }
     end
+
     assert_response :found
     assert_equal 'Successfully created search.', flash[:success]
   end
 
   test '#show' do
     get search_url(@search, locale: nil)
+
     assert_response :success
     assert_select 'h2',
                   "Top Rated Searches for #{@search.query} near you!",
@@ -34,6 +37,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     post searches_path, params: { search: { query: 'tacos' } }
     @search = Search.last
     patch search_url(@search.id), params: { search: { query: 'yoga' } }
+
     assert_response :found
     assert_equal 'Successfully updated search.', flash[:success]
   end

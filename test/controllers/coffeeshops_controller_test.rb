@@ -12,6 +12,7 @@ class CoffeeshopsControllerTest < ActionDispatch::IntegrationTest
   # end
   test 'should get show' do
     get "/coffeeshops/#{@coffeeshop.id}"
+
     assert_response :success
     assert_select 'h1', text: @coffeeshop.name
     assert_select 'address', contain_text: "place#{@coffeeshop.address}"
