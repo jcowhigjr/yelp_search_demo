@@ -28,6 +28,7 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
     I18n.available_locales.each do |locale|
       I18n.with_locale(locale) do
         get static_home_path
+
         assert_equal I18n.locale.to_s, locale.to_s
         # assert_select "html[lang=\"#{locale}\"]"
         assert_select 'html[lang="en"]'
@@ -51,6 +52,7 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
         assert_select "a[href='/']", text: language_name_of(I18n.default_locale)
 
         locales_except_default = I18n.available_locales - [I18n.default_locale]
+
         locales_except_default.each do |l|
           assert_select "a[href='/#{l}']", text: language_name_of(l)
         end
@@ -60,8 +62,10 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
 
   test 'en is the default locale' do
     get static_home_path
+
     assert_equal(:en, I18n.locale)
     get '/en'
+
     assert_equal(:en, I18n.locale)
   end
 
@@ -70,8 +74,10 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
     assert_equal(:en, I18n.default_locale)
     assert_equal(:en, I18n.locale)
     get '/pt-BR'
+
     assert_not_equal(:"pt-BR", I18n.locale)
     get '/en'
+
     assert_equal(:en, I18n.locale)
   end
 
@@ -84,9 +90,11 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
         assert_equal I18n.locale, locale
 
         get static_home_path
+
         assert_equal I18n.locale, locale
 
         get '/pt-BR'
+
         assert_equal I18n.locale, locale
 
         assert login_path, '/pt-BR/login'
@@ -107,6 +115,7 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
   test 'path helpers in tests require locale' do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
+
     assert_equal('/pt-BR/coffeeshops/2', coffeeshop_path(@coffeeshop, locale: 'pt-BR' ))
   end
 

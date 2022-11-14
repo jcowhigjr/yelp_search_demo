@@ -52,6 +52,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
              },
            }
     end
+
     assert_redirected_to coffeeshop_path(@coffeeshop)
 
     # assert_select 'p', text: @review.content
@@ -80,6 +81,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
                 },
               }
       end
+
       assert_select 'span', text: '★☆☆☆☆'
     end
 

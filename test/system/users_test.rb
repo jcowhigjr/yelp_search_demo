@@ -16,6 +16,7 @@ class UsersTest < ApplicationSystemTestCase
     skip 'this test is broken'
     click_on 'menu'
     click_on 'Logout' # this is not working
+
     assert_current_path '/'
   end
 
@@ -24,6 +25,7 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_button 'Log In'
+
     assert_text 'Hello, user_one!'
   end
 
@@ -35,6 +37,7 @@ class UsersTest < ApplicationSystemTestCase
     click_button 'Log In'
     click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'My Profile'
+
     assert_current_path "/users/#{@user.id}"
     assert_text "Hello, #{@user.name}!"
   end

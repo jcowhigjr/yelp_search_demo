@@ -14,8 +14,10 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
 
   test 'add favorite should remain on coffeeshop page' do
     user_one = login(:one)
+
     assert_equal 'Successfully logged in.', user_one.flash[:success]
     user_one.favorite_coffeeshop(@coffeeshop)
+
     assert_equal 'Coffeeshop is added to your favorites.',
                  user_one.flash[:success]
     assert_equal coffeeshop_path(@coffeeshop), user_one.path
@@ -23,9 +25,11 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
 
   test 'should destroy favorite' do
     user_one = login(:one)
+
     assert_equal 'Successfully logged in.', user_one.flash[:success]
     assert_equal '/login', path
     user_one.unfavorite_coffeeshop(@coffeeshop)
+
     assert_equal 'Successfully destroyed coffeeshop.',
                  user_one.flash[:success]
     assert_response :success
@@ -59,6 +63,7 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
       sess.extend(CustomAssertions)
       who = users(who)
       get '/login'
+
       assert_response :success
 
       sess.post '/sessions',

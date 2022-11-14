@@ -11,11 +11,13 @@ class LayoutsTest < ActionDispatch::IntegrationTest
 
   test 'defaults to English translation' do
     get static_home_path
+
     assert_select 'h2', 'New Search'
   end
 
   test 'renders translated versions of the markdown' do
     get static_home_path(locale: 'pt-BR')
+
     assert_select 'h2', 'Nova pesquisa'
   end
 end
