@@ -34,7 +34,7 @@ pre-commit:
       tags: backend style
       glob: '*.rb'
       exclude: 'application.rb|routes.rb'
-      run: bundle exec rubocop --force-exclusion {all_files}
+      run: bundle exec rubocop {all_files}
     erb-lint:
       tags: frontend style
       files: git diff --name-only master
@@ -54,7 +54,7 @@ fixer:
   parallel: true
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion --autocorrect {all_files}
+      run: bundle exec rubocop --force-exclusion -A {all_files}
     js-fixer:
       glob: 'app/javascript/**.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}

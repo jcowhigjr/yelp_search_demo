@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby ENV.fetch('RUBY_VERSION', '~> 3.1.2')
+ruby ENV.fetch('RUBY_VERSION', '~> 3.1.3')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
@@ -103,7 +103,8 @@ group :development do
   # gem 'solargraph-rails', require: false
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
-  # gem 'lefthook', require: false
+  gem 'lefthook', require: false
+  gem 'bundler-audit', require: false
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
