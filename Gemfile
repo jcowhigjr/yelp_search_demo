@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby ENV.fetch('RUBY_VERSION', '~> 3.1.3')
+ruby ENV.fetch('RUBY_VERSION', '~> 3.1')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
