@@ -22,7 +22,7 @@ jobs:
       - name: Setup Ruby 3
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1
+          ruby-version: 3.2
           bundler-cache: true
       - name: Build and run test
         env:
@@ -87,7 +87,7 @@ jobs:
       - name: Setup Ruby 3
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1
+          ruby-version: 3.2
           bundler-cache: true
       - name: deploy to heroku
         env:
