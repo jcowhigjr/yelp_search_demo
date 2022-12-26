@@ -21,6 +21,7 @@ jobs:
         uses: fastify/github-action-merge-dependabot@v3.5.3
         with:
           github-token: ${{ secrets.GH_TOKEN }}
+          use-github-auto-merge: true
         env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
 
