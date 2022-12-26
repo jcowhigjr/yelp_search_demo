@@ -113,7 +113,6 @@ GEM
       capybara (~> 3.0)
       ferrum (~> 0.13.0)
     date (3.3.2)
-    debug (1.7.1)
     debug_inspector (1.1.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -469,7 +468,6 @@ DEPENDENCIES
   bundler-audit
   capybara
   cuprite
-  debug
   dotenv-rails
   easy_translate
   erb_lint
