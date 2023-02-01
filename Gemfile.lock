@@ -155,7 +155,7 @@ GEM
       concurrent-ruby (< 2)
     foreman (0.87.2)
     formatador (1.1.0)
-    globalid (1.0.1)
+    globalid (1.1.0)
       activesupport (>= 5.0)
     guard (2.18.0)
       formatador (>= 0.2.4)
@@ -257,9 +257,9 @@ GEM
     next_rails (1.2.1)
       colorize (>= 0.8.1)
     nio4r (2.5.8)
-    nokogiri (1.14.0-x86_64-darwin)
+    nokogiri (1.14.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.14.0-x86_64-linux)
+    nokogiri (1.14.1-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -429,11 +429,11 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.11)
     timeout (0.3.1)
-    turbo-rails (1.3.2)
+    turbo-rails (1.3.3)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
-    tzinfo (2.0.5)
+    tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
@@ -511,7 +511,7 @@ DEPENDENCIES
   sprockets-exporters_pack
   sqlite3
   tailwindcss-rails (~> 2.0)
-  turbo-rails (~> 1.3.2)
+  turbo-rails (~> 1.3.3)
   tzinfo-data
   web-console
   webdrivers
