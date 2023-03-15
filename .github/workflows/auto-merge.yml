@@ -18,7 +18,7 @@ jobs:
       - name: Enable auto-merge for Dependabot PRs
       # if: ${{contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
         # if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
-        uses: fastify/github-action-merge-dependabot@v3.6.0
+        uses: fastify/github-action-merge-dependabot@v3.6.2
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           use-github-auto-merge: true
@@ -34,7 +34,7 @@ jobs:
   #             pull-requests: write
   #             contents: write
   #         steps:
-  #           - uses: fastify/github-action-merge-dependabot@v3.6.0
+  #           - uses: fastify/github-action-merge-dependabot@v3.6.2
   #             with:
   #                 github-token: ${{ secrets.GITHUB_TOKEN }}
   #                 target: minor
