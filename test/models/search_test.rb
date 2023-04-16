@@ -9,10 +9,6 @@ class SearchTest < ActiveSupport::TestCase
     @coffeeshop = coffeeshops(:one)
   end
 
-  test 'the truth' do
-    assert true
-  end
-
   test 'should not save without a location' do
     search = Search.new
 
