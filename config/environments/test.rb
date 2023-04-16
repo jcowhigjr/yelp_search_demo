@@ -77,4 +77,7 @@ Rails.application.configure do
 
     # Use default language as fallback if translation is missing
     config.i18n.fallbacks = false
+
+    # even a small number of system tests are faster with parallelization
+    config.active_support.test_parallelization_threshold = 10
 end
