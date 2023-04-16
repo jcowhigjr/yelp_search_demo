@@ -2,5 +2,10 @@
   "scripts": {
     "postdeploy": "bin/setup && bin/rails db:seed"
   },
-  "stack": "heroku-22"
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/ruby"
+    }
+  ]
 }
