@@ -316,7 +316,7 @@ GEM
       rack (>= 1.4)
     rack-contrib (2.3.0)
       rack (~> 2.0)
-    rack-livereload (0.3.17)
+    rack-livereload (0.5.1)
       rack
     rack-protection (3.0.5)
       rack
