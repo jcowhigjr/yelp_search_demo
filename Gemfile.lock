@@ -295,7 +295,7 @@ GEM
       syntax_tree-haml (>= 1.1.0)
       syntax_tree-rbs (>= 0.2.0)
     prettier_print (1.1.0)
-    propshaft (0.6.4)
+    propshaft (0.7.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
