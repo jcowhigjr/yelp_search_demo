@@ -254,7 +254,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     netrc (0.11.0)
-    next_rails (1.2.3)
+    next_rails (1.2.4)
       colorize (>= 0.8.1)
     nio4r (2.5.9)
     nokogiri (1.14.3-x86_64-darwin)
