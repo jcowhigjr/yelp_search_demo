@@ -12,15 +12,16 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v1.3.4
+        uses: dependabot/fetch-metadata@v1.4.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
       # if: ${{contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
         # if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
-        uses: fastify/github-action-merge-dependabot@v3.4.0
+        uses: fastify/github-action-merge-dependabot@v3.6.4
         with:
           github-token: ${{ secrets.GH_TOKEN }}
+          use-github-auto-merge: true
         env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
 
@@ -33,7 +34,7 @@ jobs:
   #             pull-requests: write
   #             contents: write
   #         steps:
-  #           - uses: fastify/github-action-merge-dependabot@v3.4.0
+  #           - uses: fastify/github-action-merge-dependabot@v3.6.4
   #             with:
   #                 github-token: ${{ secrets.GITHUB_TOKEN }}
   #                 target: minor

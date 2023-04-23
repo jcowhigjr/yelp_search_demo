@@ -1,10 +1,18 @@
+def next?
+  File.basename(__FILE__) == 'Gemfile.next'
+end
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby ENV.fetch('RUBY_VERSION', '~> 3.1.2')
+ruby File.read('.ruby-version').strip
+
+# ENV.fetch('RUBY_VERSION', '~> 3.2')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+gem 'next_rails'
+
 gem 'rails', '~> 7.0.4'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
@@ -19,7 +27,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'json'
 gem 'rest-client'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 5.6'
+gem 'puma', '~> 6.2'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -52,7 +60,7 @@ gem 'bootsnap', require: false
 
 gem 'hotwire-rails'
 
-gem 'turbo-rails', '~> 1.3.0'
+gem 'turbo-rails', '~> 1.3.2'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -66,7 +74,8 @@ gem 'sprockets-exporters_pack'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
+
+
   gem 'meta_request',
       github: 'jcowhigjr/rails_panel',
       branch: 'jcowhigjr-support-rails-7.0'
@@ -103,7 +112,8 @@ group :development do
   # gem 'solargraph-rails', require: false
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
-  # gem 'lefthook', require: false
+  gem 'lefthook', require: false
+  gem 'bundler-audit', require: false
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
