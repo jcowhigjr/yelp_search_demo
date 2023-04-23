@@ -14,8 +14,7 @@
                 <%= link_to t('.edit-this-revie-0'), edit_user_review_path(current_user, review), class: 'btn-small' %>
             </div>
             <div class="col s6">
-                <!-- https://github.com/hotwired/turbo-rails/issues/259 -->
-                <%= button_to t('.delete-this-rev'), user_review_path(current_user, review), class: 'btn-small', method: :delete %>
+                <%= link_to t('.delete-this-rev'), user_review_path(current_user, review), class: 'btn-small', data: { turbo_method: :delete } %>
             </div>
         </div>
     <% end %>
