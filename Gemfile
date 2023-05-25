@@ -13,7 +13,7 @@ ruby File.read('.ruby-version').strip
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
 
-gem 'rails', '~> 7.0.4'
+gem 'rails', '~> 7.0.5'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
