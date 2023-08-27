@@ -29,7 +29,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'h2',
-                  "Top Rated Searches for #{@search.query} near you!",
+                  text: "Top Rated Searches for #{@search.query} near you!",
                   match: :second
   end
 
