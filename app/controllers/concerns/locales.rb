@@ -1,8 +1,6 @@
 module Locales
   extend ActiveSupport::Concern
 
-  private
-
   included do
     def set_locale(&)
       locale =

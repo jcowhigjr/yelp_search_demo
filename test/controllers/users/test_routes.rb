@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class UsersController::RoutesTest < ActionController::TestCase
+class UsersController::RoutesTest < ActionDispatch::IntegrationTest
   
   def test_user_routes
     assert_routing '/users/1', controller: 'users', action: 'show', id: '1'
