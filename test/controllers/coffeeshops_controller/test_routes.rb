@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CoffeeshopsController::RoutesTest < ActionController::TestCase
+class CoffeeshopsController::RoutesTest < ActionDispatch::IntegrationTest
   def test_routes
     assert_routing '/', controller: 'searches', action: 'new'
     assert_routing '/login', controller: 'sessions', action: 'new'
