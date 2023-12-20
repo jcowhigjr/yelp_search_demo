@@ -48,6 +48,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_text('"this place is bad"', count: 1)
     assert_selector('#review_rating', text: '★☆☆☆☆')
     assert_current_path %r{^/coffeeshops/\d{1,9}}
+
     click_on 'Delete', match: :first
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
