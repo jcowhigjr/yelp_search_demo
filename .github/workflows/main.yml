@@ -51,7 +51,7 @@ jobs:
         run: |
           bin/rails test:system --trace HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
       - name: Upload failed system test images
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
