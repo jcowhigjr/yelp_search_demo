@@ -42,7 +42,7 @@ target: :blank do %>
                         color: #FF1A1A;
                         }
                     </style>
-                   <%= link_to @coffeeshop.yelp_url do %>
+                   <%= sanitize link_to @coffeeshop.yelp_url do %>
                         <i class="fab fa-yelp">View on Yelp</i>
                     <% end %>
                 </div>
@@ -80,7 +80,7 @@ target: :blank do %>
             <% if @coffeeshop.reviews.empty? %>
             <div class="row center">
                 <span class="page-text red-text"></span>
-                <%= link_to @coffeeshop.yelp_url do %>
+                <%= sanitize @coffeeshop.yelp_url do %>
                         <i class="fab fa-yelp yelp_color" style="margin-right: 10px;">Check out yelp for reviews!</i>
                 <% end %>
             </div>
