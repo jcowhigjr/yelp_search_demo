@@ -18,6 +18,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_link 'place',
                 href:
                   "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+    assert_selector :link, href: @coffeeshop.yelp_url
 
     click_on 'Login to add this shop to your favorites!'
     fill_in 'Email', with: @user.email
