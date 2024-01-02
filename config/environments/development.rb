@@ -74,11 +74,6 @@ Rails.application.configure do
     config.middleware.insert_after ActionDispatch::Static, Rack::LiveReload
   end
 
-  # Enable a feature for everyone
-  Flipper.enable :decision_wheel if ENV["FLIPPER_SPINNER_WHEEL"]
-  Flipper.enable :early_access_beta if ENV["FLIPPER_EARLY_ACCESS_BETA"]
-  Flipper.enable :early_access_preview if ENV["FLIPPER_EARLY_ACCESS_PREVIEW"]
-
   # Configure host for URL helpers.
   Rails.application.routes.default_url_options = {host: ENV["HOST"], locale: nil}
 
