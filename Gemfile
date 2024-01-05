@@ -136,7 +136,7 @@ group :test do
   gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 2.1'
+gem 'tailwindcss-rails', '~> 2.2'
 
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'
