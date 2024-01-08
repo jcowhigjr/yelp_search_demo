@@ -3,10 +3,6 @@
    <nav class="transparentBG">
     <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
       <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
-
-      <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li class="text-red-400"><%= Flipper[:early_access_preview].enabled? ? t('earlyaccess'): t('.coming-soon-sig') %></li>
-      </ul>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <%# https://chimkan.com/rails-7-and-devise-issue-with-sign-out/ %>
         <li><%= link_to t('.logout'), logout_path, data: { turbo_method: :delete } %></li>

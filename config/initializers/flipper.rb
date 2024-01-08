@@ -2,19 +2,14 @@
 
 require 'flipper'
 
-Flipper.configure do |config|
-  config.default do
-    # Use memory adapter for simplicity
-    adapter = Flipper::Adapters::Memory.new
-
-    # Pass adapter to Flipper
-    Flipper.new(adapter)
-  end
-end
+Flipper.instance = nil # Ensure flipper gets reset
 
 # Add the "early_access_preview" feature
-Flipper.add('early_access_preview')
-Flipper.add('decision_wheel')
+Flipper.add :early_access_preview
+
+# Add the "decision_wheel" feature
+Flipper.add :decision_wheel
+
 
 # Enable a feature for everyone
 Flipper.enable :decision_wheel if ENV['FLIPPER_SPINNER_WHEEL']
