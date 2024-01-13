@@ -15,9 +15,9 @@ pre-push:
       files: git diff --name-only master
       glob: '*.rb'
       run: bundle exec rubocop --force-exclusion -A {files}
-    # brakeman:
-    #   tags: backend security
-    #   run: bundle exec brakeman --no-pager
+    brakeman:
+      tags: backend security
+      run: bundle exec brakeman --no-pager
     rails-tests:
       tags: backend tests
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
