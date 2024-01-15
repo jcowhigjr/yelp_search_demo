@@ -13,13 +13,13 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
         config.adapter { @adapter }
       end
       Flipper.instance = nil # Ensure flipper gets reset
-      sleep 1
+      Flipper.instance # Force flipper to be initialized
     end
 
+    # enable the feature manually in .env.test.local
+    # FLIPPER_EARLY_ACCESS_PREVIEW=true
     test 'I should see Early Access Preview' do
-
-      Flipper.add :early_access_preview
-      Flipper.enable :early_access_preview
+      Flipper[:early_access_preview].enable
 
       assert_predicate Flipper[:early_access_preview], :enabled?
 

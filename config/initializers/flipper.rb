@@ -1,6 +1,6 @@
 # config/initializers/flipper.rb
 
-require 'flipper/adapters/memory'
+require 'flipper/adapters/pstore'
 
 if ENV['FLIPPER_SPINNER_WHEEL']
   Flipper.add :decision_wheel
