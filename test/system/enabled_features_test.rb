@@ -13,6 +13,7 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
         config.adapter { @adapter }
       end
       Flipper.instance = nil # Ensure flipper gets reset
+      sleep 1
     end
 
     test 'I should see Early Access Preview' do
