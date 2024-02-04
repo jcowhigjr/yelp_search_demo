@@ -7,14 +7,15 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
   # https://github.com/flippercloud/flipper/issues/615#issuecomment-1879449641
   # https://github.com/flippercloud/flipper/pull/808/files/05e2ce04c2e68ffeafffc126bf5ced60f6b45fb1#r1457378780
 
-  setup do
-    # Memory works here, as long as the same instance is shared across this thread and the app thread
-    Flipper.instance.import(Flipper::Adapters::Memory.new)
-  end
+  # setup do
+  #   # Memory works here, as long as the same instance is shared across this thread and the app thread
+  #   # Flipper.instance.import(Flipper::Adapters::Memory.new)
 
-  parallelize_setup do |_worker|
-    Flipper.instance=nil
-  end
+  # end
+
+  # parallelize_setup do |_worker|
+  #   Flipper.instance=nil
+  # end
 
   # enable the feature manually in .env.test.local
   # FLIPPER_EARLY_ACCESS_PREVIEW=true
