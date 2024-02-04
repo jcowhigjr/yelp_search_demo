@@ -13,3 +13,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+  - package-ecosystem: ruby
+    directory: "/"
+    update-strategy: patch
+    schedule:
+      interval: "daily"
