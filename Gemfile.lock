@@ -153,7 +153,7 @@ GEM
       webrick (~> 1.7)
       websocket-driver (>= 0.6, < 0.8)
     ffi (1.15.5)
-    flipper (1.2.1)
+    flipper (1.2.2)
       concurrent-ruby (< 2)
     foreman (0.87.2)
     formatador (1.1.0)
