@@ -1,3 +1,4 @@
+---
 es:
   add-to-my-favor: Agregar a mis favoritos.
   coffeeshop: Cafetería
@@ -7,19 +8,17 @@ es:
       reviews: Reseñas
     reviews:
       form:
-        leave-a-review: ¡Dejar un comentario!
+        leave-a-review: "¡Dejar un comentario!"
     show:
       add-to-my-favor: AGREGAR A MIS FAVORITOS
       log-in: Iniciar sesión
-      login-to-add-th: ¡Inicia sesión para agregar esta tienda a tus favoritos!
+      login-to-add-th: "¡Inicia sesión para agregar esta tienda a tus favoritos!"
       remove-from-my-favor: ELIMINAR DE MIS FAVORITOS
       reviews:
         index: Reseñas
       to-leave-a-revi: dejar una reseña
       view-on-yelp: Ver en Yelp
-      you-must-be-les: >-
-        ¡Debe estar <%= link_to 'conectado', login_path %> para dejar una
-        reseña!
+      you-must-be-les: "¡Debe estar <%= link_to 'conectado', login_path %> para dejar una reseña!"
       you-must-be-les-0: para dejar una reseña!
   confirm-passwor: Confirmar contraseña
   dir: ltr
@@ -44,16 +43,16 @@ es:
       logout: Cerrar sesión
       my-profile: Mi perfil
   log-in: Iniciar sesión
-  login-to-add-th: ¡Inicia sesión para agregar esta tienda a tus favoritos!
+  login-to-add-th: "¡Inicia sesión para agregar esta tienda a tus favoritos!"
   more-info: Más información
   password-must-b: La contraseña debe tener al menos 6 caracteres)
   phone: teléfono
   place: lugar
   please-give-a-b: 'Proporcione una breve descripción de su experiencia en #{@coffeeshop.name}.'
-  rating: ':clasificación'
+  rating: ":clasificación"
   reviews:
     form:
-      leave-a-review: ¡Dejar un comentario!
+      leave-a-review: "¡Dejar un comentario!"
       please-give-a-b: Proporcione una breve descripción de su experiencia en %(name).
       rating: clasificación
       submit-review: ENVIAR OPINIÓN
@@ -68,14 +67,14 @@ es:
   search-for-a-sh: Busque una tienda para encontrar una cerca de usted.
   searches:
     results:
-      no-results-found: ¡No se han encontrado resultados!
+      no-results-found: "¡No se han encontrado resultados!"
   submit-review: Enviar opinión
   success:
-    create: '%{model} creado con éxito.'
-    destroy: '%{model} destruido con éxito.'
+    create: "%{model} creado con éxito."
+    destroy: "%{model} destruido con éxito."
     login: Iniciado sesión con éxito.
     logout: Cerrar sesión con éxito.
-    update: '%{model} actualizado con éxito.'
+    update: "%{model} actualizado con éxito."
   to-leave-a-revi: dejar una reseña
   username: Nombre de usuario
   users:
@@ -88,7 +87,7 @@ es:
       guest-user: usuario invitado
       hello-0: Hola,
       search-for-a-sh: Busque una tienda para encontrar una cerca de usted.
-      you-dont-have-a: ¡Aún no tienes tiendas favoritas!
+      you-dont-have-a: "¡Aún no tienes tiendas favoritas!"
   views:
     reviews:
       leave-a-review: Dejar un comentario
@@ -98,7 +97,7 @@ es:
       index: Búsqueda
       new: Nueva búsqueda
       placeholder: Ingrese un término de búsqueda (ej. tacos)
-      results: ¡Búsquedas mejor calificadas para %{query} cerca de usted!
+      results: "¡Búsquedas mejor calificadas para %{query} cerca de usted!"
       show: Búsqueda
       update: Búsqueda
     user_sessions:
@@ -117,6 +116,6 @@ es:
       new: Usuario
       show: Usuario
       update: Usuario
-  you-dont-have-a: ¡Aún no tienes tiendas favoritas!
+  you-dont-have-a: "¡Aún no tienes tiendas favoritas!"
   you-must-be-les: para dejar una reseña!
   you-must-be-les-0: usted-debe-ser-les
