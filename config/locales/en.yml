@@ -1,3 +1,4 @@
+---
 en:
   add-to-my-favor: Add to my favorites.
   coffeeshop: Coffee Shop
@@ -47,7 +48,7 @@ en:
   password-must-b: Password (must be at least 6 characters)
   phone: phone
   place: place
-  rating: ':rating'
+  rating: ":rating"
   reviews:
     form:
       leave-a-review: Leave a review!
