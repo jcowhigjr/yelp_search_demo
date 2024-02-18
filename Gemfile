@@ -7,8 +7,10 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby File.read('.ruby-version').strip
 
-ENV.fetch('RUBY_VERSION', '~> 3.2')
+# I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
+# I think this will allow different machines to run tests with different ruby patch versions
 
+ruby ENV.fetch('RUBY_VERSION', '~> 3.2.0')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
