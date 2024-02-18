@@ -1,3 +1,4 @@
+---
 pt-BR:
   coffeeshop: Coffee Shop
   coffeeshops:
@@ -14,9 +15,7 @@ pt-BR:
         index: Avaliações
       to-leave-a-revi: para deixar um comentário
       view-on-yelp: Veja no Yelp
-      you-must-be-les: >-
-        Você deve estar <%= link_to 'logado', login_path %> para deixar um
-        comentário!
+      you-must-be-les: Você deve estar <%= link_to 'logado', login_path %> para deixar um comentário!
       you-must-be-les-0: para deixar um comentário!
   confirm-passwor: Confirme a Senha
   dir: ltr
@@ -62,11 +61,11 @@ pt-BR:
     results:
       no-results-found: Nenhum resultado encontrado!
   success:
-    create: '%{model} criado com sucesso.'
-    destroy: '%{model} destruído com sucesso.'
+    create: "%{model} criado com sucesso."
+    destroy: "%{model} destruído com sucesso."
     login: Logado com sucesso.
     logout: Desconectado com sucesso.
-    update: '%{model} atualizado com sucesso.'
+    update: "%{model} atualizado com sucesso."
   top-rated-searches-for: Pesquisas mais bem avaliadas para <%= @search.query %> perto de você!
   username: Nome de usuário
   users:
