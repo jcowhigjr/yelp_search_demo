@@ -437,7 +437,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.11)
     timeout (0.4.0)
-    turbo-rails (1.5.0)
+    turbo-rails (2.0.3)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
@@ -516,7 +516,7 @@ DEPENDENCIES
   sprockets-exporters_pack
   sqlite3
   tailwindcss-rails (~> 2.3)
-  turbo-rails (~> 1.5.0)
+  turbo-rails (~> 2.0.3)
   tzinfo-data
   web-console
 
