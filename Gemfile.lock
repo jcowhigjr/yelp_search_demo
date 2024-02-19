@@ -120,9 +120,6 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (3.0.2)
-    dotenv-rails (3.0.2)
-      dotenv (= 3.0.2)
-      railties (>= 6.1)
     easy_translate (0.5.1)
       thread
       thread_safe
@@ -479,7 +476,7 @@ DEPENDENCIES
   bundler-audit
   capybara
   cuprite
-  dotenv-rails
+  dotenv
   easy_translate
   erb_lint
   evil_systems
