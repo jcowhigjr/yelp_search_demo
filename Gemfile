@@ -63,7 +63,7 @@ gem 'bootsnap', require: false
 
 gem 'hotwire-rails'
 
-gem 'turbo-rails', '~> 1.5.0'
+gem 'turbo-rails', '~> 2.0.4'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -144,4 +144,4 @@ gem 'tailwindcss-rails', '~> 2.3'
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'
 
-gem 'dotenv-rails'
+gem 'dotenv'
