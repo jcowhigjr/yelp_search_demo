@@ -60,3 +60,7 @@ nil-0
 nil-1
 nil-2
 nil-3
+
+# enforce ruby version in Gemfile but
+# ignore the local ruby version
+.ruby-version
