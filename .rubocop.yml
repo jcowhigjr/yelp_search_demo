@@ -18,11 +18,10 @@ AllCops:
     - 'log/**/*'
     - 'tmp/**/*'
     - 'app/views/**/*'
-    - 'config/environments/*'
     - 'node_modules/**/*'
-  TargetRubyVersion: 3.2.0
-  TargetRailsVersion: 7.1.0
-  # Suggestions: true
+  TargetRubyVersion: 3.2
+  TargetRailsVersion: 7.1
+  SuggestExtensions: true
 
 # Metrics Cops
 
@@ -58,6 +57,8 @@ Metrics/BlockLength:
     - included
     - extensions.each
     - assert_no_difference
+  Exclude:
+    - 'config/environments/*'
 
   Enabled: true
 
@@ -94,7 +95,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/HashSyntax:
-  Description: 'Do not allow the new EnforcedShorthandSyntax in nested EnforcedShorthandSyntax dueo to brakemen compatibility bug'
+  Description: 'Do not allow the new EnforcedShorthandSyntax in nested EnforcedShorthandSyntax due to brakemen compatibility bug'
   EnforcedShorthandSyntax: always
 
 Style/IfUnlessModifier:
@@ -118,6 +119,8 @@ Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
   EnforcedStyle: single_quotes
+  Exclude:
+    - 'config/**/*'
   Enabled: true
 
 Style/TrailingCommaInArguments:
@@ -155,6 +158,7 @@ Style/TrailingCommaInHashLiteral:
 Layout/ArgumentAlignment:
   Exclude:
     - 'config/initializers/*'
+  Enabled: true
 
 Layout/FirstArgumentIndentation:
   Enabled: false

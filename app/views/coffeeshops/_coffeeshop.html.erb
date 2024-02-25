@@ -1,35 +1,31 @@
 <div class="col xl l6 m12 s12">
-    <div class="card large coffeeshop-card dark:bg-slate-900 dark:text-white">
-        <div class="card-image">
-            <p>
-               <%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %>
-            </p>
-        </div>
-        <div class="card-content row">
-            <span class="card-title">
-            <p class="center">
-              <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %>
-            </p>
-            <p class="center">
-               <%= link_to t('.more-info'), coffeeshop_path(coffeeshop), data: { turbo: false }, class: 'btn-small' %>
-            </p>
-            </span>
-        </div>
-        <div class="card-content row">
-            <span>
-                <address class="card-action columns-2">
-                        <%= link_to  "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
-target: :blank, class: 'truncate material-icons' do %>
-                            <i class="material-icons">place</i> <a class="truncate"><%= coffeeshop.address %></a>
-                        <% end %>
-                        <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
-class: 'truncate' do %>
-                            <i class="material-icons">phone</i>
-                            <a class="truncate"><%= number_to_phone(coffeeshop.phone_number, area_code: true) %></a>
-                        <% end %>
-
-                </address>
-            </span>
-        </div>  <!-- .card-content -->
-    </div>  <!-- .card -->
-</div>  <!-- .col -->
+  <div class="card large coffeeshop-card dark:bg-slate-900 dark:text-white">
+    <div class="card-image">
+      <p><%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %></p>
+    </div>
+    <div class="card-content row">
+      <span class="card-title">
+        <p class="center"><%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %></p>
+        <p class="center">
+          <%= link_to t('.more-info'), coffeeshop_path(coffeeshop), data: { turbo: false }, class: 'btn-small' %>
+        </p>
+      </span>
+    </div>
+    <div class="card-content row">
+      <span>
+        <address class="card-action columns-2">
+          <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}", target:
+          :blank, class: 'truncate material-icons' do %>
+          <i class="material-icons">place</i> <a class="truncate"><%= coffeeshop.address %></a>
+          <% end %> <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}", class: 'truncate' do %>
+          <i class="material-icons">phone</i>
+          <a class="truncate"><%= number_to_phone(coffeeshop.phone_number, area_code: true) %></a>
+          <% end %>
+        </address>
+      </span>
+    </div>
+    <!-- .card-content -->
+  </div>
+  <!-- .card -->
+</div>
+<!-- .col -->

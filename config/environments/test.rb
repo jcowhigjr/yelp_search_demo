@@ -11,16 +11,19 @@ Rails.application.configure do
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
   # Don't setup i18n reloader if config.cache_classes = true #44567
   config.cache_classes = true
+  # While tests run files are not watched, reloading is not necessary.
+  config.enable_reloading = false
 
-  # Eager loading loads your whole application. When running a single test locally,
-  # this probably isn't necessary. It's a good idea to do in a continuous integration
-  # system, or in some way before deploying your code.
+  # Eager loading loads your entire application. When running a single test locally,
+  # this is usually not necessary, and can slow down your test suite. However, it's
+  # recommended that you enable it in continuous integration systems to ensure eager
+  # loading is working properly before deploying your code.
   config.eager_load = ENV["CI"].present?
 
   # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    "Cache-Control" => "public, max-age=#{1.hour.to_i}"
+    "Cache-Control" => "public, max-age=#{1.hour.to_i}",
   }
 
   # Show full error reports and disable caching.
@@ -28,9 +31,12 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
   config.cache_store = :null_store
 
-  # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = false
-
+  # Render exception templates for rescuable exceptions and raise for other exceptions.
+  config.action_dispatch.show_exceptions = if Rails::VERSION::STRING >= '7.1'
+    :rescuable
+  else
+    false
+  end
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
@@ -68,16 +74,16 @@ Rails.application.configure do
   #   Bullet.bullet_logger = true
   # end
 
+  # Set default locale
+  config.i18n.default_locale = :en
 
-  # Configure host for URL helpers.
-  # Rails.application.routes.default_url_options = { host: "localhost", port: 3000, locale: I18n.locale }
+  # Use default language as fallback if translation is missing
+  config.i18n.fallbacks = false
 
-    # Set default locale
-    config.i18n.default_locale = :en
-
-    # Use default language as fallback if translation is missing
-    config.i18n.fallbacks = false
-
-    # even a small number of system tests are faster with parallelization
-    config.active_support.test_parallelization_threshold = 10
+  # even a small number of system tests are faster with parallelization
+  config.active_support.test_parallelization_threshold = 10
+  # Raise error when a before_action's only/except options reference missing actions
+  if  Rails::VERSION::STRING >= '7.1'
+    config.action_controller.raise_on_missing_callback_actions = true
+  end
 end

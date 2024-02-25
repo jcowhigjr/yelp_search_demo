@@ -83,7 +83,7 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
 
   test 'path_help_paths can change locales' do
     #   scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/, defaults: {locale: nil} do
-    #   putting the default locale: nil here wasa removing it every time :(
+    #   putting the default locale: nil here was the problem, removing it every time :(
     [:en, :"pt-BR"].each do |locale|
       I18n.with_locale(locale) do
         # with_locale sets the locale
