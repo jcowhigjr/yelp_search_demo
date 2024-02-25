@@ -84,7 +84,9 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
 
  if next?
-   gem 'meta_request'
+  gem 'meta_request',
+      github: 'jcowhigjr/rails_panel',
+      branch: 'jcowhigjr-support-rails-7.1'
  else
   gem 'meta_request',
       github: 'jcowhigjr/rails_panel',
@@ -147,11 +149,7 @@ group :test do
   gem 'minitest-retry'
 end
 
-if next?
-  gem 'tailwindcss-rails'
-else
-  gem 'tailwindcss-rails', '~> 2.3'
-end
+gem 'tailwindcss-rails', '~> 2.3'
 
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'
