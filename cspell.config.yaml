@@ -1,0 +1,11 @@
+version: "0.2"
+ignorePaths: [
+  "config/initializers/new_framework_defaults_7_1.rb",
+  "Gemfile"
+]
+dictionaryDefinitions: []
+dictionaries: []
+words:
+  - noopen
+ignoreWords: []
+import: []

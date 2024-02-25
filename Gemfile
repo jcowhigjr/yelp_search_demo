@@ -16,13 +16,18 @@ ruby ENV.fetch('RUBY_VERSION', '~> 3.2.0')
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
 
-gem 'rails', '~> 7.0.8'
+if next?
+  gem 'rails', '~> 7.1.0'
+else
+  gem 'rails', '~> 7.0.8'
+end
+
+
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
 gem 'propshaft'
 
-# gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: ' '
 gem 'omniauth-google-oauth2'
 
 gem 'omniauth-rails_csrf_protection'
@@ -78,10 +83,13 @@ gem 'sprockets-exporters_pack'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
 
-
+ if next?
+   gem 'meta_request'
+ else
   gem 'meta_request',
       github: 'jcowhigjr/rails_panel',
       branch: 'jcowhigjr-support-rails-7.0'
+ end
 end
 
 group :development do
@@ -139,7 +147,11 @@ group :test do
   gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 2.3'
+if next?
+  gem 'tailwindcss-rails'
+else
+  gem 'tailwindcss-rails', '~> 2.3'
+end
 
 # gem 'flipper-active_record'
 gem 'flipper', require: 'flipper/adapters/pstore'

@@ -3,8 +3,8 @@
         <%= f.hidden_field :user_id, value: current_user.id %>
         <%= f.label t('.rating') %>
         <%= f.select(:rating,
-         options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
-         {}, { class: 'dark:bg-slate-900 dark:text-white' } ) %>
+                     options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
+                     {}, { class: 'dark:bg-slate-900 dark:text-white' } ) %>
         <br><br>
         <%= f.label(:content, t('.please-give-a-b', name: @coffeeshop.name)) %>
         <%= f.text_area :content, class: 'materialize-textarea', required: true %>
