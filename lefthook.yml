@@ -10,6 +10,12 @@ pre-push:
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
+    javascript-audit:
+      tags: frontend security
+      run: yarn audit
+    importmaps-audit:
+      tags: frontend security
+      run: bin/importmap audit
     rubocop:
       tags: backend style
       files: git diff --name-only master
@@ -79,6 +85,12 @@ fixer:
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:all
     i18n-tasks:
       run: bundle exec i18n-tasks health en missing unused
+    javascript-audit:
+      tags: frontend security
+      run: yarn upgrade
+    importmaps-audit:
+      tags: frontend security
+      run: bin/importmap outdated
 
 # scripts:
 #     "hello.js":

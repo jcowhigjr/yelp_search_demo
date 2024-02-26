@@ -5,21 +5,29 @@ end
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby File.read('.ruby-version').strip
+# ruby File.read('.ruby-version').strip
 
-# ENV.fetch('RUBY_VERSION', '~> 3.2')
+# I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
+# I think this will allow different machines to run tests with different ruby patch versions
+
+ruby ENV.fetch('RUBY_VERSION', '~> 3.2.0')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
 
-gem 'rails', '~> 7.0.8'
+if next?
+  gem 'rails', '~> 7.1.0'
+else
+  gem 'rails', '~> 7.0.8'
+end
+
+
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
 gem 'propshaft'
 
-# gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: ' '
 gem 'omniauth-google-oauth2'
 
 gem 'omniauth-rails_csrf_protection'
@@ -60,7 +68,7 @@ gem 'bootsnap', require: false
 
 gem 'hotwire-rails'
 
-gem 'turbo-rails', '~> 1.5.0'
+gem 'turbo-rails', '~> 2.0.4'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
@@ -75,10 +83,15 @@ gem 'sprockets-exporters_pack'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
 
-
+ if next?
+  gem 'meta_request',
+      github: 'jcowhigjr/rails_panel',
+      branch: 'jcowhigjr-support-rails-7.1'
+ else
   gem 'meta_request',
       github: 'jcowhigjr/rails_panel',
       branch: 'jcowhigjr-support-rails-7.0'
+ end
 end
 
 group :development do
@@ -141,4 +154,4 @@ gem 'tailwindcss-rails', '~> 2.3'
 # gem 'flipper-active_record'
 gem 'flipper'
 
-gem 'dotenv-rails'
+gem 'dotenv'
