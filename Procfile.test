@@ -1,0 +1,3 @@
+guard: bin/rails test:prepare && HEADLESS=true CUPRITE=true RAILS_ENV=test bundle exec guard
+#guard: bin/rails test:prepare && SHOW_TESTS=true MAGIC_TEST=true RAILS_ENV=test bundle exec guard
+#guard: bin/rails test:prepare && SHOW_TESTS=true MAGIC_TEST=true CUPRITE=false RAILS_ENV=test bundle exec guard
