@@ -1,0 +1,17 @@
+#!/usr/bin/env dotenv -f .env.development bash
+
+if ! command -v foreman &> /dev/null
+then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+rm .env
+# rm -rvf vendor/bundle/
+
+bundle config unset deployment
+bundle config unset frozen
+bundle config unset frozen_lockfile
+bundle install
+
+foreman start -f Procfile.test

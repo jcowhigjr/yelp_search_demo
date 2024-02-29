@@ -45,7 +45,7 @@ pre-commit:
       tags: frontend style
       files: git diff --name-only master
       glob: '*.erb'
-      run: bundle exec erblint --lint-all {files}
+      run: bundle exec erblint --lint-all {staged_files}
     # brakeman:
     #   tags: backend security
     #   run: bundle exec brakeman --no-pager
