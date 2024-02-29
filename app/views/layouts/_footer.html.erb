@@ -8,12 +8,7 @@
           <% end %>
         </div>
       <% end %>
-        <%# display rails environment %>
-        <% if Rails.env.development? %>
-          <p>
-          Rails Environment: <%= Rails.env %>
-          </p>
-        <% end %>
+      <span class="text-blue-600"><%= Flipper[:early_access_preview].enabled? ? t('.early-access') : t('.coming-soon-sig') %></span>
     </nav>
   </div>
 </footer>
