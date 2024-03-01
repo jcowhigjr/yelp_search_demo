@@ -14,6 +14,31 @@ on:
     branches: [develop]
 
 jobs:
+  test-next:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Setup Ruby 3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - name: Build and run test
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          bin/setup-next
+          next bundle exec rails test
+      - name: system-tests
+        id: system-test
+        continue-on-error: true # make the step always success and set status later
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          next bin/rails test:system --trace HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
   test:
     runs-on: ubuntu-latest
     steps:
