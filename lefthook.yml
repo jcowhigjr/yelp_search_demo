@@ -73,11 +73,6 @@ fixer:
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
-    rails-tests:
-      tags: backend tests
-      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:all
     next-test:
       tags: backend
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
