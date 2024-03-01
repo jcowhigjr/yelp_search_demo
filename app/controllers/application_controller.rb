@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include Locales
 
+  protect_from_forgery with: :exception
+
   helper_method :current_user, :logged_in?, :check_login
 
   around_action :set_locale
