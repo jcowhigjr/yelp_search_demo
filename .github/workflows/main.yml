@@ -49,6 +49,10 @@ jobs:
         with:
           ruby-version: 3.2
           bundler-cache: true
+      - name: brakeman
+        run: |
+          gem install brakeman
+          brakeman --no-pager --quiet
       - name: Build and run test
         env:
           RAILS_ENV: test
