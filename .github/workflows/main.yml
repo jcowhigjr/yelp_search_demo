@@ -29,6 +29,7 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
+          gem install next_rails
           next bundle config --local unset deployment
           bin/setup-next
           next bundle config --local deployment true
