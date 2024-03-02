@@ -30,6 +30,7 @@ FileUtils.chdir APP_ROOT do
   end
 
   puts "\n== Installing next gems =="
+  system!("next bundle config unset deployment")
   system!("next bundle install")
 
   # puts "\n== Copying sample files =="
