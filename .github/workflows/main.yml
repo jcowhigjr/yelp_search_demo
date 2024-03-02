@@ -26,21 +26,22 @@ jobs:
           bundler-cache: true
       - name: Build and run test
         env:
-          RAILS_ENV: test
+          RAILS_ENV: unit-test-next
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
         run: |
-          next bundle config --local unset deployment
+          # should update dependabot to manage the Gemfile.next.lock
           bin/setup-next
-          next bundle config --local deployment true
           next bundle exec rails test
-      - name: system-tests
+      - name: system-test-next
         id: system-test
-        continue-on-error: true # make the step always success and set status later
+        continue-on-error: false # make the step always success and set status later
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
         run: |
-          next bin/rails test:system --trace HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
   test:
     runs-on: ubuntu-latest
     steps:
@@ -55,10 +56,11 @@ jobs:
         run: |
           gem install brakeman
           brakeman --no-pager --quiet
-      - name: Build and run test
+      - name: Build and run unit-tests
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
         run: |
           bin/setup
           # test prepare required for tailwind css file required in application erb
@@ -70,6 +72,7 @@ jobs:
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
         run: |
           bin/rails test:system --trace HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
       - name: system-test-retry
