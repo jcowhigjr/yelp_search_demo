@@ -10,9 +10,12 @@ Rails.application.configure do
 
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
   # Don't setup i18n reloader if config.cache_classes = true #44567
-  config.cache_classes = true
-  # While tests run files are not watched, reloading is not necessary.
-  config.enable_reloading = false
+  if Rails::VERSION::STRING < '7.1'
+    config.cache_classes = false
+  else
+     # While tests run files are not watched, reloading is not necessary.
+    config.enable_reloading = false
+  end
 
   # Eager loading loads your entire application. When running a single test locally,
   # this is usually not necessary, and can slow down your test suite. However, it's
