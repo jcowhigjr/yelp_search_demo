@@ -29,14 +29,15 @@ jobs:
           RAILS_ENV: unit-test-next
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
+        continue-on-error: false
         run: |
           # should update dependabot to manage the Gemfile.next.lock
           bin/setup-next
           next rails test:prepare --trace
           next rails test
       - name: system-test-next
-        id: system-test
-        continue-on-error: false # make the step always success and set status later
+        id: system-test-next
+        continue-on-error: false
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
