@@ -3,7 +3,12 @@
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
 #
 pre-push:
+  pre-command: git stash
   commands:
+    test-next:
+      tags: backend
+      run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
     packages-audit:
       tags: frontend security
       run: yarn audit
@@ -28,7 +33,7 @@ pre-push:
       tags: backend tests
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
 
 pre-commit:
   parallel: true
@@ -50,7 +55,7 @@ pre-commit:
       tags: backend tests
       run: RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:all
+           RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
 fixer:
   parallel: true
   commands:
