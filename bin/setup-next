@@ -18,7 +18,19 @@ FileUtils.chdir APP_ROOT do
 
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
-  system("next bundle check") || system!("next bundle install")
+
+  puts "\n== start with a gem versions at current Gemfile.lock =="
+
+  if File.exist?("Gemfile.next.lock")
+    FileUtils.rm "Gemfile.next.lock"
+  end
+
+  if File.exist?("Gemfile.lock")
+    FileUtils.cp "Gemfile.lock", "Gemfile.next.lock"
+  end
+
+  puts "\n== Installing next gems =="
+  system!("next bundle install")
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
