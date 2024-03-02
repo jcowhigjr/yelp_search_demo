@@ -28,6 +28,7 @@ jobs:
         env:
           RAILS_ENV: unit-test-next
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
         run: |
           # should update dependabot to manage the Gemfile.next.lock
           bin/setup-next
