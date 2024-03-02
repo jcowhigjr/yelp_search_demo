@@ -29,11 +29,8 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
-          gem install next_rails
-
-          next bundle config --local unset deployment
+          # should update dependabot to manage the Gemfile.next.lock
           bin/setup-next
-          next bundle config --local deployment true
           next bundle exec rails test
       - name: system-tests
         id: system-test
