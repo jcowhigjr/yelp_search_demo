@@ -56,8 +56,14 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # FIXME: This doesn't return without full page reload
     # assert_text("This coffeeshop doesn't have any reviews yet!")
 
-
-    page.driver.scroll_to(0, 100)
+    # if using cuprite scroll_to is available
+    if page.driver.instance_of?(::Capybara::Cuprite::Driver)
+      page.driver.scroll_to(0, 100)
+    # else use javascript to scroll
+    end
+    if page.driver.instance_of?(::Capybara::Selenium::Driver)
+      page.execute_script('window.scrollBy(0,100)')
+    end
 
     click_on 'REMOVE FROM MY FAVORITES'
     # assert_current_path %r{^/coffeeshops/\d{1,9}}
