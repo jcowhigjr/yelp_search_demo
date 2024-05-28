@@ -321,7 +321,7 @@ GEM
     rack-brotli (1.2.0)
       brotli (>= 0.1.7)
       rack (>= 1.4)
-    rack-contrib (2.4.0)
+    rack-contrib (2.5.0)
       rack (< 4)
     rack-livereload (0.5.2)
       rack (< 3)
