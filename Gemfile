@@ -51,7 +51,7 @@ platforms :ruby do
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
     gem 'fast_sqlite', require: false, group: :test
-    gem 'sqlite3', require: false, group: :development
+    gem 'sqlite3', '~> 1.5', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
