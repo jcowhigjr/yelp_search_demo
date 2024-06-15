@@ -19,7 +19,7 @@ gem 'next_rails'
 if next?
   gem 'rails', '~> 7.1.0'
 else
-  gem 'rails', '~> 7.0.8'
+  gem 'rails', '~> 7.1.0'
 end
 
 
@@ -90,7 +90,7 @@ group :development, :test do
  else
   gem 'meta_request',
       github: 'jcowhigjr/rails_panel',
-      branch: 'jcowhigjr-support-rails-7.0'
+      branch: 'jcowhigjr-support-rails-7.1'
  end
 end
 
