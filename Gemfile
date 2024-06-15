@@ -17,9 +17,9 @@ ruby ENV.fetch('RUBY_VERSION', '~> 3.2.0')
 gem 'next_rails'
 
 if next?
-  gem 'rails', '~> 7.1.0'
+  gem 'rails', '~> 7.1.3'
 else
-  gem 'rails', '~> 7.1.0'
+  gem 'rails', '~> 7.1.3'
 end
 
 
