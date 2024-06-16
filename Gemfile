@@ -10,7 +10,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
 # I think this will allow different machines to run tests with different ruby patch versions
 
-ruby ENV.fetch('RUBY_VERSION', '~> 3.2.0')
+ruby ENV.fetch('RUBY_VERSION', '~> 3.3.0')
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
@@ -49,7 +49,7 @@ gem 'importmap-rails'
 platforms :ruby do
   gem 'pg', require: false
 
-  if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
+if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
     gem 'fast_sqlite', require: false, group: :test
     gem 'sqlite3', require: false, group: :development
   end
