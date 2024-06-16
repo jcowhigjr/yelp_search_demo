@@ -549,7 +549,7 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   sprockets-exporters_pack
-  sqlite3 (~> 1.5)
+  sqlite3
   tailwindcss-rails (~> 2.6)
   turbo-rails (~> 2.0.5)
   tzinfo-data
