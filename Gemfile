@@ -83,15 +83,7 @@ gem 'sprockets-exporters_pack'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
 
- if next?
-  gem 'meta_request',
-      github: 'jcowhigjr/rails_panel',
-      branch: 'jcowhigjr-support-rails-7.1'
- else
-  gem 'meta_request',
-      github: 'jcowhigjr/rails_panel',
-      branch: 'jcowhigjr-support-rails-7.1'
- end
+  gem 'meta_request'
 end
 
 group :development do
