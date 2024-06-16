@@ -19,7 +19,7 @@ AllCops:
     - 'tmp/**/*'
     - 'app/views/**/*'
     - 'node_modules/**/*'
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.3
   TargetRailsVersion: 7.1
   SuggestExtensions: true
 
