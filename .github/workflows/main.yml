@@ -6,7 +6,7 @@
 # run tests and linters.
 #  NOTE: https://github.community/t/retry-for-failed-steps/17136/7
 
-name: "Ruby on Rails CI"
+name: 'Ruby on Rails CI'
 on:
   push:
     branches: [develop]
@@ -22,7 +22,7 @@ jobs:
       - name: Setup Ruby 3
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: 3.3
           bundler-cache: true
       - name: Build next and unit test
         env:
@@ -101,17 +101,17 @@ jobs:
              exit 1
           fi
   auto-merge:
-        name: Auto-Merge PRs by Dependabot
-        needs: test
-        runs-on: ubuntu-latest
-        permissions:
-            pull-requests: write
-            contents: write
-        steps:
-          - uses: fastify/github-action-merge-dependabot@v3.10.1
-            with:
-                github-token: ${{ secrets.GITHUB_TOKEN }}
-                target: minor
+    name: Auto-Merge PRs by Dependabot
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.10.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
   deploy:
     needs: test
     if: ${{ github.ref == 'refs/heads/develop' }}
