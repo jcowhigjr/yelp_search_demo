@@ -35,7 +35,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_text('this place is great')
     assert_selector('#review_rating', text: '★★★★☆')
-    click_link('Edit this Review', match: :first)
+    click_link_or_button('Edit this Review', match: :first)
 # without turbo frame
     # assert_current_path %r{^/users/\d{1,9}/reviews/\d{1,9}/edit}
 # with turbo frame
