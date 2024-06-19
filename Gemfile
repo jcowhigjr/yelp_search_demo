@@ -17,7 +17,7 @@ ruby ENV.fetch('RUBY_VERSION', '~> 3.2')
 gem 'next_rails'
 
 if next?
-  gem 'rails', '~> 7.1.3'
+  gem 'rails', '>= 7.1.3'
 else
   gem 'rails', '~> 7.1.3'
 end
@@ -49,7 +49,7 @@ gem 'importmap-rails'
 platforms :ruby do
   gem 'pg', require: false
 
-if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
+  if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
     gem 'fast_sqlite', require: false, group: :test
     gem 'sqlite3', require: false, group: :development
   end
@@ -96,9 +96,9 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 
-  gem 'guard' # , '~> 2.18'
-  gem 'guard-minitest' # , '~> 2.4'
-  gem 'guard-rubocop' # , '~> 2.4'
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'guard-rubocop'
 
   # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
   gem 'guard-livereload', require: false # , '~> 2.4'
@@ -110,6 +110,7 @@ group :development do
   gem 'rubocop-minitest', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-performance', require: false
+  gem 'rubocop-capybara', require: false
   gem 'prettier', require: false
   gem 'erb_lint', require: false
   gem 'brakeman', require: false

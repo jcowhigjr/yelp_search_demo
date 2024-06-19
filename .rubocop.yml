@@ -7,6 +7,7 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-minitest
+  - rubocop-capybara
 
 AllCops:
   NewCops: enable

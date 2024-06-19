@@ -34,7 +34,7 @@ class SearchesTest < ApplicationSystemTestCase
     end
 
     # submit the form
-    find('#search_query').native.send_keys(:return)
+    find_by_id('search_query').native.send_keys(:return)
 
     # wait for the results to load
     wait_for_network_idle! if ENV['CUPRITE'] == 'true'
@@ -71,7 +71,7 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(:field, 'search_query', with: query2)
 
     # submit the form
-    find('#search_query').native.send_keys(:return)
+    find_by_id('search_query').native.send_keys(:return)
 
     # wait for the results to load
     wait_for_network_idle! if ENV['CUPRITE'] == 'true'
@@ -113,7 +113,7 @@ class SearchesTest < ApplicationSystemTestCase
     end
 
     # submit the form
-    find('#search_query').native.send_keys(:return)
+    find_by_id('search_query').native.send_keys(:return)
 
     # wait for the results to load
     wait_for_network_idle! if ENV['CUPRITE'] == 'true'
@@ -137,7 +137,7 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(:field, 'search_query', with: query2)
 
     # submit the form
-    find('#search_query').native.send_keys(:return)
+    find_by_id('search_query').native.send_keys(:return)
 
     # wait for the results to load
     wait_for_network_idle! if ENV['CUPRITE'] == 'true'
