@@ -19,10 +19,14 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          echo "RUBY_VERSION=$(grep -A 1 "RUBY VERSION" Gemfile.next.lock | tail -n 1 | awk '{print $2}')" >> $GITHUB_ENV
       - name: Setup Ruby 3
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
       - name: Build next and unit test
         env:
@@ -49,10 +53,14 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Setup Ruby 3
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          echo "RUBY_VERSION=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{print $2}')" >> $GITHUB_ENV
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: ${{ env.RUBY_VERSION }}
           bundler-cache: true
       - name: brakeman
         run: |

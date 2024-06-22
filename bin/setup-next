@@ -30,12 +30,6 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "Gemfile.lock", "Gemfile.next.lock"
   end
 
-  puts "\n== Installing next ruby =="
-  if File.exist?(".ruby-version-next")
-    FileUtils.cp ".ruby-version-next", ".ruby-version"
-    system! "frum install" || "rbenv install"
-  end
-
   puts "\n== Installing next gems =="
   system!("next bundle config unset deployment")
   system!("next bundle install")
