@@ -25,8 +25,15 @@ FileUtils.chdir APP_ROOT do
     FileUtils.rm "Gemfile.next.lock"
   end
 
+  puts "\n== Copying Gemfile.lock to Gemfile.next.lock =="
   if File.exist?("Gemfile.lock")
     FileUtils.cp "Gemfile.lock", "Gemfile.next.lock"
+  end
+
+  puts "\n== Installing next ruby =="
+  if File.exist?(".ruby-version-next")
+    FileUtils.cp ".ruby-version-next", ".ruby-version"
+    system! "frum install" || "rbenv install"
   end
 
   puts "\n== Installing next gems =="
