@@ -151,8 +151,16 @@ GEM
       concurrent-ruby (~> 1.1)
       webrick (~> 1.7)
       websocket-driver (~> 0.7)
+    ffi (1.17.0-aarch64-linux-gnu)
+    ffi (1.17.0-aarch64-linux-musl)
+    ffi (1.17.0-arm-linux-gnu)
+    ffi (1.17.0-arm-linux-musl)
+    ffi (1.17.0-arm64-darwin)
+    ffi (1.17.0-x86-linux-gnu)
+    ffi (1.17.0-x86-linux-musl)
     ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
+    ffi (1.17.0-x86_64-linux-musl)
     flipper (1.3.0)
       concurrent-ruby (< 2)
     foreman (0.88.1)
@@ -272,6 +280,14 @@ GEM
     next_rails (1.3.0)
       colorize (>= 0.8.1)
     nio4r (2.7.3)
+    nokogiri (1.16.6-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.6-arm-linux)
+      racc (~> 1.4)
+    nokogiri (1.16.6-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.6-x86-linux)
+      racc (~> 1.4)
     nokogiri (1.16.6-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.6-x86_64-linux)
@@ -442,6 +458,10 @@ GEM
     sprockets-exporters_pack (0.1.2)
       brotli (>= 0.2.0)
       sprockets (>= 4.0.0.beta3)
+    sqlite3 (1.7.3-aarch64-linux)
+    sqlite3 (1.7.3-arm-linux)
+    sqlite3 (1.7.3-arm64-darwin)
+    sqlite3 (1.7.3-x86-linux)
     sqlite3 (1.7.3-x86_64-darwin)
     sqlite3 (1.7.3-x86_64-linux)
     stimulus-rails (1.3.3)
@@ -458,6 +478,14 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
+    tailwindcss-rails (2.6.1)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.6.1-aarch64-linux)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.6.1-arm-linux)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.6.1-arm64-darwin)
+      railties (>= 7.0.0)
     tailwindcss-rails (2.6.1-x86_64-darwin)
       railties (>= 7.0.0)
     tailwindcss-rails (2.6.1-x86_64-linux)
@@ -494,9 +522,20 @@ GEM
     zeitwerk (2.6.16)
 
 PLATFORMS
-  x86_64-darwin-20
-  x86_64-darwin-22
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux
+  arm-linux-gnu
+  arm-linux-musl
+  arm64-darwin
+  x86-linux
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
   x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   bcrypt (~> 3.1.20)
@@ -556,4 +595,4 @@ RUBY VERSION
    ruby 3.3.3p89
 
 BUNDLED WITH
-   2.4.12
+   2.5.11
