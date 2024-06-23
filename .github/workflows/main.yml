@@ -27,7 +27,7 @@ jobs:
       - name: Setup Ruby 3
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ env.MAJOR_MINOR_RUBY_VERSION }}
+          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
           bundler-cache: true
       - name: Build next and unit test
         env:
