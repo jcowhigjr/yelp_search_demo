@@ -10,12 +10,9 @@ Rails.application.configure do
 
   # Turn false under Spring and add config.action_view.cache_template_loading = true.
   # Don't setup i18n reloader if config.cache_classes = true #44567
-  if Rails::VERSION::STRING < '7.1'
-    config.cache_classes = false
-  else
-     # While tests run files are not watched, reloading is not necessary.
-    config.enable_reloading = false
-  end
+
+  # While tests run files are not watched, reloading is not necessary.
+  config.enable_reloading = false
 
   # Eager loading loads your entire application. When running a single test locally,
   # this is usually not necessary, and can slow down your test suite. However, it's
@@ -35,11 +32,8 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
-  config.action_dispatch.show_exceptions = if Rails::VERSION::STRING >= '7.1'
-    :rescuable
-  else
-    false
-  end
+  config.action_dispatch.show_exceptions = :rescuable
+
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
@@ -86,7 +80,5 @@ Rails.application.configure do
   # even a small number of system tests are faster with parallelization
   config.active_support.test_parallelization_threshold = 10
   # Raise error when a before_action's only/except options reference missing actions
-  if  Rails::VERSION::STRING >= '7.1'
-    config.action_controller.raise_on_missing_callback_actions = true
-  end
+  config.action_controller.raise_on_missing_callback_actions = true
 end
