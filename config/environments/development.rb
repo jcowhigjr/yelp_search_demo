@@ -8,11 +8,7 @@ Rails.application.configure do
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
-  if Rails::VERSION::STRING >= '7.1'
-    config.enable_reloading = true
-  else
-    config.cache_classes = false
-  end
+  config.enable_reloading = true
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -85,7 +81,5 @@ Rails.application.configure do
   Rails.application.routes.default_url_options = {host: ENV.fetch("HOST", nil), locale: nil}
 
   # Raise error when a before_action's only/except options reference missing actions
-  if Rails::VERSION::STRING >= '7.1'
-    config.action_controller.raise_on_missing_callback_actions = true
-  end
+  config.action_controller.raise_on_missing_callback_actions = true
 end
