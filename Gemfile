@@ -12,9 +12,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 
 if next?
-  ruby "~> #{ENV.fetch('RUBY_VERSION', '3.3.0')}"
+  ruby '~> 3.3.0'
 else
-  ruby "~> #{ENV.fetch('RUBY_VERSION', '3.2.0')}"
+  ruby '~> 3.2.0'
 end
 
 
