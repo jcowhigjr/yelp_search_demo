@@ -29,6 +29,7 @@ jobs:
         with:
           ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
           bundler-cache: true
+          cache-version: 1
         env:
           BUNDLE_GEMFILE: Gemfile.next
       - name: Build next and unit test
