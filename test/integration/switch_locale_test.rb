@@ -37,18 +37,10 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
     end
   end
 
-  if Rails.version < '7.1'
-    test 'Visit urls with an unavailable locale will return 404' do
-      assert_raises ActionController::RoutingError do
-        get static_home_path(locale: 'xx')
-      end
-    end
-  else
-    test 'Visit urls with an unavailable locale will return 404' do
-      get static_home_path(locale: 'xx')
+  test 'Visit urls with an unavailable locale will return 404' do
+    get static_home_path(locale: 'xx')
 
-      assert_response :not_found
-    end
+    assert_response :not_found
   end
 
   test 'Links to all available locales will show' do
