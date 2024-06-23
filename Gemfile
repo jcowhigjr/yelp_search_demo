@@ -11,14 +11,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I think this will allow different machines to run tests with different ruby patch versions
 
 if next?
-  if File.exist?('.ruby-version-next')
-    ruby File.read('.ruby-version-next').strip
-  end
+  ruby ENV.fetch('RUBY_VERSION', File.read('.ruby-version-next').strip )
 else
-  ruby File.read('.ruby-version').strip
+  ruby ENV.fetch('RUBY_VERSION', '~> 3.2')
 end
 
-ruby ENV.fetch('RUBY_VERSION', File.read('.ruby-version').strip )
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
