@@ -29,7 +29,6 @@ jobs:
         with:
           ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
           bundler-cache: true
-          cache-version: 1
         env:
           BUNDLE_GEMFILE: Gemfile.next
       - name: Build next and unit test
@@ -40,7 +39,6 @@ jobs:
         continue-on-error: false
         run: |
           # should update dependabot to manage the Gemfile.next.lock
-          bin/setup-next
           next rails test:prepare --trace
           next rails test
       - name: system-test-next
