@@ -24,7 +24,7 @@ class UsersTest < ApplicationSystemTestCase
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
-    click_button 'Log In'
+    click_link_or_button 'Log In'
 
     assert_text 'Hello, user_one!'
   end
@@ -34,7 +34,7 @@ class UsersTest < ApplicationSystemTestCase
     visit '/login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
-    click_button 'Log In'
+    click_link_or_button 'Log In'
     click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'My Profile'
 
@@ -54,7 +54,7 @@ class UsersTest < ApplicationSystemTestCase
 
   test 'partial sign in with Google' do
     visit '/login'
-    click_button 'Login With Google'
+    click_link_or_button 'Login With Google'
 
     unless ENV['SHOW_TESTS'] == 'true'
       skip 'redirect_uri_mismatch'
