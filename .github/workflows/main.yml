@@ -132,10 +132,15 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Setup Ruby 3
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
+          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
           bundler-cache: true
       - name: deploy to heroku
         env:
