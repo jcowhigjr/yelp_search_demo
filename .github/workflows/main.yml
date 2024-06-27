@@ -39,6 +39,7 @@ jobs:
         continue-on-error: false
         run: |
           # should update dependabot to manage the Gemfile.next.lock
+          bin/setup-next
           next rails test:prepare --trace
           next rails test
       - name: system-test-next
