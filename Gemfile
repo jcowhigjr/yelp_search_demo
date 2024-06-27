@@ -18,6 +18,13 @@ else
 end
 
 
+# If ruby version is 3.3.3 install a bug fix that is not backported to ruby yet.
+if RUBY_VERSION == '3.3.3'
+
+  # Needed until Ruby 3.3.4 is released https://github.com/ruby/ruby/pull/11006
+  gem 'net-pop', github: 'ruby/net-pop'
+end
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
