@@ -23,7 +23,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_on 'Login to add this shop to your favorites!'
     fill_in 'Email', with: @user.email
     fill_in 'Password', with: default_password
-    click_button 'Log In'
+    click_link_or_button 'Log In'
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     fill_in('review[content]', with: 'this place is great')
@@ -35,7 +35,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_text('this place is great')
     assert_selector('#review_rating', text: '★★★★☆')
-    click_link('Edit this Review', match: :first)
+    click_link_or_button('Edit this Review', match: :first)
 # without turbo frame
     # assert_current_path %r{^/users/\d{1,9}/reviews/\d{1,9}/edit}
 # with turbo frame
@@ -44,7 +44,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
       .find(:xpath, 'option[1]')
       .select_option
     fill_in('review[content]', match: :first, with: 'this place is bad')
-    click_button('Submit Review', match: :first)
+    click_link_or_button('Submit Review', match: :first)
 
     assert_text('"this place is bad"', count: 1)
     assert_selector('#review_rating', text: '★☆☆☆☆')
@@ -69,7 +69,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # assert_current_path %r{^/coffeeshops/\d{1,9}}
 
 #the turboframe in the system test doesn't toggle    flaky test
-   # click_button('ADD TO MY FAVORITES')
+   # click_link_or_button('ADD TO MY FAVORITES')
     # assert_current_path %r{^/coffeeshops/\d{1,9}}
 
   end
