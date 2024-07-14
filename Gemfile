@@ -17,6 +17,8 @@ else
   ruby '~> 3.3.4'
 end
 
+gem 'bundler', '~> 2.5'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
