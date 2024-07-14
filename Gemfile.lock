@@ -506,6 +506,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   brotli
+  bundler (~> 2.5)
   bundler-audit
   capybara
   cuprite
@@ -558,4 +559,4 @@ RUBY VERSION
    ruby 3.3.4p94
 
 BUNDLED WITH
-   2.4.12
+   2.5.15
