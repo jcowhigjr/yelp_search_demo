@@ -24,7 +24,7 @@ gem 'bundler', '~> 2.5'
 gem 'next_rails'
 
 if next?
-  gem 'rails', '>= 7.1.3'
+  gem 'rails', github: 'rails/rails', branch: '7-2-stable'
 else
   gem 'rails', '~> 7.1.3'
 end
