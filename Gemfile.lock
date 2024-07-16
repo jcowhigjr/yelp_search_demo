@@ -212,7 +212,7 @@ GEM
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.7.2)
-    irb (1.13.2)
+    irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.7.2)
@@ -460,9 +460,9 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (2.6.1-x86_64-darwin)
+    tailwindcss-rails (2.6.2-x86_64-darwin)
       railties (>= 7.0.0)
-    tailwindcss-rails (2.6.1-x86_64-linux)
+    tailwindcss-rails (2.6.2-x86_64-linux)
       railties (>= 7.0.0)
     temple (0.10.3)
     terminal-table (3.0.2)
