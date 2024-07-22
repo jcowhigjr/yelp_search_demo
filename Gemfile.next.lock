@@ -551,7 +551,7 @@ DEPENDENCIES
   sprockets-exporters_pack
   sqlite3
   tailwindcss-rails (~> 2.6)
-  turbo-rails (~> 2.0.5)
+  turbo-rails (~> 2.0)
   tzinfo-data
   web-console
 
