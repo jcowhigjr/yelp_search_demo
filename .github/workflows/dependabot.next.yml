@@ -1,10 +1,12 @@
 name: Dependabot Update Gemfile.next.lock
 on:
+  push:
+    branches:
+      - dependabot/bundler/tailwindcss-rails-2.7.3
   pull_request:
-    types:
-      - opened
-      - reopened
-
+    # types:
+    #   - opened
+    #   - reopened
     branches:
       - dependabot/**
 
