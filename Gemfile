@@ -24,7 +24,7 @@ gem 'bundler', '~> 2.5'
 gem 'next_rails'
 
 if next?
-  gem 'rails', '>= 7.1.3'
+  gem 'rails', '~> 7.2.0'
 else
   gem 'rails', '~> 7.1.3'
 end
@@ -58,7 +58,7 @@ platforms :ruby do
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
     gem 'fast_sqlite', require: false, group: :test
-    gem 'sqlite3', require: false, group: :development
+    gem 'sqlite3', '~> 1.4', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -89,14 +89,16 @@ gem 'sprockets-exporters_pack'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-
-  gem 'meta_request'
+  gem 'debug'
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
 
+  unless next?
+    gem 'meta_request'
+  end
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
