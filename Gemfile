@@ -24,7 +24,7 @@ gem 'bundler', '~> 2.5'
 gem 'next_rails'
 
 if next?
-  gem 'rails', github: 'rails/rails', branch: '7-2-stable'
+  gem 'rails', '~> 7.2.0'
 else
   gem 'rails', '~> 7.1.3'
 end
@@ -89,7 +89,7 @@ gem 'sprockets-exporters_pack'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-
+  gem 'debug'
   gem 'meta_request'
 end
 
