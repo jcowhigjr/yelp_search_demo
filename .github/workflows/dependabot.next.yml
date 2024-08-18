@@ -2,7 +2,7 @@ name: Dependabot Update Gemfile.next.lock
 on:
   push:
     branches:
-      - dependabot/bundler/tailwindcss-rails-2.7.3
+      - dependabot/**/**
   pull_request:
     types:
       - opened
@@ -16,7 +16,6 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: checkout code
         uses: actions/checkout@v4
