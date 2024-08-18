@@ -1,0 +1,36 @@
+### This script will verify that the correct ruby is installed and install it if not.
+
+# deterimine which tool to use asdf or frum
+if [ -x "$(command -v asdf)" ]; then
+    echo "Using asdf"
+    tool="asdf"
+elif [ -x "$(command -v frum)" ]; then
+    echo "Using frum"
+    tool="frum"
+else
+    echo "No version manager found"
+    exit 1
+fi
+
+# deterimine which ruby to install
+if [ -f ".ruby-version" ]; then
+    ruby_version=$(cat .ruby-version)
+else
+    echo "No .ruby-version file found"
+    exit 1
+fi
+
+# install ruby
+if [ "$tool" = "asdf" ]; then
+    if asdf list ruby | grep -q "$ruby_version"; then
+        echo "Ruby $ruby_version is already installed"
+    else
+        asdf install ruby "$ruby_version"
+    fi
+elif [ "$tool" = "frum" ]; then
+    if frum local | grep -q "$ruby_version"; then
+        echo "Ruby $ruby_version is already installed"
+    else
+        frum install "$ruby_version"
+    fi
+fi
