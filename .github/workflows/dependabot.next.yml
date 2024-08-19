@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - dependabot/**/**
-  pull_request:
-    branches:
-      - develop
+  # pull_request:
+  #   branches:
+  #     - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

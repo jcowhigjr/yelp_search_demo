@@ -8,13 +8,14 @@
 
 name: 'Ruby on Rails CI'
 on:
-  push:
-    branches:
-      - develop
-      - dependabot/**/**
   pull_request:
     branches:
       - develop
+      - main
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
 
 jobs:
   test-next:
