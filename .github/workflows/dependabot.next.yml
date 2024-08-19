@@ -1,8 +1,7 @@
 name: Dependabot Update Gemfile.next.lock
 on:
   push:
-    branches:
-      - dependabot/**/**
+
   pull_request:
     types:
       - opened

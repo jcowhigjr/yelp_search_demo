@@ -9,9 +9,13 @@
 name: 'Ruby on Rails CI'
 on:
   push:
-    branches: [develop]
+    branches:
+      - develop
+      - dependabot/**/**
   pull_request:
-    branches: [develop]
+    branches:
+      - develop
+      - dependabot/**/**
 
 jobs:
   test-next:
