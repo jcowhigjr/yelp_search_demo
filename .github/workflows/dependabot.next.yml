@@ -12,6 +12,7 @@ on:
 
 permissions:
   pull-requests: write
+  contents: write
 
 jobs:
   dependabot:
@@ -34,18 +35,6 @@ jobs:
         env:
           BUNDLE_GEMFILE: Gemfile.next
           BUNDLE_FROZEN: 'false'
-      # - name: Build next and unit test
-      #   env:
-      #     RAILS_ENV: test
-      #     RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
-      #     CI: true
-      #   continue-on-error: false
-      #   run: |
-      #     # should update dependabot to manage the Gemfile.next.lock
-      #     bin/setup-next
-      # - name: Install dependencies for Gemfile.next
-      #   run: |
-      #     bundle install --gemfile=Gemfile.next
 
       - name: Commit and push updated Gemfile.next.lock
         run: |
