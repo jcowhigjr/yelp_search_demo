@@ -11,11 +11,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I think this will allow different machines to run tests with different ruby patch versions
 
 
-if next?
-  ruby '~> 3.3.4'
-else
-  ruby '~> 3.3.4'
-end
+ruby '~> 3.3.4'
 
 gem 'bundler', '~> 2.5'
 
@@ -23,11 +19,7 @@ gem 'bundler', '~> 2.5'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
 
-if next?
-  gem 'rails', '~> 7.2.0'
-else
-  gem 'rails', '~> 7.2.0'
-end
+gem 'rails', '~> 7.2.0'
 
 
 
