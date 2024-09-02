@@ -39,6 +39,6 @@ class LocalesTest < ApplicationSystemTestCase
 
     visit '/pt-BR'
 
-    assert_equal(:en, I18n.locale)
+     assert_equal(:en, I18n.locale)
   end
 end
