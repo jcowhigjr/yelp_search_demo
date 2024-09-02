@@ -19,6 +19,17 @@
     <%= render 'layouts/navbar' %>
   <% end %>
     <%= yield %>
-    <%= render 'layouts/footer' %>
+    <footer>
+      <div class="nav-wrapper">
+        <nav class="flex flex-wrap justify-center dark:bg-slate-900 dark:text-white" aria-label="Language links">
+          <% if flipper_enabled?(:early_access_preview) %>
+            <span class="text-blue-600">Early Access Preview</span>
+          <% else %>
+            <span class="text-blue-600">Coming Soon: Sign up for Early Access</span>
+          <% end %>
+          <span class="text-red-600">Debug: early_access_preview enabled: <%= flipper_enabled?(:early_access_preview) %></span>
+        </nav>
+      </div>
+    </footer>
   </body>
 </html>

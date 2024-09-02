@@ -145,7 +145,6 @@ end
 
 gem 'tailwindcss-rails', '~> 2.7'
 
-# gem 'flipper-active_record'
 gem 'flipper'
 
 gem 'dotenv'
