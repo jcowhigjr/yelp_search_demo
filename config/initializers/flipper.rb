@@ -1,5 +1,4 @@
 require 'flipper'
-# require 'flipper/adapters/memory'
 
 Rails.application.configure do
   # Disable Flipper's built-in test helper.
