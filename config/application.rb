@@ -1,20 +1,6 @@
 require_relative "boot"
 
-puts "Application configuration starting"
-
-require "rails"
-# Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "active_storage/engine"  # Keep this line
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_mailbox/engine"
-require "action_text/engine"
-require "action_view/railtie"
-require "action_cable/engine"
-require "rails/test_unit/railtie"
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -23,7 +9,14 @@ Bundler.require(*Rails.groups)
 module Jitter
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.2
+    config.load_defaults Rails::VERSION::STRING.to_f
+
+    # Please, add to the `ignore` list any other `lib` subdirectories that do
+    # not contain `.rb` files, or that should not be reloaded or eager loaded.
+    # Common ones are `templates`, `generators`, or `middleware`, for example.
+
+    config.action_controller.raise_on_missing_callback_actions = true
+    config.autoload_lib(ignore: %w[assets tasks])
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -33,12 +26,14 @@ module Jitter
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Disable Active Storage
-    config.active_storage.service = :null
-    config.active_storage.draw_routes = false
+    # Set permitted locales
+    config.i18n.available_locales = [:en, :es, :fr, :"pt-BR"]
+    # Set default locale
+    config.i18n.default_locale = :en
 
-    puts "Application class defined"
+    # https://github.com/romanbsd/heroku-deflater/issues/54#issuecomment-803400481
+    config.middleware.use Rack::Deflater
+    config.middleware.use Rack::Brotli
+
   end
 end
-
-puts "Application configuration completed"
