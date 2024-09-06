@@ -1,15 +1,16 @@
 require 'application_system_test_case'
 
-require 'minitest/autorun'
-require 'minitest/focus'
-# require "minitest/retry"
-# Minitest::Retry.use!
-
-# Minitest::Retry.on_failure do |klass, test_name, result|
-#   ENV['SHOW_TESTS'] = 'false'
-#   # ENV['CUPRITE'] = 'true'
-# end
 class LocalesTest < ApplicationSystemTestCase
+
+  test 'the footer has a link to all available locales' do
+    visit '/'
+    within 'footer' do
+      assert_selector "a", text: "English"
+      assert_selector "a", text: "Português"
+      assert_selector "a", text: "Français"
+      assert_selector "a", text: "Español"
+    end
+   end
 
 
   test 'en is the default locale' do
@@ -25,7 +26,7 @@ class LocalesTest < ApplicationSystemTestCase
     visit '/'
 
     assert_equal(:en, I18n.locale)
-    
+
     visit '/pt-BR'
 
     assert_not_equal(:"pt-BR", I18n.locale)
@@ -38,6 +39,6 @@ class LocalesTest < ApplicationSystemTestCase
 
     visit '/pt-BR'
 
-    assert_equal(:en, I18n.locale)
+     assert_equal(:en, I18n.locale)
   end
 end
