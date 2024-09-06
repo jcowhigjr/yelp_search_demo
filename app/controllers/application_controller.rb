@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::Base
   include Locales
+  include FlipperHelper
 
   protect_from_forgery with: :exception
 
-  helper_method :current_user, :logged_in?, :check_login
+  helper_method :current_user, :logged_in?, :check_login, :flipper_enabled?
 
   around_action :set_locale
   helper_method :resolve_locale
