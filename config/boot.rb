@@ -4,4 +4,4 @@ require "bundler/setup" # Set up gems listed in the Gemfile.
 require "bootsnap/setup" # Speed up boot time by caching expensive operations.
 
 # Add this at the end of the file
-puts "Boot process completed"
+# Rails.logger.debug "Boot process completed"

@@ -5,10 +5,10 @@ class LocalesTest < ApplicationSystemTestCase
   test 'the footer has a link to all available locales' do
     visit '/'
     within 'footer' do
-      assert_selector "a", text: "English"
-      assert_selector "a", text: "Português"
-      assert_selector "a", text: "Français"
-      assert_selector "a", text: "Español"
+      assert_selector 'a', text: 'English'
+      assert_selector 'a', text: 'Português'
+      assert_selector 'a', text: 'Français'
+      assert_selector 'a', text: 'Español'
     end
    end
 
