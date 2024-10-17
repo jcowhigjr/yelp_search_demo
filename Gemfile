@@ -143,7 +143,7 @@ group :test do
   gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 2.7'
+gem 'tailwindcss-rails', '~> 3.0'
 
 gem 'flipper'
 
