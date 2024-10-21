@@ -37,3 +37,5 @@ module Jitter
 
   end
 end
+
+# Add rack-brotli middleware for caching
