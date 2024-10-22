@@ -9,7 +9,7 @@ pre-push:
       tags: backend
       run:
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true CUPRITE_JS_ERRORS=true next rails test
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true CUPRITE_JS_ERRORS=true next rails test:all
     packages-audit:
       tags: frontend security
       run: yarn audit
