@@ -9,6 +9,7 @@ pre-push:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+           CUPRITE_JS_ERRORS=true
     packages-audit:
       tags: frontend security
       run: yarn audit
@@ -34,6 +35,7 @@ pre-push:
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
+           CUPRITE_JS_ERRORS=true
 
 pre-commit:
   parallel: true
@@ -56,6 +58,7 @@ pre-commit:
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+           CUPRITE_JS_ERRORS=true
 fixer:
   parallel: true
   commands:
@@ -82,6 +85,7 @@ fixer:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
            CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
+           CUPRITE_JS_ERRORS=true
     i18n-tasks:
       run: bundle exec i18n-tasks health en missing unused
     javascript-audit:
