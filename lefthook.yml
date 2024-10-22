@@ -59,6 +59,13 @@ pre-commit:
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
         CUPRITE_JS_ERRORS=true
+    rails-tests-next:
+      tags: backend tests
+      glob: "Gemfile*"
+      run:
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true CUPRITE_JS_ERRORS=true next rails test
+
 fixer:
   parallel: true
   commands:
