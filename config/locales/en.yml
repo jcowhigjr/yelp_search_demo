@@ -36,9 +36,9 @@ en:
     unauthorized: You are not authorized to perform this action
   layouts:
     footer:
-      language_name_of_locale: English
-      early-access: 'Early Access Preview'
       coming-soon-sig: 'Coming Soon: Sign up for Early Access'
+      early-access: Early Access Preview
+      language_name_of_locale: English
     navbar:
       logout: Logout
       my-profile: My Profile

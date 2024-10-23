@@ -62,7 +62,7 @@ Rails.application.configure do
   config.active_job.verbose_enqueue_logs = true
 
   # Suppress logger output for asset requests.
-  config.assets.quiet = false
+  # config.assets.quiet = false
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
@@ -84,7 +84,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.after_initialize do
-    Rails.logger.info "Development mode: Flipper early_access_preview: #{Flipper.instance.enabled?(:early_access_preview)}"
+    Rails.logger.info "Dev mode: Flipper early_access_preview: #{Flipper.instance.enabled?(:early_access_preview)}"
   end
 end
 Flipper.enable(:early_access_preview)

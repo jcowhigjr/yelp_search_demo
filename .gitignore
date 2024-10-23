@@ -44,7 +44,6 @@ nil
 
 /config/credentials/production.key
 /config/credentials/test.key
-.env
 
 # node
 /node_modules
@@ -52,10 +51,8 @@ nil
 # don't commit brakeman info which might give hackers a hint about the app
 brakeman.report
 brakeman.ignore
-.env.production
 
 vendor/bundle
-.pumaenv
 nil-*
 
 # enforce ruby version in Gemfile but
@@ -65,7 +62,6 @@ nil-*
 .local
 .bash_history
 .gitconfig
-.rbenv/
 .guard_history
 .cargo
 .rustup

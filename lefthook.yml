@@ -3,12 +3,13 @@
 # https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
 #
 pre-push:
-  pre-command: git stash
+  pre-command: echo "git stash" && git stash && CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace
   commands:
     test-next:
       tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+      run:
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true CUPRITE_JS_ERRORS=true next rails test:all
     packages-audit:
       tags: frontend security
       run: yarn audit
@@ -24,48 +25,57 @@ pre-push:
     rubocop:
       tags: backend style
       files: git diff --name-only master
-      glob: '*.rb'
+      glob: "*.rb"
       run: bundle exec rubocop --force-exclusion -A {files}
     brakeman:
       tags: backend security
       run: bundle exec brakeman --no-pager
-    rails-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
+    # rails-tests:
+    #   tags: backend tests
+    #   run:
+    #     CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+    #     CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE_JS_ERRORS=true CUPRITE=true bin/rails test:system
 
 pre-commit:
   parallel: true
   commands:
     js:
-      glob: '*.{js,ts}'
+      glob: "*.{js,ts}"
       run: yarn prettier --write {staged_files} && git add {staged_files}
     rubocop:
       tags: backend style
-      glob: '*.rb'
-      exclude: 'application.rb|routes.rb'
+      glob: "*.rb"
+      exclude: "application.rb|routes.rb"
       run: bundle exec rubocop --force-exclusion {all_files}
     erb-lint:
       tags: frontend style
       files: git diff --name-only master
-      glob: '*.erb'
+      glob: "*.erb"
       run: bundle exec erblint --lint-all {staged_files}
     rails-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+      run:
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+        CUPRITE_JS_ERRORS=true
+    rails-tests-next:
+      tags: backend tests
+      glob: "Gemfile*"
+      run:
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true CUPRITE_JS_ERRORS=true next rails test
+
 fixer:
   parallel: true
   commands:
     ruby-fixer:
       run: bundle exec rubocop --force-exclusion -A {all_files}
     js-fixer:
-      glob: 'app/javascript/**.{js,ts,jsx,tsx}'
+      glob: "app/javascript/**.{js,ts,jsx,tsx}"
       run: yarn prettier --write {all_files}
     ruby-prettier:
-      glob: 'app/**/*.rb'
+      glob: "app/**/*.rb"
       run: bundle exec rbprettier --write {files}
     erblint:
       run: bundle exec erblint --autocorrect --lint-all {all_files}
@@ -80,8 +90,10 @@ fixer:
       run: bundle audit update && bundle audit check
     next-test:
       tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
+      run:
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
+        CUPRITE_JS_ERRORS=true
     i18n-tasks:
       run: bundle exec i18n-tasks health en missing unused
     javascript-audit:
@@ -90,7 +102,6 @@ fixer:
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
-
 # scripts:
 #     "hello.js":
 #       runner: node

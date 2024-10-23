@@ -104,3 +104,6 @@ Rails.application.configure do
   config.hosts << "#{ENV.fetch('HEROKU_APP_NAME', nil)}.herokuapp.com"
   config.hosts << "d3be-71-56-38-221.ngrok.io"
 end
+
+# Add rack-brotli middleware for caching
+config.middleware.use Rack::Brotli
