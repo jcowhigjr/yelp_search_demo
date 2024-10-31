@@ -19,7 +19,7 @@ gem 'bundler', '~> 2.5'
 # gem 'rails', github: 'rails/rails', branch: '7-0-stable'
 gem 'next_rails'
 
-gem 'rails', '~> 7.2.1'
+gem 'rails', '~> 7.2.2'
 
 
 
