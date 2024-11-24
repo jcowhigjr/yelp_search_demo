@@ -8,14 +8,14 @@ end
 
 def update_gem(gem_name, gem_version, gemfile)
   if gem_name && gem_version
-    puts "Updating gem: #{gem_name} to version: #{gem_version} in #{gemfile}"
+    Rails.logger.debug { "Updating gem: #{gem_name} to version: #{gem_version} in #{gemfile}" }
     command = "BUNDLE_GEMFILE=#{gemfile} bundle update #{gem_name}"
-    puts "Executing command: #{command}"  # Debugging line
+    Rails.logger.debug { "Executing command: #{command}" }  # Debugging line
 
     system(command)
 
   else
-    puts 'No gem version bump detected.'
+    Rails.logger.debug 'No gem version bump detected.'
     false  # Ensure it returns false when no gem is provided
   end
 end

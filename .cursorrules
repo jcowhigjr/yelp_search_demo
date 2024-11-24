@@ -1,0 +1,90 @@
+
+# cursorrules
+
+  You are an expert in modern vanilla Ruby on Rails 7.2, rails edge guides, sqlite3, turboframes, and Tailwind CSS, importmaps, dependabot, lefthook, rubocop, minitest, cuprite, and rails system tests with capybara syntax.
+
+User Interaction
+
+- Ask for integration and system tests to be written first
+- Ask for detailed Acceptance Criteria
+- Always use a git feature branch
+- Commit complexity should be about the same each commit
+- PR reviews: Small, frequent commits make PR reviews easier to understand for reviewers.
+- Code quality: Small, frequent commits help maintain good code quality.
+- Testing: Small, frequent commits allow developers to test often.
+- Mental breaks: Small, frequent commits allow maintaining direction toward making the test pass or complete the A/C
+- Always keep feature branches mergeable
+- Always keep development deployable and tested
+- Follow pluralsight guide to effective programming
+- Folow strict test driven development.
+- Prefer iteration and modularization over code duplication.
+
+  Code Style and Structure
+
+- Write concise, 2024 idiomatic Ruby code with accurate examples.
+- Follow 2024 Rails conventions and best practices.
+- Use only maintained and recently updated bundled gems.
+
+- Use descriptive variable and method names (e.g., user_signed_in?, calculate_total).
+- Structure files according to Rails conventions (MVC, concerns, helpers, etc.).
+
+  Naming Conventions
+
+- Use snake_case for file names, method names, and variables.
+- Use CamelCase for class and module names.
+- Follow Rails naming conventions for models, controllers, and views.
+
+  Ruby and Rails Usage
+
+- follow .railsrc
+- User Rails 7.2 or higher
+- Use Ruby 3.3 features when appropriate (e.g., pattern matching, endless methods).
+- Leverage Rails' built-in helpers and methods.
+- Use ActiveRecord effectively for database operations.
+
+  Syntax and Formatting
+
+- Follow the Ruby Style Guide (<https://rubystyle.guide/>)
+- Use Ruby's expressive syntax (e.g., unless, ||=, &.)
+- Prefer single quotes for strings unless interpolation is needed.
+  
+  Error Handling and Validation
+
+- Use exceptions for exceptional cases, not for control flow.
+- Implement proper error logging and user-friendly messages.
+- Use ActiveModel validations in models.
+- Handle errors gracefully in controllers and display appropriate flash messages.
+  
+  UI and Styling
+
+- Use Hotwire (Turbo and Stimulus) for dynamic, SPA-like interactions.
+- Implement responsive design with Tailwind CSS.
+- Use Rails view helpers and partials to keep views DRY.
+  
+  Performance Optimization
+
+- Use database indexing effectively.
+- Implement caching strategies (fragment caching, Russian Doll caching).
+- Use eager loading to avoid N+1 queries.
+- Optimize database queries using includes, joins, or select.
+  
+  Key Conventions
+
+- Follow RESTful routing conventions.
+- Use concerns for shared behavior across models or controllers.
+- Implement service objects for complex business logic.
+- Use background jobs (e.g., Sidekiq) for time-consuming tasks.
+  
+  Testing
+
+- Write comprehensive tests using RSpec or Minitest.
+- Follow TDD/BDD practices.
+- Use factories (FactoryBot) for test data generation.
+  
+  Security
+
+- Implement proper authentication and authorization (e.g., Devise, Pundit).
+- Use strong parameters in controllers.
+- Protect against common web vulnerabilities (XSS, CSRF, SQL injection).
+  
+  Follow the official Ruby on Rails guides for best practices in routing, controllers, models, views, and other Rails components.

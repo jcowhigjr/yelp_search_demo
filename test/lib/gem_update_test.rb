@@ -34,7 +34,7 @@ class TestGemUpdate < Minitest::Test
     
     Kernel.expects(:system).with("BUNDLE_GEMFILE=#{gemfile} bundle update #{gem_name}").returns(true)  # Stubbing with Mocha
 
-    assert_equal true, update_gem(gem_name, gem_version, gemfile)
+    assert update_gem(gem_name, gem_version, gemfile)
   end
 
   def test_update_gem_no_bump

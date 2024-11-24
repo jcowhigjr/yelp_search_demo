@@ -1,0 +1,33 @@
+<h1>New Coffeeshop</h1>
+
+<%= form_with model: @coffeeshop, local: true do |form| %>
+  <% if @coffeeshop.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@coffeeshop.errors.count, 'error') %> prohibited this coffeeshop from being saved:</h2>
+      <ul>
+        <% @coffeeshop.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :address %>
+    <%= form.text_field :address %>
+  </div>
+
+  <div>
+    <%= form.label :phone_number %>
+    <%= form.text_field :phone_number %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
