@@ -51,7 +51,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
   else
     driven_by :cuprite,
-              screen_size: [1400, 1400],
+              screen_size: [375, 667],
               options: {
                 js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
                 # inspector: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
