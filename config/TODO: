@@ -1,0 +1,54 @@
+# TODO
+
+docker run --rm -it -p 6379:6379 redis:latest
+
+1) fix and document the reason for bug finding the routes in system tests
+  SearchesControllerTest#test_should_get_create:
+NameError: undefined local variable or method `searches_create_url' for #<SearchesControllerTest:0x000000010c41c8e8 @_routes=nil, @NAME="test_shoul
+
+# https://everydayrails.com/2020/06/22/rails-routes-helpers-grammar.html
+
+Done
+
+# DONE:  ActionView::Template::Error:  The asset "MyString.png" is not present in the asset pipeline.
+# DONE:  Fix the review to be inline again instead of on a separate page with bad styles
+         http://localhost:3000/coffeeshops/8/reviews
+# TODO:  Create a current_user method that works testing.
+# DONE:  Add a system test for a user logs in  https://gist.github.com/tomas-stefano/6652111
+# DONE:  Add a integration test for a user favorites a coffeeshop
+# TODO:  Create a user view of my favorite coffeeshops
+# TODO:  Make it a single page app again...?
+# TODO:  Add unit tests for check_login
+# TODO;  Add a spy on the call to yelp
+# DONE:  Upgrade to Zeitwork mode
+# WONTACTION:  Controller tests --> https://adlerhsieh.com/blog/minitest:-testing-controllers-&-requests
+# TODO:   Fix n+1 loading coffeeshops? models/coffeeshop.rb:27	Coffeeshop Load	SELECT "coffeeshops".* FROM "coffeeshops" WHERE "coffeeshops"."address" = ? ORDER BY "coffeeshops"."id" ASC LIMIT ?x
+# DONE:	  Fix sign up sign out system test https://3rd-edition.railstutorial.org/book/log_in_log_out
+# TODO:	  Change Logout story to logout and stay on page if not require an active session else return home.
+# DONE:	  Add https://edgeapi.rubyonrails.org/classes/ActionDispatch/SystemTestCase.html capycorder extension for building system test
+# DONE:	  Try out https://github.com/bullet-train-co/magic_test/issues which solves a similar issue i'm having.. i don't know capybara anymore..lol
+# DONE:	  https://evilmartians.com/chronicles/system-of-a-test-2-robust-rails-browser-testing-with-siteprism  more complex system tests for later
+
+# TODO:	  https://turbo.hotwired.dev/handbook/drive#page-navigation-basics
+# TODO:	  Add a broadcast of something https://github.com/hotwired/turbo-rails/pull/108/files  see messages for example
+# TODO:	  https://bramjetten.dev/articles/flash-messages-with-hotwire-and-turbo-streams fix flash
+# TODO:   Make the turbo submit navigate to an internal link location
+
+# TODO:	  add a github action that builds and tests the app and an update script
+
+# DONE:  Remove the extra space above the search bar was jitter logo
+# IDEAS: Coffee.near.me set up subdomain with tacos x y z near me
+# TODO: fix the system tests to run headlessly with geolocation https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh
+
+# TODO:	  change the search bar to set a radius near me.
+  -- https://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features/
+# TODO:	  Add a way to chose what to search for instead of just Coffee.
+# TODO:	  See what it looks like on my phone
+## TODO:	Store something that yelp does not store... like for example..?
+
+
+# TODO:	  update the controller to use lat and long if availablehttps://guides.rubyonrails.org/active_model_basics.html https://jasoncharnes.com/changed-attributes-rails/
+
+# TODO: fix heroku build and teardown features for pull requests
+   https://devcenter.heroku.com/articles/github-integration-review-apps#the-postdeploy-script
+   automate this bin/rails db:prepare db:schema:load db:seed DISABLE_DATABASE_ENVIRONMENT_CHECK=1 

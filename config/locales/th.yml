@@ -1,0 +1,119 @@
+---
+th:
+  add-to-my-favor: เพิ่มในรายการโปรดของฉัน
+  coffeeshop: ร้านกาแฟ
+  coffeeshops:
+    coffeeshop:
+      more-info: ข้อมูลเพิ่มเติม
+      reviews: ความคิดเห็น
+    reviews:
+      form:
+        leave-a-review: แสดงความคิดเห็น!
+    show:
+      add-to-my-favor: เพิ่มไปยังรายการโปรดของฉัน
+      log-in: เข้าสู่ระบบ
+      login-to-add-th: เข้าสู่ระบบเพื่อเพิ่มร้านนี้ในรายการโปรดของคุณ!
+      remove-from-my-favor: ลบออกจากรายการโปรดของฉัน
+      reviews:
+        index: ความคิดเห็น
+      to-leave-a-revi: ที่จะออกความคิดเห็น
+      view-on-yelp: ดูบน Yelp
+      you-must-be-les: คุณต้อง <%= link_to 'เข้าสู่ระบบ', login_path %> เพื่อแสดงความคิดเห็น!
+      you-must-be-les-0: ที่จะออกความคิดเห็น!
+  confirm-passwor: ยืนยันรหัสผ่าน
+  dir: ltr
+  earlyaccess: เปิดใช้งานคุณสมบัติการแสดงตัวอย่าง
+  email: อีเมล
+  error:
+    already_exists: "%{model} มีอยู่แล้ว"
+    invalid_login: ล็อกอินหรือรหัสผ่านไม่ถูกต้อง
+    invalid_parameter: พารามิเตอร์ไม่ถูกต้อง %{parameter}
+    invalid_token: โทเค็นไม่ถูกต้อง
+    missing_parameter: ไม่มีพารามิเตอร์ %{parameter}
+    not_allowed: คุณไม่ได้รับอนุญาตให้ดำเนินการนี้
+    not_found: ไม่พบทรัพยากรที่ร้องขอ
+    not_implemented: ฟีเจอร์นี้ยังไม่ได้ใช้งาน
+    something_went_wrong: เกิดข้อผิดพลาด โปรดลองอีกครั้งในภายหลัง
+    unauthorized: คุณไม่ได้รับอนุญาตให้ดำเนินการนี้
+  layouts:
+    footer:
+      language_name_of_locale: thai
+    navbar:
+      coming-soon-sig: 'เร็วๆ นี้: ลงทะเบียนเพื่อเล่นระหว่างการพัฒนา'
+      logout: ออกจากระบบ
+      my-profile: ประวัติของฉัน
+  log-in: เข้าสู่ระบบ
+  login-to-add-th: เข้าสู่ระบบเพื่อเพิ่มร้านนี้ในรายการโปรดของคุณ!
+  more-info: ข้อมูลเพิ่มเติม
+  password-must-b: รหัสผ่าน (ต้องมีอย่างน้อย 6 ตัวอักษร)
+  phone: โทรศัพท์
+  place: สถานที่
+  rating: ":เรตติ้ง"
+  reviews:
+    form:
+      leave-a-review: แสดงความคิดเห็น!
+      please-give-a-b: โปรดให้คำอธิบายสั้น ๆ เกี่ยวกับประสบการณ์ของคุณที่ %{name}
+      rating: เรตติ้ง
+      submit-review: ส่งรีวิว
+    index: 'บทวิจารณ์:'
+    show:
+      delete-this-rev: ลบรีวิวนี้
+      edit-this-revie-0: แก้ไขรีวิวนี้
+  root:
+    title: Dorkbob ค้นหา
+  search-for-a-sh: ค้นหาร้านค้าเพื่อหาร้านใกล้บ้านคุณ
+  searches:
+    results:
+      no-results-found: ไม่พบผลลัพธ์!
+  submit-review: ส่งคำวิจารณ์
+  success:
+    create: สร้างสำเร็จแล้ว %{model}
+    destroy: ทำลาย %{model} สำเร็จ
+    login: เข้าสู่ระบบสำเร็จแล้ว
+    logout: ออกจากระบบเรียบร้อยแล้ว
+    update: อัปเดต %{model} สำเร็จแล้ว
+  to-leave-a-revi: ที่จะออกความคิดเห็น
+  username: ชื่อผู้ใช้
+  users:
+    form:
+      confirm-passwor: ยืนยันรหัสผ่าน
+      email: อีเมล
+      password-must-b: รหัสผ่าน (ต้องมีอย่างน้อย 6 ตัวอักษร)
+      username: ชื่อ
+    show:
+      guest-user: ผู้ใช้ทั่วไป
+      hello-0: สวัสดี,
+      search-for-a-sh: ค้นหาร้านค้าเพื่อหาร้านใกล้บ้านคุณ
+      you-dont-have-a: คุณยังไม่มีร้านโปรด!
+  view-on-yelp: ดูบน Yelp
+  views:
+    reviews:
+      leave-a-review: เขียนรีวิว
+    searches:
+      destroy: ค้นหา
+      edit: ค้นหา
+      index: ค้นหา
+      new: การค้นหาใหม่
+      placeholder: ป้อนคำค้นหา (เช่น ทาโก้)
+      results: การค้นหาที่มีคะแนนสูงสุดสำหรับ %{query} ใกล้คุณ!
+      show: ค้นหา
+      update: ค้นหา
+    user_sessions:
+      create: เซสชันผู้ใช้
+      destroy: เซสชันผู้ใช้
+      edit: เซสชันผู้ใช้
+      index: เซสชันผู้ใช้
+      new: เซสชันผู้ใช้
+      show: เซสชันผู้ใช้
+      update: เซสชันผู้ใช้
+    users:
+      create: ผู้ใช้
+      destroy: ผู้ใช้
+      edit: ผู้ใช้
+      index: ผู้ใช้
+      new: ผู้ใช้
+      show: ผู้ใช้
+      update: ผู้ใช้
+  you-dont-have-a: คุณยังไม่มีร้านโปรดเลย!
+  you-must-be-les: ที่จะออกความคิดเห็น!
+  you-must-be-les-0: คุณต้องเป็นเลส

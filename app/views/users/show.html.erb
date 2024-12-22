@@ -6,36 +6,25 @@
                     <span class="page-text red-text"><%= flash[:error] %></span>
                 </div>
              <% end %>
-            <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
+            <h1 class="flow-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
         </div>
-        <% if current_user.user_favorites.empty? %>
+        <% if !current_user || current_user.user_favorites.empty? %>
             <div class="row center">
-                <span class="page-text">You don't have any favorite shops yet!</span>
+                <span class="page-text"><%= t('.you-dont-have-a') %></span>
             </div>
             <br><br><br>
             <div class="row center">
-                <span class="page-text"><%= link_to "Search for a shop to find one near you.", new_search_url %></span>
+                <span class="page-text"><%= link_to t('.search-for-a-sh'), new_search_url %></span>
             </div>
         <% else %>
         <div class="row center">
-            <span class="page-text">Your favorite shops:</span>
+            <span class="page-text">Your favorite spots:</span>
         </div>
         <div class="row center">
             <% current_user.user_favorites.each do |fav| %>
-                <%= render partial: "coffeeshops/coffeeshop", locals: {coffeeshop: fav.coffeeshop} %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: fav.coffeeshop} %>
             <% end %>
         </div>
         <% end %>
-        <% if !current_user.reviews.empty? %>
-            <%= link_to "See all of your reviews", user_reviews_path(current_user) %>       
-        <% end %>
-   
     </div>
-
 </body>
-
-
-
-
-
-

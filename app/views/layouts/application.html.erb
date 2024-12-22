@@ -1,69 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= I18n.locale %>" class="dark:bg-slate-900 dark:text-white" dir="<%= t('dir') %>">
   <head>
     <title>Jitter</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= favicon_link_tag 'tea.png' %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Righteous&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/27310f71ef.js" crossorigin="anonymous"></script>
-   
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%# https://github.com/bullet-train-co/magic_test %>
+    <%= render 'magic_test/support', "data-turbo-track": 'reload'  if !ENV['MAGIC_TEST'].nil? && Rails.env.test? %>
+    <%= stylesheet_link_tag :all %>
+    <script data-turbo-track="reload" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+    <%= javascript_importmap_tags %>
   </head>
-
-  <% if logged_in? %>
- <div class="navbar-fixed">
-   <nav class="transparentBG">
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo"><%= image_tag "jitter_logo.png", class: "nav-logo"%></a>
-      <a href="#" data-target="mobile-demo" class="right sidenav-trigger"><i class="material-icons">menu</i></a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><%= link_to "Logout", logout_path, method: :delete %></li>
-        <li><%= link_to "My Profile", user_path(current_user) %></li>
-        <li><%= link_to "Search", new_search_path %></li>
-      </ul>
-    </div>
-  </nav>
- </div>
-
-   <ul class="sidenav" id="mobile-demo">
-    <li>
-      <div class="background" ></div>
-      <div class="user-view"style="background-color:#373737">
-              <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%=current_user.name%></h6>
-              <span class= "white-text"><i class="tiny material-icons nav-icon">email</i><%=current_user.email%></span>
-      </div>
-      </li>
-      <li><%= link_to sessions_path, method: :delete  do%>
-          <i class="small material-icons">exit_to_app</i> Logout
-          <% end %>
-      </li>
-      <li><%= link_to current_user do%>
-            <i class="small material-icons">person</i> My Profile
-            <% end %>
-      </li>
-      <li><%= link_to  new_search_path do%>
-             <i class="small material-icons">search</i> Search
-             <% end %>
-      </li>
-  </ul>
-  <% end %>
-
   <body>
-    <div>
-      <%= yield %>
-    </div>
-  
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script>  
-      const slide_menu = document.querySelectorAll(".sidenav");
-      M.Sidenav.init(slide_menu, {
-        edge: 'right'
-      });
-  </script>
+  <% if logged_in? %>
+    <%= render 'layouts/navbar' %>
+  <% end %>
+    <%= yield %>
+    <%= render 'layouts/footer' %>
   </body>
 </html>

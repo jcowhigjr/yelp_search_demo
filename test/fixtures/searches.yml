@@ -1,7 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  query: MyString
+  id: 1
+  query: tacos
+  latitude: 0.3591e2
+  longitude: -0.7899e2
 
 two:
-  query: MyString
+  id: 2
+  query: tacos
+  latitude: 0.3591e2
+  longitude: -0.7899e2

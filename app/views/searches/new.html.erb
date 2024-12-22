@@ -1,0 +1,13 @@
+<body>
+    <div class="container">
+        <% if flash[:error] %>
+            <div class="row center">
+                <span class="page-text red-text"><%= flash[:error] %></span>
+            </div>
+        <% end %>
+
+          <h2 class="text-xs text-transparent"><%= t('views.searches.new') %></h2>
+
+         <%= render 'searches/form', locals: { search: @search } if @search %>
+    </div>
+</body>

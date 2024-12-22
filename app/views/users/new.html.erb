@@ -1,8 +1,7 @@
 <body class="landing-body">
     <div class="container">
         <div class="row center">
-            <%= image_tag "jitter_logo.png", class: "responsive-img landing-logo"%>
-            <h1 class="white-text">Sign Up To Use Jitter</h1>
+            <h1 class="white-text">Sign Up</h1>
         </div>
         <div class="container">
          <% if flash[:error] %>
@@ -10,18 +9,18 @@
                 <span class="page-text red-text"><%= flash[:error] %></span>
             </div>
         <% end %>
-            <%= render 'form'%>
+            <%= render 'users/form' %>
         </div>
-         <div class="row center">
-            <%= link_to '/auth/google_oauth2', class: 'btn-large' do%>
-                <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Sign Up With Google</b>
+        <div class="row center">
+            <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large' do %>
+            <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Sign Up With Google</b>
             <% end %>
         </div>
         <div class="row center">
                 <span class="white-text form-link">Already have an account?</span>
         </div>
         <div class="row center">
-            <%= link_to "Login", login_path, class: "form-link"%>
+            <%= link_to 'Login', login_path, class: 'form-link' %>
         </div>
     </div>
 </body>

@@ -1,11 +1,10 @@
 <body class="landing-body">
     <div class="container">
         <div class="row center">
-            <%= image_tag "jitter_logo.png", class: "responsive-img landing-logo"%>
             <h1 class="white-text">Welcome Back</h1>
         </div>
         <div class="container">
-            <%= form_tag sessions_path do%>
+            <%= form_tag sessions_path do %>
             <div class="row center user-form">
                 <% if flash[:error] %>
                     <div class="row center">
@@ -13,18 +12,18 @@
                     </div>
                 <% end %>
                 <%= label_tag :email %>
-                <%= text_field_tag :email, nil, placeholder: "example@email.com", required: true%>
+                <%= text_field_tag :email, nil, placeholder: 'example@email.com', required: true %>
                 <%= label_tag :password %>
-                <%= password_field_tag :password, nil, required: true%>
+                <%= password_field_tag :password, nil, required: true %>
                 <br><br>
-         
+
             </div>
             <div class="row center">
-                <%= submit_tag "Log In", class: "btn-large" %>
+                <%= submit_tag 'Log In', data: { turbo: false }, class: 'btn-large' %>
             </div>
             <% end %>
             <div class="row center">
-                <%= button_to '/auth/google_oauth2', class: 'btn-large' do%>
+                <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large' do %>
                 <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Login With Google</b>
                 <% end %>
             </div>
@@ -32,7 +31,7 @@
                 <span class="white-text form-link">Don't have an account?</span>
             </div>
             <div class="row center">
-                <p class="form-link"><%= link_to "Sign Up", new_user_path%> </p>
+                <p class="form-link"><%= link_to 'Sign Up', signup_path %> </p>
             </div>
         </div>
     </div>

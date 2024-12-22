@@ -1,4 +1,4 @@
-
+<%= turbo_frame_tag review do %>
     <div class="row center">
         <span class="page-text"><i class="material-icons">person</i> <%= review.user.name %></span>
     </div>
@@ -9,12 +9,14 @@
         <span class="page-text">"<%= review.content %>"</span>
     </div>
     <% if review.user == current_user %>
-    <div class="row center">
-        <div class="col s6">
-            <%= link_to "Edit this Review", edit_user_review_path(current_user, review), class: "btn-large" %>
+        <div class="row center">
+            <div class="col s6">
+                <%= link_to t('.edit-this-revie-0'), edit_user_review_path(current_user, review), class: 'btn-small' %>
+            </div>
+            <div class="col s6">
+                <%= link_to t('.delete-this-rev'), user_review_path(current_user, review), class: 'btn-small', data: { turbo_method: :delete, turbo_frame: '_top' } %>
+            </div>
         </div>
-        <div class="col s6">
-            <%= link_to "Delete this Review", user_review_path(current_user, review), method: "delete", class: "btn-large" %>
-        </div>
-    </div>
     <% end %>
+
+<% end %>

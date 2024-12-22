@@ -1,22 +1,27 @@
 class ApplicationController < ActionController::Base
-    helper_method :current_user, :logged_in?, :check_login
+  include Locales
+  include FlipperHelper
 
-    def current_user
-        session[:user_id] ? User.find(session[:user_id]) : nil
-    end
+  protect_from_forgery with: :exception
 
-    def logged_in?
-        !!current_user
-    end
+  helper_method :current_user, :logged_in?, :check_login, :flipper_enabled?
 
-    def check_login
-        redirect_to root_path unless logged_in?
-    end
+  around_action :set_locale
+  helper_method :resolve_locale
 
-    def redirect_if_logged_in
-        redirect_to current_user if logged_in?
-    end
+  def current_user
+    session[:user_id] ? User.find(session[:user_id]) : nil
+  end
 
-    
+  def logged_in?
+    !!current_user
+  end
 
+  def check_login
+    redirect_to static_home_url unless logged_in?
+  end
+
+  def redirect_if_logged_in
+    redirect_to current_user if logged_in?
+  end
 end

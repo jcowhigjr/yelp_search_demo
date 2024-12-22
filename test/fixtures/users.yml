@@ -3,9 +3,15 @@
 # This model initially had no columns defined. If you add columns to the
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+# TerriblePassword
+one:
+  id: 1
+  name: user_one
+  email: user1@example.com
+  password_digest: <%= default_password_digest %>
+
+two:
+  id: 2
+  name: user_two
+  email: user2@example.com
+  password_digest: <%= default_password_digest %>

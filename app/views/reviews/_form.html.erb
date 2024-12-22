@@ -1,13 +1,13 @@
- <span class="page-text">Leave a review</span>
-<br><br>
-<div class="row center" >
-    <%= form_with(model: [@coffeeshop, Review.new]) do |f|%>
+<div class="row center">
+    <%= form_with(model: [@coffeeshop, review], id: "#{dom_id(review)}_form" ) do |f| %>
         <%= f.hidden_field :user_id, value: current_user.id %>
-        <%=f.label :rating  %>
-        <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]), required: true) %>
+        <%= f.label t('.rating') %>
+        <%= f.select(:rating,
+                     options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
+                     {}, { class: 'dark:bg-slate-900 dark:text-white' } ) %>
         <br><br>
-        <%=f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
-        <%= f.text_area :content, class: "materialize-textarea", required: true%>
-        <%=f.submit  "Submit Review", class: "btn-large"%>
-        <% end %>
+        <%= f.label(:content, t('.please-give-a-b', name: @coffeeshop.name)) %>
+        <%= f.text_area :content, class: 'materialize-textarea', required: true %>
+        <%= f.submit  t('.submit-review'), class: 'btn-large' %>
+     <% end %>
 </div>

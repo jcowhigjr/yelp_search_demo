@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+require "fileutils"
+
+
+APP_ROOT = File.expand_path("..", __dir__)
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+FileUtils.chdir APP_ROOT do
+  # This script is a way to set up or update your development environment automatically.
+  # This script is idempotent, so that you can run it at any time and get an expectable outcome.
+  # Add necessary setup steps to this file.
+  puts "== Installing next rails =="
+
+  system! "gem install next_rails"
+
+  puts "== Installing dependencies =="
+  system! "gem install bundler --conservative"
+
+  puts "== Installing dependencies =="
+  system! "gem install bundler --conservative"
+  system("next bundle check") ||  (
+
+  puts "\n== start with a gem versions at current Gemfile.lock =="
+
+  if File.exist?("Gemfile.next.lock")
+    FileUtils.rm "Gemfile.next.lock"
+  end
+
+  puts "\n== Copying Gemfile.lock to Gemfile.next.lock =="
+  if File.exist?("Gemfile.lock")
+    FileUtils.cp "Gemfile.lock", "Gemfile.next.lock"
+  end
+
+  puts "\n== Installing next gems =="
+  system!("next bundle config unset deployment")
+  system!("next bundle install")
+
+  )
+
+  # puts "\n== Copying sample files =="
+  # unless File.exist?("config/database.yml")
+  #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
+  # end
+
+  puts "\n== Preparing database =="
+  system! "next rails db:prepare"
+
+  puts "\n== Removing old logs and tempfiles =="
+  system! "next rails log:clear tmp:clear"
+
+  puts "\n== Restarting application server =="
+  system! "next rails restart"
+end

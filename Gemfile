@@ -1,78 +1,150 @@
+def next?
+  File.basename(__FILE__) == 'Gemfile.next'
+end
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '~> 2.6'
+# ruby File.read('.ruby-version').strip
+
+# I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
+# I think this will allow different machines to run tests with different ruby patch versions
+
+
+ruby '~> 3.3.4'
+
+gem 'bundler', '~> 2.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
-# Use sqlite3 as the database for Active Record
+# gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+gem 'next_rails'
 
-gem 'puma', '~> 4.1'
-# Use SCSS for stylesheets
-gem 'sass-rails'
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-# gem 'webpacker'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
-# Use Active Model has_secure_password
-gem 'bcrypt'
+gem 'rails', '~> 7.2.1'
 
-# Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
 
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', '>= 1.4.2', require: false
-# gem 'omniauth-google-oauth2', github: 'zquestz/omniauth-google-oauth2', branch: 'master'
+
+# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
+# gem "sprockets-rails"
+gem 'propshaft'
+
 gem 'omniauth-google-oauth2'
+
 gem 'omniauth-rails_csrf_protection'
 
-gem 'rest-client'
 gem 'json'
-gem 'dotenv-rails'
+gem 'rest-client'
+# Use the Puma web server [https://github.com/puma/puma]
+gem 'puma', '~> 6.4'
+
+# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem 'importmap-rails'
+
+# Use Redis adapter to run Action Cable in production
+# gem "redis", "~> 4.0"
+
+# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+# gem "kredis"
+
+platforms :ruby do
+  gem 'pg', require: false
+
+  if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
+    gem 'fast_sqlite', require: false, group: :test
+    gem 'sqlite3', '~> 2.0', require: false, group: :development
+  end
+end
+# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+gem 'bcrypt', '~> 3.1.20'
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', require: false
+
+# Use Sass to process CSS
+# gem "sassc-rails"
+
+gem 'hotwire-rails'
+
+gem 'turbo-rails', '~> 2.0'
+
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+# gem "image_processing", "~> 1.2"
+
+gem 'brotli'
+gem 'rack-brotli'
+gem 'sprockets-exporters_pack'
+# gem 'smart_assets', group: :production
+# gem 'heroku-deflater', git: 'https://github.com/pungerfreak/heroku-deflater.git'
+
+
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'debug'
 end
 
 group :development do
-  # gem 'sqlite3', '~> 1.4'
-# Use Puma as the app server
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.2'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem 'web-console'
+
+  unless next?
+    gem 'meta_request'
+  end
+  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
+  # gem "rack-mini-profiler"
+
+  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
+  # gem "spring"
+
+  gem 'guard'
+  gem 'guard-minitest'
+  gem 'guard-rubocop'
+
+  # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
+  gem 'guard-livereload', require: false # , '~> 2.4'
+  gem 'rack-livereload'
+
+  # foreman required to start bin/dev
+  gem 'foreman', require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-minitest', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'prettier', require: false
+  gem 'erb_lint', require: false
+  gem 'brakeman', require: false
+  # gem 'solargraph', require: false
+  # gem 'solargraph-rails', require: false
+
+  # if you don't use brew bundle to install with the Brewfile, you can install it with:
+  gem 'lefthook', require: false
+  gem 'bundler-audit', require: false
+  gem 'better_html', require: false
+
+  gem 'i18n-tasks', require: false
+  gem 'easy_translate', require: false
 end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
-  gem 'capybara', '>= 2.15'
-  gem 'selenium-webdriver'
+  gem 'capybara' # , '~> 3.35'
+  gem 'selenium-webdriver' # , '~> 4.0'
+
   # Easy installation and use of web drivers to run system tests with browsers
-  gem 'webdrivers'
+  gem 'matrix'
+
+  # gem 'minitest-colorize'
+  gem 'cuprite'
+  gem 'evil_systems'
+  gem 'magic_test'
+  gem 'minitest-focus'
+  gem 'minitest-retry'
 end
 
-platforms :ruby do
-  if /mysql/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'mysql2', '~> 0.5.0', require: false
-  end
-  if /postgres/.match?(ENV['DB']) || ENV['DB_ALL']
-    gem 'pg', '~> 1.0', require: false
-  end
-  if ENV['DB_ALL'] || !/mysql|postgres/.match?(ENV['DB'])
-    gem 'sqlite3', require: false
-    gem 'fast_sqlite', require: false
-  end
-end
+gem 'tailwindcss-rails', '~> 2.7'
 
-gem 'jsbundling-rails'
+gem 'flipper'
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-gem "meta_request", "~> 0.7.3"
+gem 'dotenv'

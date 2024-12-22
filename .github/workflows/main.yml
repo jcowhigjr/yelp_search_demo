@@ -1,0 +1,155 @@
+# This workflow uses actions that are not certified by GitHub.  They are
+# provided by a third-party and are governed by separate terms of service,
+# privacy policy, and support documentation.
+#
+# This workflow will install a prebuilt Ruby version, install dependencies, and
+# run tests and linters.
+#  NOTE: https://github.community/t/retry-for-failed-steps/17136/7
+
+name: 'Ruby on Rails CI'
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+
+jobs:
+  test-next:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.next.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
+          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
+      - name: Setup Ruby 3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
+          bundler-cache: true
+        env:
+          BUNDLE_GEMFILE: Gemfile.next
+      - name: Build next and unit test
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        continue-on-error: false
+        run: |
+          # should update dependabot to manage the Gemfile.next.lock
+          bin/setup-next
+          next rails test:prepare --trace
+          next rails test
+      - name: system-test-next
+        id: system-test-next
+        continue-on-error: false
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        run: |
+          next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
+          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
+          bundler-cache: true
+      - name: brakeman
+        run: |
+          gem install brakeman
+          brakeman --no-pager --quiet
+      - name: Build and run unit-tests
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        run: |
+          bin/setup
+          # test prepare required for tailwind css file required in application erb
+          bin/rails test:prepare --trace
+          bin/rails test
+      - name: system-tests
+        id: system-test
+        continue-on-error: true # make the step always success and set status later
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        run: |
+          bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+      - name: system-test-retry
+        id: system-test-retry-1
+        continue-on-error: true # make the step always success and set status later
+        if: steps.system-test.outcome=='failure' # check the step outcome, retry 1st time
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          bin/rails test:system --verbose HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+      - name: Upload failed system test images
+        uses: actions/upload-artifact@v4
+        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
+        with:
+          path: ./tmp/capybara/screenshots/failures_*.png
+      - name: set the status # set the workflow status if command failed
+        if: steps.system-test.outcome=='failure'
+        run: |
+          if ${{ steps.system-test-retry-1.outcome=='success' }}; then
+             echo 'the first system test failed, but the second one passed'
+          else
+             echo 'the first system test failed, and the second one also failed'
+             exit 1
+          fi
+  auto-merge:
+    name: Auto-Merge PRs by Dependabot
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.11.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          target: minor
+  deploy:
+    needs: test
+    if: ${{ github.ref == 'refs/heads/develop' }}
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Extract Ruby Version
+        id: ruby_version
+        run: |
+          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
+          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
+          bundler-cache: true
+      - name: deploy to heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          gem install dpl && gem install faraday -v '~> 1.8.0'
+          dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}

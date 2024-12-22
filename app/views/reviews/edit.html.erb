@@ -1,19 +1,26 @@
-<body class="landing-body">
+
+<%= turbo_frame_tag @review do %>
+
+<%# <body class="landing-body"> %>
     <div class="container page-container z-depth-1">
     <div class="row center">
          <span class="page-text">Edit your review for <%= @review.coffeeshop.name %></span>
     </div>
 <br><br>
-<div class="row center" >
-    <%= form_with(model: [@review.user, @review], method: "patch") do |f|%>
+<div class="row center">
+    <%= form_with(model: [@review.user, @review], method: 'patch') do |f| %>
         <%= f.hidden_field :user_id, value: current_user.id %>
-        <%=f.label :rating  %>
-        <%=f.select(:rating, options_for_select([["★☆☆☆☆", 1],["★★☆☆☆", 2], ["★★★☆☆", 3], ["★★★★☆", 4], ["★★★★★", 5]]),  required: true)%>
+        <%= f.label :rating %>
+        <%= f.select(:rating,
+                     options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
+                     {}, { class: 'dark:bg-slate-900 dark:text-white' } ) %>
         <br><br>
-        <%=f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
-        <%= f.text_area :content, class: "materialize-textarea", required: true%>
-        <%=f.submit  "Submit Review", class: "btn-large"%>
-        <% end %>
+        <%= f.label(:content, "Please give a brief description of your experience at #{@coffeeshop.name}.") %>
+        <%= f.text_area :content, class: 'materialize-textarea', required: true %>
+        <%= f.submit  'Submit Review', class: 'btn-large' %>
+    <% end %>
 </div>
     </div>
-</body>
+<%# </body> %>
+
+<% end %>

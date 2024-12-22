@@ -1,0 +1,265 @@
+
+app/mailers/application_mailer.rb,67
+class ApplicationMailer < ActionMailer::BaseApplicationMailer1,0
+
+app/models/search.rb,576
+class Search < ApplicationRecordSearch1,0
+    belongs_to :user, optional: trueuser2,0
+    belongs_to :user, optional: trueuser=2,0
+    belongs_to :user, optional: truebuild_user2,0
+    belongs_to :user, optional: truecreate_user2,0
+    belongs_to :user, optional: truecreate_user!2,0
+    has_many :coffeeshops, -> {order rating: :desc}coffeeshops3,0
+    has_many :coffeeshops, -> {order rating: :desc}coffeeshops=3,0
+    has_many :coffeeshops, -> {order rating: :desc}coffeeshop_ids3,0
+    has_many :coffeeshops, -> {order rating: :desc}coffeeshop_ids=3,0
+
+app/models/review.rb,712
+class Review < ApplicationRecordReview1,0
+  belongs_to :useruser4,0
+  belongs_to :useruser=4,0
+  belongs_to :userbuild_user4,0
+  belongs_to :usercreate_user4,0
+  belongs_to :usercreate_user!4,0
+  belongs_to :coffeeshopcoffeeshop5,0
+  belongs_to :coffeeshopcoffeeshop=5,0
+  belongs_to :coffeeshopbuild_coffeeshop5,0
+  belongs_to :coffeeshopcreate_coffeeshop5,0
+  belongs_to :coffeeshopcreate_coffeeshop!5,0
+  def halted_callback_hook(filter, callback_name) # => This method now accepts 2 arguments instead of 1halted_callback_hook15,0
+  scope :order_reviews, ->(user_id) { where('user_id == ?', user_id).order('rating desc') }order_reviews20,0
+  def rating_in_starsrating_in_stars22,0
+
+app/models/application_record.rb,67
+class ApplicationRecord < ActiveRecord::BaseApplicationRecord1,0
+
+app/models/coffeeshop.rb,1016
+class Coffeeshop < ApplicationRecordCoffeeshop1,0
+    has_many :reviewsreviews3,0
+    has_many :reviewsreviews=3,0
+    has_many :reviewsreview_ids3,0
+    has_many :reviewsreview_ids=3,0
+    has_many :users, through: :reviewsusers4,0
+    has_many :users, through: :reviewsusers=4,0
+    has_many :users, through: :reviewsuser_ids4,0
+    has_many :users, through: :reviewsuser_ids=4,0
+    has_many :user_favoritesuser_favorites5,0
+    has_many :user_favoritesuser_favorites=5,0
+    has_many :user_favoritesuser_favorite_ids5,0
+    has_many :user_favoritesuser_favorite_ids=5,0
+    belongs_to :searchsearch6,0
+    belongs_to :searchsearch=6,0
+    belongs_to :searchbuild_search6,0
+    belongs_to :searchcreate_search6,0
+    belongs_to :searchcreate_search!6,0
+    def self.get_search_results(query, search)get_search_results8,0
+    def self.create_coffee_shops_from_results(results, search)create_coffee_shops_from_results25,0
+    def google_address_sluggoogle_address_slug38,0
+
+app/models/user.rb,861
+class User < ApplicationRecordUser1,0
+    has_many :user_favoritesuser_favorites6,0
+    has_many :user_favoritesuser_favorites=6,0
+    has_many :user_favoritesuser_favorite_ids6,0
+    has_many :user_favoritesuser_favorite_ids=6,0
+    has_many :coffeeshops, through: :user_favoritescoffeeshops7,0
+    has_many :coffeeshops, through: :user_favoritescoffeeshops=7,0
+    has_many :coffeeshops, through: :user_favoritescoffeeshop_ids7,0
+    has_many :coffeeshops, through: :user_favoritescoffeeshop_ids=7,0
+    has_many :reviewsreviews8,0
+    has_many :reviewsreviews=8,0
+    has_many :reviewsreview_ids8,0
+    has_many :reviewsreview_ids=8,0
+    has_many :searchessearches9,0
+    has_many :searchessearches=9,0
+    has_many :searchessearche_ids9,0
+    has_many :searchessearche_ids=9,0
+    def favorite?(coffeeshop)favorite?11,0
+
+app/models/user_favorite.rb,460
+class UserFavorite < ApplicationRecordUserFavorite1,0
+    belongs_to :useruser3,0
+    belongs_to :useruser=3,0
+    belongs_to :userbuild_user3,0
+    belongs_to :usercreate_user3,0
+    belongs_to :usercreate_user!3,0
+    belongs_to :coffeeshopcoffeeshop4,0
+    belongs_to :coffeeshopcoffeeshop=4,0
+    belongs_to :coffeeshopbuild_coffeeshop4,0
+    belongs_to :coffeeshopcreate_coffeeshop4,0
+    belongs_to :coffeeshopcreate_coffeeshop!4,0
+
+app/jobs/application_job.rb,58
+class ApplicationJob < ActiveJob::BaseApplicationJob1,0
+
+app/controllers/application_controller.rb,245
+class ApplicationController < ActionController::BaseApplicationController1,0
+    def current_usercurrent_user4,0
+    def logged_in?logged_in?8,0
+    def check_logincheck_login12,0
+    def redirect_if_logged_inredirect_if_logged_in16,0
+
+app/controllers/coffeeshops_controller.rb,98
+class CoffeeshopsController < ApplicationControllerCoffeeshopsController1,0
+  def showshow2,0
+
+app/controllers/users_controller.rb,223
+class UsersController < ApplicationControllerUsersController1,0
+  def newnew4,0
+  def createcreate8,0
+  def showshow20,0
+  def user_paramsuser_params27,0
+  def redirect_to_proper_pathredirect_to_proper_path31,0
+
+app/controllers/sessions_controller.rb,249
+class SessionsController < ApplicationControllerSessionsController1,0
+  def newnew4,0
+  def createcreate7,0
+  def destroydestroy18,0
+  def create_with_googlecreate_with_google23,0
+  def redirect_to_proper_pathredirect_to_proper_path33,0
+
+app/controllers/static_controller.rb,88
+class StaticController < ApplicationControllerStaticController1,0
+  def homehome3,0
+
+app/controllers/user_favorites_controller.rb,180
+class UserFavoritesController < ApplicationControllerUserFavoritesController1,0
+  def createcreate2,0
+  def destroydestroy12,0
+  def set_user_favoriteset_user_favorite20,0
+
+app/controllers/reviews_controller.rb,325
+class ReviewsController < ApplicationControllerReviewsController1,0
+  def createcreate4,0
+  def editedit15,0
+  def updateupdate19,0
+  def destroydestroy29,0
+  def review_paramsreview_params37,0
+  def set_reviewset_review41,0
+  def has_permissionhas_permission45,0
+  def find_or_redirectfind_or_redirect49,0
+
+app/controllers/searches_controller.rb,278
+class SearchesController < ApplicationControllerSearchesController1,0
+  def newnew3,0
+  def advancedadvanced8,0
+  def createcreate11,0
+  def showshow22,0
+  def determine_search_typedetermine_search_type28,0
+  def redirect_to_proper_pathredirect_to_proper_path32,0
+
+app/helpers/reviews_helper.rb,39
+module ReviewsHelperReviewsHelper1,0
+
+app/helpers/user_favorites_helper.rb,51
+module UserFavoritesHelperUserFavoritesHelper1,0
+
+app/helpers/coffeeshops_helper.rb,47
+module CoffeeshopsHelperCoffeeshopsHelper1,0
+
+app/helpers/users_helper.rb,35
+module UsersHelperUsersHelper1,0
+
+app/helpers/static_helper.rb,37
+module StaticHelperStaticHelper1,0
+
+app/helpers/sessions_helper.rb,41
+module SessionsHelperSessionsHelper1,0
+
+app/helpers/searches_helper.rb,41
+module SearchesHelperSearchesHelper1,0
+
+app/helpers/application_helper.rb,47
+module ApplicationHelperApplicationHelper1,0
+
+app/channels/application_cable/connection.rb,195
+module ApplicationCableApplicationCable1,0
+  class Connection < ActionCable::Connection::BaseConnection2,0
+  class Connection < ActionCable::Connection::BaseApplicationCable::Connection2,0
+
+app/channels/application_cable/channel.rb,177
+module ApplicationCableApplicationCable1,0
+  class Channel < ActionCable::Channel::BaseChannel2,0
+  class Channel < ActionCable::Channel::BaseApplicationCable::Channel2,0
+
+test/integration/layouts_test.rb,68
+class LayoutsTest < ActionDispatch::IntegrationTestLayoutsTest3,0
+
+test/models/review_test.rb,58
+class ReviewTest < ActiveSupport::TestCaseReviewTest3,0
+
+test/models/coffeeshop_test.rb,66
+class CoffeeshopTest < ActiveSupport::TestCaseCoffeeshopTest3,0
+
+test/models/search_test.rb,58
+class SearchTest < ActiveSupport::TestCaseSearchTest3,0
+
+test/models/user_favorite_test.rb,70
+class UserFavoriteTest < ActiveSupport::TestCaseUserFavoriteTest3,0
+
+test/models/user_test.rb,54
+class UserTest < ActiveSupport::TestCaseUserTest3,0
+
+test/system/searches_test.rb,64
+class SearchesTest < ApplicationSystemTestCaseSearchesTest3,0
+
+test/system/users_test.rb,58
+class UsersTest < ApplicationSystemTestCaseUsersTest3,0
+
+test/application_system_test_case.rb,95
+class ApplicationSystemTestCase < ActionDispatch::SystemTestCaseApplicationSystemTestCase3,0
+
+test/test_helper.rb,101
+class ActiveSupport::TestCaseTestCase5,0
+class ActiveSupport::TestCaseActiveSupport::TestCase5,0
+
+test/controllers/searches_controller_test.rb,90
+class SearchesControllerTest < ActionDispatch::IntegrationTestSearchesControllerTest3,0
+
+test/controllers/static_controller_test.rb,86
+class StaticControllerTest < ActionDispatch::IntegrationTestStaticControllerTest3,0
+
+test/controllers/users_controller_test.rb,84
+class UsersControllerTest < ActionDispatch::IntegrationTestUsersControllerTest3,0
+
+test/controllers/coffeeshops_controller_test.rb,96
+class CoffeeshopsControllerTest < ActionDispatch::IntegrationTestCoffeeshopsControllerTest3,0
+
+test/controllers/user_favorites_controller_test.rb,100
+class UserFavoritesControllerTest < ActionDispatch::IntegrationTestUserFavoritesControllerTest3,0
+
+test/controllers/sessions_controller_test.rb,90
+class SessionsControllerTest < ActionDispatch::IntegrationTestSessionsControllerTest3,0
+
+test/controllers/reviews_controller_test.rb,88
+class ReviewsControllerTest < ActionDispatch::IntegrationTestReviewsControllerTest3,0
+
+test/channels/application_cable/connection_test.rb,206
+class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCaseConnectionTest3,0
+class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCaseApplicationCable::ConnectionTest3,0
+
+config/application.rb,149
+module JitterJitter9,0
+  class Application < Rails::ApplicationApplication10,0
+  class Application < Rails::ApplicationJitter::Application10,0
+
+db/migrate/20200818192834_create_users.rb,89
+class CreateUsers < ActiveRecord::Migration[6.0]CreateUsers1,0
+  def changechange2,0
+
+db/migrate/20200818193303_create_coffeeshops.rb,101
+class CreateCoffeeshops < ActiveRecord::Migration[6.0]CreateCoffeeshops1,0
+  def changechange2,0
+
+db/migrate/20200818192854_create_reviews.rb,93
+class CreateReviews < ActiveRecord::Migration[6.0]CreateReviews1,0
+  def changechange2,0
+
+db/migrate/20200818193410_create_user_favorites.rb,105
+class CreateUserFavorites < ActiveRecord::Migration[6.0]CreateUserFavorites1,0
+  def changechange2,0
+
+db/migrate/20200820171414_create_searches.rb,95
+class CreateSearches < ActiveRecord::Migration[6.0]CreateSearches1,0
+  def changechange2,0

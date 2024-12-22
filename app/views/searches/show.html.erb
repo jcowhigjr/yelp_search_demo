@@ -1,26 +1,28 @@
 <body class="landing-body">
     <div class="container page-container">
-    <% if flash[:error] %>
-    <span class="page-text"><%= flash[:error] %></span>
-    <% end %>
-        <div class="row center">
-            <h1 class="flow-text"> Hello, <%= current_user.name %>!   </h1>
-            <span class="page-text"> Search for coffeeshops near you.</span>
-        </div>
-        <div class="row center">
-            <%= render 'form' %>
-        </div>
-    </div> 
-</body>
+        <% if flash[:error] %>
+        <span class="page-text"><%= flash[:error] %></span>
+        <% end %>
 
-<div>
-    <% if @search.query %>  
-    <div class="search-results">
         <div class="row center">
-            <h1 class="white-text">Top Rated Coffeeshops in <%= @search.query %></h1>
+            <%= render 'searches/form' %>
         </div>
-        <%= render partial: 'searches/results', locals: {search: @search} %>
-    </div>
+
+    <%# may replace this with https://codepen.io/sumeshkp18/pen/VGBPYg  %>
+    <%# https://pickerwheel.com/embed-tutorial/ %>
+    <% if @search&.query && current_user&.present? && Flipper.enabled?(:decision_wheel, current_user) %>
+        <%= render partial: 'searches/picker_wheel' %>
     <% end %>
-    
- </div>
+
+        <% if @search.query %>
+           <div class="search-results ">
+                <%= turbo_stream_from 'searches' %>
+                <%= turbo_frame_tag 'search_form' do %>
+                    <%= render partial: 'searches/results', locals: {search: @search} %>
+                <% end %>
+           </div>
+
+        <% end %>
+    </div>
+
+ </body>

@@ -1,19 +1,24 @@
 class ReviewsController < ApplicationController
   before_action :find_or_redirect, except: [:create]
-  helper_method :has_permission
-  def create
-    @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
-    @review = @coffeeshop.reviews.create(review_params)
-    if @coffeeshop.save
-      redirect_to @coffeeshop
-    else
-      flash[:review_error] = 'Something went wrong with creating your review.'
-      render @coffeeshop
-    end
+  helper_method :permission?
+
+  def index
+    find_or_redirect
   end
 
   def edit
     @coffeeshop = Coffeeshop.find(@review.coffeeshop_id)
+  end
+
+  def create
+    @coffeeshop = Coffeeshop.find(params[:coffeeshop_id])
+    @review = @coffeeshop.reviews.create(review_params)
+    if @review.save
+      redirect_to @coffeeshop
+    else
+      flash.now[:review_error] = t('error.something_went_wrong')
+      render @coffeeshop
+    end
   end
 
   def update
@@ -21,7 +26,11 @@ class ReviewsController < ApplicationController
     if @review.save
       redirect_to @review.coffeeshop
     else
-      flash[:error] = 'Error editing review.'
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
+                                                           locals: { review: @review })
+      end
+      flash.now[:error] = t('error.something_went_wrong')
       render @review.coffeeshop
     end
   end
@@ -35,25 +44,26 @@ class ReviewsController < ApplicationController
   private
 
   def review_params
-    params.require(:review).permit(:content, :rating, :user_id)
+    params.require(:review).permit(:content, :rating, :user_id, :coffeeshop_id)
   end
 
   def set_review
     @review = Review.find_by(id: params[:id])
   end
 
-  def has_permission
+  def permission?
     @review.user == current_user
   end
 
   def find_or_redirect
     set_review
-    if @review.nil?
-      if params[:coffeeshop_id]
-        redirect_to coffeeshop_path(params[:coffeshop_id])
-      else
-        redirect_to root_path
-      end
+    return unless @review.nil?
+
+    if params[:coffeeshop_id]
+      redirect_to coffeeshop_path(params[:coffeshop_id])
+    else
+      redirect_to static_home_url
     end
+
   end
 end

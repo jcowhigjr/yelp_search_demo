@@ -1,19 +1,19 @@
 <div class="form-group">
-  
-    <%= form_for @user do |f|%>
+
+    <%= form_for @user do |f| %>
         <div class="row center user-form">
         <% if flash[:error] %>
             <div class="row center">
                 <span class="red-text"><%= flash[:error] %></span>
             </div>
         <% end %>
-            <%= f.text_field :name, placeholder: "Username", required: true %>
-            <%= f.email_field :email, placeholder: "Email", required: true %>
-            <%= f.password_field :password, placeholder: "Password (must be at least 6 characters)", required: true %>
-            <%= f.password_field :password_confirmation, placeholder: "Confirm Password", required: true %>
+            <%= f.text_field :name, placeholder: t('.username'), required: true %>
+            <%= f.email_field :email, placeholder: t('.email'), required: true %>
+            <%= f.password_field :password, placeholder: t('.password-must-b'), required: true %>
+            <%= f.password_field :password_confirmation, placeholder: t('.confirm-passwor'), required: true %>
         </div>
         <div class="row center">
-            <%= f.submit "Sign Up", class: "btn-large" %>
+            <%= f.submit 'Sign Up', class: 'btn-large' %>
         </div>
     <% end %>
 </div>

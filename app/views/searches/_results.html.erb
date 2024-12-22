@@ -1,7 +1,17 @@
 <div class="container">
     <div class="row center">
-        <% @search.coffeeshops.each do |coffeeshop| %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: coffeeshop} %>
-        <% end %>
+        <h2 class="white-text"><%= t('views.searches.results', query: @search.query ) %></h2>
     </div>
+    <% if @search.coffeeshops.empty? %>
+        <div class="row center">
+            <span class="page-text red-text"><%= t('.no-results-found') %></span>
+        </div>
+    <% else %>
+        <% @search.coffeeshops.each do |coffeeshop| %>
+            <%= turbo_stream_from 'coffeeshops' %>
+            <%= turbo_frame_tag 'coffeeshops' do %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:} %>
+            <% end %>
+        <% end %>
+    <% end %>
 </div>
