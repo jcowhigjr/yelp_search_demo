@@ -33,7 +33,7 @@ pre-push:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key' HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:system
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
 
 pre-commit:
   parallel: true
