@@ -75,7 +75,8 @@ fixer:
     erb_lint:
       run: bundle exec erb_lint --autocorrect --lint-all {all_files}
     yaml-lint:
-      run: bundle exec yamllint -i {all_files}
+      glob: '*.yml'
+      run: bundle exec yaml-lint -i {all_files}
     brakeman:
       # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
