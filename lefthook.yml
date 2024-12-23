@@ -8,7 +8,7 @@ pre-push:
     test-next:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
     packages-audit:
       tags: frontend security
       run: yarn audit
@@ -32,8 +32,8 @@ pre-push:
     rails-tests:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
 
 pre-commit:
   parallel: true
@@ -54,8 +54,8 @@ pre-commit:
     rails-tests:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
 fixer:
   parallel: true
   commands:
@@ -81,16 +81,16 @@ fixer:
     next-test:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
     i18n-tasks:
-      run: bundle exec i18n-tasks health en missing unused
+      run: bundle exec i18n-tasks health en missing unused ||
+        bundle exec i18n-tasks normalize
     javascript-audit:
       tags: frontend security
       run: yarn upgrade
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
-
 # scripts:
 #     "hello.js":
 #       runner: node

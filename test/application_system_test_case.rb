@@ -4,7 +4,7 @@ require 'capybara/cuprite'
 
 
 # evil systems speeds up the tests but repeats the rebuilds.. need to look into it
-# require 'evil_systems'
+require 'evil_systems'
 EvilSystems.initial_setup
 
 # Boot process completed
@@ -26,7 +26,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #   system 'bin/rails tailwindcss:build'
   # end
 
-  # include EvilSystems::Helpers
+  include EvilSystems::Helpers
 
   if ENV.fetch('SELENIUM', nil) == 'true'
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
@@ -50,71 +50,42 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # end
     end
   else
-    driven_by :cuprite,
-              screen_size: [375, 667],
-              options: {
-                js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-                # inspector: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-                # Increase Chrome startup wait time (required for stable CI builds)
-                process_timeout: 5,
-                # See additional options for Dockerized environment in the respective section of this article
-                browser_options: {'no-sandbox': nil},
-                # # Enable debugging capabilities
-                inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
-                # # Allow running Chrome in a headful mode by setting HEADLESS env
-                # # var to a falsey value
-                headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
-              } do |driver_option|
-               driver_option.add_emulation(device_name: 'iPhone 6')
-               driver_option.browser_options({'no-sandbox': nil})
-
+  driven_by :cuprite,
+            screen_size: [375, 667],
+            options: {
+              # # Enable debugging capabilities
+              inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+              # # Allow running Chrome in a headful mode by setting HEADLESS env
+              # # var to a falsey value
+              headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+              js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
+              timeout: 10,
+              process_timeout: 10,
+              browser_options: {
+                'no-sandbox': nil,
+                'disable-web-security': nil,
+                'auto-open-devtools-for-tabs': false,
+                'disable-popup-blocking': true,
+                'disable-notifications': true,
+                'use-fake-device-for-media-stream': true,
+                'use-fake-ui-for-media-stream': true,
+                geolocation: true,
+              },
+            } do |driver_option|
+      # Mock geolocation
+      driver_option.browser.command('Browser.grantPermissions',
+                                    origin: 'http://127.0.0.1',
+                                    permissions: ['geolocation'],
+      )
+      driver_option.browser.command('Emulation.setGeolocationOverride',
+                                    latitude: 0.0,
+                                    longitude: 0.0,
+                                    accuracy: 100,
+      )
     end
   end
 
-  # Minitest::Retry.on_failure do |klass, test_name, result|
-  #   # retry if Capybara::ElementNotFound
-  #   if result.exception.is_a?(Capybara::ElementNotFound)
-  #     puts "ElementNotFound: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraError
-  #   if result.exception.is_a?(Capybara::CapybaraError)
-  #     puts "CapybaraError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraInternalServerError
-  #   if result.exception.is_a?(Capybara::CapybaraInternalServerError)
-  #     puts "CapybaraInternalServerError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraNetworkError
-  #   if result.exception.is_a?(Capybara::CapybaraNetworkError)
-  #     puts "CapybaraNetworkError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraNotSupportedError
-  #   if result.exception.is_a?(Capybara::CapybaraNotSupportedError)
-  #     puts "CapybaraNotSupportedError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraServerError
-  #   if result.exception.is_a?(Capybara::CapybaraServerError)
-  #     puts "CapybaraServerError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraTimeoutError
-  #   if result.exception.is_a?(Capybara::CapybaraTimeoutError)
-  #     puts "CapybaraTimeoutError: #{result.exception.message}"
-  #     retry
-  #   end
-  #   # retry if Capybara::CapybaraUnsupportedFeatureError
-  #   if result.exception.is_a?(Capybara::CapybaraUnsupportedFeatureError)
-  #     puts "CapybaraUnsupportedFeatureError"
-  #     retry
-  #   end
-  # end
-
-  # Capybara.configure do |config|
-  #   config.server = :puma, { Silent: true }
-  # end
+  Capybara.configure do |config|
+    config.server = :puma, { Silent: true }
+  end
 end
