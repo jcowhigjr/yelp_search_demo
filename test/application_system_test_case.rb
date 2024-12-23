@@ -26,6 +26,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   #   system 'bin/rails tailwindcss:build'
   # end
 
+  # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
 
   if ENV.fetch('SELENIUM', nil) == 'true'
@@ -62,8 +63,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
               timeout: 10,
               process_timeout: 10,
               browser_options: {
-                'no-sandbox': nil,
-                'disable-web-security': nil,
+                'no-sandbox': true,
+                'disable-web-security': true,
                 'auto-open-devtools-for-tabs': false,
                 'disable-popup-blocking': true,
                 'disable-notifications': true,
@@ -72,20 +73,21 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
                 geolocation: true,
               },
             } do |driver_option|
-      # Mock geolocation
-      driver_option.browser.command('Browser.grantPermissions',
-                                    origin: 'http://127.0.0.1',
-                                    permissions: ['geolocation'],
-      )
-      driver_option.browser.command('Emulation.setGeolocationOverride',
-                                    latitude: 0.0,
-                                    longitude: 0.0,
-                                    accuracy: 100,
-      )
+
+      # # TODO: # Mock geolocation
+      # driver_option.browser.command('Browser.grantPermissions',
+      #                               origin: 'http://127.0.0.1:*',
+      #                               permissions: ['geolocation'],
+      # )
+      # driver_option.browser.command('Emulation.setGeolocationOverride',
+      #                               latitude: 0.0,
+      #                               longitude: 0.0,
+      #                               accuracy: 100,
+      # )
     end
   end
 
-  Capybara.configure do |config|
-    config.server = :puma, { Silent: true }
-  end
+  # Capybara.configure do |config|
+  #   config.server = :puma, { Silent: true }
+  # end
 end

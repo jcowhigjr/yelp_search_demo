@@ -18,7 +18,8 @@ class SearchesTest < ApplicationSystemTestCase
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    page.go_back
+
+    page.execute_script('window.history.back()')
     page.driver.wait_for_network_idle if ENV['CUPRITE'] == 'true'
 
     assert_current_path "/searches/#{Search.last.id}"
