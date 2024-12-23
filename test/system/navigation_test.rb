@@ -25,6 +25,7 @@ class NavigationTest < ApplicationSystemTestCase
 
     # wait for the results to load
     # wait_for_network_idle! if ENV['CUPRITE'] == 'true'
+    page.driver.wait_for_network_idle if ENV['CUPRITE'] == 'true'
 
     # searches/3 this 3rd seaarch doesn't save when using turbo true on the search button
     assert_current_path search_path(Search.last.id, locale: nil)
@@ -40,7 +41,8 @@ class NavigationTest < ApplicationSystemTestCase
     # searches/3
     assert_current_path search_path(Search.last.id, locale: nil)
 
-    go_back
+    page.execute_script('window.history.back()')
+    page.driver.wait_for_network_idle if ENV['CUPRITE'] == 'true'
 
     assert_current_path new_search_path
   end
