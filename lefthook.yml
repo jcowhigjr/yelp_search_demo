@@ -8,7 +8,7 @@ pre-push:
     test-next:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
     packages-audit:
       tags: frontend security
       run: yarn audit
@@ -32,8 +32,8 @@ pre-push:
     rails-tests:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
 
 pre-commit:
   parallel: true
@@ -50,12 +50,17 @@ pre-commit:
       tags: frontend style
       files: git diff --name-only master
       glob: '*.erb'
-      run: bundle exec erblint --lint-all {staged_files}
+      run: bundle exec erb_lint --lint-all {staged_files}
+    yaml-lint:
+      tags: frontend style
+      files: git diff --name-only master
+      glob: '*.yml'
+      run: bundle exec yaml-lint -i {staged_files}
     rails-tests:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
 fixer:
   parallel: true
   commands:
@@ -67,8 +72,11 @@ fixer:
     ruby-prettier:
       glob: 'app/**/*.rb'
       run: bundle exec rbprettier --write {files}
-    erblint:
-      run: bundle exec erblint --autocorrect --lint-all {all_files}
+    erb_lint:
+      run: bundle exec erb_lint --autocorrect --lint-all {all_files}
+    yaml-lint:
+      glob: '*.yml'
+      run: bundle exec yaml-lint -i {all_files}
     brakeman:
       # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
@@ -78,19 +86,19 @@ fixer:
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
-    next-test:
+    test-next:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
+        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
     i18n-tasks:
-      run: bundle exec i18n-tasks health en missing unused
+      run: bundle exec i18n-tasks health en missing unused ||
+        bundle exec i18n-tasks normalize
     javascript-audit:
       tags: frontend security
       run: yarn upgrade
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
-
 # scripts:
 #     "hello.js":
 #       runner: node
