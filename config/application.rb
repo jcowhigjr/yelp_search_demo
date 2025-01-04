@@ -37,3 +37,4 @@ module Jitter
 
   end
 end
+# Disconnect from the database before forkingif defined?(PhusionPassenger)  PhusionPassenger.on_event(:starting_worker_process) do |forked|    ActiveRecord::Base.connection.disconnect! if forked  endend# Reconnect to the database after forkingActiveSupport.on_load(:active_record) do  ActiveRecord::Base.establish_connectionend

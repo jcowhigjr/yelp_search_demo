@@ -49,7 +49,6 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'fast_sqlite', require: false, group: :test
     gem 'sqlite3', '~> 2.0', require: false, group: :development
   end
 end
@@ -102,7 +101,6 @@ group :development do
   gem 'guard-rubocop'
 
   # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
-  gem 'guard-livereload', require: false # , '~> 2.4'
   gem 'rack-livereload'
 
   # foreman required to start bin/dev
@@ -149,3 +147,4 @@ gem 'tailwindcss-rails', '~> 2.7'
 gem 'flipper'
 
 gem 'dotenv'
+ruby '3.4.1'

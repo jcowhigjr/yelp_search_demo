@@ -44,5 +44,6 @@
   "cSpell.words": [
     "coffeeshop"
   ],
+  "ruby.interpreter.commandPath": "/path/to/your/script/ruby",
   "autoHide.autoHideSideBar": false
 }
