@@ -36,8 +36,11 @@ pre-push:
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
 
 pre-commit:
+  pre-command: git stash --keep-index
   parallel: true
   commands:
+    debug:
+      run: mise env && ruby -v && bundle exec ruby -v
     js:
       glob: '*.{js,ts}'
       run: yarn prettier --write {staged_files} && git add {staged_files}

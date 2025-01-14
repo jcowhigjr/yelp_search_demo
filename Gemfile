@@ -11,7 +11,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I think this will allow different machines to run tests with different ruby patch versions
 
 
-ruby '~> 3.3.4'
+ruby '~> 3.4.1'
 
 gem 'bundler', '~> 2.5'
 
@@ -20,8 +20,6 @@ gem 'bundler', '~> 2.5'
 gem 'next_rails'
 
 gem 'rails', '~> 7.2.1'
-
-
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
@@ -147,4 +145,3 @@ gem 'tailwindcss-rails', '~> 2.7'
 gem 'flipper'
 
 gem 'dotenv'
-ruby '3.4.1'
