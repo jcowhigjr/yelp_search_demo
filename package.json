@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "audit": "^0.0.6",
+    "prettier": "^3.4.2"
+  }
+}

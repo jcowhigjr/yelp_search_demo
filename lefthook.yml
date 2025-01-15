@@ -9,15 +9,12 @@ pre-push:
       tags: backend
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
-    packages-audit:
-      tags: frontend security
-      run: yarn audit
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: yarn audit
+      run: yarn npm audit --all
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
@@ -85,7 +82,7 @@ fixer:
       run: bundle exec brakeman --no-pager
     packages-audit:
       tags: frontend security
-      run: yarn audit
+      run: yarn npm audit
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -98,7 +95,7 @@ fixer:
         bundle exec i18n-tasks normalize
     javascript-audit:
       tags: frontend security
-      run: yarn upgrade
+      run: npm upgrade
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
