@@ -26,7 +26,7 @@ pre-push:
     brakeman:
       tags: backend security
       run: bundle exec brakeman --no-pager
-    rails-tests:
+    rails-system-tests:
       tags: backend tests
       run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
         CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
