@@ -13,7 +13,6 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password', with: 'sadfkjs342'
     fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
-    skip 'this test is broken'
     click_on 'menu'
     click_on 'Logout' # this is not working
 
@@ -42,16 +41,6 @@ class UsersTest < ApplicationSystemTestCase
     assert_text "Hello, #{@user.name}!"
   end
 
-
-# test 'destroying a User' do
-  #   visit users_url
-  #   page.accept_confirm do
-  #     click_on 'Destroy', match: :first
-  #   end
-
-  #   assert_text 'User was successfully destroyed'
-  # end
-
   test 'partial sign in with Google' do
     visit '/login'
     click_link_or_button 'Login With Google'
@@ -72,23 +61,4 @@ class UsersTest < ApplicationSystemTestCase
     # assert_text "Hello, #{@user.name}"
     # click_link 'Logout'
   end
-
-  test 'sign up with Google' do
-    visit '/signup'
-
-    # assert_difference "User.count", 1 do
-    click_on 'Sign Up With Google'
-    # it prompts for user login instead and then says "This browser or app may not be secure."
-    unless ENV['SHOW_TESTS'] == 'true'
-      skip 'redirect_uri_mismatch'
-    end
-    # so we need to click on the "Continue" button
-    fill_in 'identifierId', with: 'test@gmail.com'
-    click_on 'Next'
-    # assert_text 'This browser or app may not be secure.'
-    # go_back
-    # assert_current_path '/signup'
-
-  end
 end
-#

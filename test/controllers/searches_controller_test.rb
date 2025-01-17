@@ -45,14 +45,8 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
   test '#update changes query' do
     post searches_path, params: { search: { query: 'yoga' } }
     @search = Search.last
-    # puts Coffeeshop.pluck(:name)
     patch search_url(@search.id), params: { search: { query: 'tacos' } }
-    # puts Coffeeshop.pluck(:name)
     assert_equal 'tacos', @search.reload.query
   end
-  # test '#index' do
-  #   get searches_url
-  #   assert_response :success
-  #   assert_select 'h2', 'Top Rated Searches', match: :first
-  # end
+
 end

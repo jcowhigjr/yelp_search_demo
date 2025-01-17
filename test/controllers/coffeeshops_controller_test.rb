@@ -5,11 +5,6 @@ class CoffeeshopsControllerTest < ActionDispatch::IntegrationTest
     @coffeeshop = coffeeshops(:two)
   end
 
-  # test "should not get index" do
-  #   #  fyi no route
-  #   # get coffeeshops_index_url
-  #   # assert_response :fail
-  # end
   test 'should get show' do
     get "/coffeeshops/#{@coffeeshop.id}"
 
