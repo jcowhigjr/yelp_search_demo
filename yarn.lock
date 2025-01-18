@@ -5,10 +5,21 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"audit@npm:^0.0.6":
-  version: 0.0.6
-  resolution: "audit@npm:0.0.6"
-  checksum: 10c0/2b1440e26bc0235dea337c268f95e1481e9a5744284c4d03e9c997e94c3622110f4cce0970a86a24eca7dbfb5e2d34c1a479f56e5a2b64a9be9dd74505347c4c
+"jitter@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "jitter@workspace:."
+  dependencies:
+    lint: "npm:^1.1.2"
+    prettier: "npm:^3.4.2"
+  languageName: unknown
+  linkType: soft
+
+"lint@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "lint@npm:1.1.2"
+  bin:
+    node-lint: ./bin/node-lint
+  checksum: 10c0/8d09ca9f3a2fa7722b708067179d7a1392966d4df792dbb32b080e798a2e01ee198beec58e130d3dfca6436331fbc1c75fedb625c1fead6ccfb67723caa71a24
   languageName: node
   linkType: hard
 
@@ -20,12 +31,3 @@ __metadata:
   checksum: 10c0/99e076a26ed0aba4ebc043880d0f08bbb8c59a4c6641cdee6cdadf2205bdd87aa1d7823f50c3aea41e015e99878d37c58d7b5f0e663bba0ef047f94e36b96446
   languageName: node
   linkType: hard
-
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    audit: "npm:^0.0.6"
-    prettier: "npm:^3.4.2"
-  languageName: unknown
-  linkType: soft

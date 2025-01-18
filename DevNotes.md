@@ -1,19 +1,22 @@
 # My Dev Notes
 
 TLDR:
- Using GitHub PRs for feature changes and bugfixes
- Using Github Actions see main.yml for CI/CD workflow
- Using Heroku for hosting
- Using Yelp for fusion API
- Using Google for sign in.
+Using GitHub PRs for feature changes and bugfixes
+Using Github Actions see main.yml for CI/CD workflow
+Using Heroku for hosting
+Using Yelp for fusion API
+Using Google for sign in.
 
 Below are some other notes in order of the things I've changed.
+
 # get it working from where I picked it up on a Mac
+
 updated ruby (.ruby-version and Gemfile)
 
 hid pg gem in Gemfile because it was trying to install locally
 
 (a single user doesn't need PG for this kind of dev but run bin/setup if sqlite ever locks)
+
 <!-- https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand -->
 
 (currently only using node for linting)
@@ -28,7 +31,8 @@ bin/rails credentials:edit --environment development
 NOTE: in non local environments use RAILS_MASTER_KEY and SECRET_KEY_BASE, locally don't set these and config/credentials/development.key will be used
 
 # ENV variables are managed by dotenv-rails gem
-NOTE: .env.production can be set to look like heroku and .env.test can be set to look like CI testing.  beware .env can confuse things since it will be used in all environments if present
+
+NOTE: .env.production can be set to look like heroku and .env.test can be set to look like CI testing. beware .env can confuse things since it will be used in all environments if present
 
 <!-- Rails.application.credentials.yelp[:api_key] -->
 
@@ -84,28 +88,27 @@ https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html
 
 # Development
 
- git flow feature start xyz-feature
+git flow feature start xyz-feature
 
- `be guard`  # run tests and linting, asset processing/live reload connection to browser while developing in the background
- `bin/dev`   # run dev server and css processor
+`be guard` # run tests and linting, asset processing/live reload connection to browser while developing in the background
+`bin/dev` # run dev server and css processor
 
- cleaning up before a commit
-   #stage what you want to commit
-     `git add related files`
-   #note tests passing in `be guard`
-   #stash unrelated files and confirm tests still passing
-     `git stash push --keep-index`
+cleaning up before a commit
+#stage what you want to commit
+`git add related files`
+#note tests passing in `be guard`
+#stash unrelated files and confirm tests still passing
+`git stash push --keep-index`
 
- commit
-   git commit
-  see lefthook.yml
+commit
+git commit
+see lefthook.yml
 
-
-
- open a PR
- `gh pr create`
+open a PR
+`gh pr create`
 
 # System Tests
+
 system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
 
 these are run by default on commit with a iphone 6/7/8 screen size to test mobile navigation
@@ -121,10 +124,10 @@ Insert 'magic_test' in system tests to BDD style improve the app.
 [evil systems](https://github.com/ParamagicDev/evil_systems)
 
 [browser testing](https://dev.to/nejremeslnici/migrating-selenium-system-tests-to-cuprite-42ah)
-  i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
-  https://testingbot.com/support/selenium/permission-popups#
+i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
+https://testingbot.com/support/selenium/permission-popups#
 
-  https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
+https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
 
 # Sign in with Google
 
@@ -133,7 +136,8 @@ see client_id and client_secret in rails credentials:edit --development
 git ignore config/master.key and kep in a safe place
 git add development key is probably safe
 
-#  Mobile vs Desktop
+# Mobile vs Desktop
+
 generally I develop toward desktop but lefthook runs the same tests as CI/CD focus on mobile.
 to debug mobile tests:
 RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' be guard
@@ -181,28 +185,41 @@ An environment variable stored in github and heroku RAILS\_**ENVIRONMENT**\_KEY
 is used to decrypt those secretes stored in encrypted credential files for the api's used
 
 # if there were more going on i'd never rebase but there isn't
+
 roughly using git flow but integration branch is develop, prod release branch is master (no prod though really)
 
 # two feature branches going at once
+
 # if one gets merged first (typically a squash commit)
 
 # stage anything that seems promising
+
 git add {files}
+
 # stash files that aren't yet ready
+
 git stash push --keep-index
+
 # pull develop locally
+
 git co develop
 git pull
+
 # find the feature branch again
+
 # alias gb='git for-each-ref --sort=committerdate refs/heads/ --format='\''%(committerdate:short) %(refname:short)'\'' | tail -n20'
+
 gb
 #co the feature branch
 git co feature/xyz
+
 # pull in the changes
+
 git flow feature rebase
 git stash apply
 
 # ngrok and testing on your phone
+
 i use edge devtools vscode extention and the iphone SE profile to test
 The automated tests run with iPhone SE emulation because it is the smallest phone.
 I think using the basic bin/dev plus the ngrok VS CODE plug in is the simplest approach for quick real phone testing
@@ -219,12 +236,14 @@ brew install postgres-unofficial
 <!-- sudo puma-dev -setup
 puma-dev -install
 ln -s /Users/temp/src/ruby/jitter ~/.puma-prod/. -->
+
 bin/prod
 
 Local Prod like stack will start (postgresql, production.rb, built assets and vendored bundle)
 click https://jitter.prod
 
 # test prod like remotely through internet tunnel
+
 To create a public url and share local host over the internet
 dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
 
@@ -234,7 +253,9 @@ edit .env.development or .env.production
 with NGROK_HOST and add config.hosts << ENV['NGROK_HOST'] to rails config/environments/production.rb
 
 then restart the server
+
 # restart the rack server to allow the new config host access
+
 touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 # Evaluation of a new feature
@@ -263,51 +284,49 @@ touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 # Security Updates
 
-  Dependabot alerts are resulting in very frequent security updates..
+Dependabot alerts are resulting in very frequent security updates..
 
     (1) Update the Gemfile.lock every PR
     (2) Now let dependabot handle it automatically as well.
 
-  Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.
-    -- the tests CI requires Dendabot/RAILS_MASTER_KEY
-    -- the heroku feature branch deploy requires HEROKU_API_KEY from the Actions/Environment
-    -- the main.ci develop deploy requires the repository secret Actions/RepositorySecrets HEROKU_APP_NAME and the above API KEY
+Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.
+-- the tests CI requires Dendabot/RAILS_MASTER_KEY
+-- the heroku feature branch deploy requires HEROKU_API_KEY from the Actions/Environment
+-- the main.ci develop deploy requires the repository secret Actions/RepositorySecrets HEROKU_APP_NAME and the above API KEY
 
-  Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_SECRET usage.
+Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_SECRET usage.
 
-  Heroku recommended https://guides.rubyonrails.org/security.html changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
+Heroku recommended https://guides.rubyonrails.org/security.html changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
 
-  https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html
-  heroku config:set RAILS_MASTER_KEY=rails-production-key
-  EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
+https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html
+heroku config:set RAILS_MASTER_KEY=rails-production-key
+EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
 
-  for github actions:
-  add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key  (see main.yml)
+for github actions:
+add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key (see main.yml)
 
-  # https://github.com/glebm/i18n-tasks
-  GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
+# https://github.com/glebm/i18n-tasks
 
-  # Performance
-  https://pawelurbanek.com/rails-gzip-brotli-compression
-  https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
+GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
 
-  deferring js loading of materialize really sped things up
-  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/
-  First Byte 14.26s Fully Loaded 14.76s
-  First Byte 0.25s Fully Loaded 1.36s
-  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
+# Performance
 
-  # Assets
+https://pawelurbanek.com/rails-gzip-brotli-compression
+https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
 
-  1) Ideally I would follow DHH lead mentioned in propshaft
-     1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps)
-     2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
-Trade-offs:  12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
-    a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.  
+deferring js loading of materialize really sped things up
+https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/
+First Byte 14.26s Fully Loaded 14.76s
+First Byte 0.25s Fully Loaded 1.36s
+https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
 
+# Assets
+
+1. Ideally I would follow DHH lead mentioned in propshaft 1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps) 2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
+   Trade-offs: 12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
+   a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.
 
 rm -rvf public/assets && SECRET_KEY_BASE=504e57Z####################################### RAILS_ENV=production bin/rake assets:clobber tailwindcss:clobber assets:reveal tailwindcss:build assets:precompile assets:reveal && touch tmp/restart.txt
 
-
 Other notes:
-  debugging revealed fort awesome was being pulled in from application.js but when the network fails the entire compile failed...
+debugging revealed fort awesome was being pulled in from application.js but when the network fails the entire compile failed...

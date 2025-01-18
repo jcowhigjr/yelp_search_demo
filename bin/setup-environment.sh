@@ -28,3 +28,7 @@ else
 fi
 
 mise install
+mise en
+yarn install
+lefthook install
+lefhtook run fixer
