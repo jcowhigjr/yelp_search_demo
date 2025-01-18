@@ -13,8 +13,18 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password', with: 'sadfkjs342'
     fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
-    click_on 'menu'
-    click_on 'Logout' # this is not working
+
+
+    if ENV['CUPRITE'] == 'true'
+      # Use JavaScript to click the menu
+      find_by_id('menu').trigger('click')
+
+      # Use JavaScript to click Logout
+      find('a', text: 'Logout').trigger('click')
+    else
+      click_on 'menu'
+      click_on 'Logout'
+    end
 
     assert_current_path '/'
   end
@@ -34,7 +44,10 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_link_or_button 'Log In'
-    click_on 'menu' if ENV['CUPRITE'] == 'true'
+    # after login click on the hamburger menu only visible in mobile view
+    # how to simluate mobile click in headless mode?
+    #
+
     click_on 'My Profile'
 
     assert_current_path "/users/#{@user.id}"

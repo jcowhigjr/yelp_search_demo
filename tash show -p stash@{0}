@@ -1,0 +1,140 @@
+stash@{0}: WIP on feature/test-mobile-first: 4830e11 updated connection pool gem, cleanup of skipped tests and comments, fixed assertion warnings
+stash@{1}: WIP on feature/test-mobile-first: 99e631d added mise and rubocop updates
+stash@{2}: WIP on feature/test-mobile-first: 99e631d added mise and rubocop updates
+stash@{3}: WIP on feature/test-mobile-first: d2c56cd updated ruby and gems
+stash@{4}: WIP on feature/test-mobile-first: 293a4fd removed network idle which seemed to work in ci but not locally && changed standard view to mobile for now
+stash@{5}: WIP on dependabot-improvement: c50f03b wip: adds test and code to update gemfile.next.lock based on a git diff
+stash@{6}: WIP on dependabot-improvement: c50f03b wip: adds test and code to update gemfile.next.lock based on a git diff
+stash@{7}: WIP on develop: 487bfb6 Bump puma from 6.4.2 to 6.4.3 (#614)
+stash@{8}: WIP on (no branch): 4d3b234 adjusted system test config to work in the docker environment
+stash@{9}: WIP on develop: c6ef32c Bump rexml from 3.3.4 to 3.3.6 (#588)
+stash@{10}: WIP on dependabot/bundler/tailwindcss-rails-2.7.3: a4c9214 tests need to run after depedabot commits the change
+stash@{11}: WIP on dependabot/bundler/sqlite3-2.0.4: 49029fd Bump sqlite3 from 1.7.3 to 2.0.4
+stash@{12}: WIP on feature/upgrade-rails: 64aff7b update the Gemfile.next.lock
+stash@{13}: WIP on develop: 25937c7 Bump lefthook from 1.7.2 to 1.7.4 (#561)
+stash@{14}: WIP on feature/upgrade-rails: f47c95d start testing next version of rails gems
+stash@{15}: WIP on feature/upgrade-rails: f47c95d start testing next version of rails gems
+stash@{16}: WIP on develop: f038824 bump the ruby version on next (#554)
+stash@{17}: WIP on feature/fix-for-net-pop-ruby-3.3.3: 56a627d fix for github ruby installer using the wrong Gemfile. could also fix the invalid cached bundle
+stash@{18}: WIP on feature/rubocop-capybara-fixess: db2be9b another attempt
+stash@{19}: WIP on feature/cleanup-rails-7-flags: d5b049a Bump rubocop-performance from 1.21.0 to 1.21.1 (#540)
+stash@{20}: WIP on feature/unable-to-find-button-disabled: 20edc03 Bump rack-livereload from 0.5.2 to 0.6.0 (#539)
+stash@{21}: WIP on develop: 20edc03 Bump rack-livereload from 0.5.2 to 0.6.0 (#539)
+stash@{22}: WIP on develop: 6bf4ba9 upgrade-ruby-3.3 (#532)
+stash@{23}: WIP on develop: 6bf4ba9 upgrade-ruby-3.3 (#532)
+stash@{24}: WIP on develop: b5e9623 sqlite3 floating dependency (#525)
+stash@{25}: WIP on (no branch): e2f9fbb Feature/switch to rails 71 (#531)
+stash@{26}: WIP on update-sqlite3: b1e496d Bumps sqlite3 in Gemfile.next.lock
+stash@{27}: WIP on update-sqlite3: b1e496d Bumps sqlite3 in Gemfile.next.lock
+stash@{28}: WIP on dependabot/bundler/sqlite3-2.0.2: b1e496d Bumps sqlite3 in Gemfile.next.lock
+stash@{29}: WIP on feature/fix-for-next-rails-build: 7c9a757 updated next rails gems to test the fix
+stash@{30}: WIP on feature/security-fix-rack-contrib: df5d5a2 fixing a security vuln found by bundle-audit
+stash@{31}: WIP on develop: 26c10ee Bump lefthook from 1.6.4 to 1.6.10 (#505)
+stash@{32}: WIP on develop: 1397c0e Bump rubocop from 1.61.0 to 1.62.0 (#494)
+stash@{33}: WIP on feature/bugfix-test-next: a91bbac fix for scroll_to method not found
+stash@{34}: WIP on feature/bugfix-test-next: 8a5095e fix for scroll_to method not found
+stash@{35}: WIP on feature/keep-gemfile-next-in-sync: 2b12f26 fix on wording
+stash@{36}: WIP on feature/keep-gemfile-next-in-sync: ab1af02 unfreeze the Gemfile.next.lock to keep in sync
+stash@{37}: WIP on feature/keep-gemfile-next-in-sync: e743030 Fixes the problem of the Gemfile.next.lock getting behind dependabot updates Also runs the same test locally as github actions runs for gemfile next Experiments with stashing before running pre-push commands
+stash@{38}: WIP on feature/add-next-rails-test: c4282f8 removes db:test:prapare which is not needed in rails 7.1 adds testing of next to workflow adds testging of next to local workflow
+stash@{39}: WIP on feature/update-rails: 23ebe66 Preparing to upgrade to Rails 7.1
+stash@{40}: WIP on develop: a65bad5 Bump selenium-webdriver from 4.17.0 to 4.18.1 (#469)
+stash@{41}: WIP on develop: d539f4c Bump turbo-rails from 1.5.0 to 2.0.3 (#468)
+stash@{42}: WIP on dependabot/bundler/importmap-rails-2.0.1: c2d2f0f added section to audit and update importmaps in lefthook
+stash@{43}: WIP on dependabot/bundler/importmap-rails-2.0.1: 7acbf0c Bump importmap-rails from 1.2.3 to 2.0.1
+stash@{44}: WIP on develop: 9ffab3b Fix i18n-task failures and update dependencies (#466)
+stash@{45}: WIP on feature/update_rails: bc01d77 Bump tailwindcss-rails from 2.1.0 to 2.2.0 (#431)
+stash@{46}: WIP on feature/flipper-upgrade-warnings: b6d39aa fix flipper feature flag warnings in tests
+stash@{47}: WIP on develop: 3bd9702 Bump sqlite3 from 1.6.9 to 1.7.0 (#425)
+stash@{48}: WIP on develop: c347ff9 Bump brakeman from 6.1.0 to 6.1.1 (#424)
+stash@{49}: WIP on develop: b2f5615 fixed the brakeman warning without breaking the link made the link open in a new tab
+stash@{50}: WIP on develop: 3b83170 Bump rubocop-rails from 2.23.0 to 2.23.1 (#423)
+stash@{51}: WIP on develop: 3b83170 Bump rubocop-rails from 2.23.0 to 2.23.1 (#423)
+stash@{52}: WIP on dependabot/bundler/brakeman-6.1.0: 3bb974e fix brakeman warning.. although coming from yelp feels very safe
+stash@{53}: WIP on develop: 83aa3bf Bump cuprite from 0.14.3 to 0.15 (#412)
+stash@{54}: WIP on jcowhigjr-patch-1: f3cdfdf fix found by consulting https://github.com/hotwired/turbo/pull/863
+stash@{55}: WIP on (no branch): 9ca272f ./bin/rails importmap:install; bin/rails turbo:install
+stash@{56}: WIP on upgrade-rails-for-security: 915c25a Bump fastify/github-action-merge-dependabot from 3.9.0 to 3.9.1 (#320)
+stash@{57}: WIP on develop: e1f3928 Bump rails from 7.0.5.1 to 7.0.6 (#299)
+stash@{58}: WIP on feature/rubocop-fixes: d47005e remove useless private call
+stash@{59}: WIP on feature/test-heroku-stack-22: d0555fa fix for multiple buildpack warning
+stash@{60}: WIP on feature/bundle-next-upgrades: 6bf20e1 added rails next to support testing of major version updates updates from linting
+stash@{61}: WIP on develop: 939ebe3 Bump pg from 1.4.4 to 1.4.5 (#149)
+stash@{62}: WIP on master: 1eb231f wip
+stash@{63}: WIP on master: 1eb231f wip
+stash@{64}: WIP on feature/turbo-code-cleanup: f516fbf Fixed the last case of using a button and the delete method.
+stash@{65}: WIP on develop: 1785bc2 cuprite catch js error in CI and then fix new turbo error from outdated work-around (#108)
+stash@{66}: WIP on feature/oauth-major-upgrade: b4f611e feature/update major hotwired versions (#54)
+stash@{67}: WIP on feature/update-major-hotwired-versions: abbc911 rebase and update Gemfile.lock
+stash@{68}: WIP on (no branch): c6d6d6d Bump rubocop-minitest from 0.22.0 to 0.22.1 (#97)
+stash@{69}: WIP on develop: 1467456 adds validation for coffeshop#rating and test (#81)
+stash@{70}: WIP on feature/update-major-hotwired-versions: 3465294 Upgraded to beta version of turbo-rails
+stash@{71}: WIP on dependabot/bundler/flipper-0.25.1: 742595d now auto-merge is not being triggered so let's try it where i know it runs on an open/close PR
+stash@{72}: WIP on develop: 170a845 updated rubocop config with new ignore filter for block line limit updated gems to latest versions
+stash@{73}: WIP on develop: c3c5976 Bump rubocop from 1.32.0 to 1.33.0
+stash@{74}: WIP on feature/improve-image-layout: 0778d10 Bump pg from 1.4.1 to 1.4.2 (#56)
+stash@{75}: WIP on feature/update-major-hotwired-versions: 3465294 Upgraded to beta version of turbo-rails
+stash@{76}: WIP on develop: 2fa59b6 Added and auto-merge workflow for depandabot PRs which will run after other merge requirements are met (#51)
+stash@{77}: WIP on feature/auto-merge-dependabot: 17e5159 Added and auto-merge workflow for depandabot PRs which will run after other merge requirements are met
+stash@{78}: WIP on feature/hide-new-search: 82c5b0e change the large new search text to translucent deferring changing tests that can be useful to see where we are programatically but its obvious to the user clarify the Dev Notes regarding when to use https://jitter.prod and ngrok minor gem updats
+stash@{79}: WIP on develop: fbb50bd Added compression in production on heroku (#41)
+stash@{80}: WIP on develop: fbb50bd Added compression in production on heroku (#41)
+stash@{81}: WIP on develop: fbb50bd Added compression in production on heroku (#41)
+stash@{82}: WIP on feature/test-asset-compression: 8d2e109 ugghh fixed typo in herokuapp.com
+stash@{83}: WIP on feature/test-asset-compression: d405882 added a script to make testing prod simpler with bin/puma-dev-prod added clearer explanation about secrets to Devnotes added the dotenv-rails gem to support setting env variables like heroku does enabled access to ENV['HOST'] to support requests from https://jitter.prod or ngrok urls
+stash@{84}: WIP on feature/test-asset-compression: df7b2c2 Update of Gemfile.lock Added example of the heroku environment variables to copy to .env.production for bin/prod script
+stash@{85}: WIP on feature/test-asset-compression: 8dd48c5 attempt to constrain the use of the compressors
+stash@{86}: WIP on feature/test-asset-compression: 79e01d5 added notes showing the improvement in performance enabling brocolli and deferring javascript loading
+stash@{87}: WIP on feature/test-asset-compression: 4d0f310 added the brotli gems and enabled rack gzip and brotli in the application
+stash@{88}: WIP on feature/test-asset-compression: c54bdec Merge pull request #39 from jcowhigjr/feature/minor-translation-additions
+stash@{89}: WIP on feature/minor-translation-additions: 76836f5 Merge pull request #38 from jcowhigjr/feature/add-i18n-new-language-possibilities
+stash@{90}: WIP on feature/add-i18n-new-language-possibilities: 06dbddd fixed and issue with the system test that required the user to scroll to see the favorite button. added notes about the difference between mobile and desktop system tests upgraded gems to latest versions
+stash@{91}: WIP on feature/add-i18n-new-language-possibilities: d1be33a simplified some styling to be consistent
+stash@{92}: WIP on feature/add-i18n-new-language-possibilities: d1be33a simplified some styling to be consistent
+stash@{93}: WIP on feature/add-i18n-new-language-possibilities: 6eb4dab Merge pull request #37 from jcowhigjr/feature/gem-update
+stash@{94}: WIP on develop: 6eb4dab Merge pull request #37 from jcowhigjr/feature/gem-update
+stash@{95}: WIP on gem-update: 074d218 Merge pull request #36 from jcowhigjr/feature/preview-app-test
+stash@{96}: WIP on develop: 9a2755c feature/flipper decision wheel (#32)
+stash@{97}: WIP on develop: 9a2755c feature/flipper decision wheel (#32)
+stash@{98}: WIP on flipper-decision-wheel: c37f9e4 Added Flipper to try out feature flagging before adding the feature as a user setting or menu Broke out the nav bar into a partial Prepared to do some refactoring around n+1 in the future Added a picker wheel to help a user decide what to try more quickly.
+stash@{99}: WIP on flipper-decision-wheel: 2566d68 added flipper
+stash@{100}: WIP on fix-buttons-on-nav: 437761d Update README.md
+stash@{101}: WIP on leftslidenav-and-tests-for-mobile-view: f8c66e9 refactored the javascript for materialize slide menu side nav for the mobile view added system tests for the screen size that would trigger the hamburger menu moved the slide nav to come out from the left side skipped one test that might be broken due to the request for geolocation added some wip code that i couldn't confirm to work for allowing geolocation added some code that could be useful in iPhone emulation for tests
+stash@{102}: WIP on leftslidenav-and-tests-for-mobile-view: f8c66e9 refactored the javascript for materialize slide menu side nav for the mobile view added system tests for the screen size that would trigger the hamburger menu moved the slide nav to come out from the left side skipped one test that might be broken due to the request for geolocation added some wip code that i couldn't confirm to work for allowing geolocation added some code that could be useful in iPhone emulation for tests
+stash@{103}: WIP on staging-environment-missing-redis: 2fedb11 Merge pull request #27 from jcowhigjr/feature/add-updatable-searches
+stash@{104}: WIP on staging-environment-missing-redis: 2fedb11 Merge pull request #27 from jcowhigjr/feature/add-updatable-searches
+stash@{105}: WIP on add-updatable-searches: 24ade8c Merge pull request #26 from jcowhigjr/feature/fix-sidebar-menu
+stash@{106}: WIP on fix-sidebar-menu: 2bd2169 upgrade nokogiri probably fixes a security bug
+stash@{107}: WIP on fix-sidebar-menu: 2bd2169 upgrade nokogiri probably fixes a security bug
+stash@{108}: WIP on fix-sidebar-menu: 6ea7750 removed some old jitter images
+stash@{109}: WIP on fix-sidebar-menu: 6ea7750 removed some old jitter images
+stash@{110}: WIP on fix-sidebar-menu: 20e5c4c Add Linting, Style and Security Audit to local workflow (#24)
+stash@{111}: WIP on fix-sidebar-menu: 20e5c4c Add Linting, Style and Security Audit to local workflow (#24)
+stash@{112}: WIP on fix-sidebar-menu: 20e5c4c Add Linting, Style and Security Audit to local workflow (#24)
+stash@{113}: WIP on gem-security-update: 82fc618 feature/heroku ci cd deployment work around (#22)
+stash@{114}: WIP on add-rubocop-fixes-to-workflow: 7ad797e updated lefthook to enable lefthook run fixer and precommit
+stash@{115}: WIP on add-rubocop-fixes-to-workflow: 4f3dd8f updated and added wip configuration for linters added initial brakeman report updated rubocop and erb lint config
+stash@{116}: WIP on add-rubocop-fixes-to-workflow: c642d3c corrected more rubocop errors added the rubo cop todo list file so they can be fixed at a later time made a note about brakeman failing on the 3.1 shorthand hash syntax in certain cases https://github.com/presidentbeef/brakeman/issues/1704
+stash@{117}: WIP on heroku-ci-cd-deployment-work-around: 8ac0fe4 Merge pull request #21 from jcowhigjr/feature/dark-mode
+stash@{118}: WIP on fix-missing-user-error: 6ffb2fa attempt to fix the missing network idle helper that occurs only on CI
+stash@{119}: WIP on force-ssl-on-production: 7d46b4e configured production to only allow access over SSL with secure cookies a mobile search page was referring the user to the http:// page rather than https:// this should not be available
+stash@{120}: WIP on develop: 4679e2a Merge pull request #11 from jcowhigjr/feature/logout-test-fix
+stash@{121}: WIP on develop: b41dc9b made the address place and telephone links clickable (#8)
+stash@{122}: WIP on develop: b41dc9b made the address place and telephone links clickable (#8)
+stash@{123}: WIP on develop: bff89fd local dev using foreman gem (#6)
+stash@{124}: WIP on navigation-from-search-to-detail-view: 6139a99 updated sessions to go to new search page simplify the users test changed user new form to be more explicit in render statment
+stash@{125}: WIP on detail-screen-fails-on-back-button: f062389 test develop
+stash@{126}: WIP on develop: bd0aa7e Merge branch 'feature/add_github_ci_cd' into develop
+stash@{127}: WIP on develop: bd0aa7e Merge branch 'feature/add_github_ci_cd' into develop
+stash@{128}: WIP on add_github_ci_cd: ae20937 skip the tests that do not pass in. a headless browser due to geolocation permissions
+stash@{129}: WIP on search-location-autocomplete: 9d4a60d hid the latitude and longitude field
+stash@{130}: WIP on make_reviews_work_inline: 3addb4c Moves the review deleting and editing inline on the page using turbo frames rendered in the coffee shop show view
+stash@{131}: WIP on styling: 6754a01 Added and tested using Live Reload functionality to quickly iterate on styling and view code
+stash@{132}: WIP on add_broadcastable_coffeshop: 6323104 Fixed the broken login with google button. Added System Test to start the login but is limited since the automated browser is not considered secure.
+stash@{133}: WIP on add_broadcastable_coffeshop: 6323104 Fixed the broken login with google button. Added System Test to start the login but is limited since the automated browser is not considered secure.
+stash@{134}: WIP on hotwire-rails: 6323104 Fixed the broken login with google button. Added System Test to start the login but is limited since the automated browser is not considered secure.
+stash@{135}: WIP on hotwire-rails: 4cd9a0a Fixed the sessions controller tests with correct flash message, status code, and session_params structure This illustrates that the params hash for creating a session does not match the params hash for creating and updating a user done via the users controller because it is not nested as a user hash
+stash@{136}: WIP on hotwire-rails: 0bde361 Fixed search controller system test to test end to end search to show coffeeshop page and less brittle than a specific shop with regex.
+stash@{137}: WIP on hotwire-rails: dfe8891 bundle add hotwire-rails; bin/rails hotwire:install
+stash@{138}: WIP on develop: 9ca272f ./bin/rails importmap:install; bin/rails turbo:install
+stash@{139}: WIP on develop: c3c4497 bundle update to rails 7.0-alpha2
