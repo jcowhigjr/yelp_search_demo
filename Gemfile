@@ -145,3 +145,4 @@ gem 'tailwindcss-rails', '~> 2.7'
 gem 'flipper'
 
 gem 'dotenv'
+gem 'rspec'
