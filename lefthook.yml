@@ -73,9 +73,11 @@ fixer:
   parallel: true
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion -A {all_files}
+      glob: '**/*.rb'
+      run: bundle exec rubocop --auto-correct-all --force-exclusion {all_files}
+      stage_fixed: true
     js-fixer:
-      glob: 'app/javascript/**.{js,ts,jsx,tsx}'
+      glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}
       stage_fixed: true
     ruby-prettier:
@@ -83,27 +85,27 @@ fixer:
       run: bundle exec rbprettier --write {files}
       stage_fixed: true
     erb_lint:
-      run: bundle exec erb_lint --autocorrect --lint-all {all_files}
+      glob: 'app/views/**/*.erb'
+      run: bundle exec erb_lint --autocorrect {all_files}
       stage_fixed: true
     yaml-lint:
-      glob: '*.yml'
-      run: bundle exec yaml-lint -i {all_files}
+      glob: '**/*.yml'
+      run: bundle exec yaml-lint {all_files}
       stage_fixed: true
     brakeman:
-      # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
     yarn-audit:
       tags: frontend security
-      run: yarn audit
+      run: yarn npm audit
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
     i18n-tasks:
-      run: bundle exec i18n-tasks health en missing unused ||
-        bundle exec i18n-tasks normalize
+      run: bundle exec i18n-tasks health
     yarn-lint:
       tags: frontend updates
-      run:  yarn lint 'app/javascript/**.{js,ts,jsx,tsx}' '**/*.css' '**/*.scss' '**/*.sass' '**/*.md' '**/*.mdx' '**/*.json'
+      glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
+      run: yarn prettier --write {all_files}
       stage_fixed: true
     importmaps-audit:
       tags: frontend security

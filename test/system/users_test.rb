@@ -14,13 +14,17 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
 
-
+    # Wait for menu to be present and visible
+    assert_selector('#menu', visible: true)
+    
     if ENV['CUPRITE'] == 'true'
-      # Use JavaScript to click the menu
-      find_by_id('menu').trigger('click')
+      # Use JavaScript to click the menu, with explicit wait
+      menu = find_by_id('menu', visible: true)
+      menu.click
 
-      # Use JavaScript to click Logout
-      find('a', text: 'Logout').trigger('click')
+      # Wait for logout link and click it
+      assert_selector('a', text: 'Logout', visible: true)
+      find('a', text: 'Logout', visible: true).click
     else
       click_on 'menu'
       click_on 'Logout'
@@ -48,7 +52,9 @@ class UsersTest < ApplicationSystemTestCase
     # how to simluate mobile click in headless mode?
     #
 
-    click_on 'My Profile'
+    # Wait for profile link and ensure it's visible
+    assert_selector('a', text: 'My Profile', visible: true)
+    find('a', text: 'My Profile', visible: true).click
 
     assert_current_path "/users/#{@user.id}"
     assert_text "Hello, #{@user.name}!"

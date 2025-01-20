@@ -24,11 +24,15 @@ else
     echo "eval \"\$(/root/.local/bin/mise activate bash)\"" >>~/.bashrc
     eval "$(/root/.local/bin/mise activate bash)"
     mise settings experimental=true
-    mise en --verbose
 fi
 
 mise install
-mise en
 yarn install
+corepack enable
+
+
 lefthook install
-lefhtook run fixer
+bin/setup
+lefthook run fixer
+
+

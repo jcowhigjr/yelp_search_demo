@@ -25,7 +25,8 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'menu' if ENV['CUPRITE'] == 'true'
     click_on 'Logout'
 
-    assert_current_path '/'
+    # After logout, we should be on /searches/new
+    assert_current_path '/searches/new'
 
     # there is a bug in the system that causes filling in search to not work sometimes
     assert_selector(:field, 'search_query', with: '', visible: false)
