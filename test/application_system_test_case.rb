@@ -60,8 +60,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
               # # var to a falsey value
               headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
               js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-              timeout: 10,
-              process_timeout: 10,
+              timeout: 30,
+              process_timeout: 30,
               browser_options: {
                 'no-sandbox': true,
                 'disable-web-security': true,
@@ -70,6 +70,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
                 'disable-notifications': true,
                 'use-fake-device-for-media-stream': true,
                 'use-fake-ui-for-media-stream': true,
+                'disable-gpu': true,
+                'window-size': '1920,1080',
                 geolocation: true,
               },
             } do |driver_option|

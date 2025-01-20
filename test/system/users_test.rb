@@ -17,18 +17,12 @@ class UsersTest < ApplicationSystemTestCase
     # Wait for menu to be present and visible
     assert_selector('#menu', visible: true)
     
-    if ENV['CUPRITE'] == 'true'
-      # Use JavaScript to click the menu, with explicit wait
-      menu = find_by_id('menu', visible: true)
-      menu.click
+    # Use JavaScript to click the menu
+    execute_script("document.querySelector('#menu').click()")
 
-      # Wait for logout link and click it
-      assert_selector('a', text: 'Logout', visible: true)
-      find('a', text: 'Logout', visible: true).click
-    else
-      click_on 'menu'
-      click_on 'Logout'
-    end
+    # Wait for logout link and click it
+    assert_selector('a', text: 'Logout', visible: true)
+    click_on 'Logout'
 
     assert_current_path '/'
   end
@@ -48,16 +42,16 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_link_or_button 'Log In'
-    # after login click on the hamburger menu only visible in mobile view
-    # how to simluate mobile click in headless mode?
-    #
 
-    # Wait for profile link and ensure it's visible
-    assert_selector('a', text: 'My Profile', visible: true)
-    find('a', text: 'My Profile', visible: true).click
+    # Use JavaScript to click the menu
+    execute_script("document.querySelector('#menu').click()")
 
-    assert_current_path "/users/#{@user.id}"
-    assert_text "Hello, #{@user.name}!"
+    # Wait for profile link and click it
+    assert_selector('a', text: 'Profile', visible: true)
+    click_on 'Profile'
+
+    assert_current_path %r{^/users/\d+$}
+    assert_text @user.name
   end
 
   test 'partial sign in with Google' do

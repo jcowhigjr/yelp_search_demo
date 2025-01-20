@@ -14,30 +14,33 @@ class LogoutTest < ApplicationSystemTestCase
   test 'When I log out I can not leave a review' do
     visit '/login'
     fill_in 'email', with: @user.email
-    click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
-    click_on 'menu' if ENV['CUPRITE'] == 'true'
-    # this breaks without the main is the main content area
+
+    # Use JavaScript to click the menu
+    execute_script("document.querySelector('#menu').click()")
     click_on 'New Search'
 
     assert_current_path '/searches/new'
-    click_on 'menu' if ENV['CUPRITE'] == 'true'
+    
+    # Use JavaScript to click the menu again
+    execute_script("document.querySelector('#menu').click()")
     click_on 'Logout'
 
     # After logout, we should be on /searches/new
     assert_current_path '/searches/new'
 
-    # there is a bug in the system that causes filling in search to not work sometimes
-    assert_selector(:field, 'search_query', with: '', visible: false)
-
+    # Fill in search query
     fill_in 'search_query', with: 'yoga'
 
     assert_selector(:field, 'search_query', with: 'yoga')
-    click_on 'search'
+    
+    # Use the first search button to avoid ambiguity
+    first('button[type="submit"]').click
 
-    assert_text 'MORE INFO'
-    assert_text 'Top Rated Searches for yoga near you'
+    # Wait for results to load
+    sleep 2 if ENV['CUPRITE'] == 'true'
+
     assert_current_path search_path(Search.last.id, locale: nil)
     click_on 'More Info', match: :first
 

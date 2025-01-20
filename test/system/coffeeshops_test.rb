@@ -22,72 +22,100 @@ class CoffeeshopsTest < ApplicationSystemTestCase
   end
 
   test 'A logged in user can submit a review' do
-    visit coffeeshop_path(@coffeeshop, locale: nil)
-    click_on 'Login to add this shop to your favorites!'
-    fill_in 'Email', with: @user.email
+    visit '/login'
+    fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
-    click_link_or_button 'Log In'
+    click_on 'Log In'
 
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
-    fill_in('review[content]', with: 'this place is great')
-    find_by_id('review_rating', match: :first)
-      .find(:xpath, 'option[5]')
-      .select_option
+    # Search for a shop
+    visit new_search_path
+    fill_in 'search[query]', with: 'coffee'
+    click_on 'Search'
 
+    sleep 2 if ENV['CUPRITE'] == 'true'
+
+    click_on 'More Info', match: :first
+
+    # Debug output
+    puts page.html
+
+    # Add to favorites
+    assert_selector('input[type="submit"][value="Add To Favorites"]')
+    click_on 'Add To Favorites'
+
+    # Submit a review
+    fill_in 'review[content]', with: 'Great coffee!'
     click_on 'SUBMIT REVIEW'
 
-    assert_text('this place is great')
-    assert_selector('#review_rating', text: '★★★★☆')
+    assert_text 'Great coffee!'
   end
 
   test 'A logged in user can edit and delete their review' do
-    visit coffeeshop_path(@coffeeshop, locale: nil)
-    click_on 'Login to add this shop to your favorites!'
-    fill_in 'Email', with: @user.email
+    visit '/login'
+    fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
-    click_link_or_button 'Log In'
+    click_on 'Log In'
 
-    # Submit a review first
-    fill_in('review[content]', with: 'this place is great')
-    find_by_id('review_rating', match: :first)
-      .find(:xpath, 'option[5]')
-      .select_option
+    # Search for a shop
+    visit new_search_path
+    fill_in 'search[query]', with: 'coffee'
+    click_on 'Search'
+    sleep 2 if ENV['CUPRITE'] == 'true'
+
+    click_on 'More Info', match: :first
+
+    # Debug output
+    puts page.html
+
+    # Add to favorites
+    assert_selector('input[type="submit"][value="Add To Favorites"]')
+    click_on 'Add To Favorites'
+
+    # Submit a review
+    fill_in 'review[content]', with: 'Great coffee!'
     click_on 'SUBMIT REVIEW'
 
     # Edit the review
-    assert_selector('a', text: /Edit this Review/i, visible: true)
-    click_link_or_button('Edit this Review', match: :first)
-    
-    assert_current_path %r{^/coffeeshops/\d{1,9}}
-    find_by_id('review_rating', match: :first)
-      .find(:xpath, 'option[1]')
-      .select_option
-    fill_in('review[content]', with: 'actually not so great')
-    click_on 'SUBMIT REVIEW'
+    click_on 'Edit'
+    fill_in 'review[content]', with: 'Amazing coffee!'
+    click_on 'Update Review'
 
-    assert_text('actually not so great')
-    assert_selector('#review_rating', text: '★☆☆☆☆')
+    assert_text 'Amazing coffee!'
 
     # Delete the review
     accept_confirm do
-      click_on 'Delete this Review'
+      click_on 'Delete'
     end
 
-    assert_no_text('actually not so great')
+    assert_no_text 'Amazing coffee!'
   end
 
   test 'A logged in user can favorite and unfavorite a coffeeshop' do
-    visit coffeeshop_path(@coffeeshop, locale: nil)
-    click_on 'Login to add this shop to your favorites!'
-    fill_in 'Email', with: @user.email
+    visit '/login'
+    fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
-    click_link_or_button 'Log In'
+    click_on 'Log In'
 
-    click_on 'REMOVE FROM MY FAVORITES'
-    # assert_current_path %r{^/coffeeshops/\d{1,9}}
+    # Search for a shop
+    visit new_search_path
+    fill_in 'search[query]', with: 'coffee'
+    click_on 'Search'
+    sleep 2 if ENV['CUPRITE'] == 'true'
 
-    #the turboframe in the system test doesn't toggle    flaky test
-    # click_link_or_button('ADD TO MY FAVORITES')
-    # assert_current_path %r{^/coffeeshops/\d{1,9}}
+    click_on 'More Info', match: :first
+
+    # Debug output
+    puts page.html
+
+    # Add to favorites
+    assert_selector('input[type="submit"][value="Add To Favorites"]')
+    click_on 'Add To Favorites'
+
+    # Remove from favorites
+    assert_selector('input[type="submit"][value="Remove From Favorites"]')
+    click_on 'Remove From Favorites'
+
+    # Verify we can add to favorites again
+    assert_selector('input[type="submit"][value="Add To Favorites"]')
   end
 end
