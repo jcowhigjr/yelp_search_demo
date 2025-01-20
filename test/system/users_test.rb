@@ -14,15 +14,17 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'user_password_confirmation', with: 'sadfkjs342'
     click_on 'commit'
 
-    # Wait for menu to be present and visible
-    assert_selector('#menu', visible: true)
+    # Wait for sidenav trigger to be present
+    assert_selector('.sidenav-trigger', visible: true)
     
-    # Use JavaScript to click the menu
-    execute_script("document.querySelector('#menu').click()")
+    # Click the menu trigger
+    find('.sidenav-trigger').click
 
-    # Wait for logout link and click it
-    assert_selector('a', text: 'Logout', visible: true)
-    click_on 'Logout'
+    # Wait for sidenav to open and click logout
+    assert_selector('#mobile-demo', visible: true)
+    within('#mobile-demo') do
+      click_on 'Logout'
+    end
 
     assert_current_path '/'
   end
@@ -43,12 +45,17 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'Password', with: default_password
     click_link_or_button 'Log In'
 
-    # Use JavaScript to click the menu
-    execute_script("document.querySelector('#menu').click()")
+    # Wait for sidenav trigger to be present
+    assert_selector('.sidenav-trigger', visible: true)
+    
+    # Click the menu trigger
+    find('.sidenav-trigger').click
 
-    # Wait for profile link and click it
-    assert_selector('a', text: 'Profile', visible: true)
-    click_on 'Profile'
+    # Wait for sidenav to open and click profile
+    assert_selector('#mobile-demo', visible: true)
+    within('#mobile-demo') do
+      click_on 'Profile'
+    end
 
     assert_current_path %r{^/users/\d+$}
     assert_text @user.name

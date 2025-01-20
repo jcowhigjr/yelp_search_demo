@@ -19,7 +19,7 @@ class BasicsTest < ApplicationSystemTestCase
     # Search for a shop
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
-    click_on 'SUBMIT REVIEW'
+    click_link_or_button 'Search'
     sleep 2 if ENV['CUPRITE'] == 'true'
 
     click_on 'More Info', match: :first
