@@ -1,12 +1,11 @@
-require 'application_system_test_case'
+# frozen_string_literal: true
 
-require 'minitest/autorun'
-require 'minitest/focus'
+require 'application_system_test_case'
+# require 'minitest/focus'
 
 class BasicsTest < ApplicationSystemTestCase
-  setup do
+  def setup
     @user = users(:one)
-    @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
   end
 
@@ -19,10 +18,20 @@ class BasicsTest < ApplicationSystemTestCase
     # Search for a shop
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
-    click_link_or_button 'Search'
+
+    # Ensure search button is visible and clickable
+    search_button = find_button('Search')
+    search_button.scroll_to
+
+    assert_selector('button[type="submit"]', text: 'Search', visible: true)
+    search_button.click
+
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    click_on 'More Info', match: :first
+    # Find and click the first More Info link
+    more_info_link = find_link('More Info', match: :first)
+    more_info_link.scroll_to
+    more_info_link.click
 
     # Add to favorites
     assert_selector('input[type="submit"][value="ADD TO MY FAVORITES"]')
@@ -34,5 +43,4 @@ class BasicsTest < ApplicationSystemTestCase
 
     assert_text 'Great coffee!'
   end
-
 end

@@ -10,8 +10,8 @@ pre-push:
   commands:
     test-next:
       tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+      run: CI=true RAILS_ENV=test bin/setup-next &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -31,9 +31,9 @@ pre-push:
       run: bundle exec brakeman --no-pager
     rails-system-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
+      run: CI=true RAILS_ENV=test bin/setup &&
+        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
 
 pre-commit:
   pre-command: git stash --keep-index
@@ -64,9 +64,9 @@ pre-commit:
       stage_fixed: true
     rails-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
+      run: CI=true RAILS_ENV=test bin/setup &&
+        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
 fixer:
   verbose: false
   pty: false

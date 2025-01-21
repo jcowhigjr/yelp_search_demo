@@ -136,8 +136,8 @@ group :test do
   gem 'cuprite'
   gem 'evil_systems'
   gem 'magic_test'
-  gem 'minitest-focus'
-  gem 'minitest-retry'
+  # gem 'minitest-focus'
+  # gem 'minitest-retry'
 end
 
 gem 'tailwindcss-rails', '~> 2.7'

@@ -1,7 +1,7 @@
 require 'test_helper'
 
-require 'minitest/autorun'
-require 'minitest/focus'
+# require 'minitest/autorun'
+# require 'minitest/focus'
 
 # FIXME: nested turbo streams need special treatment https://discuss.hotwired.dev/t/broadcasting-to-nested-turbo-frame-tag/3659/6
 

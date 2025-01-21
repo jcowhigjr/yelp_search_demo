@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
-require 'minitest/autorun'
-require 'minitest/focus'
+# require 'minitest/autorun'
+# require 'minitest/focus'
 
 class LogoutTest < ApplicationSystemTestCase
   setup do
@@ -22,7 +22,7 @@ class LogoutTest < ApplicationSystemTestCase
     click_on 'New Search'
 
     assert_current_path '/searches/new'
-    
+
     # Use JavaScript to click the menu again
     execute_script("document.querySelector('#menu').click()")
     click_on 'Logout'
@@ -34,7 +34,7 @@ class LogoutTest < ApplicationSystemTestCase
     fill_in 'search_query', with: 'yoga'
 
     assert_selector(:field, 'search_query', with: 'yoga')
-    
+
     # Use the first search button to avoid ambiguity
     first('button[type="submit"]').click
 

@@ -30,18 +30,33 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # Search for a shop
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
-    click_link_or_button 'Search'
+
+    # Ensure search button is visible and clickable
+    search_button = find_button('Search')
+    search_button.scroll_to
+    search_button.click
 
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    click_on 'More Info', match: :first
+    # Find and click the first More Info link
+    more_info_link = find_link('More Info', match: :first)
+    more_info_link.scroll_to
+    more_info_link.click
 
-    # Debug output
-    puts page.html
+    # Debug output - handle encoding properly
+    begin
+      debug_output = page.html.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      puts debug_output
+    rescue Encoding::UndefinedConversionError => e
+      puts "Debug output skipped due to encoding: #{e.message}"
+    end
 
-    # Add to favorites
-    assert_selector('input[type="submit"][value="Add To Favorites"]')
-    click_on 'Add To Favorites'
+    # Add to favorites - ensure button is visible and clickable
+    favorites_button = find('input[type="submit"][value="Add To Favorites"]')
+    favorites_button.scroll_to
+
+    assert_selector('input[type="submit"][value="Add To Favorites"]', visible: true)
+    favorites_button.click
 
     # Submit a review
     fill_in 'review[content]', with: 'Great coffee!'
@@ -59,13 +74,26 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # Search for a shop
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
-    click_link_or_button 'Search'
+
+    # Ensure search button is visible and clickable
+    search_button = find_button('Search')
+    search_button.scroll_to
+    search_button.click
+
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    click_on 'More Info', match: :first
+    # Find and click the first More Info link
+    more_info_link = find_link('More Info', match: :first)
+    more_info_link.scroll_to
+    more_info_link.click
 
-    # Debug output
-    puts page.html
+    # Debug output - handle encoding properly
+    begin
+      debug_output = page.html.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      puts debug_output
+    rescue Encoding::UndefinedConversionError => e
+      puts "Debug output skipped due to encoding: #{e.message}"
+    end
 
     # Add to favorites
     assert_selector('input[type="submit"][value="Add To Favorites"]')
@@ -99,13 +127,26 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # Search for a shop
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
-    click_link_or_button 'Search'
+
+    # Ensure search button is visible and clickable
+    search_button = find_button('Search')
+    search_button.scroll_to
+    search_button.click
+
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    click_on 'More Info', match: :first
+    # Find and click the first More Info link
+    more_info_link = find_link('More Info', match: :first)
+    more_info_link.scroll_to
+    more_info_link.click
 
-    # Debug output
-    puts page.html
+    # Debug output - handle encoding properly
+    begin
+      debug_output = page.html.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+      puts debug_output
+    rescue Encoding::UndefinedConversionError => e
+      puts "Debug output skipped due to encoding: #{e.message}"
+    end
 
     # Add to favorites
     assert_selector('input[type="submit"][value="Add To Favorites"]')
