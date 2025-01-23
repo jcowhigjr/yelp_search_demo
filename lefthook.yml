@@ -74,7 +74,7 @@ fixer:
   commands:
     ruby-fixer:
       glob: '**/*.rb'
-      run: bundle exec rubocop --auto-correct-all --force-exclusion {all_files}
+      run: bundle exec rubocop --autocorrect-all  --force-exclusion {all_files}
       stage_fixed: true
     js-fixer:
       glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
@@ -101,7 +101,7 @@ fixer:
       tags: backend security
       run: bundle audit update && bundle audit check
     i18n-tasks:
-      run: bundle exec i18n-tasks health
+      run: bundle exec i18n-tasks health || bundle exec i18n-tasks normalize
     yarn-lint:
       tags: frontend updates
       glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'

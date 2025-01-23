@@ -2,6 +2,7 @@
   "name": "jitter",
   "packageManager": "yarn@4.6.0",
   "dependencies": {
+    "eslint": "^9.18.0",
     "lint": "^1.1.2",
     "prettier": "^3.4.2"
   },

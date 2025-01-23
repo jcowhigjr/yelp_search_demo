@@ -16,25 +16,25 @@ en:
       review:
         edit-this-revie: Edit this Review
       show:
-        login-to-add-th: Login to add this shop to your favorites!
-        log-in: Log In
-        to-leave-a-revi: to leave a review
-        view-on-yelp: View on Yelp
         edit-this-revie-0: Edit this Review
+        log-in: Log In
+        login-to-add-th: Login to add this shop to your favorites!
         reviews:
           index: Reviews
+        to-leave-a-revi: to leave a review
+        view-on-yelp: View on Yelp
         you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
         you-must-be-les-0: to leave a review!
     show:
       add-to-favorites: Add To Favorites
-      remove-from-favorites: Remove From Favorites
-      login-to-add-th: Login to add this shop to your favorites!
-      log-in: Log In
-      to-leave-a-revi: to leave a review
-      view-on-yelp: View on Yelp
       edit-this-revie-0: Edit this Review
+      log-in: Log In
+      login-to-add-th: Login to add this shop to your favorites!
+      remove-from-favorites: Remove From Favorites
       reviews:
         index: Reviews
+      to-leave-a-revi: to leave a review
+      view-on-yelp: View on Yelp
       you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
       you-must-be-les-0: to leave a review!
   confirm-passwor: Confirm Password
@@ -93,11 +93,11 @@ en:
       name: Name
       summary: Summary
       updated: Updated
-    new: "New Search"
+    new: New Search
     results:
       no-results-found: No Results Found!
     show:
-      title: "Top Rated Searches for %{query} near you!"
+      title: Top Rated Searches for %{query} near you!
     views:
       create: Search
       destroy: Search
@@ -136,8 +136,8 @@ en:
     reviews:
       leave-a-review: Leave a review
     searches:
-      new: "New Search"
-      results: "Top Rated Searches for %{query} near you!"
+      new: New Search
+      results: Top Rated Searches for %{query} near you!
     user_sessions:
       create: User Session
       destroy: User Session

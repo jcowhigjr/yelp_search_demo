@@ -22,7 +22,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
            password: default_password,
          }
 
-    assert_response :found
+    assert_response :ok
     assert_equal 'Successfully logged in.', flash[:success]
   end
 

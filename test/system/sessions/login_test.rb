@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
-# require 'minitest/autorun'
-# require 'minitest/focus'
 
 class LoginTest < ApplicationSystemTestCase
   setup { @user = users(:one) }

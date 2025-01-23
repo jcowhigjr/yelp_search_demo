@@ -16,30 +16,18 @@ class LogoutTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
-
-    # Use JavaScript to click the menu
-    execute_script("document.querySelector('#menu').click()")
+    click_on 'menu', match: :one
     click_on 'New Search'
 
     assert_current_path '/searches/new'
-
-    # Use JavaScript to click the menu again
-    execute_script("document.querySelector('#menu').click()")
+    click_on 'menu', match: :one
     click_on 'Logout'
 
-    # After logout, we should be on /searches/new
-    assert_current_path '/searches/new'
-
-    # Fill in search query
+    assert_current_path '/'
     fill_in 'search_query', with: 'yoga'
 
     assert_selector(:field, 'search_query', with: 'yoga')
-
-    # Use the first search button to avoid ambiguity
     first('button[type="submit"]').click
-
-    # Wait for results to load
-    sleep 2 if ENV['CUPRITE'] == 'true'
 
     assert_current_path search_path(Search.last.id, locale: nil)
     click_on 'More Info', match: :first
