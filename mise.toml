@@ -3,3 +3,7 @@ node = "latest"
 ruby = "latest"
 yarn = "latest"
 
+[env]
+SYSTEMD_PAGER = "cat"
+GIT_PAGER = "cat"
+
