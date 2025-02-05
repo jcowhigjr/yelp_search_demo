@@ -11,6 +11,7 @@ if [ "$os_type" = "Darwin" ]; then
 else
     echo "Detected Linux, installing apt dependencies"
     xargs -a "$(dirname "$0")/../aptfile" sudo apt-get install -y
+    export BROWSER_PATH=$(which chromium) && echo $BROWSER_PATH
 fi
 
 # Check if mise is installed, otherwise install it
@@ -30,9 +31,6 @@ mise install
 yarn install
 corepack enable
 
-
 lefthook install
 bin/setup
 lefthook run fixer
-
-
