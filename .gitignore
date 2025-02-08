@@ -84,3 +84,7 @@ nil-*
 .npm/_cacache/index-v5/36/57/f70aa0b12905558f1c2288df476aafb361f027d1c44f312065975c3f842b
 .npm/_logs/2024-08-23T22_55_37_427Z-debug-0.log
 audit-output.json
+.DS_Store
+.windsurfrules
+.yarn/install-state.gz
+.yarn/install-state.gz

@@ -9,6 +9,10 @@ Using Google for sign in.
 
 Below are some other notes in order of the things I've changed.
 
+# warning
+
+The rails app:update command can sometimes overwrite configuration files including credentials. This is especially true when updating between major Rails versions since the credentials system has evolved over time.
+
 # get it working from where I picked it up on a Mac
 
 updated ruby (.ruby-version and Gemfile)
@@ -22,10 +26,10 @@ hid pg gem in Gemfile because it was trying to install locally
 (currently only using node for linting)
 specified .node-version for nodenv to work around yarn crap with node-sass
 nodenv install 15.14.0
-https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand
+<https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand>
 
 Edit and use credentials for yelp
-https://www.yelp.com/developers/documentation/v3/authentication
+<https://www.yelp.com/developers/documentation/v3/authentication>
 bin/rails credentials:edit --environment development
 
 NOTE: in non local environments use RAILS_MASTER_KEY and SECRET_KEY_BASE, locally don't set these and config/credentials/development.key will be used
@@ -36,12 +40,12 @@ NOTE: .env.production can be set to look like heroku and .env.test can be set to
 
 <!-- Rails.application.credentials.yelp[:api_key] -->
 
-https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
+<https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02>
 
 # Yelp
 
-https://github.com/Yelp/yelp-ruby/tree/develop/spec
-https://www.yelp.com/developers/documentation/v3/business
+<https://github.com/Yelp/yelp-ruby/tree/develop/spec>
+<https://www.yelp.com/developers/documentation/v3/business>
 
 # Add Hotwire - Rails
 
@@ -51,14 +55,12 @@ followed instructions from rails-turbo and importmap
 
 bin/rails importmap:install
 bin/rails hotwire:install
-remove webpacker stuff rm bin/webpack-dev-server config/webpack* app/javascript/pack*
+remove webpacker stuff rm bin/webpack-dev-server config/webpack*app/javascript/pack*
 run system tests and disable the ujs stuff that broke with -> data-turbo="false" or data: { turbo: false }
 
 # Upgrade to Ruby 3.1, Rails 7 and bundle update
 
 Plan is to keep this up to date with the latest version of Ruby Rails and most gems
-
-
 
 3.1.0-dev
 
@@ -80,9 +82,9 @@ bin/rails test:all
 
 # So far only a few things were using ujs so disabling turbo as I see them and then will enable turbo after that.(turbo is currently in use in most places now)
 
-https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md
+<https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md>
 Add something as a turbo frame
-https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames
+<https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames>
 
 # Development
 
@@ -92,10 +94,10 @@ git flow feature start xyz-feature
 `bin/dev` # run dev server and css processor
 
 cleaning up before a commit
-#stage what you want to commit
+# stage what you want to commit
 `git add related files`
-#note tests passing in `be guard`
-#stash unrelated files and confirm tests still passing
+# note tests passing in `be guard`
+# stash unrelated files and confirm tests still passing
 `git stash push --keep-index`
 
 commit
@@ -107,7 +109,7 @@ open a PR
 
 # System Tests
 
-system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
+system tests -> <https://avdi.codes/rails-6-system-tests-from-top-to-bottom/>
 
 these are run by default on commit with a iphone 6/7/8 screen size to test mobile navigation
 be guard while developing
@@ -117,19 +119,19 @@ add 'focus' just above the test that is failing
 add 'magic_test' just above the step that is failing
 SHOW_TESTS=true MAGIC_TEST=true be guard
 
-better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
+better system tests -> <https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing>
 Insert 'magic_test' in system tests to BDD style improve the app.
 [evil systems](https://github.com/ParamagicDev/evil_systems)
 
 [browser testing](https://dev.to/nejremeslnici/migrating-selenium-system-tests-to-cuprite-42ah)
 i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
-https://testingbot.com/support/selenium/permission-popups#
+<https://testingbot.com/support/selenium/permission-popups#>
 
-https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
+<https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType>
 
 # Sign in with Google
 
-https://console.cloud.google.com/apis/credentials?project=coffeeshop-325618
+<https://console.cloud.google.com/apis/credentials?project=coffeeshop-325618>
 see client_id and client_secret in rails credentials:edit --development
 git ignore config/master.key and kep in a safe place
 git add development key is probably safe
@@ -140,29 +142,29 @@ generally I develop toward desktop but lefthook runs the same tests as CI/CD foc
 to debug mobile tests:
 RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' be guard
 
-# Propshaft assets https://github.com/rails/propshaft/issues/36#issuecomment-982933727
+# Propshaft assets <https://github.com/rails/propshaft/issues/36#issuecomment-982933727>
 
 One thing you should be careful is that if you run rails assets:precompile in your computer and then ./bin/dev Propshaft will use the static resolver, not the dynamic one. And since the static resolver reads files from public/assets, any change you make to your source files in app/assets will not take an effect when you reload the page.
 
 To solve that, run rails assets:clobber. It will remove all files from public/assets and force Propshaft back to the dynamic resolver.
 
-#LiveReload for css changes and importmaps
-https://www.colby.so/posts/live-reloading-with-esbuild-and-rails
+# LiveReload for css changes and importmaps
+<https://www.colby.so/posts/live-reloading-with-esbuild-and-rails>
 
 # FontAwesome
 
 bin/importmap pin fontawesome
-Pinning "fontawesome" to https://ga.jspm.io/npm:fontawesome@6.1.1/index.js
+Pinning "fontawesome" to <https://ga.jspm.io/npm:fontawesome@6.1.1/index.js>
 
 if fontawesome icons are the very large, try this:
 bin/setup
 
-# https://guillaumebriday.fr/introducing-stimulus-components
+# <https://guillaumebriday.fr/introducing-stimulus-components>
 
-#importmaps
-https://github.com/hotwired/stimulus-rails/pull/24
+# importmaps
+<https://github.com/hotwired/stimulus-rails/pull/24>
 
-https://guillaumebriday.fr/introducing-stimulus-components
+<https://guillaumebriday.fr/introducing-stimulus-components>
 
 # Github
 
@@ -208,7 +210,7 @@ git pull
 # alias gb='git for-each-ref --sort=committerdate refs/heads/ --format='\''%(committerdate:short) %(refname:short)'\'' | tail -n20'
 
 gb
-#co the feature branch
+# co the feature branch
 git co feature/xyz
 
 # pull in the changes
@@ -223,7 +225,7 @@ The automated tests run with iPhone SE emulation because it is the smallest phon
 I think using the basic bin/dev plus the ngrok VS CODE plug in is the simplest approach for quick real phone testing
 Use the QR code to scan the random ngrok link (see plugin notes)
 
-# test local 'prod like' using https://jitter.prod
+# test local 'prod like' using <https://jitter.prod>
 
 cp config/env.production.heroku.sample .env.production
 update SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production HOST=jitter.prod
@@ -238,12 +240,12 @@ ln -s /Users/temp/src/ruby/jitter ~/.puma-prod/. -->
 bin/prod
 
 Local Prod like stack will start (postgresql, production.rb, built assets and vendored bundle)
-click https://jitter.prod
+click <https://jitter.prod>
 
 # test prod like remotely through internet tunnel
 
 To create a public url and share local host over the internet
-dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
+dotenv -f .env.production ngrok http <https://jitter.test> --host-header=jitter.test
 
 and note your random generated host ->
 
@@ -294,32 +296,52 @@ Dependabot opens its own PRs and auto-approves them, tests them and merges them 
 
 Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_SECRET usage.
 
-Heroku recommended https://guides.rubyonrails.org/security.html changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
+Heroku recommended <https://guides.rubyonrails.org/security.html> changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
 
-https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html
+<https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html>
 heroku config:set RAILS_MASTER_KEY=rails-production-key
 EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
 
 for github actions:
 add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key (see main.yml)
 
-# https://github.com/glebm/i18n-tasks
+# <https://github.com/glebm/i18n-tasks>
 
 GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
 
 # Performance
 
-https://pawelurbanek.com/rails-gzip-brotli-compression
-https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
+<https://pawelurbanek.com/rails-gzip-brotli-compression>
+<https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule>
 
 deferring js loading of materialize really sped things up
-https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/
+<https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/>
 First Byte 14.26s Fully Loaded 14.76s
 First Byte 0.25s Fully Loaded 1.36s
-https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
+<https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/>
 
 # Assets
 
+
+
+# System Testing
+Frame-Aware Testing
+Use data: { turbo_frame: dom_id(model) } for links that should operate within a Turbo frame
+Test interactions within the frame context using within blocks
+Don't expect page navigation for frame-based interactions
+Modal Dialogs and Confirmations
+Use data: { turbo_confirm: 'message' } for confirmation dialogs
+Wrap confirmation actions in accept_confirm blocks in tests
+Handle confirmations explicitly to avoid warning messages
+Assertions and Expectations
+Focus on content changes rather than URL changes for Turbo interactions
+Use assert_selector to verify dynamic content updates
+Verify frame content updates without expecting full page reloads
+Common Pitfalls to Avoid
+Don't test for full page navigation when using Turbo frames
+Don't rely on URL changes for frame-based interactions
+Don't forget to scope actions within the correct frame or container
+These rules came from our experience fixing the review editing and deletion tests, where we learned that Turbo interactions behave differently from traditional full-page navigation.
 1. Ideally I would follow DHH lead mentioned in propshaft 1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps) 2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
    Trade-offs: 12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
    a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.

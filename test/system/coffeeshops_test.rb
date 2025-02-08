@@ -4,6 +4,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
   setup do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
+    @review = reviews(:two)
   end
 
   test 'An unauthenticated user can view coffeeshop details' do
@@ -47,7 +48,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Submit a review
     select '★★★★★', from: 'review[rating]'
-    fill_in 'review[content]', with: 'Great coffee!'
+    fill_in 'review[content]', match: :first, with: 'Great coffee!'
 
     click_on 'SUBMIT REVIEW'
 
@@ -62,36 +63,33 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_current_path '/sessions'
 
-    click_on 'menu', match: :first
-    click_on 'New Search', match: :first
+    # Visit the fixture coffeeshop directly
+    visit coffeeshop_path(@coffeeshop, locale: nil)
 
-    fill_in 'search[query]', with: 'coffee'
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    assert_selector(:field, 'search[query]', with: 'coffee')
-    first('button[type="submit"]').click
-
-    # Submit a review
-    fill_in 'review_content', with: 'Great coffee!'
-
-    click_on 'Submit Review'
-
-    # Edit the review
-    click_on 'Edit'
-    fill_in 'review_content', with: 'Amazing coffee!'
-
-    assert_redirected_to coffeeshop_path(@coffeeshop, locale: nil)
-
-    assert_text 'Great coffee!'
-
-    click_on 'Update Review'
-
-    assert_text 'Amazing coffee!'
-
-    # Delete the review
-    accept_confirm do
-      click_on 'Delete'
+    # Find and click edit within the review container
+    within('.review-container', text: 'Cold Brew is the best') do
+      click_on 'Edit this Review'
+      
+      # Form should appear in the Turbo frame
+      assert_selector('form')
+      fill_in 'review[content]', with: 'Amazing coffee!'
+      click_on 'Submit Review'
     end
 
+    # The page should not change, but content should update
+    assert_current_path %r{^/coffeeshops/\d{1,9}}
+    assert_text 'Amazing coffee!'
+
+    # Delete the review - with Turbo confirmation
+    within('.review-container', text: 'Amazing coffee!') do
+      accept_confirm do
+        click_on 'Delete this Review'
+      end
+    end
+
+    # After deletion, the review should be gone
     assert_no_text 'Amazing coffee!'
   end
 
