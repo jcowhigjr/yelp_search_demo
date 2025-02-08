@@ -31,6 +31,10 @@ mise install
 yarn install
 corepack enable
 
+#add mise shims to the path
+eval "$(/root/.local/bin/mise activate bash)"
+export PATH="$PATH:~/.local/share/mise/shims"
+
 lefthook install
 bin/setup
 lefthook run fixer

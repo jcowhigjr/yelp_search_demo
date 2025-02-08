@@ -10,7 +10,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
 # I think this will allow different machines to run tests with different ruby patch versions
 
-
 ruby '~> 3.4.1'
 
 gem 'bundler', '~> 2.5'

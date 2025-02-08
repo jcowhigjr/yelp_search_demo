@@ -2,7 +2,6 @@
   "name": "jitter",
   "packageManager": "yarn@4.6.0",
   "dependencies": {
-    "caniuse-lite": "^1.0.30001697",
     "eslint": "^9.18.0",
     "lint": "^1.1.2",
     "prettier": "^3.4.2"

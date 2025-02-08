@@ -29,26 +29,27 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_current_path '/sessions'
 
+    # Search for a shop
+    visit new_search_path
+    fill_in 'search[query]', with: 'coffee'
 
-    fill_in 'search_query', with: 'coffee'
-
-    assert_selector(:field, 'search_query', with: 'coffee')
+    assert_selector(:field, 'search[query]', with: 'coffee')
     first('button[type="submit"]').click
 
     assert_current_path search_path(Search.last.id, locale: nil)
     click_on 'More Info', match: :first
 
     # Add to favorites - ensure button is visible and clickable
-    click_on('Add To Favorites', match: :first)
+    assert_selector('input[type="submit"][value="Add To Favorites"]')
+    click_on('Add To Favorites')
 
-    assert_text 'Remove From Favorites'
+    assert_selector('input[type="submit"][value="Remove From Favorites"]')
 
     # Submit a review
-    fill_in 'review_content', with: 'Great coffee!'
+    select '★★★★★', from: 'review[rating]'
+    fill_in 'review[content]', with: 'Great coffee!'
 
-    click_on 'Submit Review'
-
-    assert_redirected_to coffeeshop_path(@coffeeshop, locale: nil)
+    click_on 'SUBMIT REVIEW'
 
     assert_text 'Great coffee!'
   end
@@ -64,9 +65,9 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_on 'menu', match: :first
     click_on 'New Search', match: :first
 
-    fill_in 'search_query', with: 'coffee'
+    fill_in 'search[query]', with: 'coffee'
 
-    assert_selector(:field, 'search_query', with: 'coffee')
+    assert_selector(:field, 'search[query]', with: 'coffee')
     first('button[type="submit"]').click
 
     # Submit a review

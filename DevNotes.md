@@ -58,9 +58,7 @@ run system tests and disable the ujs stuff that broke with -> data-turbo="false"
 
 Plan is to keep this up to date with the latest version of Ruby Rails and most gems
 
-<!-- https://eregon.me/blog/2021/06/04/review-of-ruby-installers-and-switchers.html -->  brew upgrade rbenv ruby-build
 
-rbenv local
 
 3.1.0-dev
 

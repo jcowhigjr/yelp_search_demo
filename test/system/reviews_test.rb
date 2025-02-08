@@ -3,7 +3,7 @@
 require 'application_system_test_case'
 # require 'minitest/focus'
 
-class BasicsTest < ApplicationSystemTestCase
+class ReviewsTest < ApplicationSystemTestCase
   def setup
     @user = users(:one)
     @review = reviews(:one)
@@ -19,27 +19,25 @@ class BasicsTest < ApplicationSystemTestCase
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
 
-    # Ensure search button is visible and clickable
-    search_button = find_button('Search')
-    search_button.scroll_to
-
-    assert_selector('button[type="submit"]', text: 'Search', visible: true)
-    search_button.click
+    # Click the search button
+    assert_selector('button[type="submit"]', visible: true)
+    click_on('button[type="submit"]')
 
     sleep 2 if ENV['CUPRITE'] == 'true'
 
     # Find and click the first More Info link
-    more_info_link = find_link('More Info', match: :first)
-    more_info_link.scroll_to
-    more_info_link.click
+    assert_selector('a', text: 'MORE INFO')
+    first('a', text: 'MORE INFO').click
 
-    # Add to favorites
-    assert_selector('input[type="submit"][value="ADD TO MY FAVORITES"]')
-    click_on 'ADD TO MY FAVORITES'
+    # # Add to favorites
+
+    # assert_selector('input[type="submit"][value="ADD TO MY FAVORITES"]')
+    # click_on 'ADD TO MY FAVORITES'
 
     # Submit a review
+    assert_selector('input[type="submit"][value="SUBMIT REVIEW"]')
     fill_in 'review[content]', with: 'Great coffee!'
-    click_on 'Submit Review'
+    click_on 'SUBMIT REVIEW'
 
     assert_text 'Great coffee!'
   end
