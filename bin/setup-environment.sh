@@ -5,6 +5,11 @@
 
 set -eou pipefail
 
+# Enforce project isolation
+export MISE_CONFIG_DIR="$PWD/.mise"
+export MISE_DEFAULT_CONFIG_FILE="$PWD/mise.toml"
+export MISE_DEFAULT_TOOL_VERSIONS_FILENAME=mise.toml
+
 # Detect operating system/architecture
 os_type=$(uname -s)
 
@@ -30,25 +35,27 @@ if ! command -v mise &>/dev/null; then
     mise settings experimental=true
 fi
 
+# Add trust command
+mise trust "$PWD"
+
 #check if mis is active
 mise env
 
 #install dependencies
 mise install
-mise trust "$PWD"
 
 # log versions
-echo "Active versions:"
-mise exec -- node --version
-mise exec -- ruby --version
-mise exec -- yarn --version
-mise exec -- lefthook --version
+# echo "Active versions:"
+# mise exec -- node --version
+# mise exec -- ruby --version
+# mise exec -- yarn --version
+# mise exec -- lefthook --version
 
 # refresh shims
 mise reshim
 
 # clean unused versions
-mise prune --force
+mise prune
 
 #add mise shims to the path
 export PATH="${HOME}/.local/bin:$PATH"

@@ -42,8 +42,9 @@ pre-push:
       tags: ci
 
 pre-commit:
+  fail_fast: true
   pre-command: git stash --keep-index
-  parallel: true
+  parallel: false
   commands:
     debug:
       run: mise env && ruby -v && bundle exec ruby -v
