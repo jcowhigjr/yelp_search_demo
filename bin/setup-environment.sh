@@ -35,13 +35,16 @@ mise env
 
 #install dependencies
 mise install
-mise exec -- lefthook install
+# Remove Python-related lines
+mise install
+mise trust "$PWD"
 
 # log versions
 echo "Active versions:"
 mise exec -- node --version
 mise exec -- ruby --version
 mise exec -- yarn --version
+mise exec -- lefthook --version
 
 # refresh shims
 mise reshim
@@ -55,15 +58,15 @@ export PATH="${HOME}/.local/share/mise/shims:$PATH"
 
 # can this be moved to mise.toml?
 
-yarn install
 if [ -f /.dockerenv ]; then
     echo "Initializing container environment..."
     corepack enable
     lefthook install
 fi
 
+##TODO: consider if the reset of project setup should be in this script
 bin/setup
-
+yarn install
 lefthook run fixer
 
 exec "$@"

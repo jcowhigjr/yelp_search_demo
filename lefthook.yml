@@ -17,7 +17,7 @@ pre-push:
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: yarn npm audit --all
+      run: mise exec -- yarn audit
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
@@ -34,6 +34,9 @@ pre-push:
       run: CI=true RAILS_ENV=test bin/setup &&
         CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
         CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
+    test_validation:
+      run: bin/test-validation.sh
+      tags: ci
     verify_ci_ready:
       run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
       tags: ci

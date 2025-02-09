@@ -21,3 +21,16 @@ mise prune
 - Pre-commit environment verification
 - Pre-push CI readiness check
 - Tag-based skip options (`--skip-validation`)
+## Recovery Workflow
+
+If environment validation fails:
+
+1. Restore mise configuration
+```bash
+mv mise.toml.bak mise.toml  # If backup exists
+./bin/setup-environment.sh
+
+## Healthcheck Philosophy
+- **Validation Only** - Never modifies environment
+- **Idempotent** - Safe to run repeatedly
+- **Fast** - Executes in <1s
