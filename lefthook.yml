@@ -43,8 +43,6 @@ pre-commit:
   pre-command: git stash --keep-index
   parallel: false
   commands:
-    debug:
-      run: mise env && ruby -v && bundle exec ruby -v
     js:
       glob: '*.{js,ts}'
       run: yarn prettier --write {staged_files}
