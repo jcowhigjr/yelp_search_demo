@@ -1,19 +1,36 @@
 ---
 en:
   add-to-my-favor: Add to my favorites.
+  advanced_search: Advanced Search
   coffeeshop: Coffee Shop
   coffeeshops:
     coffeeshop:
       more-info: More Info
+      phone: Phone
+      place: Place
       reviews: Reviews
     reviews:
       form:
         leave-a-review: Leave a review!
+        please-give-a-b: Please give a brief description of your experience at %{name}.
+      review:
+        edit-this-revie: Edit this Review
+      show:
+        edit-this-revie-0: Edit this Review
+        log-in: Log In
+        login-to-add-th: Login to add this shop to your favorites!
+        reviews:
+          index: Reviews
+        to-leave-a-revi: to leave a review
+        view-on-yelp: View on Yelp
+        you-must-be-les: You must be <%= link_to 'logged in', login_path %> to leave a review!
+        you-must-be-les-0: to leave a review!
     show:
-      add-to-my-favor: ADD TO MY FAVORITES
+      add-to-favorites: Add To Favorites
+      edit-this-revie-0: Edit this Review
       log-in: Log In
       login-to-add-th: Login to add this shop to your favorites!
-      remove-from-my-favor: REMOVE FROM MY FAVORITES
+      remove-from-favorites: Remove From Favorites
       reviews:
         index: Reviews
       to-leave-a-revi: to leave a review
@@ -22,6 +39,7 @@ en:
       you-must-be-les-0: to leave a review!
   confirm-passwor: Confirm Password
   dir: ltr
+  earlyaccess: Enable Preview Features
   email: Email
   error:
     already_exists: The %{model} already exists
@@ -32,28 +50,34 @@ en:
     not_allowed: You are not allowed to perform this action
     not_found: The requested resource was not found
     not_implemented: This feature is not implemented yet
-    something_went_wrong: Something went wrong, please try again later
+    something_went_wrong: Something went wrong
     unauthorized: You are not authorized to perform this action
+  hello: Hello World
   layouts:
+    application:
+      header:
+        search_gem_html: Search for Gems
     footer:
-      language_name_of_locale: English
-      early-access: 'Early Access Preview'
       coming-soon-sig: 'Coming Soon: Sign up for Early Access'
+      early-access: Early Access Preview
+      language_name_of_locale: English
     navbar:
+      coming-soon-sig: 'Coming Soon: Sign up for Early Access'
       logout: Logout
       my-profile: My Profile
   log-in: Log in
   login-to-add-th: Login to add this shop to your favorites!
   more-info: More Info
   password-must-b: Password (must be at least 6 characters)
-  phone: phone
-  place: place
-  rating: ":rating"
+  phone: Phone
+  place: Place
+  please-give-a-b: Please give a brief description of your experience at %{name}.
+  rating: Rating
   reviews:
     form:
       leave-a-review: Leave a review!
       please-give-a-b: Please give a brief description of your experience at %{name}.
-      rating: rating
+      rating: Rating
       submit-review: SUBMIT REVIEW
     index: 'Reviews:'
     show:
@@ -63,8 +87,29 @@ en:
     title: Dorkbob Search
   search-for-a-sh: Search for a shop to find one near you.
   searches:
+    advanced:
+      description: Description
+      downloads: Downloads
+      name: Name
+      summary: Summary
+      updated: Updated
+    new: New Search
     results:
       no-results-found: No Results Found!
+    show:
+      title: Top Rated Searches for %{query} near you!
+    views:
+      create: Search
+      destroy: Search
+      edit: Search
+      index: Search
+      new:
+        title: New Search
+      placeholder: Enter a search term (ex. tacos)
+      results: Top Rated Searches for %{query} near you!
+      show:
+        results: Top Rated Searches for %{query} near you!
+      update: Search
   submit-review: Submit Review
   success:
     create: Successfully created %{model}.
@@ -73,6 +118,7 @@ en:
     logout: Successfully logged out.
     update: Successfully updated %{model}.
   to-leave-a-revi: to leave a review
+  top-rated-searches-for: Top Rated Searches for %{query} near you!
   username: Username
   users:
     form:
@@ -90,14 +136,8 @@ en:
     reviews:
       leave-a-review: Leave a review
     searches:
-      destroy: Search
-      edit: Search
-      index: Search
       new: New Search
-      placeholder: Enter a search term (ex. tacos)
       results: Top Rated Searches for %{query} near you!
-      show: Search
-      update: Search
     user_sessions:
       create: User Session
       destroy: User Session

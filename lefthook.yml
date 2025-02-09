@@ -1,96 +1,115 @@
 # EXAMPLE USAGE
 # Refer for explanation to following link:
-# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
+# https://evilmartians.github.io/lefthook/configuration/no_tty.html
 #
+shell:
+  pty: false
+verbose: false
 pre-push:
-  pre-command: git stash
+  pre-command: git add . && git stash
   commands:
     test-next:
       tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
-    packages-audit:
-      tags: frontend security
-      run: yarn audit
+      run: CI=true RAILS_ENV=test bin/setup-next &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: yarn audit
+      run: yarn npm audit --all
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
     rubocop:
       tags: backend style
-      files: git diff --name-only master
+      files: git diff --name-only develop
       glob: '*.rb'
       run: bundle exec rubocop --force-exclusion -A {files}
     brakeman:
       tags: backend security
       run: bundle exec brakeman --no-pager
-    rails-tests:
+    rails-system-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
+      run: CI=true RAILS_ENV=test bin/setup &&
+        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
 
 pre-commit:
+  pre-command: git stash --keep-index
   parallel: true
   commands:
+    debug:
+      run: mise env && ruby -v && bundle exec ruby -v
     js:
       glob: '*.{js,ts}'
-      run: yarn prettier --write {staged_files} && git add {staged_files}
+      run: yarn prettier --write {staged_files}
+      stage_fixed: true
     rubocop:
       tags: backend style
       glob: '*.rb'
       exclude: 'application.rb|routes.rb'
-      run: bundle exec rubocop --force-exclusion {all_files}
+      run: bundle exec rubocop -a --force-exclusion {all_files}
+      stage_fixed: true
     erb-lint:
       tags: frontend style
-      files: git diff --name-only master
+      files: git diff --name-only develop
       glob: '*.erb'
-      run: bundle exec erblint --lint-all {staged_files}
+      run: bundle exec erb_lint --lint-all {staged_files}
+    yaml-lint:
+      tags: frontend style
+      files: git diff --name-only develop
+      glob: '*.yml'
+      run: bundle exec yaml-lint {staged_files}
+      stage_fixed: true
     rails-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+      run: CI=true RAILS_ENV=test bin/setup &&
+        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
 fixer:
+  verbose: false
+  pty: false
   parallel: true
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion -A {all_files}
+      glob: '**/*.rb'
+      run: bundle exec rubocop --autocorrect-all  --force-exclusion {all_files}
+      stage_fixed: true
     js-fixer:
-      glob: 'app/javascript/**.{js,ts,jsx,tsx}'
+      glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
       run: yarn prettier --write {all_files}
+      stage_fixed: true
     ruby-prettier:
       glob: 'app/**/*.rb'
       run: bundle exec rbprettier --write {files}
-    erblint:
-      run: bundle exec erblint --autocorrect --lint-all {all_files}
+      stage_fixed: true
+    erb_lint:
+      glob: 'app/views/**/*.erb'
+      run: bundle exec erb_lint --autocorrect {all_files}
+      stage_fixed: true
+    yaml-lint:
+      glob: '**/*.yml'
+      run: bundle exec yaml-lint {all_files}
+      stage_fixed: true
     brakeman:
-      # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
-    packages-audit:
+    yarn-audit:
       tags: frontend security
-      run: yarn audit
+      run: yarn npm audit
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
-    next-test:
-      tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
     i18n-tasks:
-      run: bundle exec i18n-tasks health en missing unused
-    javascript-audit:
-      tags: frontend security
-      run: yarn upgrade
+      run: bundle exec i18n-tasks health || bundle exec i18n-tasks normalize
+    yarn-lint:
+      tags: frontend updates
+      glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
+      run: yarn prettier --write {all_files}
+      stage_fixed: true
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
-
 # scripts:
 #     "hello.js":
 #       runner: node

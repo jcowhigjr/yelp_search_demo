@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Check and install the required Ruby version
+required_ruby_version="3.3.6"
+current_ruby_version=$(ruby -v | awk {print })
+
+if [[ "$current_ruby_version" != "$required_ruby_version" ]]; then
+  echo "Installing Ruby $required_ruby_version..."
+  if ! rbenv versions | grep -q "$required_ruby_version"; then
+    rbenv install $required_ruby_version
+  fi
+  rbenv global $required_ruby_version
+fi
+
+# Other setup tasks
+# ...
