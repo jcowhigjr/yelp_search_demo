@@ -14,11 +14,11 @@ ruby '~> 3.4.1'
 
 gem 'bundler', '~> 2.5'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-# gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+# Bundle edge Rails instead: gem 'rails', "~> 8.0"
+# gem 'rails', "~> 8.0"
 gem 'next_rails'
 
-gem 'rails', '~> 7.2.1'
+gem 'rails', '~> 8.0'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
