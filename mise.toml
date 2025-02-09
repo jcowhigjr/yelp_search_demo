@@ -2,6 +2,7 @@
 node = "lts"  # Pinned to Node 20 LTS (20.11.1)
 ruby = "3.4.1"  # Matches Gemfile's ~> 3.4.1
 yarn = "4.0.2"  # Explicit version from setup script
+lefthook = "1.10.10"
 
 [env]
 SYSTEMD_PAGER = "cat"

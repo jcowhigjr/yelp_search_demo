@@ -17,3 +17,7 @@ mise install
 # Clean version cache
 mise prune
 ```
+## Git Hook Validation
+- Pre-commit environment verification
+- Pre-push CI readiness check
+- Tag-based skip options (`--skip-validation`)
