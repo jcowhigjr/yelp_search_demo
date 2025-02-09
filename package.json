@@ -1,6 +1,13 @@
 {
+  "name": "jitter",
+  "packageManager": "yarn@4.6.0",
   "dependencies": {
-    "prettier": "2.6.2",
-    "yarn": "^1.22.18"
+    "eslint": "^9.18.0",
+    "lint": "^1.1.2",
+    "prettier": "^3.4.2"
+  },
+  "scripts": {
+    "lint": "prettier --write",
+    "lint:check": "prettier --check"
   }
 }

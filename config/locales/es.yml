@@ -1,25 +1,31 @@
 ---
 es:
   add-to-my-favor: Agregar a mis favoritos.
+  advanced_search: Búsqueda Avanzada
   coffeeshop: Cafetería
   coffeeshops:
     coffeeshop:
-      more-info: Más información
+      more-info: Más Información
+      phone: teléfono
+      place: lugar
       reviews: Reseñas
     reviews:
       form:
         leave-a-review: "¡Dejar un comentario!"
-    show:
-      add-to-my-favor: AGREGAR A MIS FAVORITOS
-      log-in: Iniciar sesión
-      login-to-add-th: "¡Inicia sesión para agregar esta tienda a tus favoritos!"
-      remove-from-my-favor: ELIMINAR DE MIS FAVORITOS
-      reviews:
-        index: Reseñas
-      to-leave-a-revi: dejar una reseña
-      view-on-yelp: Ver en Yelp
-      you-must-be-les: "¡Debe estar <%= link_to 'conectado', login_path %> para dejar una reseña!"
-      you-must-be-les-0: para dejar una reseña!
+        please-give-a-b: Proporcione una breve descripción de su experiencia en %{name}.
+      review:
+        edit-this-revie: Editar esta Reseña
+      show:
+        add-to-my-favor: AGREGAR A MIS FAVORITOS
+        log-in: Iniciar Sesión
+        login-to-add-th: "¡Inicie sesión para agregar esta tienda a sus favoritos!"
+        remove-from-my-favor: ELIMINAR DE MIS FAVORITOS
+        reviews:
+          index: Reseñas
+        to-leave-a-revi: para dejar una reseña
+        view-on-yelp: Ver en Yelp
+        you-must-be-les: Debe <%= link_to 'iniciar sesión', login_path %> para dejar una reseña!
+        you-must-be-les-0: "¡para dejar una reseña!"
   confirm-passwor: Confirmar contraseña
   dir: ltr
   earlyaccess: Función de vista previa habilitada
@@ -35,8 +41,14 @@ es:
     not_implemented: Esta función aún no está implementada
     something_went_wrong: Algo salió mal, inténtalo de nuevo más tarde
     unauthorized: No está autorizado para realizar esta acción.
+  hello: "¡Hola Mundo!"
   layouts:
+    application:
+      header:
+        search_gem_html: Buscar Gemas
     footer:
+      coming-soon-sig: 'Próximamente: Regístrese para Acceso Anticipado'
+      early-access: Vista Previa de Acceso Anticipado
       language_name_of_locale: Español
     navbar:
       coming-soon-sig: 'Próximamente: Regístrese para obtener acceso anticipado'
@@ -48,12 +60,12 @@ es:
   password-must-b: La contraseña debe tener al menos 6 caracteres)
   phone: teléfono
   place: lugar
-  please-give-a-b: 'Proporcione una breve descripción de su experiencia en #{@coffeeshop.name}.'
+  please-give-a-b: Proporcione una breve descripción de su experiencia en %{name}.
   rating: ":clasificación"
   reviews:
     form:
       leave-a-review: "¡Dejar un comentario!"
-      please-give-a-b: Proporcione una breve descripción de su experiencia en %(name).
+      please-give-a-b: Proporcione una breve descripción de su experiencia en %{name}.
       rating: clasificación
       submit-review: ENVIAR OPINIÓN
     index: 'Reseñas:'
@@ -66,8 +78,24 @@ es:
     title: Dorkbob Buscar
   search-for-a-sh: Busque una tienda para encontrar una cerca de usted.
   searches:
+    advanced:
+      description: Descripción
+      downloads: Descargas
+      name: Nombre
+      summary: Resumen
+      updated: Actualizado
     results:
       no-results-found: "¡No se han encontrado resultados!"
+    views:
+      create: Buscar
+      destroy: Buscar
+      edit: Buscar
+      index: Buscar
+      new: Nueva Búsqueda
+      placeholder: Ingrese un término de búsqueda (ej. tacos)
+      results: "¡Búsquedas mejor calificadas para %{query} cerca de ti!"
+      show: Buscar
+      update: Buscar
   submit-review: Enviar opinión
   success:
     create: "%{model} creado con éxito."
@@ -76,6 +104,7 @@ es:
     logout: Cerrar sesión con éxito.
     update: "%{model} actualizado con éxito."
   to-leave-a-revi: dejar una reseña
+  top-rated-searches-for: "¡Búsquedas mejor calificadas para %{query} cerca de ti!"
   username: Nombre de usuario
   users:
     form:
@@ -88,6 +117,7 @@ es:
       hello-0: Hola,
       search-for-a-sh: Busque una tienda para encontrar una cerca de usted.
       you-dont-have-a: "¡Aún no tienes tiendas favoritas!"
+  view-on-yelp: Ver en Yelp
   views:
     reviews:
       leave-a-review: Dejar un comentario

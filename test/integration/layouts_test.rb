@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class LayoutsTest < ActionDispatch::IntegrationTest
-  test 'static home has search link' do
-    get static_home_url
-  end
 
   test '#root_path returns the correct path' do
     assert_equal('/', static_home_path)

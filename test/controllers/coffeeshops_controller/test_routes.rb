@@ -12,8 +12,6 @@ class CoffeeshopsController::RoutesTest < ActionDispatch::IntegrationTest
   end
 
   def test_search_routes
-    # assert_routing '/searches/new', controller: 'searches', action: 'new'
-    # assert_routing '/searches', controller: 'searches', action: 'create'
     assert_routing '/searches/1',
                    controller: 'searches',
                    action: 'show',

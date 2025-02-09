@@ -10,8 +10,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
 # I think this will allow different machines to run tests with different ruby patch versions
 
-
-ruby '~> 3.3.4'
+ruby '~> 3.4.1'
 
 gem 'bundler', '~> 2.5'
 
@@ -20,8 +19,6 @@ gem 'bundler', '~> 2.5'
 gem 'next_rails'
 
 gem 'rails', '~> 7.2.1'
-
-
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
@@ -49,7 +46,6 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'fast_sqlite', require: false, group: :test
     gem 'sqlite3', '~> 2.0', require: false, group: :development
   end
 end
@@ -102,7 +98,6 @@ group :development do
   gem 'guard-rubocop'
 
   # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
-  gem 'guard-livereload', require: false # , '~> 2.4'
   gem 'rack-livereload'
 
   # foreman required to start bin/dev
@@ -114,6 +109,7 @@ group :development do
   gem 'rubocop-capybara', require: false
   gem 'prettier', require: false
   gem 'erb_lint', require: false
+  gem 'yaml-lint', require: false
   gem 'brakeman', require: false
   # gem 'solargraph', require: false
   # gem 'solargraph-rails', require: false
@@ -139,8 +135,8 @@ group :test do
   gem 'cuprite'
   gem 'evil_systems'
   gem 'magic_test'
-  gem 'minitest-focus'
-  gem 'minitest-retry'
+  # gem 'minitest-focus'
+  # gem 'minitest-retry'
 end
 
 gem 'tailwindcss-rails', '~> 2.7'

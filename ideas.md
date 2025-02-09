@@ -1,6 +1,5 @@
 two app ideas:
 
-
 one app idea:
 vote on a list choices
 with a permalink

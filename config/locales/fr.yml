@@ -1,25 +1,31 @@
 ---
 fr:
   add-to-my-favor: Ajouter à mes favoris.
+  advanced_search: Recherche Avancée
   coffeeshop: Café
   coffeeshops:
     coffeeshop:
-      more-info: Plus d'informations
+      more-info: Plus d'Informations
+      phone: téléphone
+      place: lieu
       reviews: Commentaires
     reviews:
       form:
         leave-a-review: Laisser un commentaire!
-    show:
-      add-to-my-favor: AJOUTER À MES FAVORIS
-      log-in: Connexion
-      login-to-add-th: Connectez-vous pour ajouter cette boutique à vos favoris !
-      remove-from-my-favor: SUPPRIMER DE MES FAVORIS
-      reviews:
-        index: Commentaires
-      to-leave-a-revi: laisser un avis
-      view-on-yelp: Voir sur Yelp
-      you-must-be-les: Vous devez être <%= link_to 'logged in', login_path %> pour laisser un avis !
-      you-must-be-les-0: pour laisser un avis !
+        please-give-a-b: Veuillez décrire brièvement votre expérience chez {{ name }}.
+      review:
+        edit-this-revie: Modifier cet Avis
+      show:
+        add-to-my-favor: AJOUTER À MES FAVORIS
+        log-in: Se Connecter
+        login-to-add-th: Connectez-vous pour ajouter ce café à vos favoris !
+        remove-from-my-favor: RETIRER DE MES FAVORIS
+        reviews:
+          index: Avis
+        to-leave-a-revi: pour laisser un avis
+        view-on-yelp: Voir sur Yelp
+        you-must-be-les: Vous devez être <%= link_to 'connecté', login_path %> pour laisser un avis !
+        you-must-be-les-0: pour laisser un avis !
   confirm-passwor: Confirmez le mot de passe
   dir: ltr
   earlyaccess: Fonction d'aperçu activée
@@ -35,8 +41,14 @@ fr:
     not_implemented: Cette fonctionnalité n'est pas encore implémentée
     something_went_wrong: Quelque chose c'est mal passé. Merci d'essayer plus tard
     unauthorized: Vous n'êtes pas autorisé à effectuer cette action
+  hello: Bonjour le Monde !
   layouts:
+    application:
+      header:
+        search_gem_html: Rechercher des Gems
     footer:
+      coming-soon-sig: 'Bientôt : Inscrivez-vous pour l''Accès Anticipé'
+      early-access: Aperçu de l'Accès Anticipé
       language_name_of_locale: Français
     navbar:
       coming-soon-sig: 'Prochainement : inscrivez-vous pour un accès anticipé'
@@ -53,7 +65,7 @@ fr:
   reviews:
     form:
       leave-a-review: Laisser un commentaire!
-      please-give-a-b: Veuillez décrire brièvement votre expérience chez %(nom).
+      please-give-a-b: Veuillez décrire brièvement votre expérience chez {{ name }}.
       rating: évaluation
       submit-review: POSTER LE COMMENTAIRE
     index: 'Commentaires:'
@@ -66,8 +78,24 @@ fr:
     title: Recherche Dorkbob
   search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
   searches:
+    advanced:
+      description: Description
+      downloads: Téléchargements
+      name: Nom
+      summary: Résumé
+      updated: Mis à jour
     results:
       no-results-found: Aucun résultat trouvé !
+    views:
+      create: Rechercher
+      destroy: Rechercher
+      edit: Rechercher
+      index: Rechercher
+      new: Nouvelle Recherche
+      placeholder: Entrez un terme de recherche (ex. tacos)
+      results: Meilleures recherches pour %{query} près de chez vous !
+      show: Rechercher
+      update: Rechercher
   submit-review: Poster le commentaire
   success:
     create: "%{model} a été créé avec succès."
@@ -76,6 +104,7 @@ fr:
     logout: Déconnexion réussie.
     update: "%{model} a été mis à jour avec succès."
   to-leave-a-revi: laisser un avis
+  top-rated-searches-for: Meilleures recherches pour %{query} près de chez vous !
   username: Nom d'utilisateur
   users:
     form:
@@ -88,6 +117,7 @@ fr:
       hello-0: Bonjour,
       search-for-a-sh: Recherchez un magasin pour en trouver un près de chez vous.
       you-dont-have-a: Vous n'avez pas encore de boutiques préférées !
+  view-on-yelp: Voir sur Yelp
   views:
     reviews:
       leave-a-review: Laisser un commentaire

@@ -1,6 +1,7 @@
 # brew 'lefthook'
 cask 'ngrok'
-brew 'frum'
+brew 'gpg'
+#brew 'frum'
 # brew 'solargraph'
 # brew 'solargrpah-rails'
 

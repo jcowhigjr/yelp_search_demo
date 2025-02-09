@@ -7,8 +7,4 @@ class StaticControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should get search' do
-    # get static_search_url
-    # assert_response :success
-  end
 end

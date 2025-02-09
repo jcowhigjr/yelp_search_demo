@@ -8,10 +8,6 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
     @coffeeshop2 = coffeeshops(:two)
   end
 
-  # test "should not get index" do
-  #   skip "not implemented"
-  # end
-
   test 'add favorite should remain on coffeeshop page' do
     user_one = login(:one)
 
@@ -40,7 +36,6 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
 
   module CustomAssertions
     def favorite_coffeeshop(coffeeshop)
-      # reference a named route, for maximum internal consistency!
       post user_favorites_path,
            params: {
              coffeeshop_id: coffeeshop.id,
@@ -50,9 +45,6 @@ class UserFavoritesControllerTest < ActionDispatch::IntegrationTest
     end
 
     def unfavorite_coffeeshop(coffeeshop)
-      # binding.break unless coffeeshop
-      # reference a named route, for maximum internal consistency!
-      # https://github.com/hotwired/turbo-rails/blob/main/test/streams/streams_controller_test.rb#L38
       delete user_favorite_path(id: coffeeshop.id), as: :turbo_stream
       follow_redirect!
     end
