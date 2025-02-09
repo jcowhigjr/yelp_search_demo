@@ -7,7 +7,7 @@
             <%= f.button :submit, data: { turbo: false} do %>
               <i class="flex-col material-icons" aria-label="search">search</i>
             <% end %>
-            <%= link_to(new_search_path, method: :get, class: 'pull-right') do %>
+            <%= link_to(new_search_path, method: :get, class: 'pull-right', data: { turbo_frame: dom_id(@search) }) do %>
               <i class="flex-col material-icons" aria-label="Clear">clear</i>
             <% end %>
         </div>
