@@ -1,0 +1,16 @@
+name: Setup Environment
+
+on:
+  push:
+    branches:
+      - experiment-mise-github-action
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Environment
+        run: ./bin/setup-environment.sh
+      - name: test environment
+        run: |
+          bin/healthcheck.sh

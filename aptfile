@@ -2,3 +2,4 @@ jq
 libyaml-dev
 libpq-dev
 chromium
+act
