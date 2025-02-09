@@ -13,4 +13,4 @@ jobs:
         run: ./bin/setup-environment.sh
       - name: test environment
         run: |
-          bin/healthcheck.sh
+          bin/container-healthcheck.sh
