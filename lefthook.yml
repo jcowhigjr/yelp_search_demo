@@ -34,10 +34,17 @@ pre-push:
       run: CI=true RAILS_ENV=test bin/setup &&
         CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
         CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
+    test_validation:
+      run: bin/test-validation.sh
+      tags: ci
+    verify_ci_ready:
+      run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
+      tags: ci
 
 pre-commit:
+  fail_fast: true
   pre-command: git stash --keep-index
-  parallel: true
+  parallel: false
   commands:
     debug:
       run: mise env && ruby -v && bundle exec ruby -v
@@ -67,6 +74,13 @@ pre-commit:
       run: CI=true RAILS_ENV=test bin/setup &&
         CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
         CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
+    verify_environment:
+      run: bin/container-healthcheck.sh && { echo "✓ Environment valid"; exit 0; } || { echo "✗ Environment invalid - run bin/setup-environment.sh"; exit 1; }
+      tags: validation
+      skip:
+        - merge
+        - rebase
+
 fixer:
   verbose: false
   pty: false
