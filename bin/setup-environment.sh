@@ -35,8 +35,6 @@ mise env
 
 #install dependencies
 mise install
-# Remove Python-related lines
-mise install
 mise trust "$PWD"
 
 # log versions

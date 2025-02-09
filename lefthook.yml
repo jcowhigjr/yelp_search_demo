@@ -17,7 +17,7 @@ pre-push:
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: mise exec -- yarn audit
+      run: yarn npm audit --all
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
