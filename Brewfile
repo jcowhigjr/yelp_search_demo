@@ -1,6 +1,8 @@
 # brew 'lefthook'
 cask 'ngrok'
 brew 'gpg'
+# JSON processor for healthchecks
+brew 'jq'
 #brew 'frum'
 # brew 'solargraph'
 # brew 'solargrpah-rails'

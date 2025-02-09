@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-mise list | grep -q 'node@20.11.1' && \
-mise exec node --version | grep -q 'v20.11.1'
+# Core runtime verification
+mise exec -- ruby --version | grep -qF "3.4.1"

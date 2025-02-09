@@ -1,3 +1,5 @@
+# JSON processor for healthchecks
+jq
 libyaml-dev
 libpq-dev
 chromium

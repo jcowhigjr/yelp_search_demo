@@ -37,6 +37,12 @@ mise env
 #install dependencies
 mise install
 
+# log versions
+echo "Active versions:"
+mise exec -- node --version
+mise exec -- ruby --version
+mise exec -- yarn --version
+
 # refresh shims
 mise reshim
 
