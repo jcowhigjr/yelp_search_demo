@@ -12,7 +12,7 @@ if [ "$os_type" = "Darwin" ]; then
     brew bundle --file="$(dirname "$0")/../Brewfile"
 else
     echo "Detected Linux, installing apt dependencies"
-    xargs -a "$(dirname "$0")/../aptfile" sudo apt-get install -y
+    xargs -a "$(dirname "$0")/../aptfile" sudo apt-get install -y -qq
     export BROWSER_PATH=$(which chromium) && echo $BROWSER_PATH
 fi
 
@@ -36,6 +36,12 @@ mise env
 
 #install dependencies
 mise install
+
+# refresh shims
+mise reshim
+
+# clean unused versions
+mise prune
 
 #add mise shims to the path
 export PATH="${HOME}/.local/bin:$PATH"
