@@ -11,10 +11,10 @@
     <% if review.user == current_user %>
         <div class="row center">
             <div class="col s6">
-                <%= link_to t('.edit-this-revie-0'), edit_user_review_path(current_user, review), class: 'btn-small' %>
+                <%= link_to t('.edit-this-revie-0'), edit_user_review_path(current_user, review), class: 'btn-small', data: { turbo_frame: dom_id(review) } %>
             </div>
             <div class="col s6">
-                <%= link_to t('.delete-this-rev'), user_review_path(current_user, review), class: 'btn-small', data: { turbo_method: :delete, turbo_frame: '_top' } %>
+                <%= link_to t('.delete-this-rev'), user_review_path(current_user, review), class: 'btn-small', data: { turbo_method: :delete, turbo_frame: '_top', turbo_confirm: 'Are you sure?' } %>
             </div>
         </div>
     <% end %>

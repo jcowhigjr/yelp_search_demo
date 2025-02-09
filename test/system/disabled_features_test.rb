@@ -6,9 +6,10 @@ class DisabledFeaturesTest < ApplicationSystemTestCase
     Flipper.disable(:early_access_preview)
   end
 
-  test "I should not see Early Access Preview" do
+  test 'I should not see Early Access Preview' do
     visit static_home_path
-    assert_no_text "Early Access Preview"
+
+    assert_no_text 'Early Access Preview'
   end
 
   # test "I should not see Decision Wheel" do
