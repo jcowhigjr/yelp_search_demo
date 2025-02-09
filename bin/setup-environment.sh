@@ -3,6 +3,8 @@
 
 #install apt or brew dependencies first
 
+set -eou pipefail
+
 # Detect operating system/architecture
 os_type=$(uname -s)
 if [ "$os_type" = "Darwin" ]; then
@@ -17,24 +19,37 @@ fi
 # Check if mise is installed, otherwise install it
 if [ -x "$(command -v mise)" ]; then
     echo "Mise is installed"
-    eval "$(/root/.local/bin/mise activate bash)"
-    mise env
 else
     echo "Installing mise"
-    curl https://mise.run | bash
+    command -v curl >/dev/null || {
+        echo "Error: curl required but not found"
+        exit 1
+    }
+    curl -fsSL https://mise.run | bash -s -- --version latest 2>&1
     echo "eval \"\$(/root/.local/bin/mise activate bash)\"" >>~/.bashrc
     eval "$(/root/.local/bin/mise activate bash)"
     mise settings experimental=true
 fi
 
+#check if mis is active
+mise env
+
+#install dependencies
 mise install
-yarn install
-corepack enable
 
 #add mise shims to the path
-eval "$(/root/.local/bin/mise activate bash)"
-export PATH="$PATH:~/.local/share/mise/shims"
+export PATH="${HOME}/.local/bin:$PATH"
+export PATH="${HOME}/.local/share/mise/shims:$PATH"
 
-lefthook install
-bin/setup
+# can this be moved to mise.toml?
+
+yarn install
+if [ -f /.dockerenv ]; then
+    echo "Initializing container environment..."
+    corepack enable
+    lefthook install
+fi
 lefthook run fixer
+bin/setup
+
+exec "$@"
