@@ -1,9 +1,8 @@
 # brew 'lefthook'
 cask 'ngrok'
 brew 'gpg'
-#brew 'frum'
-# brew 'solargraph'
-# brew 'solargrpah-rails'
+# JSON processor for healthchecks
+brew 'jq'
 
 # chromedriver not required anymore
 # brew uninstall chromedriver

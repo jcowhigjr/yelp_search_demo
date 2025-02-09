@@ -1,11 +1,12 @@
 version: "0.2"
-ignorePaths: [
-  "config/initializers/new_framework_defaults_7_1.rb",
-  "Gemfile"
-]
+ignorePaths:
+  - config/initializers/new_framework_defaults_7_1.rb
+  - Gemfile
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - autocorrect
+  - importmaps
   - noopen
 ignoreWords: []
 import: []
