@@ -55,7 +55,7 @@ mise install
 mise reshim
 
 # clean unused versions
-mise prune
+mise prune --yes
 
 #add mise shims to the path
 export PATH="${HOME}/.local/bin:$PATH"
