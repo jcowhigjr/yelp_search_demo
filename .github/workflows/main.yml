@@ -80,7 +80,7 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          bin/setup
+          bin/setup --skip-server
           # test prepare required for tailwind css file required in application erb
           bin/rails test:prepare --trace
           bin/rails test
