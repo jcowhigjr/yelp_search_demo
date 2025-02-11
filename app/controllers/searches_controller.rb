@@ -49,7 +49,7 @@ class SearchesController < ApplicationController
   private
 
   def search_params
-    params.require(:search).permit(:query, :latitude, :longitude)
+    params.expect(search: [:query, :latitude, :longitude])
   end
 
   def redirect_to_proper_path
