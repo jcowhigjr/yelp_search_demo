@@ -1,11 +1,31 @@
 {
+  "name": "jitter",
   "scripts": {
     "postdeploy": "bin/setup --skip-server && bin/rails db:seed"
+  },
+  "env": {
+    "LANG": {
+      "required": true,
+      "value": "en_US.UTF-8"
+    },
+    "RACK_ENV": {
+      "required": true,
+      "value": "production"
+    },
+    "RAILS_ENV": {
+      "required": true,
+      "value": "production"
+    }
   },
   "stack": "heroku-22",
   "buildpacks": [
     {
       "url": "heroku/ruby"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini"
     }
   ]
 }
