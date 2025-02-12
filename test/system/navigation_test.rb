@@ -16,7 +16,6 @@ class NavigationTest < ApplicationSystemTestCase
     # )
   end
   test 'A user can search and return using the back button' do
-
     #  searches/new
     visit new_search_path
     fill_in 'search_query', with: 'tacos'
@@ -24,28 +23,38 @@ class NavigationTest < ApplicationSystemTestCase
     # Use the first search button to avoid ambiguity
     first('button[type="submit"]').click
 
-    # Wait for results to load
+    # Wait for results to load and verify we're on the correct page
     sleep 2 if ENV['CUPRITE'] == 'true'
+    search_id = Search.last.id
 
-    # searches/3 this 3rd seaarch doesn't save when using turbo true on the search button
-    assert_current_path search_path(Search.last.id, locale: nil)
+    assert_current_path search_path(search_id, locale: nil)
     assert_text 'tacos'
+
+    # Click More Info and verify navigation
     click_on 'More Info', match: :first
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    # Go back and wait
-    page.execute_script('window.history.back()')
+    # Go back to search results and verify
+    go_back
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    # Check we're back at search results
-    assert_current_path search_path(Search.last.id, locale: nil)
+    assert_current_path search_path(search_id, locale: nil)
 
-    # Go back again and wait
-    page.execute_script('window.history.back()')
+    # Go back to search form and verify
+    go_back
     sleep 2 if ENV['CUPRITE'] == 'true'
 
-    # Check we're back at search form
     assert_current_path new_search_path
+  end
+
+  private
+
+  def go_back
+    if ENV['CUPRITE'] == 'true'
+      page.execute_script('window.history.back()')
+    else
+      page.go_back
+    end
   end
 end
