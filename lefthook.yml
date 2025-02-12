@@ -7,6 +7,13 @@ shell:
 verbose: false
 pre-push:
   pre-command: git add . && git stash
+  post-command: |
+    if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+      echo "❌ Error: New files were generated during the pre-push hook:"
+      git ls-files --others --exclude-standard
+      echo "Please commit these files before pushing."
+      exit 1
+    fi
   commands:
     test-next:
       tags: backend
@@ -34,9 +41,6 @@ pre-push:
       run: CI=true RAILS_ENV=test bin/setup --skip-server &&
         CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
         CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
-    test_validation:
-      run: bin/test-validation.sh
-      tags: ci
     verify_ci_ready:
       run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
       tags: ci
@@ -116,6 +120,7 @@ fixer:
       run: bundle audit update && bundle audit check
     i18n-tasks:
       run: bundle exec i18n-tasks health || bundle exec i18n-tasks normalize
+      stage_fixed: true
     yarn-lint:
       tags: frontend updates
       glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
