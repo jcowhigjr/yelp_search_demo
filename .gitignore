@@ -89,3 +89,4 @@ audit-output.json
 .yarn/install-state.gz
 .yarn/install-state.gz
 .yarn/install-state.gz
+.bundle/
