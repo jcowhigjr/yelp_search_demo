@@ -130,28 +130,3 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: minor
-  deploy:
-    needs: test
-    if: ${{ github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
-      - name: deploy to heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: |
-          gem install dpl && gem install faraday -v '~> 1.8.0'
-          dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}
