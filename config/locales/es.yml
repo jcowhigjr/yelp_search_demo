@@ -92,7 +92,7 @@ es:
       edit: Buscar
       index: Buscar
       new: Nueva Búsqueda
-      placeholder: Ingrese un término de búsqueda (ej. tacos)
+      placeholder: Buscar cafeterías...
       results: "¡Búsquedas mejor calificadas para %{query} cerca de ti!"
       show: Buscar
       update: Buscar
@@ -126,7 +126,7 @@ es:
       edit: Búsqueda
       index: Búsqueda
       new: Nueva búsqueda
-      placeholder: Ingrese un término de búsqueda (ej. tacos)
+      placeholder: Buscar cafeterías...
       results: "¡Búsquedas mejor calificadas para %{query} cerca de usted!"
       show: Búsqueda
       update: Búsqueda
