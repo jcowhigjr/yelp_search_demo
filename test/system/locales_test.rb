@@ -41,4 +41,26 @@ class LocalesTest < ApplicationSystemTestCase
 
      assert_equal(:en, I18n.locale)
   end
+
+  test 'search placeholder is correctly translated' do
+    # Test root path (should default to English)
+    visit '/'
+
+    assert_selector "input[placeholder='Search for coffee shops...']"
+
+    # Test explicit English path
+    visit '/en'
+
+    assert_selector "input[placeholder='Search for coffee shops...']"
+
+    # Test Spanish
+    visit '/es'
+
+    assert_selector "input[placeholder='Buscar cafeterías...']"
+
+    # Test French
+    visit '/fr'
+
+    assert_selector "input[placeholder='Rechercher des cafés...']"
+  end
 end

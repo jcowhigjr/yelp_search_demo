@@ -92,7 +92,7 @@ fr:
       edit: Rechercher
       index: Rechercher
       new: Nouvelle Recherche
-      placeholder: Entrez un terme de recherche (ex. tacos)
+      placeholder: Rechercher des cafés...
       results: Meilleures recherches pour %{query} près de chez vous !
       show: Rechercher
       update: Rechercher
@@ -126,7 +126,7 @@ fr:
       edit: Chercher
       index: Chercher
       new: Nouvelle recherche
-      placeholder: Entrez un terme de recherche (ex. tacos)
+      placeholder: Rechercher des cafés...
       results: Recherches les mieux notées pour %{query} près de chez vous !
       show: Chercher
       update: Chercher
