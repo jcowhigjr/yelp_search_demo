@@ -9,5 +9,8 @@
   "scripts": {
     "lint": "prettier --write",
     "lint:check": "prettier --check"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10"
   }
 }
