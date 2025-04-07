@@ -2,7 +2,9 @@
   "rubyTestExplorer.logpanel": true,
   "rubyTestExplorer.testFramework": "minitest",
   "autoHide.autoHidePanel": false,
-  "i18n-ally.localesPaths": ["config/locales"],
+  "i18n-ally.localesPaths": [
+    "config/locales"
+  ],
   "cSpell.enableFiletypes": [
     "!asciidoc",
     "!c",
@@ -39,7 +41,13 @@
     "https://json.schemastore.org/github-workflow.json": "file:///Users/temp/src/ruby/jitter/.github/workflows/auto-merge.yml"
   },
   "i18n-ally.keystyle": "nested",
-  "cSpell.words": ["coffeeshop", "rbprettier"],
+  "cSpell.words": [
+    "coffeeshop",
+    "rbprettier"
+  ],
   "ruby.interpreter.commandPath": "/path/to/your/script/ruby",
-  "autoHide.autoHideSideBar": false
+  "autoHide.autoHideSideBar": false,
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Users/temp/.local/share/mise/shims/node"
+  }
 }
