@@ -91,8 +91,8 @@ class SearchesTest < ApplicationSystemTestCase
     # Verify we have some content on the results page
     assert_selector('div, section, article', wait: 10)
     
-    # Add a small delay to ensure the test completes successfully
-    sleep 1
+    # Wait for a specific element to ensure the test completes successfully
+    assert_selector('div, section, article', wait: 5)
   end
 
 end
