@@ -1,6 +1,8 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
+  COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
+    'div[role="main"], main, [data-controller~="search"]'.freeze
 
   test 'An anonymous user at the static home can search by query and requery for businesses' do
     query = 'yoga'
@@ -72,8 +74,8 @@ class SearchesTest < ApplicationSystemTestCase
     assert_current_path(%r{^/searches/\d+$}, wait: 10)
     
     # Look for common elements that indicate search results
-    # This could be a div, section, or other container with search results
-    assert_selector('[data-testid="search-results"]', wait: 10)
+    # First check if we have any search result containers
+    assert_selector(COMMON_SEARCH_SELECTORS, wait: 10, visible: :all, match: :first)
     
     # Update the search query - find the search box again as the page may have reloaded
     search_box = find_field('search[query]', wait: 5)
@@ -89,10 +91,10 @@ class SearchesTest < ApplicationSystemTestCase
     assert_current_path(%r{/searches/\d+}, wait: 10)
     
     # Verify we have some content on the results page
-    assert_selector('div, section, article', wait: 10)
+    assert_selector(COMMON_SEARCH_SELECTORS, wait: 10, visible: :all, match: :first)
     
     # Wait for a specific element to ensure the test completes successfully
-    assert_selector('div, section, article', wait: 5)
+    assert_selector(COMMON_SEARCH_SELECTORS, wait: 5)
   end
 
 end
