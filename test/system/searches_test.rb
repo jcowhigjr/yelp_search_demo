@@ -69,11 +69,11 @@ class SearchesTest < ApplicationSystemTestCase
     search_box.send_keys(:enter)
     
     # Wait for the URL to change, indicating a navigation occurred
-    assert_current_path(%r{/searches/\d+}, wait: 10)
+    assert_current_path(%r{^/searches/\d+$}, wait: 10)
     
     # Look for common elements that indicate search results
     # This could be a div, section, or other container with search results
-    assert_selector('div, section, article', wait: 10)
+    assert_selector('[data-testid="search-results"]', wait: 10)
     
     # Update the search query - find the search box again as the page may have reloaded
     search_box = find_field('search[query]', wait: 5)
