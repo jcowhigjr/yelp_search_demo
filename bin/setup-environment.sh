@@ -66,12 +66,6 @@ export PATH="${HOME}/.local/share/mise/shims:$PATH"
 if [ -f /.dockerenv ]; then
     echo "Initializing container environment..."
     corepack enable
-    lefthook install
 fi
-
-##TODO: consider if the reset of project setup should be in this script
-bin/setup
-yarn install
-lefthook run fixer
 
 exec "$@"

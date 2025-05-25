@@ -23,18 +23,8 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.next.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby 3
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
-        env:
-          BUNDLE_GEMFILE: Gemfile.next
+      - name: Setup Environment via mise
+        run: bash bin/setup-environment.sh
       - name: Build next and unit test
         env:
           RAILS_ENV: test
@@ -42,10 +32,9 @@ jobs:
           CI: true
         continue-on-error: false
         run: |
-          # should update dependabot to manage the Gemfile.next.lock
-          bin/setup-next
-          next rails test:prepare --trace
-          next rails test
+          mise exec -- bin/setup-next
+          mise exec -- next rails test:prepare --trace
+          mise exec -- next rails test
       - name: system-test-next
         id: system-test-next
         continue-on-error: false
@@ -54,36 +43,25 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise exec -- next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
   test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
-      - name: brakeman
-        run: |
-          gem install brakeman
-          brakeman --no-pager --quiet
+      - name: Setup Environment via mise
+        run: bash bin/setup-environment.sh
+      - name: Run Brakeman
+        run: mise run brakeman
       - name: Build and run unit-tests
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          bin/setup
-          # test prepare required for tailwind css file required in application erb
-          bin/rails test:prepare --trace
-          bin/rails test
+          mise run setup
+          mise run test-prepare
+          mise run test
       - name: system-tests
         id: system-test
         continue-on-error: true # make the step always success and set status later
@@ -92,7 +70,7 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise run test-system
       - name: system-test-retry
         id: system-test-retry-1
         continue-on-error: true # make the step always success and set status later
@@ -101,7 +79,7 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
-          bin/rails test:system --verbose HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise run test-system -- --verbose
       - name: Upload failed system test images
         uses: actions/upload-artifact@v4
         if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
@@ -136,20 +114,10 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
+      - name: Setup Environment via mise
+        run: bash bin/setup-environment.sh
       - name: deploy to heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: |
-          gem install dpl && gem install faraday -v '~> 1.8.0'
-          dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}
+        run: mise exec -- bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}

@@ -12,3 +12,75 @@ GIT_PAGER = "cat"
 # Container-specific settings
 experimental = true
 legacy_version_file = false
+
+[tasks.setup]
+description = "Run development setup script"
+command = "bin/setup"
+category = ["Setup"]
+
+[tasks.test]
+description = "Run unit and integration tests"
+command = "bin/rails test"
+category = ["Testing"]
+depends_on = ["test-prepare"] # Assuming test:prepare is still needed
+
+[tasks.test-prepare]
+description = "Prepare test database"
+command = "bin/rails test:prepare --trace"
+category = ["Testing"]
+
+[tasks.test-system]
+description = "Run system tests"
+command = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+category = ["Testing"]
+depends_on = ["test-prepare"]
+
+[tasks.brakeman]
+description = "Run Brakeman security scanner"
+command = "bundle exec brakeman --no-pager --quiet"
+category = ["Linting", "Security"]
+
+# Lefthook should ideally be the primary interface for linting and fixing if it's configured.
+# The following tasks assume direct execution or can be replaced by lefthook tasks.
+# For now, let's define them directly and they can be switched to lefthook later if desired.
+
+[tasks.lint-ruby]
+description = "Lint Ruby code with RuboCop"
+command = "bundle exec rubocop"
+category = ["Linting"]
+
+[tasks.lint-js] # Assuming package.json's lint:check is for JS/TS
+description = "Lint JavaScript/TypeScript code with Prettier"
+command = "yarn run lint:check" # from package.json "lint:check": "prettier --check"
+category = ["Linting"]
+
+[tasks.lint]
+description = "Run all linters (Ruby, JS)"
+# This could also be 'lefthook run lint' if lefthook is set up to run these.
+# For now, creating a compound task. Mise might not support command arrays directly in basic tasks.
+# A small wrapper script or using mise's scripting capabilities might be needed for complex sequences.
+# For simplicity, we'll list them, and the user can run them sequentially or use a tool like lefthook.
+# Or, define it as a sequence if the mise version supports it.
+# For now, let's make it a placeholder or a script.
+# command = "bundle exec rubocop && yarn run lint:check" # This syntax might need `mise x -- sh -c "..."`
+command = "sh -c 'bundle exec rubocop && yarn run lint:check'" # Using sh -c for multiple commands
+category = ["Linting"]
+alias = ["l"]
+
+
+[tasks.fix-ruby]
+description = "Auto-fix Ruby code with RuboCop"
+command = "bundle exec rubocop -A"
+category = ["Fixing"]
+
+[tasks.fix-js] # Assuming package.json's lint is for JS/TS auto-fix
+description = "Auto-fix JavaScript/TypeScript code with Prettier"
+command = "yarn run lint" # from package.json "lint": "prettier --write"
+category = ["Fixing"]
+
+[tasks.fix]
+description = "Run all auto-fixers (Ruby, JS)"
+# command = "bundle exec rubocop -A && yarn run lint" # Similar to lint, might need sh -c
+command = "sh -c 'bundle exec rubocop -A && yarn run lint'"
+category = ["Fixing"]
+alias = ["f"]

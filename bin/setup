@@ -9,13 +9,21 @@ def system!(*args)
 end
 
 FileUtils.chdir APP_ROOT do
+  system! "bash bin/setup-environment.sh"
+
+  puts "\n== Installing Node.js dependencies =="
+  system! "mise exec -- yarn install --frozen-lockfile"
+
+  puts "\n== Setting up Git hooks =="
+  system! "mise exec -- lefthook install"
+
   # This script is a way to set up or update your development environment automatically.
   # This script is idempotent, so that you can run it at any time and get an expectable outcome.
   # Add necessary setup steps to this file.
 
   puts "== Installing dependencies =="
-  system! "gem install bundler --conservative"
-  system("bundle check") || system!("bundle install")
+  system! "mise exec -- gem install bundler --conservative"
+  system("mise exec -- bundle check") || system!("mise exec -- bundle install")
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
