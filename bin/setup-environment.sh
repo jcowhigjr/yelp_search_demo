@@ -30,8 +30,8 @@ fi
 if ! command -v mise &>/dev/null; then
     curl -fsSL https://mise.run | bash -s -- --version latest 2>&1
     export PATH="$HOME/.local/bin:$PATH"
-    echo "eval \"\$(/root/.local/bin/mise activate bash)\"" >>~/.bashrc
-    eval "$(/root/.local/bin/mise activate bash)"
+    echo "eval \"\$($HOME/.local/bin/mise activate bash)\"" >>~/.bashrc
+    eval "\$($HOME/.local/bin/mise activate bash)"
     mise settings experimental=true
 fi
 

@@ -1,7 +1,7 @@
 [tools]
-node = "lts"  # Pinned to Node 20 LTS (20.11.1)
+node = { version = "lts" } # Pinned to Node 20 LTS (20.11.1)
 # ruby = "3.4.1"  # Removed as per PR 3 Option A
-yarn = "4.0.2"  # Explicit version from setup script
+yarn = { version = "4.0.2" } # Explicit version from setup script
 lefthook = "1.10.10"
 
 [env]
