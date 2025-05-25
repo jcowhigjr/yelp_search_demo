@@ -18,14 +18,41 @@ pre-push:
     rails-tests:
       tags: backend tests
       run: |
-        echo "Running Rails tests..."
-        CI=true RAILS_ENV=test bin/setup --skip-server &&
-        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
+        echo "🚀 Setting up test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+          echo "❌ Failed to set up test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing test database..."
+        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare test database"
+          exit 1
+        fi
+        
+        echo "🧪 Running tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test; then
+          echo "❌ Tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All tests passed"
     test-next:
       tags: backend
-      run: CI=true RAILS_ENV=test bin/setup-next &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+      run: |
+        echo "🚀 Setting up next test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup-next; then
+          echo "❌ Failed to set up next test environment"
+          exit 1
+        fi
+        
+        echo "🧪 Running next tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test; then
+          echo "❌ Next tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All next tests passed"
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -45,9 +72,26 @@ pre-push:
       run: bundle exec brakeman --no-pager
     rails-system-tests:
       tags: backend tests
-      run: CI=true RAILS_ENV=test bin/setup --skip-server &&
-        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
+      run: |
+        echo "🚀 Setting up system test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+          echo "❌ Failed to set up system test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing test database..."
+        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare test database"
+          exit 1
+        fi
+        
+        echo "🧪 Running system tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system; then
+          echo "❌ System tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All system tests passed"
     verify_ci_ready:
       run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
       tags: ci
