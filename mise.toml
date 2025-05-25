@@ -1,6 +1,6 @@
 [tools]
 node = "lts"  # Pinned to Node 20 LTS (20.11.1)
-ruby = "3.4.1"  # Matches Gemfile's ~> 3.4.1
+# ruby = "3.4.1"  # Removed as per PR 3 Option A
 yarn = "4.0.2"  # Explicit version from setup script
 lefthook = "1.10.10"
 
@@ -11,59 +11,81 @@ GIT_PAGER = "cat"
 [settings]
 # Container-specific settings
 experimental = true
-legacy_version_file = false
+legacy_version_file = true # Changed as per PR 3 Option A
 
 [tasks.setup]
 description = "Run development setup script"
 command = "bin/setup"
 category = ["Setup"]
 
-[tasks.test]
-description = "Run unit and integration tests"
-command = "bin/rails test"
-category = ["Testing"]
-depends_on = ["test-prepare"] # Assuming test:prepare is still needed
-
+# Tasks for the 'test' job in main.yml
 [tasks.test-prepare]
-description = "Prepare test database"
+description = "Prepare test database for main tests"
 command = "bin/rails test:prepare --trace"
 category = ["Testing"]
 
+[tasks.test] # Renamed from 'test' in previous version to avoid conflict if 'test' is a general group
+description = "Run unit and integration tests for main application"
+command = "bin/rails test"
+category = ["Testing"]
+depends_on = ["test-prepare"]
+
 [tasks.test-system]
-description = "Run system tests"
+description = "Run system tests for main application"
 command = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
 category = ["Testing"]
 depends_on = ["test-prepare"]
+
+# Tasks for the 'test-next' job in main.yml
+[tasks.setup-next]
+description = "Run setup script for 'next' environment"
+command = "bin/setup-next"
+category = ["Setup", "Next"]
+
+[tasks.test-next-prepare]
+description = "Prepare test database for 'next' environment"
+command = "next rails test:prepare --trace"
+category = ["Testing", "Next"]
+
+[tasks.test-next-run] # Explicit name to differentiate from main 'test' task
+description = "Run unit and integration tests for 'next' environment"
+command = "next rails test"
+category = ["Testing", "Next"]
+depends_on = ["test-next-prepare"]
+
+[tasks.test-next-system]
+description = "Run system tests for 'next' environment"
+command = "next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+category = ["Testing", "Next"]
+depends_on = ["test-next-prepare"]
+
+
+# Deployment tasks
+[tasks.deploy-heroku]
+description = "Deploy application to Heroku"
+command = "bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}"
+category = ["Deployment"]
+env = { HEROKU_API_KEY = "", HEROKU_APP_NAME = "" } # Declares that these vars are used, actual values from shell
+
 
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
 command = "bundle exec brakeman --no-pager --quiet"
 category = ["Linting", "Security"]
 
-# Lefthook should ideally be the primary interface for linting and fixing if it's configured.
-# The following tasks assume direct execution or can be replaced by lefthook tasks.
-# For now, let's define them directly and they can be switched to lefthook later if desired.
-
 [tasks.lint-ruby]
 description = "Lint Ruby code with RuboCop"
 command = "bundle exec rubocop"
 category = ["Linting"]
 
-[tasks.lint-js] # Assuming package.json's lint:check is for JS/TS
+[tasks.lint-js]
 description = "Lint JavaScript/TypeScript code with Prettier"
-command = "yarn run lint:check" # from package.json "lint:check": "prettier --check"
+command = "yarn run lint:check"
 category = ["Linting"]
 
 [tasks.lint]
 description = "Run all linters (Ruby, JS)"
-# This could also be 'lefthook run lint' if lefthook is set up to run these.
-# For now, creating a compound task. Mise might not support command arrays directly in basic tasks.
-# A small wrapper script or using mise's scripting capabilities might be needed for complex sequences.
-# For simplicity, we'll list them, and the user can run them sequentially or use a tool like lefthook.
-# Or, define it as a sequence if the mise version supports it.
-# For now, let's make it a placeholder or a script.
-# command = "bundle exec rubocop && yarn run lint:check" # This syntax might need `mise x -- sh -c "..."`
-command = "sh -c 'bundle exec rubocop && yarn run lint:check'" # Using sh -c for multiple commands
+command = "sh -c 'bundle exec rubocop && yarn run lint:check'"
 category = ["Linting"]
 alias = ["l"]
 
@@ -73,14 +95,13 @@ description = "Auto-fix Ruby code with RuboCop"
 command = "bundle exec rubocop -A"
 category = ["Fixing"]
 
-[tasks.fix-js] # Assuming package.json's lint is for JS/TS auto-fix
+[tasks.fix-js]
 description = "Auto-fix JavaScript/TypeScript code with Prettier"
-command = "yarn run lint" # from package.json "lint": "prettier --write"
+command = "yarn run lint"
 category = ["Fixing"]
 
 [tasks.fix]
 description = "Run all auto-fixers (Ruby, JS)"
-# command = "bundle exec rubocop -A && yarn run lint" # Similar to lint, might need sh -c
 command = "sh -c 'bundle exec rubocop -A && yarn run lint'"
 category = ["Fixing"]
 alias = ["f"]
