@@ -15,6 +15,13 @@ pre-push:
       exit 1
     fi
   commands:
+    rails-tests:
+      tags: backend tests
+      run: |
+        echo "Running Rails tests..."
+        CI=true RAILS_ENV=test bin/setup --skip-server &&
+        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
+        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
     test-next:
       tags: backend
       run: CI=true RAILS_ENV=test bin/setup-next &&
@@ -50,6 +57,17 @@ pre-commit:
   pre-command: git stash --keep-index
   parallel: false
   commands:
+    validate-actions:
+      description: 'Validate GitHub Actions workflow files'
+      glob: '.github/workflows/*.yml'
+      run: |
+        echo "Validating GitHub Actions workflows..."
+        for file in {staged_files}; do
+          echo "• Validating $file"
+          # Use act directly with the correct image configuration
+          act --dryrun -W "$file" -P ubuntu-latest=node:20 || exit 1
+        done
+        echo "✓ All workflow files are valid"
     js:
       glob: '*.{js,ts}'
       run: yarn prettier --write {staged_files}
@@ -71,11 +89,8 @@ pre-commit:
       glob: '*.yml'
       run: bundle exec yaml-lint {staged_files}
       stage_fixed: true
-    rails-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test bin/setup --skip-server &&
-        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
+    # rails-tests are run in pre-push instead of pre-commit for better performance
+    # and to avoid breaking the commit flow with potentially long-running tests
     verify_environment:
       run: bin/container-healthcheck.sh && { echo "✓ Environment valid"; exit 0; } || { echo "✗ Environment invalid - run bin/setup-environment.sh"; exit 1; }
       tags: validation

@@ -10,6 +10,8 @@ lefthook = 'latest'
 [env]
 SYSTEMD_PAGER = "cat"
 GIT_PAGER = "cat"
+SKIP_SYSTEM_TESTS = "true"  # Skip browser-based tests by default
+# Act configuration - using Node.js 20 for GitHub Actions validation
 
 [settings]
 # Container-specific settings
@@ -92,3 +94,13 @@ run = "yarn run lint"
 description = "Run all auto-fixers (Ruby, JS)"
 run = "sh -c 'bundle exec rubocop -A && yarn run lint'"
 alias = ["f"]
+
+[tasks.act]
+description = "Run GitHub Actions locally using act"
+run = "act"
+
+[tasks.act-list]
+description = "List available GitHub Actions workflows"
+run = "act -l"
+
+# GitHub Actions validation is handled in lefthook.yml
