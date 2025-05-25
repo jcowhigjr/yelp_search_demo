@@ -145,5 +145,8 @@ gem 'tailwindcss-rails', '~> 2.7'
 gem 'flipper'
 
 gem 'dotenv'
-gem 'dpl', require: false
-gem 'faraday', '~> 1.8.0', require: false
+
+group :development, :ci do
+  gem 'dpl', require: false
+  gem 'faraday', '~> 1.8.0', require: false
+end
