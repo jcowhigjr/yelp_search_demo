@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - experiment-mise-github-action
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
