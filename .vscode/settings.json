@@ -46,5 +46,8 @@
     "rbprettier"
   ],
   "ruby.interpreter.commandPath": "/path/to/your/script/ruby",
-  "autoHide.autoHideSideBar": false
+  "autoHide.autoHideSideBar": false,
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Users/temp/.local/share/mise/shims/node"
+  }
 }

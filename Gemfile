@@ -46,7 +46,7 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'sqlite3', '~> 2.0', require: false, group: :development
+    gem 'sqlite3', '~> 2.6', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -140,7 +140,7 @@ group :test do
   # gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 2.7'
+gem 'tailwindcss-rails', '~> 4.2'
 
 gem 'flipper'
 

@@ -91,11 +91,11 @@ bin/rails hotwire:install
 remove webpacker stuff rm bin/webpack-dev-server config/webpack*app/javascript/pack*
 run system tests and disable the ujs stuff that broke with -> data-turbo="false" or data: { turbo: false }
 
-# Upgrade to Ruby 3.1, Rails 7 and bundle update
+# Upgrade to Ruby , Rails , and bundle update
 
 Plan is to keep this up to date with the latest version of Ruby Rails and most gems
 
-3.1.0-dev
+
 
 bundle update
 
@@ -171,8 +171,8 @@ git add development key is probably safe
 
 # Mobile vs Desktop
 
-generally I develop toward desktop but lefthook runs the same tests as CI/CD focus on mobile.
-to debug mobile tests:
+generally I develop toward mobile
+to debug tests:
 RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' be guard
 
 # Propshaft assets <https://github.com/rails/propshaft/issues/36#issuecomment-982933727>
@@ -187,8 +187,7 @@ To solve that, run rails assets:clobber. It will remove all files from public/as
 # FontAwesome
 
 bin/importmap pin fontawesome
-Pinning "fontawesome" to <https://ga.jspm.io/npm:fontawesome@6.1.1/index.js>
-
+Pinning "fontawesome" to the latest
 if fontawesome icons are the very large, try this:
 bin/setup
 
@@ -197,7 +196,6 @@ bin/setup
 # importmaps
 <https://github.com/hotwired/stimulus-rails/pull/24>
 
-<https://guillaumebriday.fr/introducing-stimulus-components>
 
 # Github
 
@@ -210,7 +208,7 @@ heroku pipelines will deploy a preview instance on a PR that has passed CI
 
 # Environment variables
 
-RAILS_ENV test/development/production are the only ones set externally
+RAILS_ENV test/development/production are the only ones set externally everything is set in .env files for that environment
 
 # Secrets
 
@@ -218,12 +216,10 @@ An environment variable stored in github and heroku RAILS\_**ENVIRONMENT**\_KEY
 is used to decrypt those secretes stored in encrypted credential files for the api's used
 
 # if there were more going on i'd never rebase but there isn't
+Using git flow but integration branch is develop, prod release branch is develop for now.
 
-roughly using git flow but integration branch is develop, prod release branch is master (no prod though really)
 
-# two feature branches going at once
-
-# if one gets merged first (typically a squash commit)
+# PRs are merged with a squash commit if github workflow main.yml checks pass
 
 # stage anything that seems promising
 
@@ -233,10 +229,10 @@ git add {files}
 
 git stash push --keep-index
 
-# pull develop locally
+# pull --merge develop into current branch to stay in sync
 
-git co develop
-git pull
+git merge --no-commit develop
+git stash apply
 
 # find the feature branch again
 
@@ -319,7 +315,7 @@ touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 Dependabot alerts are resulting in very frequent security updates..
 
-    (1) Update the Gemfile.lock every PR
+    (1) Update the Gemfile.lock and bin/setup-next for Gemfile.next.lock every PR
     (2) Now let dependabot handle it automatically as well.
 
 Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.

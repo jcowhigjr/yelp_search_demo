@@ -8,6 +8,8 @@
 
 name: 'Ruby on Rails CI'
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches:
       - develop
@@ -59,9 +61,10 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          mise run setup
-          mise run test-prepare
-          mise run test
+          mise exec -- bin/setup --skip-server
+          # test prepare required for tailwind css file required in application erb
+          mise exec -- bin/rails test:prepare --trace
+          mise exec -- bin/rails test
       - name: system-tests
         id: system-test
         continue-on-error: true # make the step always success and set status later
@@ -102,7 +105,7 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - uses: fastify/github-action-merge-dependabot@v3.11.0
+      - uses: fastify/github-action-merge-dependabot@v3.11.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: minor
@@ -120,4 +123,4 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: mise exec -- bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}
+        run: mise exec -- bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME

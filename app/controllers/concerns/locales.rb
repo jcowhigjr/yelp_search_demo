@@ -4,8 +4,8 @@ module Locales
   included do
     def set_locale(&)
       locale =
-        if params[:locale].to_s.to_sym.in?(I18n.available_locales)
-          params[:locale]
+        if params[:locale].present?
+          params[:locale].to_s.to_sym.in?(I18n.available_locales) ? params[:locale].to_sym : I18n.default_locale
         else
           I18n.default_locale
         end
