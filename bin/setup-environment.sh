@@ -28,11 +28,20 @@ fi
 
 # Check if mise is installed, otherwise install it
 if ! command -v mise &>/dev/null; then
-    curl -fsSL https://mise.run | bash -s -- --version latest 2>&1
+    echo "mise not found, installing..."
+    curl -fsSL -o /tmp/install-mise.sh https://mise.run
+    bash /tmp/install-mise.sh # Assuming the installer script handles its own flags like --version latest
     export PATH="$HOME/.local/bin:$PATH"
-    echo "eval \"\$($HOME/.local/bin/mise activate bash)\"" >>~/.bashrc
-    eval "\$($HOME/.local/bin/mise activate bash)"
-    mise settings experimental=true
+    export PATH="$HOME/.local/share/mise/shims:$PATH" # Add shims path earlier
+    # Removed .bashrc modification
+    # Removed eval of mise activate bash
+    # Check if mise is now available
+    if ! command -v mise &>/dev/null; then
+        echo "mise installation failed."
+        exit 1
+    fi
+    echo "mise installed. Configuring..."
+    mise settings experimental=true # This should now work if mise is in PATH
 fi
 
 # Add trust command
