@@ -1,8 +1,11 @@
 [tools]
-node = { version = "lts" } # Pinned to Node 20 LTS (20.11.1)
-# ruby = "3.4.1"  # Removed as per PR 3 Option A
-yarn = { version = "4.0.2" } # Explicit version from setup script
-lefthook = "1.10.10"
+node = '22'
+
+# get the ruby version from the .ruby-version file
+ruby = '3.4.4'
+
+yarn = '1.22'
+lefthook = 'latest'
 
 [env]
 SYSTEMD_PAGER = "cat"
@@ -15,93 +18,77 @@ legacy_version_file = true # Changed as per PR 3 Option A
 
 [tasks.setup]
 description = "Run development setup script"
-command = "bin/setup"
-category = ["Setup"]
+run = "bin/setup"
 
 # Tasks for the 'test' job in main.yml
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
-command = "bin/rails test:prepare --trace"
-category = ["Testing"]
+run = "bin/rails test:prepare --trace"
 
 [tasks.test] # Renamed from 'test' in previous version to avoid conflict if 'test' is a general group
 description = "Run unit and integration tests for main application"
-command = "bin/rails test"
-category = ["Testing"]
-depends_on = ["test-prepare"]
+run = "bin/rails test"
+depends = ["test-prepare"]
 
 [tasks.test-system]
 description = "Run system tests for main application"
-command = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
-category = ["Testing"]
-depends_on = ["test-prepare"]
+run = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+depends = ["test-prepare"]
 
 # Tasks for the 'test-next' job in main.yml
 [tasks.setup-next]
 description = "Run setup script for 'next' environment"
-command = "bin/setup-next"
-category = ["Setup", "Next"]
+run = "bin/setup-next"
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
-command = "next rails test:prepare --trace"
-category = ["Testing", "Next"]
+run = "next rails test:prepare --trace"
 
 [tasks.test-next-run] # Explicit name to differentiate from main 'test' task
 description = "Run unit and integration tests for 'next' environment"
-command = "next rails test"
-category = ["Testing", "Next"]
-depends_on = ["test-next-prepare"]
+run = "next rails test"
+depends = ["test-next-prepare"]
 
 [tasks.test-next-system]
 description = "Run system tests for 'next' environment"
-command = "next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
-category = ["Testing", "Next"]
-depends_on = ["test-next-prepare"]
+run = "next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+depends = ["test-next-prepare"]
 
 
 # Deployment tasks
 [tasks.deploy-heroku]
 description = "Deploy application to Heroku"
-command = "bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}"
-category = ["Deployment"]
+run = "bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}"
 env = { HEROKU_API_KEY = "", HEROKU_APP_NAME = "" } # Declares that these vars are used, actual values from shell
 
 
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
-command = "bundle exec brakeman --no-pager --quiet"
-category = ["Linting", "Security"]
+run = "bundle exec brakeman --no-pager --quiet"
 
 [tasks.lint-ruby]
 description = "Lint Ruby code with RuboCop"
-command = "bundle exec rubocop"
-category = ["Linting"]
+run = "bundle exec rubocop"
 
 [tasks.lint-js]
 description = "Lint JavaScript/TypeScript code with Prettier"
-command = "yarn run lint:check"
-category = ["Linting"]
+run = "yarn run lint:check"
 
 [tasks.lint]
 description = "Run all linters (Ruby, JS)"
-command = "sh -c 'bundle exec rubocop && yarn run lint:check'"
-category = ["Linting"]
+run = "sh -c 'bundle exec rubocop && yarn run lint:check'"
 alias = ["l"]
 
 
 [tasks.fix-ruby]
 description = "Auto-fix Ruby code with RuboCop"
-command = "bundle exec rubocop -A"
-category = ["Fixing"]
+run = "bundle exec rubocop -A"
 
 [tasks.fix-js]
 description = "Auto-fix JavaScript/TypeScript code with Prettier"
-command = "yarn run lint"
-category = ["Fixing"]
+run = "yarn run lint"
 
 [tasks.fix]
 description = "Run all auto-fixers (Ruby, JS)"
-command = "sh -c 'bundle exec rubocop -A && yarn run lint'"
-category = ["Fixing"]
+run = "sh -c 'bundle exec rubocop -A && yarn run lint'"
 alias = ["f"]
