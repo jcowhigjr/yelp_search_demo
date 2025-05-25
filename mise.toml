@@ -2,7 +2,7 @@
 node = '22'
 
 # get the ruby version from the .ruby-version file
-ruby = '3.4.4'
+ruby = "3.4"
 
 yarn = '1.22'
 lefthook = 'latest'
