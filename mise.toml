@@ -6,7 +6,6 @@
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
 [tools]
-node = "22.13.1"
 ruby = "3.4.4"
 # Yarn is managed through npm
 # lefthook is installed via Homebrew
