@@ -16,5 +16,9 @@ GIT_PAGER = "cat"
 SKIP_SYSTEM_TESTS = "true"  # Skip browser-based tests by default
 # Act configuration - using Node.js 20 for GitHub Actions validation
 
+[settings]
+# Container-specific settings
+experimental = true
+legacy_version_file = true # Changed as per PR 3 Option A
+
 # All [tasks.*] blocks have been removed for this diagnostic step.
-# The [settings] block was also previously removed.
