@@ -27,7 +27,17 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Setup Environment via mise
+      - name: Cache mise tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/mise/installs # Default mise install path
+          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-mise-
+
+      - name: Setup Environment via mise (Skip Node.js)
+        env:
+          SETUP_SKIP_NODE: "true"
         run: bash bin/setup-environment.sh
       - name: Build next and unit test
         env:
@@ -55,7 +65,17 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Setup Environment via mise
+      - name: Cache mise tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/mise/installs # Default mise install path
+          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-mise-
+
+      - name: Setup Environment via mise (Skip Node.js)
+        env:
+          SETUP_SKIP_NODE: "true"
         run: bash bin/setup-environment.sh
       - name: Run Brakeman
         run: mise run brakeman
@@ -113,20 +133,3 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: minor
-  deploy:
-    needs: test
-    if: ${{ github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
-    environment: staging
-    permissions:
-      contents: read
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: Setup Environment via mise
-        run: bash bin/setup-environment.sh
-      - name: deploy to heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: mise run deploy-heroku

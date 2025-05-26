@@ -104,11 +104,25 @@ fi
 
 # Install project tools as defined in mise.toml
 echo_info "Installing project tools with mise (from $PROJECT_ROOT/mise.toml)..."
-if ! "$MISE_CMD" install; then
+INSTALL_FAILED=0
+if [ "${SETUP_SKIP_NODE:-false}" = "true" ]; then
+  echo_info "SETUP_SKIP_NODE is true. Attempting to install Ruby only."
+  # If you have other non-Node tools in mise.toml that should be installed when skipping Node, add them here:
+  # e.g., "$MISE_CMD" install ruby other_tool_name
+  if ! "$MISE_CMD" install ruby; then # Assuming 'ruby' is the tool name in mise.toml
+    INSTALL_FAILED=1
+  fi
+else
+  if ! "$MISE_CMD" install; then
+    INSTALL_FAILED=1
+  fi
+fi
+
+if [ "$INSTALL_FAILED" -eq 1 ]; then
   echo_error "mise install failed. Check mise.toml and tool plugin availability."
   exit 1
 fi
-echo_info "All mise-managed tools are installed/updated."
+echo_info "All selected mise-managed tools are installed/updated."
 
 # Refresh mise shims
 echo_info "Refreshing mise shims..."
@@ -131,9 +145,11 @@ echo_info "Mise environment setup complete."
 
 # Log key tool versions for verification (using the found mise)
 echo_info "Key tool versions (via mise exec):"
-"$MISE_CMD" exec -- node --version
 "$MISE_CMD" exec -- ruby --version
-"$MISE_CMD" exec -- yarn --version
+if [ "${SETUP_SKIP_NODE:-false}" != "true" ]; then
+  "$MISE_CMD" exec -- node --version
+  "$MISE_CMD" exec -- yarn --version # Assuming yarn is tied to Node.js presence
+fi
 
 if [ -f /.dockerenv ]; then
     echo_info "Initializing container-specific environment settings..."

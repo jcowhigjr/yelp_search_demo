@@ -61,13 +61,6 @@ run = "next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=t
 depends = ["test-next-prepare"]
 
 
-# Deployment tasks
-[tasks.deploy-heroku]
-description = "Deploy application to Heroku"
-run = "bundle exec dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}"
-env = { HEROKU_API_KEY = "", HEROKU_APP_NAME = "" } # Declares that these vars are used, actual values from shell
-
-
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
 run = "bundle exec brakeman --no-pager --quiet"
@@ -76,13 +69,9 @@ run = "bundle exec brakeman --no-pager --quiet"
 description = "Lint Ruby code with RuboCop"
 run = "bundle exec rubocop"
 
-[tasks.lint-js]
-description = "Lint JavaScript/TypeScript code with Prettier"
-run = "yarn run lint:check"
-
 [tasks.lint]
-description = "Run all linters (Ruby, JS)"
-run = "sh -c 'bundle exec rubocop && yarn run lint:check'"
+description = "Run Ruby linter (RuboCop)"
+run = "bundle exec rubocop"
 alias = ["l"]
 
 
@@ -90,13 +79,9 @@ alias = ["l"]
 description = "Auto-fix Ruby code with RuboCop"
 run = "bundle exec rubocop -A"
 
-[tasks.fix-js]
-description = "Auto-fix JavaScript/TypeScript code with Prettier"
-run = "yarn run lint"
-
 [tasks.fix]
-description = "Run all auto-fixers (Ruby, JS)"
-run = "sh -c 'bundle exec rubocop -A && yarn run lint'"
+description = "Run Ruby auto-fixer (RuboCop)"
+run = "bundle exec rubocop -A"
 alias = ["f"]
 
 [tasks.act]

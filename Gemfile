@@ -146,6 +146,5 @@ gem 'flipper'
 gem 'dotenv'
 
 group :development, :ci do
-  gem 'dpl', require: false
   gem 'faraday', '~> 1.8.0', require: false
 end
