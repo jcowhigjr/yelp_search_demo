@@ -121,12 +121,6 @@ GEM
     debug_inspector (1.2.0)
     domain_name (0.6.20240107)
     dotenv (3.1.8)
-    dpl (2.0.5.4)
-      logger (~> 1.7.0)
-      net-http (~> 0.6.0)
-      travis-cl
-      travis-packagecloud-ruby
-      uri (~> 1.0.2)
     drb (2.2.3)
     easy_translate (0.5.1)
       thread
@@ -143,7 +137,6 @@ GEM
     evil_systems (1.1.5)
       capybara
       zeitwerk (>= 2)
-    excon (0.112.0)
     faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -232,7 +225,6 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.12.2)
-    json_pure (2.8.1)
     jwt (2.10.1)
       base64
     language_server-protocol (3.17.0.5)
@@ -259,7 +251,6 @@ GEM
     marcel (1.0.4)
     matrix (0.4.2)
     method_source (1.1.0)
-    mime (0.4.4)
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
@@ -271,8 +262,6 @@ GEM
       bigdecimal (~> 3.1)
     multipart-post (2.4.1)
     nenv (0.3.0)
-    net-http (0.6.0)
-      uri
     net-imap (0.5.8)
       date
       net-protocol
@@ -409,7 +398,6 @@ GEM
       erb
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
-    regstry (1.0.15)
     reline (0.6.1)
       io-console (~> 0.5)
     rest-client (2.1.0)
@@ -499,12 +487,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.6.0)
     timeout (0.4.3)
-    travis-cl (1.2.4)
-      regstry (~> 1.0)
-    travis-packagecloud-ruby (1.1.0)
-      excon (~> 0.40)
-      json_pure (~> 2)
-      mime (~> 0.4)
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
@@ -550,7 +532,6 @@ DEPENDENCIES
   cuprite
   debug
   dotenv
-  dpl
   easy_translate
   erb_lint
   evil_systems
