@@ -46,29 +46,6 @@ cd "$APP_ROOT" || exit 1
   fi
   echo "INFO: Using MISE executable: $MISE_EXEC_PATH"
 
-  echo "\n== Installing Node.js dependencies =="
-  # Ensure Node.js and npm are properly set up
-  echo "\n== Setting up Node.js and npm =="
-  node_version=$(node --version)
-  npm_version=$(npm --version)
-  echo "Using Node.js: $node_version"
-  echo "Using npm: $npm_version"
-
-  # Install yarn using the system Node.js and npm
-  echo "\n== Installing Yarn =="
-  
-  # Yarn is now expected to be installed and managed by 'mise' via setup-environment.sh
-  # We can verify its presence:
-  echo "\n== Verifying Yarn version (should be mise-managed) =="
-  echo "▶ Direct call: $MISE_EXEC_PATH exec -- yarn --version"
-  if ! "$MISE_EXEC_PATH" exec -- yarn --version; then
-    echo "❌ Command failed (direct call): $MISE_EXEC_PATH exec -- yarn --version"
-    echo "Working directory: $(pwd)"
-    exit 1
-  fi
-
-  echo "\n== Installing Node.js dependencies =="
-  system! "$MISE_EXEC_PATH" exec -- yarn install --immutable
 
   echo "\n== Setting up Git hooks =="
   system! "$MISE_EXEC_PATH" exec -- lefthook install

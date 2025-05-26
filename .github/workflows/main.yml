@@ -77,6 +77,12 @@ jobs:
         env:
           SETUP_SKIP_NODE: "true"
         run: bash bin/setup-environment.sh
+      - name: Setup Application (gems, db, etc.)
+        env:
+          RAILS_ENV: test # Ensure RAILS_ENV is set if bin/setup needs it
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        run: mise run setup -- --skip-server # Run application setup once
       - name: Run Brakeman
         run: mise run brakeman
       - name: Build and run unit-tests
@@ -85,7 +91,6 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          mise run setup -- --skip-server
           # test prepare required for tailwind css file required in application erb
           mise run test-prepare
           mise run test
