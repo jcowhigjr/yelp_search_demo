@@ -1,11 +1,15 @@
+# WARNING: THIS FILE MUST BE MANAGED WITH MISE CLI
+# THIS IS THE SOURCE OF TRUTH FOR THE VERSIONS OF THE TOOLS
+# THE VERSIONS OF THE TOOLS SHOULD ONLY BE SPECIFIED HERE NOT IN .ruby-version or .node-version
+# USE THE BEST MISE BACKEND FOR YOUR OS
+# please remove flaky backends and tools from here
+# ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
+
 [tools]
-node = '22'
-
-# get the ruby version from the .ruby-version file
-ruby = "3.4"
-
-yarn = '1.22'
-lefthook = 'latest'
+node = "22.13.1"
+ruby = "3.4.4"
+# Yarn is managed through npm
+# lefthook is installed via Homebrew
 
 [env]
 SYSTEMD_PAGER = "cat"
