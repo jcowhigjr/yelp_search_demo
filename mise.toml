@@ -34,4 +34,9 @@ run = "bundle exec brakeman --no-pager --quiet"
 description = "Lint Ruby code with RuboCop"
 run = "bundle exec rubocop"
 
+[tasks.lint]
+description = "Run Ruby linters"
+run = "mise run lint-ruby"
+alias = ["l"]
+
 # Other tasks are still removed
