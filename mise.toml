@@ -25,4 +25,9 @@ legacy_version_file = true # Changed as per PR 3 Option A
 description = "Run development setup script"
 run = "bin/setup"
 
-# All other tasks (brakeman, linting, etc.) are removed for this step.
+[tasks.brakeman]
+description = "Run Brakeman security scanner"
+run = "bundle exec brakeman --no-pager --quiet"
+# depends_on key is entirely removed for this test
+
+# All other tasks (linting, etc.) are removed for this step.
