@@ -1,7 +1,8 @@
 # EXAMPLE USAGE
 # Refer for explanation to following link:
 # https://evilmartians.github.io/lefthook/configuration/no_tty.html
-#
+# SOME COMMANDS RELY ON THE MISE SHIMS BEING ON PATH
+
 shell:
   pty: false
 verbose: false
@@ -30,8 +31,18 @@ pre-push:
           exit 1
         fi
         
-        echo "🧪 Running tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test; then
+        # Set up environment explicitly
+        export PATH="/Users/temp/.local/bin:$PATH"
+        export MISE_SHELL=zsh
+        
+        # Debug output
+        echo "=== Environment ==="
+        echo "PATH: $PATH"
+        echo "Node: $(node --version)"
+        echo "Ruby: $(ruby --version)"
+        
+        # Run tests with simplified environment
+        if ! RAILS_ENV=test bin/rails test; then
           echo "❌ Tests failed"
           exit 1
         fi
@@ -58,7 +69,7 @@ pre-push:
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: yarn npm audit --all
+      run: mise exec -- yarn npm audit --all
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
