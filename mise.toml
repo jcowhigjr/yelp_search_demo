@@ -28,7 +28,6 @@ run = "bin/setup"
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
 run = "bundle exec brakeman --no-pager --quiet"
-# depends_on is still removed
 
 [tasks.lint-ruby]
 description = "Lint Ruby code with RuboCop"
@@ -39,4 +38,6 @@ description = "Run Ruby linters"
 run = "mise run lint-ruby"
 alias = ["l"]
 
-# Other tasks are still removed
+[tasks.test-prepare]
+description = "Prepare test database for main tests"
+run = "bin/rails test:prepare --trace"
