@@ -7,7 +7,8 @@
 
 [tools]
 ruby = "3.4.4"
-# Yarn is managed through npm
+node = "22.13.1"
+yarn = "4.9.1"
 # lefthook is installed via Homebrew
 
 [env]
@@ -63,4 +64,9 @@ run = "next rails test:prepare --trace"
 [tasks.test-next-run]
 description = "Run unit and integration tests for 'next' environment"
 run = "next rails test"
+depends = ["test-next-prepare"]
+
+[tasks.test-next-system]
+description = "Run system tests for 'next' environment"
+run = "next rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
 depends = ["test-next-prepare"]
