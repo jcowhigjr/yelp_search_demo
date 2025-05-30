@@ -1,0 +1,88 @@
+repository_permissions:
+  # Actions: read-only (Covers viewing workflows, runs, artifacts)
+  # If direct workflow file modification is needed and not covered by 'workflows' or 'contents' write, this might need 'read & write'.
+  # However, 'workflows' permission below is set to 'read & write' for updates.
+  actions: read-only
+
+  # Administration: read & write (For creating repositories, forking)
+  administration: read & write
+
+  # Attestations: read-only (For retrieving attestations)
+  attestations: read-only
+
+  # Code scanning alerts: read-only (For viewing alerts)
+  code_scanning_alerts: read-only
+
+  # Codespaces related permissions: read-only (No specific MCP tools listed for write operations)
+  codespaces: read-only
+  codespaces_lifecycle_admin: read-only
+  codespaces_metadata: read-only
+  codespaces_secrets: read-only
+
+  # Commit statuses: read-only (For viewing commit CI/CD statuses)
+  commit_statuses: read-only
+
+  # Contents: read & write (For managing files, branches, commits, tags, releases, and workflow files)
+  contents: read & write
+
+  # Custom properties: read-only
+  custom_properties: read-only
+
+  # Dependabot alerts: read-only
+  dependabot_alerts: read-only
+
+  # Dependabot secrets: read-only
+  dependabot_secrets: read-only
+
+  # Deployments: read-only
+  deployments: read-only
+
+  # Discussions: read-only
+  discussions: read-only
+
+  # Environments: read-only
+  environments: read-only
+
+  # Issues: read & write (For creating, updating, commenting on issues)
+  issues: read & write
+
+  # Merge queues: read-only
+  merge_queues: read-only
+
+  # Metadata: read-only (For searching, listing collaborators, general repo metadata)
+  metadata: read-only
+
+  # Pages: read-only
+  pages: read-only
+
+  # Pull requests: read & write (For creating, updating, merging PRs, managing reviews/comments)
+  pull_requests: read & write
+
+  # Repository security advisories: read-only
+  repository_security_advisories: read-only
+
+  # Secret scanning alerts: read-only (For viewing alerts)
+  secret_scanning_alerts: read-only
+
+  # Secrets (Actions repository secrets): read-only (No MCP tools listed for writing these)
+  secrets: read-only
+
+  # Variables (Actions repository variables): read-only (No MCP tools listed for writing these)
+  variables: read-only
+
+  # Webhooks: read-only
+  webhooks: read-only
+
+  # Workflows: read & write (Specifically for updating GitHub Action workflow files)
+  # This is often achieved via 'contents: read & write' but listed as a distinct capability.
+  workflows: read & write
+
+# Account permissions are typically not configured in a repository-specific file like this,
+# but are set for the Personal Access Token itself in GitHub's UI.
+# For the 'get_me' MCP tool, the token inherently has access to the authenticated user's details.
+# For 'search_users', general authenticated access is used.
+account_permissions:
+  # Example: (These are illustrative and managed at the token level on GitHub)
+  # email_addresses: read-only
+  # profile: read-only
+  user_details: read-only # Placeholder for permissions needed for get_me and search_users
