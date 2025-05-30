@@ -1,6 +1,6 @@
 # DorkBob needs a name
 
-A pretty generic Ruby on Rails 7 application that allows users to find anything near them by topic, utilizing the Yelp Fusion API.
+A pretty generic Ruby on Rails 8 application that allows users to find anything near them by topic, utilizing the Yelp Fusion API.
 
 Use the application at https://dorkbob.herokuapp.com
 
