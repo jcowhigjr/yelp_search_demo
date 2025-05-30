@@ -25,6 +25,10 @@ legacy_version_file = true # Changed as per PR 3 Option A
 description = "Run development setup script"
 run = "bin/setup"
 
+[tasks.setup-next]
+description = "Run setup script for 'next' environment"
+run = "bin/setup-next"
+
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
 run = "bundle exec brakeman --no-pager --quiet"
