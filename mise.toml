@@ -45,3 +45,22 @@ alias = ["l"]
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
 run = "bin/rails test:prepare --trace"
+
+[tasks.test]
+description = "Run unit and integration tests for main application"
+run = "bin/rails test"
+depends = ["test-prepare"]
+
+[tasks.test-system]
+description = "Run system tests for main application"
+run = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+depends = ["test-prepare"]
+
+[tasks.test-next-prepare]
+description = "Prepare test database for 'next' environment"
+run = "next rails test:prepare --trace"
+
+[tasks.test-next-run]
+description = "Run unit and integration tests for 'next' environment"
+run = "next rails test"
+depends = ["test-next-prepare"]
