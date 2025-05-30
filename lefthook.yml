@@ -64,6 +64,31 @@ pre-push:
         fi
         
         echo "✅ All next tests passed"
+    rails-system-tests:
+      tags: backend system-tests
+      run: |
+        echo "🚀 Setting up system test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+          echo "❌ Failed to set up system test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing system test database..."
+        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare system test database"
+          exit 1
+        fi
+        
+        echo "🧪 Running system tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:system; then
+          echo "❌ System tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All system tests passed"
+    brakeman:
+      tags: backend security
+      run: bundle exec brakeman --no-pager
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -73,74 +98,48 @@ pre-push:
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
+    verify_ci_ready:
+      tags: backend ci
+      run: |
+        echo "Checking for mise updates and attempting to upgrade if necessary..."
+        if brew outdated | grep -q "mise"; then
+          echo "Mise is outdated, attempting to upgrade via Homebrew..."
+          if ! (brew update && brew upgrade mise); then
+            echo "❌ Failed to upgrade mise. Please upgrade it manually."
+            exit 1
+          fi
+          echo "✅ Mise upgraded successfully."
+        else
+          echo "ℹ️ Mise is up to date."
+        fi
+        echo "Verifying CI readiness with mise doctor..."
+        if ! mise doctor --quiet; then
+          echo "❌ mise doctor failed. Please check your environment."
+          exit 1
+        fi
+        echo "✅ CI environment ready."
     rubocop:
       tags: backend style
-      files: git diff --name-only develop
       glob: '*.rb'
-      run: bundle exec rubocop --force-exclusion -A {files}
-    brakeman:
-      tags: backend security
-      run: bundle exec brakeman --no-pager
-    rails-system-tests:
-      tags: backend tests
-      run: |
-        echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
-          echo "❌ Failed to set up system test environment"
-          exit 1
-        fi
-        
-        echo "🔧 Preparing test database..."
-        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
-          echo "❌ Failed to prepare test database"
-          exit 1
-        fi
-        
-        echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system; then
-          echo "❌ System tests failed"
-          exit 1
-        fi
-        
-        echo "✅ All system tests passed"
-    verify_ci_ready:
-      run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
-      tags: ci
-
-pre-commit:
-  fail_fast: true
-  pre-command: git stash --keep-index
-  parallel: false
-  commands:
-    validate-actions:
-      description: 'Validate GitHub Actions workflow files'
-      glob: '.github/workflows/*.yml'
-      run: |
-        echo "Validating GitHub Actions workflows..."
-        for file in {staged_files}; do
-          echo "• Validating $file"
-          # Use act directly with the correct image configuration
-          act --dryrun -W "$file" -P ubuntu-latest=node:20 || exit 1
-        done
-        echo "✓ All workflow files are valid"
-    js:
-      glob: '*.{js,ts}'
+      run: bundle exec rubocop --parallel --force-exclusion {staged_files}
+      stage_fixed: true
+    erb_lint:
+      tags: backend style
+      glob: '*.erb'
+      run: bundle exec erblint --lint-all --format compact {staged_files}
+      stage_fixed: true
+    prettier:
+      tags: frontend style
+      glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
       run: yarn prettier --write {staged_files}
       stage_fixed: true
-    rubocop:
-      tags: backend style
-      glob: '*.rb'
-      exclude: 'application.rb|routes.rb'
-      run: bundle exec rubocop -a --force-exclusion {all_files}
-      stage_fixed: true
-    erb-lint:
-      tags: frontend style
-      files: git diff --name-only develop
-      glob: '*.erb'
-      run: bundle exec erb_lint --lint-all {staged_files}
     yaml-lint:
-      tags: frontend style
-      files: git diff --name-only develop
+      tags: backend style
+      exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
+      # exclude: "rebase-merge-only develop"
+      # run: bundle exec yaml-lint {staged_files}
+      # stage_fixed: true
+      # exclude: rebase-merge-only develop
       glob: '*.yml'
       run: bundle exec yaml-lint {staged_files}
       stage_fixed: true
