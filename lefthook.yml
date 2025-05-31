@@ -150,10 +150,6 @@ pre-push:
     yaml-lint:
       tags: backend style
       exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
-      # exclude: "rebase-merge-only develop"
-      # run: bundle exec yaml-lint {staged_files}
-      # stage_fixed: true
-      # exclude: rebase-merge-only develop
       glob: '*.yml'
       run: bundle exec yaml-lint {staged_files}
       stage_fixed: true
