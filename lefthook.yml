@@ -107,15 +107,19 @@ pre-push:
       tags: backend ci
       run: |
         echo "Checking for mise updates and attempting to upgrade if necessary..."
-        if brew outdated | grep -q "mise"; then
-          echo "Mise is outdated, attempting to upgrade via Homebrew..."
-          if ! (brew update && brew upgrade mise); then
-            echo "❌ Failed to upgrade mise. Please upgrade it manually."
-            exit 1
+        if command -v brew >/dev/null 2>&1; then
+          if brew outdated | grep -q "mise"; then
+            echo "Mise is outdated, attempting to upgrade via Homebrew..."
+            if ! (brew update && brew upgrade mise); then
+              echo "❌ Failed to upgrade mise. Please upgrade it manually."
+              exit 1
+            fi
+            echo "✅ Mise upgraded successfully."
+          else
+            echo "ℹ️ Mise is up to date."
           fi
-          echo "✅ Mise upgraded successfully."
         else
-          echo "ℹ️ Mise is up to date."
+          echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
         fi
         echo "Verifying CI readiness with mise doctor..."
         if ! mise doctor --quiet; then
