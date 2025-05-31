@@ -6,6 +6,38 @@
 shell:
   pty: false
 verbose: false
+
+# Pre-commit hooks for branch protection and quality
+pre-commit:
+  commands:
+    protect_main_branches:
+      run: |
+        branch=$(git branch --show-current)
+        if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+          echo "❌ Direct commits to $branch are not allowed!"
+          echo "   Use: lefthook run workflow-new-feature <branch-name>"
+          echo "   Example: lefthook run workflow-new-feature fix/issue-123"
+          exit 1
+        fi
+      skip:
+        - merge
+        - rebase
+    check_branch_sync:
+      run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          local_sha=$(git rev-parse HEAD)
+          remote_sha=$(git rev-parse HEAD@{upstream})
+          if [[ "$local_sha" != "$remote_sha" ]]; then
+            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
+            if [[ $behind_count -gt 0 ]]; then
+              echo "⚠️  Warning: Your branch is $behind_count commits behind remote"
+              echo "   Consider running 'git pull' before committing"
+            fi
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
 pre-push:
   pre-command: git add . && git stash
   post-command: |
@@ -232,3 +264,85 @@ fixer:
 #       runner: ruby
 #     "any.sh":
 #       runner: bash
+
+# Workflow commands for agent coders and developers
+workflow-status:
+  piped: true
+  commands:
+    check_status:
+      run: |
+        echo "🔍 Git Workflow Status Check"
+        echo "=========================="
+        
+        # Check current branch
+        current_branch=$(git branch --show-current)
+        echo "📍 Current branch: $current_branch"
+        
+        # Check if on protected branch
+        if [[ "$current_branch" == "main" || "$current_branch" == "develop" ]]; then
+          echo "⚠️  WARNING: You are on a protected branch ($current_branch)"
+          echo "   Use 'lefthook run workflow-new-feature <branch-name>' to create a feature branch"
+        fi
+        
+        # Check git status
+        echo ""
+        echo "📝 Git Status:"
+        git status --porcelain
+        
+        # Check if behind remote
+        echo ""
+        echo "🔄 Remote sync status:"
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          local_sha=$(git rev-parse HEAD)
+          remote_sha=$(git rev-parse HEAD@{upstream})
+          if [[ "$local_sha" != "$remote_sha" ]]; then
+            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
+            ahead_count=$(git rev-list --count HEAD@{upstream}..HEAD)
+            if [[ $behind_count -gt 0 ]]; then
+              echo "⚠️  Your branch is $behind_count commits behind remote"
+              echo "   Run 'git pull' to sync with remote"
+            fi
+            if [[ $ahead_count -gt 0 ]]; then
+              echo "📤 Your branch is $ahead_count commits ahead of remote"
+            fi
+          else
+            echo "✅ Branch is up to date with remote"
+          fi
+        else
+          echo "ℹ️  No upstream tracking branch set"
+        fi
+
+workflow-new-feature:
+  commands:
+    create_branch:
+      run: |
+        # Get the branch name from LEFTHOOK_0 environment variable (first argument)
+        branch_name="${LEFTHOOK_0:-}"
+        
+        if [[ -z "$branch_name" ]]; then
+          echo "❌ Error: Branch name required"
+          echo "Usage: LEFTHOOK_0=<branch-name> lefthook run workflow-new-feature"
+          echo "Example: LEFTHOOK_0=fix/bug-123 lefthook run workflow-new-feature"
+          exit 1
+        fi
+        
+        echo "🌿 Creating new feature branch: $branch_name"
+        
+        # Check if on main/develop
+        current_branch=$(git branch --show-current)
+        if [[ "$current_branch" != "develop" && "$current_branch" != "main" ]]; then
+          echo "⚠️  Currently on branch: $current_branch"
+          echo "   Switching to develop first..."
+          git checkout develop
+        fi
+        
+        # Pull latest
+        echo "🔄 Pulling latest changes..."
+        git pull origin develop
+        
+        # Create and switch to new branch
+        echo "✅ Creating branch: $branch_name"
+        git checkout -b "$branch_name"
+        
+        echo "🎉 Successfully created and switched to branch: $branch_name"
+        echo "   You can now make your changes and commit them."
