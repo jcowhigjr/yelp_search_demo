@@ -1,16 +1,17 @@
 {
   "name": "jitter",
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "yarn@4.9.1",
   "dependencies": {
     "eslint": "^9.18.0",
     "lint": "^1.1.2",
     "prettier": "^3.4.2"
   },
   "scripts": {
-    "lint": "prettier --write",
-    "lint:check": "prettier --check"
+    "lint": "prettier --write 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'",
+    "lint:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10"
+    "@tailwindcss/forms": "^0.5.10",
+    "tailwindcss": "^4.1.7"
   }
 }
