@@ -106,13 +106,41 @@ fi
 echo_info "Installing project tools with mise (from $PROJECT_ROOT/mise.toml)..."
 INSTALL_FAILED=0
 if [ "${SETUP_SKIP_NODE:-false}" = "true" ]; then
-  echo_info "SETUP_SKIP_NODE is true. Attempting to install Ruby only."
-  # If you have other non-Node tools in mise.toml that should be installed when skipping Node, add them here:
-  # e.g., "$MISE_CMD" install ruby other_tool_name
-  if ! "$MISE_CMD" install ruby; then # Assuming 'ruby' is the tool name in mise.toml
+  echo_info "SETUP_SKIP_NODE is true. Temporarily hiding Node.js ecosystem files to prevent auto-detection."
+  
+  # Temporarily rename Node.js ecosystem files to prevent mise auto-detection
+  TEMP_FILES=()
+  if [ -f "$PROJECT_ROOT/package.json" ]; then
+    mv "$PROJECT_ROOT/package.json" "$PROJECT_ROOT/package.json.temp"
+    TEMP_FILES+=("package.json")
+  fi
+  if [ -f "$PROJECT_ROOT/yarn.lock" ]; then
+    mv "$PROJECT_ROOT/yarn.lock" "$PROJECT_ROOT/yarn.lock.temp"
+    TEMP_FILES+=("yarn.lock")
+  fi
+  if [ -f "$PROJECT_ROOT/.yarnrc.yml" ]; then
+    mv "$PROJECT_ROOT/.yarnrc.yml" "$PROJECT_ROOT/.yarnrc.yml.temp"
+    TEMP_FILES+=(".yarnrc.yml")
+  fi
+  
+  echo_info "Hidden files: ${TEMP_FILES[*]}"
+  echo_info "Installing Ruby only (Node.js ecosystem files temporarily hidden)."
+  
+  # Install only Ruby to avoid Node.js compilation
+  if ! "$MISE_CMD" install ruby; then
     INSTALL_FAILED=1
   fi
+  
+  # Restore the Node.js ecosystem files
+  echo_info "Restoring Node.js ecosystem files..."
+  for file in "${TEMP_FILES[@]}"; do
+    if [ -f "$PROJECT_ROOT/$file.temp" ]; then
+      mv "$PROJECT_ROOT/$file.temp" "$PROJECT_ROOT/$file"
+      echo_info "Restored $file"
+    fi
+  done
 else
+  echo_info "Installing all tools defined in mise.toml..."
   if ! "$MISE_CMD" install; then
     INSTALL_FAILED=1
   fi

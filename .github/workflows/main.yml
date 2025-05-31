@@ -40,6 +40,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Setup Environment via mise
+        env:
+          SETUP_SKIP_NODE: "true"
         run: |
           bash bin/setup-environment.sh
           # Add mise to PATH for subsequent steps
@@ -83,6 +85,8 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Setup Environment via mise
+        env:
+          SETUP_SKIP_NODE: "true"
         run: |
           bash bin/setup-environment.sh
           # Add mise to PATH for subsequent steps

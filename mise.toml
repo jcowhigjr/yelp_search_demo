@@ -7,9 +7,9 @@
 
 [tools]
 ruby = "3.4.4"
-node = "22.13.1"
-yarn = "4.9.1"
 # lefthook is installed via Homebrew
+# Node.js and yarn are NOT included here to prevent CI compilation issues
+# They should be managed separately for local development if needed
 
 [env]
 SYSTEMD_PAGER = "cat"

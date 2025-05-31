@@ -32,7 +32,7 @@ pre-push:
         fi
         
         # Set up environment explicitly
-        export PATH="/Users/temp/.local/bin:$PATH"
+        export PATH="${USER_LOCAL_BIN:-$HOME/.local/bin}:$PATH"
         export MISE_SHELL=zsh
         
         # Debug output
@@ -94,7 +94,12 @@ pre-push:
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: mise exec -- yarn npm audit --all
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          mise exec -- yarn npm audit --all
+        else
+          echo "⚠️ Skipping JavaScript audit: yarn not available"
+        fi
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
@@ -131,7 +136,12 @@ pre-push:
     prettier:
       tags: frontend style
       glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
-      run: yarn prettier --write {staged_files}
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {staged_files}
+        else
+          echo "⚠️ Skipping prettier: yarn not available"
+        fi
       stage_fixed: true
     yaml-lint:
       tags: backend style
@@ -163,7 +173,12 @@ fixer:
       stage_fixed: true
     js-fixer:
       glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
-      run: yarn prettier --write {all_files}
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping JS fixer: yarn not available"
+        fi
       stage_fixed: true
     ruby-prettier:
       glob: 'app/**/*.rb'
@@ -181,7 +196,12 @@ fixer:
       run: bundle exec brakeman --no-pager
     yarn-audit:
       tags: frontend security
-      run: yarn npm audit
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn npm audit
+        else
+          echo "⚠️ Skipping yarn audit: yarn not available"
+        fi
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -191,7 +211,12 @@ fixer:
     yarn-lint:
       tags: frontend updates
       glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
-      run: yarn prettier --write {all_files}
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping yarn lint: yarn not available"
+        fi
       stage_fixed: true
     importmaps-audit:
       tags: frontend security
