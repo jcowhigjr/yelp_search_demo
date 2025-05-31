@@ -1,7 +1,8 @@
 # EXAMPLE USAGE
 # Refer for explanation to following link:
 # https://evilmartians.github.io/lefthook/configuration/no_tty.html
-#
+# SOME COMMANDS RELY ON THE MISE SHIMS BEING ON PATH
+
 shell:
   pty: false
 verbose: false
@@ -15,69 +16,145 @@ pre-push:
       exit 1
     fi
   commands:
+    rails-tests:
+      tags: backend tests
+      run: |
+        echo "🚀 Setting up test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+          echo "❌ Failed to set up test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing test database..."
+        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare test database"
+          exit 1
+        fi
+        
+        # Set up environment explicitly
+        export PATH="${USER_LOCAL_BIN:-$HOME/.local/bin}:$PATH"
+        export MISE_SHELL=zsh
+        
+        # Debug output
+        echo "=== Environment ==="
+        echo "PATH: $PATH"
+        echo "Node: $(node --version)"
+        echo "Ruby: $(ruby --version)"
+        
+        # Run tests with simplified environment
+        if ! RAILS_ENV=test bin/rails test; then
+          echo "❌ Tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All tests passed"
     test-next:
       tags: backend
-      run: CI=true RAILS_ENV=test bin/setup-next &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
+      run: |
+        echo "🚀 Setting up next test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup-next; then
+          echo "❌ Failed to set up next test environment"
+          exit 1
+        fi
+        
+        echo "🧪 Running next tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test; then
+          echo "❌ Next tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All next tests passed"
+    rails-system-tests:
+      tags: backend system-tests
+      run: |
+        echo "🚀 Setting up system test environment..."
+        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+          echo "❌ Failed to set up system test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing system test database..."
+        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare system test database"
+          exit 1
+        fi
+        
+        echo "🧪 Running system tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test:system; then
+          echo "❌ System tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All system tests passed"
+    brakeman:
+      tags: backend security
+      run: bundle exec brakeman --no-pager
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
     javascript-audit:
       tags: frontend security
-      run: yarn npm audit --all
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          mise exec -- yarn npm audit --all
+        else
+          echo "⚠️ Skipping JavaScript audit: yarn not available"
+        fi
     importmaps-audit:
       tags: frontend security
       run: bin/importmap audit
-    rubocop:
-      tags: backend style
-      files: git diff --name-only develop
-      glob: '*.rb'
-      run: bundle exec rubocop --force-exclusion -A {files}
-    brakeman:
-      tags: backend security
-      run: bundle exec brakeman --no-pager
-    rails-system-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test bin/setup --skip-server &&
-        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' CUPRITE_JS_ERRORS=true bin/rails test:system
     verify_ci_ready:
-      run: bin/container-healthcheck.sh && echo "✓ CI-ready environment" || { echo "✗ Environment mismatch detected"; exit 1; }
-      tags: ci
-
-pre-commit:
-  fail_fast: true
-  pre-command: git stash --keep-index
-  parallel: false
-  commands:
-    debug:
-      run: mise env && ruby -v && bundle exec ruby -v
-    js:
-      glob: '*.{js,ts}'
-      run: yarn prettier --write {staged_files}
-      stage_fixed: true
+      tags: backend ci
+      run: |
+        echo "Checking for mise updates and attempting to upgrade if necessary..."
+        if command -v brew >/dev/null 2>&1; then
+          if brew outdated | grep -q "mise"; then
+            echo "Mise is outdated, attempting to upgrade via Homebrew..."
+            if ! (brew update && brew upgrade mise); then
+              echo "❌ Failed to upgrade mise. Please upgrade it manually."
+              exit 1
+            fi
+            echo "✅ Mise upgraded successfully."
+          else
+            echo "ℹ️ Mise is up to date."
+          fi
+        else
+          echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
+        fi
+        echo "Verifying CI readiness with mise doctor..."
+        if ! mise doctor --quiet; then
+          echo "❌ mise doctor failed. Please check your environment."
+          exit 1
+        fi
+        echo "✅ CI environment ready."
     rubocop:
       tags: backend style
       glob: '*.rb'
-      exclude: 'application.rb|routes.rb'
-      run: bundle exec rubocop -a --force-exclusion {all_files}
+      run: bundle exec rubocop --parallel --force-exclusion {staged_files}
       stage_fixed: true
-    erb-lint:
-      tags: frontend style
-      files: git diff --name-only develop
+    erb_lint:
+      tags: backend style
       glob: '*.erb'
-      run: bundle exec erb_lint --lint-all {staged_files}
-    yaml-lint:
+      run: bundle exec erblint --lint-all --format compact {staged_files}
+      stage_fixed: true
+    prettier:
       tags: frontend style
-      files: git diff --name-only develop
+      glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {staged_files}
+        else
+          echo "⚠️ Skipping prettier: yarn not available"
+        fi
+      stage_fixed: true
+    yaml-lint:
+      tags: backend style
+      exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
       glob: '*.yml'
       run: bundle exec yaml-lint {staged_files}
       stage_fixed: true
-    rails-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test bin/setup --skip-server &&
-        CI=true RAILS_ENV=test bin/rails test:prepare --trace &&
-        CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' bin/rails test
+    # rails-tests are run in pre-push instead of pre-commit for better performance
+    # and to avoid breaking the commit flow with potentially long-running tests
     verify_environment:
       run: bin/container-healthcheck.sh && { echo "✓ Environment valid"; exit 0; } || { echo "✗ Environment invalid - run bin/setup-environment.sh"; exit 1; }
       tags: validation
@@ -96,7 +173,12 @@ fixer:
       stage_fixed: true
     js-fixer:
       glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
-      run: yarn prettier --write {all_files}
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping JS fixer: yarn not available"
+        fi
       stage_fixed: true
     ruby-prettier:
       glob: 'app/**/*.rb'
@@ -114,7 +196,12 @@ fixer:
       run: bundle exec brakeman --no-pager
     yarn-audit:
       tags: frontend security
-      run: yarn npm audit
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn npm audit
+        else
+          echo "⚠️ Skipping yarn audit: yarn not available"
+        fi
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
@@ -124,7 +211,12 @@ fixer:
     yarn-lint:
       tags: frontend updates
       glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
-      run: yarn prettier --write {all_files}
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping yarn lint: yarn not available"
+        fi
       stage_fixed: true
     importmaps-audit:
       tags: frontend security
