@@ -10,12 +10,40 @@ I was looking for a project to practice on when i had spare time.
 
 ## For Devs ->
 
-Once I ran out of feature ideas, most of the work here was actually building out the CI/CD/Security and now
-Automatic Updates
+### Getting Started
 
-I have added some notes and resources here:
-[Resources.md](../develop/Resources.md)
-[DevNotes.md](../develop/DevNotes.md)
+**Prerequisites:**
+
+*   **mise:** This project uses `mise` to manage tool versions. Please install it from [https://mise.run](https://mise.run) if you haven't already.
+
+**Setup:**
+
+The main setup instruction is to run the `bin/setup` script:
+
+```bash
+bin/setup
+```
+
+This script will:
+1.  Ensure `mise` is installed and configured for the project.
+2.  Use `mise` to install the correct versions of Ruby, Node.js, Yarn, and Lefthook as defined in the `mise.toml` file.
+3.  Install all necessary Ruby gem dependencies.
+4.  Install Node.js package dependencies.
+5.  Set up the database.
+6.  Set up Git hooks using Lefthook.
+
+### Common Development Tasks
+
+This project uses `mise` to manage and run common development tasks. You can list available tasks with `mise tasks` or `mise ls`. Here are some key examples:
+
+*   `mise run setup`: Re-run the initial development setup process.
+*   `mise run test`: Run all unit and integration tests.
+*   `mise run test-system`: Run system tests (e.g., browser-based tests).
+*   `mise run lint`: Run all configured linters (e.g., RuboCop for Ruby, Prettier for JavaScript).
+*   `mise run fix`: Attempt to automatically fix issues found by linters.
+*   `mise run brakeman`: Run the Brakeman security scanner.
+
+For more detailed development notes, see [DevNotes.md](DevNotes.md). Additional resources can be found in [Resources.md](Resources.md).
 
 ## Attribution
 

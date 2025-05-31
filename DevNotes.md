@@ -1,11 +1,41 @@
 # My Dev Notes
 
-TLDR:
-Using GitHub PRs for feature changes and bugfixes
-Using Github Actions see main.yml for CI/CD workflow
-Using Heroku for hosting
-Using Yelp for fusion API
-Using Google for sign in.
+## Core Tooling & Setup
+
+This project uses `mise` for managing development tool versions and running common tasks. The source of truth for tool versions (Ruby, Node.js, Yarn, Lefthook, etc.) is the `mise.toml` file in the project root.
+
+**Initial Setup:**
+
+1.  **Install mise:** If you don't have it already, install `mise` by following the instructions at [https://mise.run](https://mise.run).
+2.  **Run the setup script:**
+    ```bash
+    bin/setup
+    ```
+    This script will:
+    *   Use `mise` to install and activate the correct versions of all necessary tools.
+    *   Install Ruby gem dependencies (via Bundler).
+    *   Install Node.js package dependencies (via Yarn).
+    *   Prepare the database.
+    *   Set up Git hooks managed by Lefthook.
+
+**Common Development Tasks with `mise`:**
+
+You can see all available tasks by running `mise tasks` or `mise ls`. Key tasks include:
+
+*   `mise run setup`: Re-run the initial development setup.
+*   `mise run test`: Execute unit and integration tests.
+*   `mise run test-system`: Run system (browser) tests.
+*   `mise run lint`: Check code for style issues (RuboCop for Ruby, Prettier for JS).
+*   `mise run fix`: Automatically fix code style issues.
+*   `mise run brakeman`: Run the Brakeman security scanner.
+
+**General Workflow:**
+
+*   Using GitHub PRs for feature changes and bugfixes.
+*   Using Github Actions (see `.github/workflows/main.yml`) for CI/CD.
+*   Using Heroku for hosting.
+*   Using Yelp Fusion API for core functionality.
+*   Using Google for user sign-in.
 
 Below are some other notes in order of the things I've changed.
 
@@ -15,6 +45,9 @@ The rails app:update command can sometimes overwrite configuration files includi
 
 # get it working from where I picked it up on a Mac
 
+**Note:** The following setup details are largely historical. With `mise`, manual installation of Ruby and Node.js versions (e.g., via `nodenv` or `rbenv`) is no longer required. `bin/setup` and `mise` handle this.
+
+Original notes:
 updated ruby (.ruby-version and Gemfile)
 
 hid pg gem in Gemfile because it was trying to install locally

@@ -10,7 +10,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
 # I think this will allow different machines to run tests with different ruby patch versions
 
-ruby '~> 3.4.1'
+# ruby File.read('.ruby-version').strip
 
 gem 'bundler', '~> 2.5'
 
@@ -78,6 +78,7 @@ gem 'sprockets-exporters_pack'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug'
+  gem 'brakeman', require: false
 end
 
 group :development do
@@ -110,7 +111,6 @@ group :development do
   gem 'prettier', require: false
   gem 'erb_lint', require: false
   gem 'yaml-lint', require: false
-  gem 'brakeman', require: false
   # gem 'solargraph', require: false
   # gem 'solargraph-rails', require: false
 
@@ -144,3 +144,7 @@ gem 'tailwindcss-rails', '~> 4.2'
 gem 'flipper'
 
 gem 'dotenv'
+
+group :development, :ci do
+  gem 'faraday', '~> 1.8.0', require: false
+end

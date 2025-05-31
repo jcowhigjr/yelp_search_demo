@@ -6,6 +6,7 @@ dictionaryDefinitions: []
 dictionaries: []
 words:
   - autocorrect
+  - healthcheck
   - importmaps
   - noopen
 ignoreWords: []
