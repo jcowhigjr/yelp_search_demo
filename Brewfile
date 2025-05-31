@@ -3,7 +3,7 @@ cask 'ngrok'
 brew 'gpg'
 # JSON processor for healthchecks
 brew 'jq'
-# test tool for github actions
+# test tool for GitHub actions
 brew 'act'
 # chromedriver not required anymore
 # brew uninstall chromedriver
