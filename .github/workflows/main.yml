@@ -152,3 +152,38 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: minor
+
+  verify-deployment:
+    name: Verify Heroku Deployment
+    runs-on: ubuntu-latest
+    needs: [test, test-next] # Ensure tests pass before verifying deployment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    permissions:
+      contents: read # Added for least privilege
+    env:
+      HEROKU_APP_URL: ${{ secrets.HEROKU_APP_NAME }} # Using the secret name you provided
+    steps:
+      - name: Wait for Heroku deployment
+        run: |
+          echo "Waiting for Heroku to deploy (2 minutes)..."
+          sleep 120
+
+      - name: Check health endpoint
+        run: |
+          MAX_RETRIES=10
+          RETRY_INTERVAL=30 # seconds
+          RETRY_COUNT=0
+          HEALTH_CHECK_URL="$HEROKU_APP_URL/healthz"
+
+          echo "Starting health check for $HEALTH_CHECK_URL..."
+
+          until curl --silent --fail --output /dev/null "$HEALTH_CHECK_URL"; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+              echo "Health check failed for $HEALTH_CHECK_URL after $MAX_RETRIES retries."
+              exit 1
+            fi
+            echo "Health check failed (attempt $RETRY_COUNT/$MAX_RETRIES). Retrying in $RETRY_INTERVAL seconds..."
+            sleep $RETRY_INTERVAL
+          done
+          echo "Health check for $HEALTH_CHECK_URL successful!"
