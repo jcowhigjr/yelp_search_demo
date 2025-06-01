@@ -158,6 +158,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, test-next] # Ensure tests pass before verifying deployment
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    permissions:
+      contents: read # Added for least privilege
     env:
       HEROKU_APP_URL: ${{ secrets.HEROKU_APP_NAME }} # Using the secret name you provided
     steps:
