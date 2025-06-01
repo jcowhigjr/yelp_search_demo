@@ -4,6 +4,12 @@ A pretty generic Ruby on Rails 8 application that allows users to find anything 
 
 Use the application at https://dorkbob.herokuapp.com
 
+## 🤖 For AI Agents / Agent Coders
+
+**IMPORTANT**: This project uses automated git workflow protection. Before making any changes, please read:
+- [`docs/agent-coder-workflow.md`](docs/agent-coder-workflow.md) - **Required reading for AI agents**
+- Use `lefthook run workflow-status` and `lefthook run workflow-new-feature <branch>` instead of direct git operations
+
 ## Motivation:
 
 I was looking for a project to practice on when i had spare time.
