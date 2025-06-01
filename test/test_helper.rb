@@ -1,4 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'mocha/minitest'
 require_relative '../config/environment'
 
 # require "minitest/autorun"
