@@ -9,12 +9,14 @@ This project uses [Lefthook](https://github.com/evilmartians/lefthook) as the pr
 Lefthook automatically enforces these protections:
 
 ### Pre-Commit Hooks
+
 - **Branch Protection**: Prevents direct commits to `main` and `develop` branches
 - **Branch Sync Check**: Warns if your branch is behind remote
 - **Code Quality**: Runs rubocop, erb_lint, prettier automatically
 - **YAML Validation**: Ensures configuration files are valid
 
 ### Pre-Push Hooks
+
 - **Comprehensive Testing**: Rails tests, system tests, next tests
 - **Security Audits**: Brakeman, gem audit, JavaScript audit
 - **Environment Validation**: Ensures development environment is properly configured
@@ -80,9 +82,9 @@ bin/safe-workflow push
 The workflow configuration is in `lefthook.yml`. Key sections:
 
 - **pre-commit**: Branch protection and quality checks
-- **pre-push**: Testing and security validation  
+- **pre-push**: Testing and security validation
 - **fixer**: Automatic code formatting and fixes
-- **workflow-***: Custom workflow commands
+- **workflow-\***: Custom workflow commands
 
 ## 📝 For Agent Coders
 
