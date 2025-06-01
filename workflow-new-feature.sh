@@ -1,6 +1,7 @@
 #!/bin/bash
+set -e
 
-if [[ $# -eq 0 ]]; then
+if [[ -z "$1" ]]; then
   echo "❌ Error: Branch name required"
   echo "Usage: lefthook run workflow-new-feature <branch-name>"
   echo "Example: lefthook run workflow-new-feature fix/bug-123"
