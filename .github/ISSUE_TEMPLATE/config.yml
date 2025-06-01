@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🤖 Agent Coder Workflow Guide
+    url: https://github.com/your-repo/blob/main/docs/agent-coder-workflow.md
+    about: Important workflow guide for AI agents working on this project
+  - name: 📋 Development Notes
+    url: https://github.com/your-repo/blob/main/DevNotes.md
+    about: Comprehensive development documentation and setup notes
+  - name: 🔧 Git Workflow Documentation
+    url: https://github.com/your-repo/blob/main/docs/git-workflow.md
+    about: Git workflow with Lefthook automation and quality checks
+  - name: 💡 Feature Ideas
+    url: https://github.com/your-repo/blob/main/ideas.md
+    about: Future feature ideas and enhancements
