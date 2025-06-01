@@ -315,4 +315,4 @@ workflow-status:
 workflow-new-feature:
   commands:
     create_branch:
-      run: ./workflow-new-feature.sh "$1"
+      run: ./workflow-new-feature.sh {0}
