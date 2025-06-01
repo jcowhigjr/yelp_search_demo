@@ -21,7 +21,7 @@ fi
 
 # Pull latest
 echo "🔄 Pulling latest changes..."
-git pull origin develop
+git pull --ff origin develop
 
 # Create and switch to new branch
 echo "✅ Creating branch: $branch_name"
