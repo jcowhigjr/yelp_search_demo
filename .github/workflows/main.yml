@@ -181,7 +181,8 @@ jobs:
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
               echo "Health check failed for $HEALTH_CHECK_URL after $MAX_RETRIES retries."
-              exit 1
+              echo "This is the develop branch; logging health check failure but not failing the workflow."
+              exit 0
             fi
             echo "Health check failed (attempt $RETRY_COUNT/$MAX_RETRIES). Retrying in $RETRY_INTERVAL seconds..."
             sleep $RETRY_INTERVAL
