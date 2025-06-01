@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get '/healthz', to: 'health#index'
   # rubocop:disable Metrics/BlockLength
   scope '(:locale)', locale: /#{I18n.available_locales.join("|")}/ do
     # get '/', to: 'searches#new'
