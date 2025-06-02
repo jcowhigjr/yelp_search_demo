@@ -1,2 +1,2 @@
 web: bin/rails server
-css: bin/rails tailwindcss:watch
+css: TAILWINDCSS_ARGS="--watch=always" bin/rails tailwindcss:watch
