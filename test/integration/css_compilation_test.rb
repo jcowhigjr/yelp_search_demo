@@ -16,7 +16,7 @@ class CssCompilationTest < ActiveSupport::TestCase
   test "includes bg-primary class from custom utilities" do
     assert File.exist?(BUILD_PATH), "Tailwind CSS build file missing."
     css_content = File.read(BUILD_PATH)
-    assert_match /\.bg-primary\s*{\s*background-color:\s*var\(--color-primary\);\s*}/, css_content,
+    assert_match /\.bg-primary\s*{\s*background-color:\s*var\(--color-primary\)\s*}/, css_content,
                  "Expected .bg-primary class definition in compiled CSS."
   end
 
