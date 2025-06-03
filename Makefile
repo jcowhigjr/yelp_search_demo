@@ -31,7 +31,7 @@ tailwind_enforce_config:
 		exit 1; \
 	fi
 	# Check application.css does not import tailwind directly
-	@if grep -q '@import "tailwindcss";' app/assets/stylesheets/application.css; then \
+	@if grep -q '@import "tailwindcss";' app/assets/tailwind/application.css; then \
 		echo "\033[31mFAIL:\033[0m application.css should not import tailwindcss directly when using tailwindcss-rails. See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
