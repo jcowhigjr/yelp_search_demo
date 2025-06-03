@@ -38,6 +38,13 @@ This script will:
 5.  Set up the database.
 6.  Set up Git hooks using Lefthook.
 
+**Environment and Automated Checks:**
+
+This project leverages `mise` for consistent tool versioning and `Lefthook` for managing Git hooks and automated checks (e.g., tests, linters) defined in `lefthook.yml`.
+
+*   **Mise Activation:** For interactive shells, `mise` is typically activated via `eval "$(mise activate zsh)"` (or your shell equivalent) in your shell's rc file (e.g., `~/.zshrc`). For non-interactive sessions or to make shims available with minimal overhead, `eval "$(mise activate zsh --shims)"` can be used in a profile script (e.g., `~/.zprofile`). The `bin/setup` script helps guide this.
+*   **Running Commands in Hooks:** To ensure that commands within `Lefthook` hooks (and other scripts) execute with the correct tool versions and environment variables defined by `mise`, they are prefixed with `mise exec --`. For example, a test command in `lefthook.yml` might look like `mise exec -- bundle exec rails test`. This is crucial for the reliability of automated checks.
+
 ### Common Development Tasks
 
 This project uses `mise` to manage and run common development tasks. You can list available tasks with `mise tasks` or `mise ls`. Here are some key examples:

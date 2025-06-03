@@ -90,3 +90,7 @@ audit-output.json
 .yarn/install-state.gz
 .yarn/install-state.gz
 .bundle/
+
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
