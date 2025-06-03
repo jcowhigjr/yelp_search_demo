@@ -1,14 +1,17 @@
 <footer>
   <div class="nav-wrapper">
     <nav class="flex flex-wrap justify-center dark:bg-slate-900 dark:text-white" aria-label="Language links">
-      <% I18n.available_locales.each do |locale| %>
-        <div class="px-5 text-sm">
+      <% I18n.available_locales.each_with_index do |locale, index| %>
+        <div class="text-sm">
           <%= link_to request.params.merge(locale: resolve_locale(locale)), "aria-label": t('.language_name_of_locale', locale:) do %>
-            <span><%= t('.language_name_of_locale', locale:) %></span>
+            <span class="<%= 'underline font-semibold' if locale == I18n.locale %>"><%= t('.language_name_of_locale', locale:) %></span>
           <% end %>
         </div>
+        <% if index < I18n.available_locales.size - 1 %>
+          <span class="text-sm">&nbsp;|&nbsp;</span>
+        <% end %>
       <% end %>
-      <span class="text-blue-600"><%= Flipper[:early_access_preview].enabled? ? t('.early-access') : t('.coming-soon-sig') %></span>
+      <span class="text-blue-600"><%= "&nbsp;&nbsp;&nbsp;".html_safe + (Flipper[:early_access_preview].enabled? ? t('.early-access') : t('.coming-soon-sig')) %></span>
     </nav>
   </div>
 </footer>
