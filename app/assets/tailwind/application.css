@@ -1,3 +1,37 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Theme colors (light mode defaults) */
+  --color-primary: #4B9CD3; /* Carolina Blue */
+  --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */
+  --color-bg: #fff;
+  --color-text: #000;
+}
+
+/* Dark mode overrides using media query outside the theme block */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #223556; /* Deeper blue for dark mode */
+    --color-primary-dark: #16243a;
+    --color-bg: #18181b;
+    --color-text: #fff;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  .bg-primary-hover:hover {
+    background-color: var(--color-primary-dark);
+  }
+  .text-primary {
+    color: var(--color-primary);
+  }
+  .bg-base {
+    background-color: var(--color-bg);
+  }
+  .text-base {
+    color: var(--color-text);
+  }
+}

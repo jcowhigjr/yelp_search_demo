@@ -25,6 +25,11 @@ module Jitter
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Allow embedding in iframes for development previews (e.g., Windsurf, VS Code Simple Browser)
+    if Rails.env.development?
+      config.action_dispatch.default_headers.merge!({ 'X-Frame-Options' => 'ALLOWALL' })
+    end
+
     # Enable custom configurations
     config.jitter.compression_enabled = true
     config.jitter.locales_enabled = true
