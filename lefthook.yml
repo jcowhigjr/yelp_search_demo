@@ -84,7 +84,18 @@ pre-push:
           echo "❌ Rails tests failed"
           exit 1
         fi
-        echo "✅ Rails tests passed."
+        echo "✅ Rails test preparation complete."
+        
+        echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
+        if [ -f app/assets/builds/tailwind.css ]; then
+          echo "✅ app/assets/builds/tailwind.css found locally."
+          echo "   First 5 lines of local tailwind.css:"
+          head -n 5 app/assets/builds/tailwind.css
+        else
+          echo "❌ app/assets/builds/tailwind.css NOT found locally after test:prepare."
+          echo "   Contents of app/assets/builds/:"
+          ls -la app/assets/builds/ || echo "app/assets/builds/ directory does not exist"
+        fi
     test-next:
       tags: javascript frontend
       run: |
