@@ -1,2 +1,2 @@
 web: bin/rails server
-css: bin/rails tailwindcss:watch
+css: mise exec -- npx tailwindcss -i ./app/assets/tailwind/application.css -o ./app/assets/builds/tailwind.css --poll --watch
