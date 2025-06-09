@@ -53,6 +53,7 @@ body {
 .page-text {
   font-size: 30px;
   padding: 20px;
+  color: var(--color-text);
 }
 .page-name {
   font-size: 60px;
