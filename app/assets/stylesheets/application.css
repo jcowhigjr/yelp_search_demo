@@ -38,6 +38,7 @@ body {
   border: 1px #000 solid;
   padding: 5px 5px 5px 25px;
   display: inline-block;
+  color: var(--color-text);
 }
 
 .landing-logo {
