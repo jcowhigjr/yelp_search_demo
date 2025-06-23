@@ -120,7 +120,6 @@ group :development do
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
-  gem 'easy_translate', require: false
 end
 
 group :test do
