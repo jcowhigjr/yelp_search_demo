@@ -74,4 +74,9 @@ Rails.application.configure do
   config.action_dispatch.default_headers = {
     'X-Frame-Options' => 'ALLOWALL'
   }
+
+  # Allow IDE proxy origins while keeping CSRF tokens enforced
+  config.action_controller.permitted_csrf_origins = [
+    /^http:\/\/127\.0\.0\.1:\d+$/
+  ]
 end
