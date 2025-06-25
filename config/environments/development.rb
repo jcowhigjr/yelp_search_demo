@@ -75,8 +75,6 @@ Rails.application.configure do
     'X-Frame-Options' => 'ALLOWALL'
   }
 
-  # Allow IDE proxy origins while keeping CSRF tokens enforced
-  config.action_controller.permitted_csrf_origins = [
-    /^http:\/\/127\.0\.0\.1:\d+$/
-  ]
+  # Disable strict origin check for CSRF in development to allow IDE proxy ports
+  config.action_controller.forgery_protection_origin_check = false
 end
