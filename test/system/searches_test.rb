@@ -15,8 +15,12 @@ class SearchesTest < ApplicationSystemTestCase
     click_on 'search'
 
     assert_text "Top Rated Searches for #{query} near you", wait: 4
-
-    click_on('More Info', match: :first)
+    
+    # Wait for search results to fully load
+    wait_for_search_results
+    
+    # Try to click More Info button with safer method
+    click_more_info_safely
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 

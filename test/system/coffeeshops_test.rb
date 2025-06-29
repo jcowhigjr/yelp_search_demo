@@ -38,7 +38,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     first('button[type="submit"]').click
 
     assert_current_path search_path(Search.last.id, locale: nil)
-    click_on 'More Info', match: :first
+    wait_for_search_results
+    click_more_info_safely
 
     # Add to favorites - ensure button is visible and clickable
     assert_selector('input[type="submit"][value="Add To Favorites"]')
@@ -106,7 +107,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     click_on 'search'
 
     # Find and click the first More Info link
-    click_on('More Info', match: :first)
+    wait_for_search_results
+    click_more_info_safely
 
 
     # Add to favorites

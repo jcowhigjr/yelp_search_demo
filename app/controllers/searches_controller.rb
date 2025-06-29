@@ -1,4 +1,6 @@
 class SearchesController < ApplicationController
+  # Skip CSRF verification in development for IDE proxy origins (e.g., Windsurf preview)
+  skip_before_action :verify_authenticity_token, if: :development_ide_preview?
 
   def show
     @search = Search.find(params[:id])
@@ -55,5 +57,9 @@ class SearchesController < ApplicationController
 
   def redirect_to_proper_path
     redirect_to @search
+  end
+
+  def development_ide_preview?
+    Rails.env.development? && request.headers['Origin']&.match?(/127\.0\.0\.1:\d+/)
   end
 end
