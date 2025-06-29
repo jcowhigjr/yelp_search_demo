@@ -31,7 +31,8 @@ class NavigationTest < ApplicationSystemTestCase
     assert_text 'tacos'
 
     # Click More Info and verify navigation
-    click_on 'More Info', match: :first
+    wait_for_search_results
+    click_more_info_safely
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 

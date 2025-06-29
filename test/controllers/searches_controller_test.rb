@@ -6,6 +6,24 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     @search = searches(:one)
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
+    
+    # Mock Yelp API response to prevent real API calls in tests
+    mock_api_response = {
+      'businesses' => [
+        {
+          'name' => 'Test Coffee Shop',
+          'rating' => 4.5,
+          'url' => 'https://yelp.com/test',
+          'image_url' => 'https://example.com/image.jpg',
+          'display_phone' => '(555) 123-4567',
+          'location' => {
+            'display_address' => ['123 Test St', 'Test City, CA']
+          }
+        }
+      ]
+    }.to_json
+    
+    RestClient::Request.stubs(:execute).returns(mock_api_response)
   end
 
   test '#new' do
