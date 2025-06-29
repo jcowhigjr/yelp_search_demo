@@ -74,4 +74,7 @@ Rails.application.configure do
   config.action_dispatch.default_headers = {
     'X-Frame-Options' => 'ALLOWALL'
   }
+
+  # Disable strict origin check for CSRF in development to allow IDE proxy ports
+  config.action_controller.forgery_protection_origin_check = false
 end
