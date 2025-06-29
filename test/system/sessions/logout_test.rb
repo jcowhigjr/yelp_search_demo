@@ -30,7 +30,8 @@ class LogoutTest < ApplicationSystemTestCase
     first('button[type="submit"]').click
 
     assert_current_path search_path(Search.last.id, locale: nil)
-    click_on 'More Info', match: :first
+    wait_for_search_results
+    click_more_info_safely
 
     assert_text 'Login to add this shop to your favorites!'
   end

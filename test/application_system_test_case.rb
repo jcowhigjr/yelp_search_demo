@@ -28,6 +28,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
+  include OAuthTestHelper
+  
+  # Require search test helper
+  require_relative 'support/search_test_helper'
+  include SearchTestHelper
 
   if ENV.fetch('SELENIUM', nil) == 'true'
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
@@ -92,4 +97,34 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Capybara.configure do |config|
   #   config.server = :puma, { Silent: true }
   # end
+  # Mock out the Yelp API in tests
+  setup do
+    mock_yelp_response = {
+      'businesses' => [
+        {
+          'name' => 'Test Coffee Shop',
+          'rating' => 4.5,
+          'url' => 'https://yelp.com/test-coffee-shop',
+          'image_url' => 'https://example.com/coffee.jpg',
+          'display_phone' => '(555) 123-4567',
+          'location' => {
+            'display_address' => ['123 Test St', 'Test City, CA 90210']
+          }
+        },
+        {
+          'name' => 'Another Coffee Place',
+          'rating' => 4.2,
+          'url' => 'https://yelp.com/another-coffee',
+          'image_url' => 'https://example.com/coffee2.jpg',
+          'display_phone' => '(555) 987-6543',
+          'location' => {
+            'display_address' => ['456 Main St', 'Test City, CA 90210']
+          }
+        }
+      ]
+    }.to_json
+    
+    # Stub the RestClient call to return mock data
+    RestClient::Request.stubs(:execute).returns(mock_yelp_response)
+  end
 end

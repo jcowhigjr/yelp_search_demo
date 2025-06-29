@@ -6,6 +6,7 @@ require_relative '../config/environment'
 require 'rails/test_help'
 
 require 'bcrypt'
+require_relative 'support/oauth_test_helper'
 # https://brandonhilkert.com/blog/managing-login-passwords-for-capybara-with-minitest-and-rails-fixtures/
 module TestPasswordHelper
   def default_password_digest

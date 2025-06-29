@@ -53,6 +53,8 @@ class UsersTest < ApplicationSystemTestCase
   # end
 
   test 'partial sign in with Google' do
+    skip_unless_real_oauth_credentials
+    
     visit '/login'
     click_link_or_button 'Login With Google'
 
@@ -74,6 +76,8 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test 'sign up with Google' do
+    skip_unless_real_oauth_credentials
+    
     visit '/signup'
 
     # assert_difference "User.count", 1 do
