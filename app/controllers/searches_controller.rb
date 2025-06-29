@@ -1,6 +1,6 @@
 class SearchesController < ApplicationController
-  # Skip CSRF verification in development for IDE proxy origins (e.g., Windsurf preview)
-  skip_before_action :verify_authenticity_token, if: :development_ide_preview?
+  # CSRF protection is enforced for all actions, including development environment.
+  # Removed skip_before_action directive to ensure security.
 
   def show
     @search = Search.find(params[:id])
@@ -59,7 +59,5 @@ class SearchesController < ApplicationController
     redirect_to @search
   end
 
-  def development_ide_preview?
-    Rails.env.development? && request.headers['Origin']&.match?(/127\.0\.0\.1:\d+/)
-  end
+  # Removed development_ide_preview? method as CSRF protection is now enforced universally.
 end
