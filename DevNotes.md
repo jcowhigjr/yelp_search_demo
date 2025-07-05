@@ -319,17 +319,33 @@ Dependabot alerts are resulting in very frequent security updates..
     (2) Now let dependabot handle it automatically as well.
 
 Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.
--- the tests CI requires Dendabot/RAILS_MASTER_KEY
+-- the tests CI requires RAILS_TEST_KEY
 -- the heroku feature branch deploy requires HEROKU_API_KEY from the Actions/Environment
 -- the main.ci develop deploy requires the repository secret Actions/RepositorySecrets HEROKU_APP_NAME and the above API KEY
 
-Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_SECRET usage.
+Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_KEY usage.
 
 Heroku recommended <https://guides.rubyonrails.org/security.html> changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
 
 <https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html>
 heroku config:set RAILS_MASTER_KEY=rails-production-key
 EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
+
+## Configuring RAILS_TEST_KEY
+
+Both regular PRs and Dependabot PRs need access to the `RAILS_TEST_KEY` secret to decrypt test credentials. You must configure this secret in two different locations in GitHub:
+
+### Repository Secrets
+
+- Navigate to **Settings > Secrets and variables > Actions** in your repository.
+- Click **New repository secret**, set the name to `RAILS_TEST_KEY`, and paste in the contents of `config/credentials/test.key`.
+
+### Dependabot Secrets
+
+- In **Settings > Secrets and variables**, select the **Dependabot** tab.
+- Add a new secret named `RAILS_TEST_KEY` with the same key contents.
+
+Note that both stores must be updated so that regular PRs and Dependabot PRs can decrypt test credentials.
 
 for github actions:
 add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key (see main.yml)
