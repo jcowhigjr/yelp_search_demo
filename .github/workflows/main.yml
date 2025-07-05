@@ -194,7 +194,8 @@ jobs:
     steps:
       - name: Auto-merge based on risk level
         run: |
-          echo "Risk level: ${{ needs.get-risk-assessment.outputs.risk-level || 'medium' }}"
+          RISK_LEVEL="${{ needs.get-risk-assessment.outputs.risk-level }}"
+          echo "Risk level: ${RISK_LEVEL:-medium}"
           echo "Proceeding with auto-merge for Dependabot PR"
       - uses: fastify/github-action-merge-dependabot@v3.11.1
         with:

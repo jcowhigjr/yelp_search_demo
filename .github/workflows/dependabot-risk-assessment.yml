@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       risk-level: ${{ steps.assessment.outputs.risk-level }}
-      skip-tests: ${{ steps.assessment.outputs.skip-tests }}
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
       dependency-type: ${{ steps.assessment.outputs.dependency-type }}
       version-change: ${{ steps.assessment.outputs.version-change }}
@@ -36,7 +35,6 @@ jobs:
           
           # Initialize variables
           RISK_LEVEL="medium"
-          SKIP_TESTS="false"
           SKIP_SYSTEM_TESTS="false"
           UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
           DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
@@ -44,6 +42,7 @@ jobs:
           # Extract version information
           PREV_VERSION="${{ steps.metadata.outputs.previous-version }}"
           NEW_VERSION="${{ steps.metadata.outputs.new-version }}"
+          ALERT_STATE="${{ steps.metadata.outputs.alert-state }}"
           
           echo "Evaluating risk level..."
           
@@ -69,28 +68,24 @@ jobs:
           elif [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
             echo "Major update detected - high risk"
             RISK_LEVEL="high"
-            SKIP_TESTS="false"
             SKIP_SYSTEM_TESTS="false"
           fi
           
           # Override for security updates (always high risk)
-          if [[ "${{ steps.metadata.outputs.alert-state }}" == "OPEN" ]]; then
+          if [[ "$ALERT_STATE" == "OPEN" ]]; then
             echo "Security update detected - high risk"
             RISK_LEVEL="high"
-            SKIP_TESTS="false"
             SKIP_SYSTEM_TESTS="false"
           fi
           
           # Set outputs
           echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
-          echo "skip-tests=$SKIP_TESTS" >> $GITHUB_OUTPUT
           echo "skip-system-tests=$SKIP_SYSTEM_TESTS" >> $GITHUB_OUTPUT
           echo "dependency-type=$DEPENDENCY_TYPE" >> $GITHUB_OUTPUT
           echo "version-change=$UPDATE_TYPE" >> $GITHUB_OUTPUT
           
           echo "Assessment complete:"
           echo "  Risk level: $RISK_LEVEL"
-          echo "  Skip tests: $SKIP_TESTS"
           echo "  Skip system tests: $SKIP_SYSTEM_TESTS"
           echo "  Dependency type: $DEPENDENCY_TYPE"
           echo "  Version change: $UPDATE_TYPE"
@@ -100,7 +95,6 @@ jobs:
         with:
           script: |
             const riskLevel = '${{ steps.assessment.outputs.risk-level }}';
-            const skipTests = '${{ steps.assessment.outputs.skip-tests }}';
             const skipSystemTests = '${{ steps.assessment.outputs.skip-system-tests }}';
             const dependencyType = '${{ steps.assessment.outputs.dependency-type }}';
             const versionChange = '${{ steps.assessment.outputs.version-change }}';
@@ -118,7 +112,6 @@ jobs:
             **Analysis:**
             - Dependency Type: \`${dependencyType}\`
             - Version Change: \`${versionChange}\`
-            - Skip Full Tests: ${skipTests === 'true' ? '✅' : '❌'}
             - Skip System Tests: ${skipSystemTests === 'true' ? '✅' : '❌'}
             
             **CI/CD Strategy:**
