@@ -24,7 +24,7 @@ on:
 #   cancel-in-progress: true
 
 jobs:
-  # Get risk assessment for Dependabot PRs
+  # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -97,7 +97,7 @@ jobs:
         id: system-test-next
         continue-on-error: false
         # Skip system tests for low-risk Dependabot updates
-        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result == 'success' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
+        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -153,7 +153,7 @@ jobs:
         id: system-test
         continue-on-error: true # make the step always success and set status later
         # Skip system tests for low-risk Dependabot updates
-        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result == 'success' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
+        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -163,7 +163,7 @@ jobs:
       - name: system-test-retry
         id: system-test-retry-1
         continue-on-error: true # make the step always success and set status later
-        if: steps.system-test.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result == 'success' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
+        if: steps.system-test.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
