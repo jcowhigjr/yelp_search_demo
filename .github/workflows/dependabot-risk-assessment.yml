@@ -1,0 +1,130 @@
+name: 'Dependabot Risk Assessment'
+on:
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  assess-risk:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      risk-level: ${{ steps.assessment.outputs.risk-level }}
+      skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
+      dependency-type: ${{ steps.assessment.outputs.dependency-type }}
+      version-change: ${{ steps.assessment.outputs.version-change }}
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2.4.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Assess update risk
+        id: assessment
+        run: |
+          echo "Analyzing Dependabot update..."
+          echo "Package: ${{ steps.metadata.outputs.dependency-names }}"
+          echo "Update type: ${{ steps.metadata.outputs.update-type }}"
+          echo "Previous version: ${{ steps.metadata.outputs.previous-version }}"
+          echo "New version: ${{ steps.metadata.outputs.new-version }}"
+          echo "Dependency type: ${{ steps.metadata.outputs.dependency-type }}"
+          
+          # Initialize variables
+          RISK_LEVEL="medium"
+          SKIP_SYSTEM_TESTS="false"
+          UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
+          DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
+          
+          # Extract version information
+          PREV_VERSION="${{ steps.metadata.outputs.previous-version }}"
+          NEW_VERSION="${{ steps.metadata.outputs.new-version }}"
+          ALERT_STATE="${{ steps.metadata.outputs.alert-state }}"
+          
+          echo "Evaluating risk level..."
+          
+          # Low risk criteria for patch updates
+          if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
+            echo "Patch update detected"
+            
+            # Check if it's a development/test dependency
+            if [[ "$DEPENDENCY_TYPE" == "development" || "$DEPENDENCY_TYPE" == "test" ]]; then
+              echo "Development/test dependency - low risk"
+              RISK_LEVEL="low"
+              SKIP_SYSTEM_TESTS="true"
+            else
+              # For runtime dependencies, be more conservative with patches
+              echo "Runtime dependency - medium risk for patch"
+              RISK_LEVEL="medium"
+              SKIP_SYSTEM_TESTS="false"
+            fi
+          elif [[ "$UPDATE_TYPE" == "version-update:semver-minor" ]]; then
+            echo "Minor update detected - medium risk"
+            RISK_LEVEL="medium"
+            SKIP_SYSTEM_TESTS="false"
+          elif [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
+            echo "Major update detected - high risk"
+            RISK_LEVEL="high"
+            SKIP_SYSTEM_TESTS="false"
+          fi
+          
+          # Override for security updates (always high risk)
+          if [[ "$ALERT_STATE" == "OPEN" ]]; then
+            echo "Security update detected - high risk"
+            RISK_LEVEL="high"
+            SKIP_SYSTEM_TESTS="false"
+          fi
+          
+          # Set outputs
+          echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
+          echo "skip-system-tests=$SKIP_SYSTEM_TESTS" >> $GITHUB_OUTPUT
+          echo "dependency-type=$DEPENDENCY_TYPE" >> $GITHUB_OUTPUT
+          echo "version-change=$UPDATE_TYPE" >> $GITHUB_OUTPUT
+          
+          echo "Assessment complete:"
+          echo "  Risk level: $RISK_LEVEL"
+          echo "  Skip system tests: $SKIP_SYSTEM_TESTS"
+          echo "  Dependency type: $DEPENDENCY_TYPE"
+          echo "  Version change: $UPDATE_TYPE"
+          
+      - name: Add risk assessment comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const riskLevel = '${{ steps.assessment.outputs.risk-level }}';
+            const skipSystemTests = '${{ steps.assessment.outputs.skip-system-tests }}';
+            const dependencyType = '${{ steps.assessment.outputs.dependency-type }}';
+            const versionChange = '${{ steps.assessment.outputs.version-change }}';
+            
+            const riskEmoji = {
+              'low': '🟢',
+              'medium': '🟡', 
+              'high': '🔴'
+            };
+            
+            const comment = `## 🤖 Dependabot Risk Assessment
+            
+            ${riskEmoji[riskLevel]} **Risk Level: ${riskLevel.toUpperCase()}**
+            
+            **Analysis:**
+            - Dependency Type: \`${dependencyType}\`
+            - Version Change: \`${versionChange}\`
+            - Skip System Tests: ${skipSystemTests === 'true' ? '✅' : '❌'}
+            
+            **CI/CD Strategy:**
+            ${skipSystemTests === 'true' 
+              ? '⚡ **Fast track**: System tests will be skipped for this low-risk update'
+              : '🛡️ **Standard flow**: Full test suite will run for safety'
+            }
+            
+            This assessment helps optimize CI/CD resources while maintaining code quality.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
