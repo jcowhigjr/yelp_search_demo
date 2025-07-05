@@ -56,7 +56,7 @@ To ensure this fix works properly, verify these settings:
 
 2. **CodeQL Configuration**:
    - ✅ CodeQL analysis: Default setup (as shown in your settings)
-   - ✅ Copilot Autofix: On (optional but recommended)
+   - ✅ Copilot Autofix for CodeQL: On (optional but recommended - suggests fixes for security findings)
 
 3. **Dependabot Configuration**:
    - ✅ Dependabot alerts: Enabled
