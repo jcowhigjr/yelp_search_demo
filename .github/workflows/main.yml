@@ -183,24 +183,8 @@ jobs:
              echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
-  auto-merge:
-    name: Auto-Merge PRs by Dependabot
-    needs: [test, get-risk-assessment]
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
-    permissions:
-      pull-requests: write
-      contents: write
-    steps:
-      - name: Auto-merge based on risk level
-        run: |
-          RISK_LEVEL="${{ needs.get-risk-assessment.outputs.risk-level }}"
-          echo "Risk level: ${RISK_LEVEL:-medium}"
-          echo "Proceeding with auto-merge for Dependabot PR"
-      - uses: fastify/github-action-merge-dependabot@v3.11.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          target: minor
+  # Note: Auto-merge logic has been moved to auto-approve.yml
+  # to avoid conflicts with branch protection and CodeQL requirements
 
   verify-deployment:
     name: Verify Heroku Deployment
