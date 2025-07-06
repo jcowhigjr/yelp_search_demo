@@ -12,11 +12,16 @@ permissions:
 jobs:
   auto-update:
     runs-on: ubuntu-latest
+    # Skip this job for PRs from Dependabot to avoid circular updates
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
+      
+      - name: Setup GitHub CLI
+        uses: cli/cli-action@v2
       
       - name: Auto-update PRs
         run: |
@@ -28,7 +33,7 @@ jobs:
           # Update each PR
           for PR_NUMBER in $PR_NUMBERS; do
             echo "Updating PR #$PR_NUMBER"
-            gh pr update $PR_NUMBER --repo ${{ github.repository }}
+            gh pr update $PR_NUMBER --repo ${{ github.repository }} || echo "Failed to update PR #$PR_NUMBER, continuing with others"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
