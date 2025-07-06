@@ -19,6 +19,13 @@ on:
     types:
       - completed
 
+# Add workflow-level permissions to fix permission issues
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  actions: write
+
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.ref }}
 #   cancel-in-progress: true
