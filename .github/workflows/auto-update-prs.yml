@@ -1,0 +1,34 @@
+name: Auto-update PRs
+
+on:
+  push:
+    branches:
+      - develop  # Update PRs when develop branch is updated
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+      
+      - name: Auto-update PRs
+        run: |
+          # Get all open PRs targeting develop branch
+          PR_NUMBERS=$(gh pr list --base develop --json number --jq '.[].number')
+          
+          echo "Found the following PRs targeting develop: $PR_NUMBERS"
+          
+          # Update each PR
+          for PR_NUMBER in $PR_NUMBERS; do
+            echo "Updating PR #$PR_NUMBER"
+            gh pr update $PR_NUMBER --repo ${{ github.repository }}
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
