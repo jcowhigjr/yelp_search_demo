@@ -461,7 +461,7 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (4.2.3)
+    tailwindcss-rails (4.3.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.1.7-x86_64-darwin)
@@ -552,7 +552,7 @@ DEPENDENCIES
   selenium-webdriver
   sprockets-exporters_pack
   sqlite3 (~> 2.7)
-  tailwindcss-rails (~> 4.2)
+  tailwindcss-rails (~> 4.3)
   turbo-rails (~> 2.0)
   tzinfo-data
   web-console
