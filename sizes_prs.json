@@ -1,0 +1,20 @@
+[
+  {
+    "id": 2656502815,
+    "number": 812,
+    "state": "open",
+    "title": "Add task priorities",
+    "body": "## Summary\n\nThis PR adds task prioritization to the project by creating a `priorities.json` file with scored and labeled issues.\n\n### Changes Made\n\n- **Created priorities.json**: Added prioritization scoring and labels for all open issues based on impact and urgency criteria\n- **Prioritization criteria**: \n  - Issues are scored on impact (1-5) and urgency (1-5)\n  - Priority levels assigned: high, medium, low\n  - Recent issues and bug fixes receive higher priority scores\n  - Dependency updates receive lower priority scores\n\n### Testing\n\n- \u2705 All security checks passed (Brakeman, gems audit, importmaps audit, JavaScript audit)\n- \u2705 All system tests passed (22 runs, 75 assertions, 0 failures)\n- \u2705 All Rails tests passed (56 runs, 143 assertions, 0 failures)\n- \u2705 Environment verification completed successfully\n\n### Impact\n\n- Provides clear prioritization framework for issue management\n- Helps team focus on high-impact and urgent tasks first\n- No breaking changes or database migrations required\n\nReady for review and merge.",
+    "labels": [],
+    "estimated_size": "XL"
+  },
+  {
+    "id": 2654507551,
+    "number": 810,
+    "state": "closed",
+    "title": "Remove .githooks directory and improve lefthook workflow",
+    "body": "## \u2705 Remove Presumptive Git Hooks\n\nRemoves the committed `.githooks` directory that was breaking the standard lefthook workflow. \n\n### Changes Made:\n- **Removed `.githooks/` directory** - These auto-generated hooks should not be committed\n- **Added `.githooks/` to `.gitignore`** - Prevents future commits of generated hooks\n- **Fixed git config** - Reset `core.hooksPath` to use default `.git/hooks/`\n- **Verified lefthook functionality** - All hooks working properly via `lefthook install`\n\n### Why This Matters:\n- **Follows lefthook best practices** - Users should run `lefthook install` to generate hooks locally\n- **Reduces presumptions** - Not all users want the same git hook setup\n- **Cleaner workflow** - Standard approach that works for all team members\n\n### Testing:\n\u2705 **Pre-push hooks validated** (74s runtime):\n- Security: Brakeman (0 warnings), Gems audit, JS audit  \n- Tests: Rails tests, System tests (22 passed), Next.js dependencies\n- Environment: CI readiness, mise doctor validation\n- Style: Rubocop, ERB lint, Prettier, YAML lint\n\n### Impact:\nUsers can now follow the standard lefthook workflow:\n1. Clone repository\n2. Run `lefthook install` \n3. Hooks generated locally based on `lefthook.yml`\n4. Clean, consistent experience for all developers\n\nThe `lefthook.yml` configuration remains intact and fully functional.",
+    "labels": [],
+    "estimated_size": "XL"
+  }
+]

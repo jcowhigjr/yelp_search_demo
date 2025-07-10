@@ -1,0 +1,20 @@
+[
+  {
+    "id": 3219962124,
+    "number": 812,
+    "state": "open",
+    "title": "Add task priorities",
+    "body": "## Summary\n\nThis PR adds task prioritization to the project by creating a `priorities.json` file with scored and labeled issues.\n\n### Changes Made\n\n- **Created priorities.json**: Added prioritization scoring and labels for all open issues based on impact and urgency criteria\n- **Prioritization criteria**: \n  - Issues are scored on impact (1-5) and urgency (1-5)\n  - Priority levels assigned: high, medium, low\n  - Recent issues and bug fixes receive higher priority scores\n  - Dependency updates receive lower priority scores\n\n### Testing\n\n- \u2705 All security checks passed (Brakeman, gems audit, importmaps audit, JavaScript audit)\n- \u2705 All system tests passed (22 runs, 75 assertions, 0 failures)\n- \u2705 All Rails tests passed (56 runs, 143 assertions, 0 failures)\n- \u2705 Environment verification completed successfully\n\n### Impact\n\n- Provides clear prioritization framework for issue management\n- Helps team focus on high-impact and urgent tasks first\n- No breaking changes or database migrations required\n\nReady for review and merge.",
+    "labels": [],
+    "estimated_size": "XL"
+  },
+  {
+    "id": 3219831127,
+    "number": 811,
+    "state": "open",
+    "title": "Address Copilot Suggestions from PR #810",
+    "body": "### Copilot Suggestions and Issues from PR [#810](https://github.com/jcowhigjr/yelp_search_demo/pull/810)\n\n1. **File Path:** `update_driver_configuration.rb`\n   - **Line Numbers:** 3\n   - **Issue Description:** The hardcoded absolute path `/a0/work_dir/jitter/` makes this script non-portable and environment-specific.\n   - **Recommended Change:** Consider using relative paths or environment variables. Example:\n     ```ruby\n     base_dir = ENV.fetch('WORK_DIR', '/default/work_dir')\n     file_path = File.join(base_dir, 'jitter/test/application_system_test_case.rb')\n     ```\n   - **Classification:** Performance\n\n2. **File Path:** `test_pr_workflow_config.py`\n   - **Line Numbers:** 15\n   - **Issue Description:** Import references modules that are not present in the codebase, causing `ImportError`.\n   - **Classification:** Code Quality\n\n3. **File Path:** `test/application_system_test_case.rb`\n   - **Line Numbers:** 7\n   - **Issue Description:** The `evil_systems` gem is required but may not be properly included in the Gemfile, causing failures during tests.\n   - **Classification:** Code Quality",
+    "labels": [],
+    "estimated_size": "L"
+  }
+]
