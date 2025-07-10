@@ -1,0 +1,85 @@
+{
+  "selected_action": {
+    "id": 3205332200,
+    "priority": "high",
+    "impact": 5,
+    "urgency": 4,
+    "selection_reason": "Highest total score (85.1) with best balance of high impact and manageable risk",
+    "monte_carlo_scores": {
+      "overall_success_probability": 0.851,
+      "expected_completion_time": "3.2 hours",
+      "completion_time_range": {
+        "p5": "2.8 hours",
+        "p50": "3.2 hours",
+        "p95": "4.1 hours"
+      },
+      "risk_score": 2.1,
+      "efficiency_score": 8.8,
+      "total_score": 85.1
+    },
+    "execution_plan": {
+      "title": "High Impact Strategic Task",
+      "estimated_duration": "3-4 hours",
+      "optimized_steps": [
+        {
+          "step": 1,
+          "action": "Strategic Planning",
+          "description": "Develop comprehensive execution strategy",
+          "estimated_time": "30 minutes",
+          "risk_level": "low",
+          "success_probability": 0.92,
+          "monte_carlo_score": 0.91,
+          "optimization_suggestion": "Use established strategic planning templates"
+        },
+        {
+          "step": 2,
+          "action": "Stakeholder Coordination",
+          "description": "Coordinate with key stakeholders and dependencies",
+          "estimated_time": "45 minutes",
+          "risk_level": "medium",
+          "success_probability": 0.85,
+          "monte_carlo_score": 0.83,
+          "optimization_suggestion": "Schedule parallel stakeholder calls"
+        },
+        {
+          "step": 3,
+          "action": "Phased Implementation",
+          "description": "Execute implementation in controlled phases",
+          "estimated_time": "2 hours",
+          "risk_level": "medium",
+          "success_probability": 0.82,
+          "monte_carlo_score": 0.79,
+          "optimization_suggestion": "Implement phase gates with go/no-go decisions"
+        },
+        {
+          "step": 4,
+          "action": "Comprehensive Testing",
+          "description": "Thorough testing across all affected systems",
+          "estimated_time": "45 minutes",
+          "risk_level": "medium",
+          "success_probability": 0.88,
+          "monte_carlo_score": 0.86,
+          "optimization_suggestion": "Parallel testing streams for different components"
+        }
+      ]
+    }
+  },
+  "selection_metadata": {
+    "selection_timestamp": "2025-07-10T16:41:55Z",
+    "selection_criteria": "highest_total_score",
+    "alternatives_considered": [
+      {
+        "id": 3217719612,
+        "score": 69.4,
+        "note": "Higher urgency but lower overall score"
+      },
+      {
+        "id": 3219831127,
+        "score": 78.2,
+        "note": "Medium priority with moderate score"
+      }
+    ],
+    "confidence_level": "high",
+    "expected_roi": "high impact with 85.1% success probability"
+  }
+}
