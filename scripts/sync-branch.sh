@@ -103,7 +103,7 @@ check_branch_behind() {
     fi
 }
 
-# Function to auto-merge base branch into feature branch
+# Function to auto-merge base branch into feature branch with error handling
 auto_merge_base() {
     local base_branch="$1"
     local current_branch
@@ -111,12 +111,24 @@ auto_merge_base() {
     current_branch=$(git branch --show-current)
     log_info "Auto-merging 'origin/$base_branch' into '$current_branch'"
     
-    # Attempt merge
-    if mise exec -- git merge "origin/$base_branch" --no-edit; then
+    # Use CLI error handler for merge operation
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
+    local error_handler="${script_dir}/bin/cli-error-handler"
+    
+    # Attempt merge with error handling
+    if "$error_handler" -- mise exec -- git merge "origin/$base_branch" --no-edit; then
         log_success "Successfully merged 'origin/$base_branch' into '$current_branch'"
         return 0
     else
-        log_error "Merge failed with conflicts"
+        local exit_code=$?
+        case $exit_code in
+            3) # Merge conflict
+                log_error "Merge conflicts detected and handled by error handler"
+                ;;
+            *)
+                log_error "Merge failed with exit code $exit_code"
+                ;;
+        esac
         return 1
     fi
 }

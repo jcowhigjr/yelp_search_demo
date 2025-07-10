@@ -79,20 +79,31 @@ enforce_coding_standards() {
     fi
 }
 
-# Function to call GitHub CLI via MCP Docker gateway
+# Function to call GitHub CLI with robust error handling
 call_github_cli() {
     local gh_command="$1"
     shift
     local gh_args=("$@")
     
-    log_info "Calling GitHub CLI via MCP Docker gateway: gh $gh_command ${gh_args[*]}"
+    log_info "Calling GitHub CLI with error handling: gh $gh_command ${gh_args[*]}"
     
-    # Use mise exec with docker run to call GitHub CLI through MCP
-    mise exec -- docker run --rm -it \
-        -v "$PWD:/workspace" \
-        -w /workspace \
-        -e GITHUB_TOKEN \
-        mcp gh "$gh_command" "${gh_args[@]}"
+    # Use the CLI error handler for robust GitHub CLI operations
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
+    local error_handler="${script_dir}/bin/cli-error-handler"
+    
+    # Detect if this is an API operation that should retry
+    local retry_flag=""
+    case "$gh_command" in
+        "api"|"run"|"workflow"|"pr")
+            retry_flag="--retry"
+            ;;
+    esac
+    
+    # Build the full command
+    local full_command=("gh" "$gh_command" "${gh_args[@]}")
+    
+    # Execute with error handling
+    "$error_handler" $retry_flag -- "${full_command[@]}"
 }
 
 # Function to handle trigger action
