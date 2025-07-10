@@ -13,16 +13,16 @@ module SearchTestHelper
       'a:text("More Info")',
       'a[href*="/coffeeshops/"]',
       '.btn-small',
-      'a.btn-small'
+      'a.btn-small',
     ]
     
     selectors.each do |selector|
-      begin
+      
         find(selector, wait: timeout / selectors.length)
         return true
       rescue Capybara::ElementNotFound
         next
-      end
+      
     end
     
     false
@@ -30,16 +30,16 @@ module SearchTestHelper
 
   def click_more_info_safely
     # Try multiple strategies to click "More Info"
-    begin
+    
       click_on('More Info', match: :first)
     rescue Capybara::ElementNotFound
       # Try alternative selectors
       begin
-        find('a[href*="/coffeeshops/"]', match: :first).click
+        first('a[href*="/coffeeshops/"]').click
       rescue Capybara::ElementNotFound
-        find('.btn-small', match: :first).click
+        first('.btn-small').click
       end
-    end
+    
   end
 
   def perform_search(query, from_path: new_search_path)

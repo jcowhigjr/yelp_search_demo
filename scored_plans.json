@@ -1,0 +1,273 @@
+{
+  "monte_carlo_simulation": {
+    "simulation_runs": 10000,
+    "confidence_interval": 0.95,
+    "timestamp": "2024-01-15T10:30:00Z"
+  },
+  "scored_plans": [
+    {
+      "id": 3219831127,
+      "priority": "medium",
+      "impact": 3,
+      "urgency": 3,
+      "execution_plan": {
+        "title": "Medium Priority Task Execution",
+        "estimated_duration": "4-6 hours",
+        "monte_carlo_scores": {
+          "overall_success_probability": 0.782,
+          "expected_completion_time": "4.8 hours",
+          "completion_time_range": {
+            "p5": "3.9 hours",
+            "p50": "4.8 hours",
+            "p95": "6.2 hours"
+          },
+          "risk_score": 2.3,
+          "efficiency_score": 7.2,
+          "total_score": 78.2
+        },
+        "optimized_steps": [
+          {
+            "step": 1,
+            "action": "Requirements Analysis",
+            "description": "Analyze task requirements and dependencies",
+            "estimated_time": "1 hour",
+            "risk_level": "low",
+            "success_probability": 0.95,
+            "monte_carlo_score": 0.94,
+            "optimization_suggestion": "Consider parallel documentation during analysis"
+          },
+          {
+            "step": 2,
+            "action": "Resource Allocation",
+            "description": "Identify and allocate necessary resources",
+            "estimated_time": "30 minutes",
+            "risk_level": "low",
+            "success_probability": 0.90,
+            "monte_carlo_score": 0.89,
+            "optimization_suggestion": "Pre-identify resources to reduce time"
+          },
+          {
+            "step": 3,
+            "action": "Implementation",
+            "description": "Execute core implementation work",
+            "estimated_time": "2-3 hours",
+            "risk_level": "medium",
+            "success_probability": 0.80,
+            "monte_carlo_score": 0.76,
+            "optimization_suggestion": "Break into smaller sub-tasks for better tracking"
+          },
+          {
+            "step": 4,
+            "action": "Testing & Validation",
+            "description": "Test implementation and validate results",
+            "estimated_time": "1 hour",
+            "risk_level": "low",
+            "success_probability": 0.85,
+            "monte_carlo_score": 0.83,
+            "optimization_suggestion": "Implement automated testing where possible"
+          }
+        ],
+        "pruned_steps": [
+          {
+            "step": 5,
+            "action": "Documentation",
+            "reason_for_pruning": "Low risk, high success rate - can be merged with step 1 for efficiency",
+            "time_saved": "30 minutes"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3217719612,
+      "priority": "high",
+      "impact": 5,
+      "urgency": 5,
+      "execution_plan": {
+        "title": "High Priority Critical Task",
+        "estimated_duration": "2-3 hours",
+        "monte_carlo_scores": {
+          "overall_success_probability": 0.694,
+          "expected_completion_time": "2.4 hours",
+          "completion_time_range": {
+            "p5": "2.0 hours",
+            "p50": "2.4 hours",
+            "p95": "3.1 hours"
+          },
+          "risk_score": 4.2,
+          "efficiency_score": 8.5,
+          "total_score": 69.4
+        },
+        "optimized_steps": [
+          {
+            "step": 1,
+            "action": "Immediate Assessment",
+            "description": "Rapid assessment of critical requirements",
+            "estimated_time": "15 minutes",
+            "risk_level": "medium",
+            "success_probability": 0.90,
+            "monte_carlo_score": 0.87,
+            "optimization_suggestion": "Use predefined assessment checklist"
+          },
+          {
+            "step": 2,
+            "action": "Emergency Resource Mobilization",
+            "description": "Mobilize all necessary resources immediately",
+            "estimated_time": "15 minutes",
+            "risk_level": "high",
+            "success_probability": 0.85,
+            "monte_carlo_score": 0.81,
+            "optimization_suggestion": "Maintain on-call resource list"
+          },
+          {
+            "step": 3,
+            "action": "Critical Implementation",
+            "description": "Execute critical fixes/changes with priority focus",
+            "estimated_time": "1.5-2 hours",
+            "risk_level": "high",
+            "success_probability": 0.75,
+            "monte_carlo_score": 0.69,
+            "optimization_suggestion": "Implement rollback plan before changes"
+          },
+          {
+            "step": 4,
+            "action": "Immediate Testing",
+            "description": "Rapid testing of critical functionality",
+            "estimated_time": "30 minutes",
+            "risk_level": "medium",
+            "success_probability": 0.80,
+            "monte_carlo_score": 0.76,
+            "optimization_suggestion": "Use automated regression tests"
+          },
+          {
+            "step": 5,
+            "action": "Deployment & Monitoring",
+            "description": "Deploy changes and establish monitoring",
+            "estimated_time": "15 minutes",
+            "risk_level": "high",
+            "success_probability": 0.85,
+            "monte_carlo_score": 0.82,
+            "optimization_suggestion": "Pre-configure monitoring dashboards"
+          }
+        ],
+        "pruned_steps": []
+      }
+    },
+    {
+      "id": 3205332200,
+      "priority": "high",
+      "impact": 5,
+      "urgency": 4,
+      "execution_plan": {
+        "title": "High Impact Strategic Task",
+        "estimated_duration": "3-4 hours",
+        "monte_carlo_scores": {
+          "overall_success_probability": 0.851,
+          "expected_completion_time": "3.2 hours",
+          "completion_time_range": {
+            "p5": "2.8 hours",
+            "p50": "3.2 hours",
+            "p95": "4.1 hours"
+          },
+          "risk_score": 2.1,
+          "efficiency_score": 8.8,
+          "total_score": 85.1
+        },
+        "optimized_steps": [
+          {
+            "step": 1,
+            "action": "Strategic Planning",
+            "description": "Develop comprehensive execution strategy",
+            "estimated_time": "30 minutes",
+            "risk_level": "low",
+            "success_probability": 0.92,
+            "monte_carlo_score": 0.91,
+            "optimization_suggestion": "Use established strategic planning templates"
+          },
+          {
+            "step": 2,
+            "action": "Stakeholder Coordination",
+            "description": "Coordinate with key stakeholders and dependencies",
+            "estimated_time": "45 minutes",
+            "risk_level": "medium",
+            "success_probability": 0.85,
+            "monte_carlo_score": 0.83,
+            "optimization_suggestion": "Schedule parallel stakeholder calls"
+          },
+          {
+            "step": 3,
+            "action": "Phased Implementation",
+            "description": "Execute implementation in controlled phases",
+            "estimated_time": "2 hours",
+            "risk_level": "medium",
+            "success_probability": 0.82,
+            "monte_carlo_score": 0.79,
+            "optimization_suggestion": "Implement phase gates with go/no-go decisions"
+          },
+          {
+            "step": 4,
+            "action": "Comprehensive Testing",
+            "description": "Thorough testing across all affected systems",
+            "estimated_time": "45 minutes",
+            "risk_level": "medium",
+            "success_probability": 0.88,
+            "monte_carlo_score": 0.86,
+            "optimization_suggestion": "Parallel testing streams for different components"
+          }
+        ],
+        "pruned_steps": [
+          {
+            "step": 5,
+            "action": "Quality Assurance",
+            "reason_for_pruning": "Redundant with comprehensive testing - merge into step 4",
+            "time_saved": "30 minutes"
+          },
+          {
+            "step": 6,
+            "action": "Controlled Rollout",
+            "reason_for_pruning": "High success probability - can be automated",
+            "time_saved": "15 minutes"
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "total_plans": 3,
+    "average_success_probability": 0.776,
+    "highest_scoring_plan": {
+      "id": 3205332200,
+      "score": 85.1,
+      "reason": "Best balance of high impact with manageable risk"
+    },
+    "recommended_execution_order": [
+      {
+        "order": 1,
+        "id": 3217719612,
+        "reason": "Highest urgency and impact, requires immediate attention"
+      },
+      {
+        "order": 2,
+        "id": 3205332200,
+        "reason": "High impact with better success probability"
+      },
+      {
+        "order": 3,
+        "id": 3219831127,
+        "reason": "Medium priority, can be scheduled after critical items"
+      }
+    ],
+    "optimization_insights": {
+      "total_time_saved": "75 minutes",
+      "risk_reduction_opportunities": [
+        "Implement automated testing frameworks",
+        "Create predefined resource allocation templates",
+        "Establish rollback procedures for high-risk changes"
+      ],
+      "efficiency_improvements": [
+        "Parallel execution of independent tasks",
+        "Template-based planning processes",
+        "Automated monitoring and deployment"
+      ]
+    }
+  }
+}
