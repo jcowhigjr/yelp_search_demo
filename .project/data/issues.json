@@ -1,0 +1,122 @@
+[
+  {
+    "id": 3219831127,
+    "number": 811,
+    "state": "open",
+    "title": "Address Copilot Suggestions from PR #810",
+    "created_at": "2025-07-10T15:36:36Z",
+    "updated_at": "2025-07-10T15:36:36Z"
+  },
+  {
+    "id": 3217719612,
+    "number": 809,
+    "state": "open",
+    "title": "test: validate lefthook and PR lifecycle automation",
+    "created_at": "2025-07-10T03:07:44Z",
+    "updated_at": "2025-07-10T15:06:37Z"
+  },
+  {
+    "id": 3217620350,
+    "number": 808,
+    "state": "open",
+    "title": "Update Yelp API key and add VS Code configuration",
+    "created_at": "2025-07-10T01:56:54Z",
+    "updated_at": "2025-07-10T02:29:04Z"
+  },
+  {
+    "id": 3212408614,
+    "number": 806,
+    "state": "open",
+    "title": "Build(deps-dev): Bump rubocop from 1.77.0 to 1.78.0",
+    "created_at": "2025-07-08T12:43:22Z",
+    "updated_at": "2025-07-09T12:42:23Z"
+  },
+  {
+    "id": 3209355965,
+    "number": 804,
+    "state": "open",
+    "title": "Build(deps): Bump tailwindcss-rails from 4.2.3 to 4.3.0",
+    "created_at": "2025-07-07T14:59:01Z",
+    "updated_at": "2025-07-07T15:00:04Z"
+  },
+  {
+    "id": 3209354257,
+    "number": 803,
+    "state": "open",
+    "title": "Build(deps-dev): Bump faraday from 2.13.1 to 2.13.2",
+    "created_at": "2025-07-07T14:58:24Z",
+    "updated_at": "2025-07-07T14:59:28Z"
+  },
+  {
+    "id": 3209340738,
+    "number": 802,
+    "state": "open",
+    "title": "Build(deps): Bump brotli from 0.6.0 to 0.7.0",
+    "created_at": "2025-07-07T14:54:31Z",
+    "updated_at": "2025-07-09T12:42:25Z"
+  },
+  {
+    "id": 3205332200,
+    "number": 798,
+    "state": "open",
+    "title": "Bug: Dependabot not updating dependencies in both Gemfile.lock and Gemfile.next.lock consistently",
+    "created_at": "2025-07-05T17:48:10Z",
+    "updated_at": "2025-07-05T17:48:10Z"
+  },
+  {
+    "id": 3205313394,
+    "number": 797,
+    "state": "open",
+    "title": "CI: Tailwind CSS native binding error in GitHub Actions",
+    "created_at": "2025-07-05T17:31:13Z",
+    "updated_at": "2025-07-05T17:31:13Z"
+  },
+  {
+    "id": 3185662517,
+    "number": 787,
+    "state": "open",
+    "title": "[nitpick] The origin check regex only matches '127.0.0.1' with a port, which may inadvertently exclude requests from 'localhost'. Consider broadening the check to accommodate both cases.",
+    "created_at": "2025-06-29T02:08:58Z",
+    "updated_at": "2025-06-29T02:08:58Z"
+  },
+  {
+    "id": 3108173049,
+    "number": 767,
+    "state": "open",
+    "title": "Enhance Dev Workflow: Enforce Feature Branches and Pre-Push `develop` Sync",
+    "created_at": "2025-06-02T01:13:48Z",
+    "updated_at": "2025-06-02T01:13:48Z"
+  },
+  {
+    "id": 3108132481,
+    "number": 766,
+    "state": "open",
+    "title": "Standardize Tailwind CSS Configuration in yelp_search_demo",
+    "created_at": "2025-06-02T00:49:00Z",
+    "updated_at": "2025-06-02T00:49:00Z"
+  },
+  {
+    "id": 3108034677,
+    "number": 763,
+    "state": "open",
+    "title": "CSS Enhancement: Improve footer design and visual appeal",
+    "created_at": "2025-06-01T23:37:37Z",
+    "updated_at": "2025-06-01T23:37:37Z"
+  },
+  {
+    "id": 3108022204,
+    "number": 762,
+    "state": "open",
+    "title": "Enhancement: Auto-create GitHub issue on staging health check failure in CI",
+    "created_at": "2025-06-01T23:27:34Z",
+    "updated_at": "2025-06-01T23:27:34Z"
+  },
+  {
+    "id": 3107789390,
+    "number": 759,
+    "state": "open",
+    "title": "User Story: Coffee shop search with distance filtering",
+    "created_at": "2025-06-01T20:13:55Z",
+    "updated_at": "2025-06-01T20:13:55Z"
+  }
+]

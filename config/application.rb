@@ -27,7 +27,7 @@ module Jitter
 
     # Allow embedding in iframes for development previews (e.g., Windsurf, VS Code Simple Browser)
     if Rails.env.development?
-      config.action_dispatch.default_headers.merge!({ 'X-Frame-Options' => 'ALLOWALL' })
+      config.action_dispatch.default_headers['X-Frame-Options'] = 'ALLOWALL'
     end
 
     # Enable custom configurations
