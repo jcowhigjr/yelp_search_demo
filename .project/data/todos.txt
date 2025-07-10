@@ -1,0 +1,24 @@
+app/controllers/users_controller.rb:47:      # TODO: create show user path and redirect to current_user
+app/views/coffeeshops/show.html.erb:29:                    <!-- #TODO: good candidate for turbo stream? -->
+test/application_system_test_case.rb:39:    # TODO: This can run headless  https://github.com/hotwired/turbo-rails/blob/bb5cfcbc7eb9e96668803dd9fad50fdabd8cd6aa/test/application_system_test_case.rb
+test/application_system_test_case.rb:84:      # # TODO: # Mock geolocation
+config/TODO::1:# TODO
+config/TODO::16:# TODO:  Create a current_user method that works testing.
+config/TODO::19:# TODO:  Create a user view of my favorite coffeeshops
+config/TODO::20:# TODO:  Make it a single page app again...?
+config/TODO::21:# TODO:  Add unit tests for check_login
+config/TODO::22:# TODO;  Add a spy on the call to yelp
+config/TODO::25:# TODO:   Fix n+1 loading coffeeshops? models/coffeeshop.rb:27	Coffeeshop Load	SELECT "coffeeshops".* FROM "coffeeshops" WHERE "coffeeshops"."address" = ? ORDER BY "coffeeshops"."id" ASC LIMIT ?x
+config/TODO::27:# TODO:	  Change Logout story to logout and stay on page if not require an active session else return home.
+config/TODO::32:# TODO:	  https://turbo.hotwired.dev/handbook/drive#page-navigation-basics
+config/TODO::33:# TODO:	  Add a broadcast of something https://github.com/hotwired/turbo-rails/pull/108/files  see messages for example
+config/TODO::34:# TODO:	  https://bramjetten.dev/articles/flash-messages-with-hotwire-and-turbo-streams fix flash
+config/TODO::35:# TODO:   Make the turbo submit navigate to an internal link location
+config/TODO::37:# TODO:	  add a github action that builds and tests the app and an update script
+config/TODO::41:# TODO: fix the system tests to run headlessly with geolocation https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh
+config/TODO::43:# TODO:	  change the search bar to set a radius near me.
+config/TODO::45:# TODO:	  Add a way to chose what to search for instead of just Coffee.
+config/TODO::46:# TODO:	  See what it looks like on my phone
+config/TODO::47:## TODO:	Store something that yelp does not store... like for example..?
+config/TODO::50:# TODO:	  update the controller to use lat and long if availablehttps://guides.rubyonrails.org/active_model_basics.html https://jasoncharnes.com/changed-attributes-rails/
+config/TODO::52:# TODO: fix heroku build and teardown features for pull requests

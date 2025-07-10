@@ -17,10 +17,10 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
           'image_url' => 'https://example.com/image.jpg',
           'display_phone' => '(555) 123-4567',
           'location' => {
-            'display_address' => ['123 Test St', 'Test City, CA']
-          }
-        }
-      ]
+            'display_address' => ['123 Test St', 'Test City, CA'],
+          },
+        },
+      ],
     }.to_json
     
     RestClient::Request.stubs(:execute).returns(mock_api_response)
