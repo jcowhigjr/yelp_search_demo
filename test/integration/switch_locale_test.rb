@@ -3,20 +3,16 @@ require 'test_helper'
 class RenderLocales < ActionDispatch::IntegrationTest
   test 'renders both sections of markdown' do
     get '/signup'
-# assert email is in english
     assert_select 'input[type="email"]'
     assert_select 'input[type="password"]'
-    #  <input placeholder=\"Password (must be at least 6 characters)\" id=\"user_password\" />\n
     assert_select 'input[placeholder="Password (must be at least 6 characters)"]'
   end
 
   test 'renders translated versions of the markdown' do
     get login_path(locale: 'pt-BR')
     get '/signup'
-# assert email is in english
     assert_select 'input[type="email"]'
     assert_select 'input[type="password"]'
-    #  <input placeholder=\"Password (must be at least 6 characters)\" id=\"user_password\" />\n
     assert_select 'input[placeholder="Password (must be at least 6 characters)"]'
   end
 
@@ -30,7 +26,6 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
         get static_home_path
 
         assert_equal I18n.locale.to_s, locale.to_s
-        # assert_select "html[lang=\"#{locale}\"]"
         assert_select 'html[lang="en"]'
 
       end
@@ -116,15 +111,6 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
     @coffeeshop = coffeeshops(:two)
 
     assert_equal('/pt-BR/coffeeshops/2', coffeeshop_path(@coffeeshop, locale: 'pt-BR' ))
-  end
-
-  test 'setting the locale to nil can screw up the path helpers' do
-    skip 'missing required keys: [:id]'
-    # locale: coffeeshop
-    assert_equal('/coffeeshops/1', coffeeshops_path(1))
-    # assert_equal coffeeshops_path({1}),
-    #     visit coffeeshop_path(@coffeeshop)
-    # >}, missing required keys: [:id]
   end
 
   def language_name_of(locale)

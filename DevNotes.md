@@ -1,43 +1,84 @@
 # My Dev Notes
 
-TLDR:
- Using GitHub PRs for feature changes and bugfixes
- Using Github Actions see main.yml for CI/CD workflow
- Using Heroku for hosting
- Using Yelp for fusion API
- Using Google for sign in.
+## Core Tooling & Setup
+
+This project uses `mise` for managing development tool versions and running common tasks. The source of truth for tool versions (Ruby, Node.js, Yarn, Lefthook, etc.) is the `mise.toml` file in the project root.
+
+**Initial Setup:**
+
+1.  **Install mise:** If you don't have it already, install `mise` by following the instructions at [https://mise.run](https://mise.run).
+2.  **Run the setup script:**
+    ```bash
+    bin/setup
+    ```
+    This script will:
+    *   Use `mise` to install and activate the correct versions of all necessary tools.
+    *   Install Ruby gem dependencies (via Bundler).
+    *   Install Node.js package dependencies (via Yarn).
+    *   Prepare the database.
+    *   Set up Git hooks managed by Lefthook.
+
+**Common Development Tasks with `mise`:**
+
+You can see all available tasks by running `mise tasks` or `mise ls`. Key tasks include:
+
+*   `mise run setup`: Re-run the initial development setup.
+*   `mise run test`: Execute unit and integration tests.
+*   `mise run test-system`: Run system (browser) tests.
+*   `mise run lint`: Check code for style issues (RuboCop for Ruby, Prettier for JS).
+*   `mise run fix`: Automatically fix code style issues.
+*   `mise run brakeman`: Run the Brakeman security scanner.
+
+**General Workflow:**
+
+*   Using GitHub PRs for feature changes and bugfixes.
+*   Using Github Actions (see `.github/workflows/main.yml`) for CI/CD.
+*   Using Heroku for hosting.
+*   Using Yelp Fusion API for core functionality.
+*   Using Google for user sign-in.
 
 Below are some other notes in order of the things I've changed.
+
+# warning
+
+The rails app:update command can sometimes overwrite configuration files including credentials. This is especially true when updating between major Rails versions since the credentials system has evolved over time.
+
 # get it working from where I picked it up on a Mac
+
+**Note:** The following setup details are largely historical. With `mise`, manual installation of Ruby and Node.js versions (e.g., via `nodenv` or `rbenv`) is no longer required. `bin/setup` and `mise` handle this.
+
+Original notes:
 updated ruby (.ruby-version and Gemfile)
 
 hid pg gem in Gemfile because it was trying to install locally
 
 (a single user doesn't need PG for this kind of dev but run bin/setup if sqlite ever locks)
+
 <!-- https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand -->
 
 (currently only using node for linting)
 specified .node-version for nodenv to work around yarn crap with node-sass
 nodenv install 15.14.0
-https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand
+<https://stackoverflow.com/questions/67205719/yarn-install-check-files-giving-me-error-output-that-i-dont-understand>
 
 Edit and use credentials for yelp
-https://www.yelp.com/developers/documentation/v3/authentication
+<https://www.yelp.com/developers/documentation/v3/authentication>
 bin/rails credentials:edit --environment development
 
 NOTE: in non local environments use RAILS_MASTER_KEY and SECRET_KEY_BASE, locally don't set these and config/credentials/development.key will be used
 
 # ENV variables are managed by dotenv-rails gem
-NOTE: .env.production can be set to look like heroku and .env.test can be set to look like CI testing.  beware .env can confuse things since it will be used in all environments if present
+
+NOTE: .env.production can be set to look like heroku and .env.test can be set to look like CI testing. beware .env can confuse things since it will be used in all environments if present
 
 <!-- Rails.application.credentials.yelp[:api_key] -->
 
-https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02
+<https://medium.com/scalereal/managing-encrypted-secrets-credentials-with-rails6-7bb31ca65e02>
 
 # Yelp
 
-https://github.com/Yelp/yelp-ruby/tree/develop/spec
-https://www.yelp.com/developers/documentation/v3/business
+<https://github.com/Yelp/yelp-ruby/tree/develop/spec>
+<https://www.yelp.com/developers/documentation/v3/business>
 
 # Add Hotwire - Rails
 
@@ -47,18 +88,14 @@ followed instructions from rails-turbo and importmap
 
 bin/rails importmap:install
 bin/rails hotwire:install
-remove webpacker stuff rm bin/webpack-dev-server config/webpack* app/javascript/pack*
+remove webpacker stuff rm bin/webpack-dev-server config/webpack*app/javascript/pack*
 run system tests and disable the ujs stuff that broke with -> data-turbo="false" or data: { turbo: false }
 
-# Upgrade to Ruby 3.1, Rails 7 and bundle update
+# Upgrade to Ruby , Rails , and bundle update
 
 Plan is to keep this up to date with the latest version of Ruby Rails and most gems
 
-<!-- https://eregon.me/blog/2021/06/04/review-of-ruby-installers-and-switchers.html -->  brew upgrade rbenv ruby-build
 
-rbenv local
-
-3.1.0-dev
 
 bundle update
 
@@ -78,35 +115,34 @@ bin/rails test:all
 
 # So far only a few things were using ujs so disabling turbo as I see them and then will enable turbo after that.(turbo is currently in use in most places now)
 
-https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md
+<https://github.com/hotwired/turbo-rails/blob/main/UPGRADING.md>
 Add something as a turbo frame
-https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames
+<https://www.google.com/books/edition/_/mYFGEAAAQBAJ?hl=en&gbpv=1&pg=PT54&dq=html+partial+interactivity+frames>
 
 # Development
 
- git flow feature start xyz-feature
+git flow feature start xyz-feature
 
- `be guard`  # run tests and linting, asset processing/live reload connection to browser while developing in the background
- `bin/dev`   # run dev server and css processor
+`be guard` # run tests and linting, asset processing/live reload connection to browser while developing in the background
+`bin/dev` # run dev server and css processor
 
- cleaning up before a commit
-   #stage what you want to commit
-     `git add related files`
-   #note tests passing in `be guard`
-   #stash unrelated files and confirm tests still passing
-     `git stash push --keep-index`
+cleaning up before a commit
+# stage what you want to commit
+`git add related files`
+# note tests passing in `be guard`
+# stash unrelated files and confirm tests still passing
+`git stash push --keep-index`
 
- commit
-   git commit
-  see lefthook.yml
+commit
+git commit
+see lefthook.yml
 
-
-
- open a PR
- `gh pr create`
+open a PR
+`gh pr create`
 
 # System Tests
-system tests -> https://avdi.codes/rails-6-system-tests-from-top-to-bottom/
+
+system tests -> <https://avdi.codes/rails-6-system-tests-from-top-to-bottom/>
 
 these are run by default on commit with a iphone 6/7/8 screen size to test mobile navigation
 be guard while developing
@@ -116,51 +152,50 @@ add 'focus' just above the test that is failing
 add 'magic_test' just above the step that is failing
 SHOW_TESTS=true MAGIC_TEST=true be guard
 
-better system tests -> https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
+better system tests -> <https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing>
 Insert 'magic_test' in system tests to BDD style improve the app.
 [evil systems](https://github.com/ParamagicDev/evil_systems)
 
 [browser testing](https://dev.to/nejremeslnici/migrating-selenium-system-tests-to-cuprite-42ah)
-  i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
-  https://testingbot.com/support/selenium/permission-popups#
+i have spent so so much time trying to dismiss a dialogue (not considered a dialogue though)
+<https://testingbot.com/support/selenium/permission-popups#>
 
-  https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType
+<https://chromedevtools.github.io/devtools-protocol/tot/Browser/#type-PermissionType>
 
 # Sign in with Google
 
-https://console.cloud.google.com/apis/credentials?project=coffeeshop-325618
+<https://console.cloud.google.com/apis/credentials?project=coffeeshop-325618>
 see client_id and client_secret in rails credentials:edit --development
 git ignore config/master.key and kep in a safe place
 git add development key is probably safe
 
-#  Mobile vs Desktop
-generally I develop toward desktop but lefthook runs the same tests as CI/CD focus on mobile.
-to debug mobile tests:
+# Mobile vs Desktop
+
+generally I develop toward mobile
+to debug tests:
 RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' be guard
 
-# Propshaft assets https://github.com/rails/propshaft/issues/36#issuecomment-982933727
+# Propshaft assets <https://github.com/rails/propshaft/issues/36#issuecomment-982933727>
 
 One thing you should be careful is that if you run rails assets:precompile in your computer and then ./bin/dev Propshaft will use the static resolver, not the dynamic one. And since the static resolver reads files from public/assets, any change you make to your source files in app/assets will not take an effect when you reload the page.
 
 To solve that, run rails assets:clobber. It will remove all files from public/assets and force Propshaft back to the dynamic resolver.
 
-#LiveReload for css changes and importmaps
-https://www.colby.so/posts/live-reloading-with-esbuild-and-rails
+# LiveReload for css changes and importmaps
+<https://www.colby.so/posts/live-reloading-with-esbuild-and-rails>
 
 # FontAwesome
 
 bin/importmap pin fontawesome
-Pinning "fontawesome" to https://ga.jspm.io/npm:fontawesome@6.1.1/index.js
-
+Pinning "fontawesome" to the latest
 if fontawesome icons are the very large, try this:
 bin/setup
 
-# https://guillaumebriday.fr/introducing-stimulus-components
+# <https://guillaumebriday.fr/introducing-stimulus-components>
 
-#importmaps
-https://github.com/hotwired/stimulus-rails/pull/24
+# importmaps
+<https://github.com/hotwired/stimulus-rails/pull/24>
 
-https://guillaumebriday.fr/introducing-stimulus-components
 
 # Github
 
@@ -173,7 +208,7 @@ heroku pipelines will deploy a preview instance on a PR that has passed CI
 
 # Environment variables
 
-RAILS_ENV test/development/production are the only ones set externally
+RAILS_ENV test/development/production are the only ones set externally everything is set in .env files for that environment
 
 # Secrets
 
@@ -181,34 +216,45 @@ An environment variable stored in github and heroku RAILS\_**ENVIRONMENT**\_KEY
 is used to decrypt those secretes stored in encrypted credential files for the api's used
 
 # if there were more going on i'd never rebase but there isn't
-roughly using git flow but integration branch is develop, prod release branch is master (no prod though really)
+Using git flow but integration branch is develop, prod release branch is develop for now.
 
-# two feature branches going at once
-# if one gets merged first (typically a squash commit)
+
+# PRs are merged with a squash commit if github workflow main.yml checks pass
 
 # stage anything that seems promising
+
 git add {files}
+
 # stash files that aren't yet ready
+
 git stash push --keep-index
-# pull develop locally
-git co develop
-git pull
+
+# pull --merge develop into current branch to stay in sync
+
+git merge --no-commit develop
+git stash apply
+
 # find the feature branch again
+
 # alias gb='git for-each-ref --sort=committerdate refs/heads/ --format='\''%(committerdate:short) %(refname:short)'\'' | tail -n20'
+
 gb
-#co the feature branch
+# co the feature branch
 git co feature/xyz
+
 # pull in the changes
+
 git flow feature rebase
 git stash apply
 
 # ngrok and testing on your phone
+
 i use edge devtools vscode extention and the iphone SE profile to test
 The automated tests run with iPhone SE emulation because it is the smallest phone.
 I think using the basic bin/dev plus the ngrok VS CODE plug in is the simplest approach for quick real phone testing
 Use the QR code to scan the random ngrok link (see plugin notes)
 
-# test local 'prod like' using https://jitter.prod
+# test local 'prod like' using <https://jitter.prod>
 
 cp config/env.production.heroku.sample .env.production
 update SECRET_KEY_BASE= DISABLE_DATABASE_ENVIRONMENT_CHECK=1 RAILS_ENV=production HOST=jitter.prod
@@ -219,14 +265,16 @@ brew install postgres-unofficial
 <!-- sudo puma-dev -setup
 puma-dev -install
 ln -s /Users/temp/src/ruby/jitter ~/.puma-prod/. -->
+
 bin/prod
 
 Local Prod like stack will start (postgresql, production.rb, built assets and vendored bundle)
-click https://jitter.prod
+click <https://jitter.prod>
 
 # test prod like remotely through internet tunnel
+
 To create a public url and share local host over the internet
-dotenv -f .env.production ngrok http https://jitter.test --host-header=jitter.test
+dotenv -f .env.production ngrok http <https://jitter.test> --host-header=jitter.test
 
 and note your random generated host ->
 
@@ -234,7 +282,9 @@ edit .env.development or .env.production
 with NGROK_HOST and add config.hosts << ENV['NGROK_HOST'] to rails config/environments/production.rb
 
 then restart the server
+
 # restart the rack server to allow the new config host access
+
 touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 # Evaluation of a new feature
@@ -263,51 +313,85 @@ touch tmp/restart.txt to get the ngrok host to be allowed (403 error otherwise)
 
 # Security Updates
 
-  Dependabot alerts are resulting in very frequent security updates..
+Dependabot alerts are resulting in very frequent security updates..
 
-    (1) Update the Gemfile.lock every PR
+    (1) Update the Gemfile.lock and bin/setup-next for Gemfile.next.lock every PR
     (2) Now let dependabot handle it automatically as well.
 
-  Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.
-    -- the tests CI requires Dendabot/RAILS_MASTER_KEY
-    -- the heroku feature branch deploy requires HEROKU_API_KEY from the Actions/Environment
-    -- the main.ci develop deploy requires the repository secret Actions/RepositorySecrets HEROKU_APP_NAME and the above API KEY
+Dependabot opens its own PRs and auto-approves them, tests them and merges them if they succeed therefore it needs its own (yet the same) secrets similar to the action workflows (see .github/.. files) I think githubs secret management feels off combined with Rails environments and Heroku environmennts it seems like a mismatch feeling around for the correct pattern.
+-- the tests CI requires RAILS_TEST_KEY
+-- the heroku feature branch deploy requires HEROKU_API_KEY from the Actions/Environment
+-- the main.ci develop deploy requires the repository secret Actions/RepositorySecrets HEROKU_APP_NAME and the above API KEY
 
-  Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_SECRET usage.
+Dependabot and Regular PRs run either in Actions/Dependabot Envs so the rails credentials setup requires updating the secret in two places in github see main gith hub workflow for RAILS_TEST_KEY usage.
 
-  Heroku recommended https://guides.rubyonrails.org/security.html changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
+Heroku recommended <https://guides.rubyonrails.org/security.html> changing the rails master credentials because the master key is stored in and environment variable they had saved them in plain text in a compromised database.
 
-  https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html
-  heroku config:set RAILS_MASTER_KEY=rails-production-key
-  EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
+<https://blog.saeloun.com/2019/10/10/rails-6-adds-support-for-multi-environment-credentials.html>
+heroku config:set RAILS_MASTER_KEY=rails-production-key
+EDITOR="code --wait" bin/rails credentials:edit -e production MASTER_KEY=your-master-key
 
-  for github actions:
-  add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key  (see main.yml)
+## Configuring RAILS_TEST_KEY
 
-  # https://github.com/glebm/i18n-tasks
-  GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
+Both regular PRs and Dependabot PRs need access to the `RAILS_TEST_KEY` secret to decrypt test credentials. You must configure this secret in two different locations in GitHub:
 
-  # Performance
-  https://pawelurbanek.com/rails-gzip-brotli-compression
-  https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule
+### Repository Secrets
 
-  deferring js loading of materialize really sped things up
-  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/
-  First Byte 14.26s Fully Loaded 14.76s
-  First Byte 0.25s Fully Loaded 1.36s
-  https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/
+- Navigate to **Settings > Secrets and variables > Actions** in your repository.
+- Click **New repository secret**, set the name to `RAILS_TEST_KEY`, and paste in the contents of `config/credentials/test.key`.
 
-  # Assets
+### Dependabot Secrets
 
-  1) Ideally I would follow DHH lead mentioned in propshaft
-     1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps)
-     2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
-Trade-offs:  12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
-    a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.  
+- In **Settings > Secrets and variables**, select the **Dependabot** tab.
+- Add a new secret named `RAILS_TEST_KEY` with the same key contents.
 
+Note that both stores must be updated so that regular PRs and Dependabot PRs can decrypt test credentials.
+
+for github actions:
+add a branch or repository level secret called RAILS_TEST_KEY with the value of your config/credentials/test.key (see main.yml)
+
+# <https://github.com/glebm/i18n-tasks>
+
+GOOGLE_TRANSLATE_API_KEY=... bundle exec i18n-tasks translate-missing --from=en pt-BR
+
+# Performance
+
+<https://pawelurbanek.com/rails-gzip-brotli-compression>
+<https://blog.logrocket.com/9-tricks-eliminate-render-blocking-resources/#dont-add-css-import-rule>
+
+deferring js loading of materialize really sped things up
+<https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/rqbI2d/>
+First Byte 14.26s Fully Loaded 14.76s
+First Byte 0.25s Fully Loaded 1.36s
+<https://www.giftofspeed.com/report/dorkbob-feature-test-as-o7xwqc.herokuapp.com/ErXtbI/>
+
+# Assets
+
+
+
+# System Testing
+Frame-Aware Testing
+Use data: { turbo_frame: dom_id(model) } for links that should operate within a Turbo frame
+Test interactions within the frame context using within blocks
+Don't expect page navigation for frame-based interactions
+Modal Dialogs and Confirmations
+Use data: { turbo_confirm: 'message' } for confirmation dialogs
+Wrap confirmation actions in accept_confirm blocks in tests
+Handle confirmations explicitly to avoid warning messages
+Assertions and Expectations
+Focus on content changes rather than URL changes for Turbo interactions
+Use assert_selector to verify dynamic content updates
+Verify frame content updates without expecting full page reloads
+Common Pitfalls to Avoid
+Don't test for full page navigation when using Turbo frames
+Don't rely on URL changes for frame-based interactions
+Don't forget to scope actions within the correct frame or container
+These rules came from our experience fixing the review editing and deletion tests, where we learned that Turbo interactions behave differently from traditional full-page navigation.
+1. Ideally I would follow DHH lead mentioned in propshaft 1) no uglify, minify, compression in dev only fingerprinting and manifest (propshaft and importmaps) 2) no pre-compile because CDN's do this well on the fly but don't fingerprint well and can TTL based on that
+   Trade-offs: 12-factor prod/cd/cd parity .. for me assets in ci/cd should work like prod if possible.
+   a cdn seems to require 'publishing' the app and brings in more complexity than required at this time.. like DNS and caching exposes to webcrawlers etc etc.
 
 rm -rvf public/assets && SECRET_KEY_BASE=504e57Z####################################### RAILS_ENV=production bin/rake assets:clobber tailwindcss:clobber assets:reveal tailwindcss:build assets:precompile assets:reveal && touch tmp/restart.txt
 
-
 Other notes:
-  debugging revealed fort awesome was being pulled in from application.js but when the network fails the entire compile failed...
+debugging revealed fort awesome was being pulled in from application.js but when the network fails the entire compile failed...

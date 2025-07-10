@@ -10,7 +10,7 @@ lefthook run fixer
 # bundle exec standardrb --fix
 
 # Check erb file formatting
-# bundle exec erblint --lint-all
+# bundle exec erb_lint --lint-all
 
 # Check i18n health
 # bundle exec i18n-tasks health en

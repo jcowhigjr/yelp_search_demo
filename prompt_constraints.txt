@@ -1,0 +1,21 @@
+
+# Agent Zero Prompt Constraints
+
+## Operating Directory
+- Operate strictly within the `/root/work_dir/jitter` directory.
+
+## Package Installation
+- Do not install any new packages using `apt-get` or `pip`.
+
+## File Editing
+- Focus on editing `.rb` files only.
+- For non `.rb` files, prompt the user for manual changes.
+
+## Commands
+- Use only `git` and `bin/rails` commands.
+
+## Initial Setup
+- Run the setup script upon initialization.
+
+## Commit Frequency
+- Commit changes frequently to maintain progress.

@@ -1,10 +1,12 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'mocha/minitest'
 require_relative '../config/environment'
 
 # require "minitest/autorun"
 require 'rails/test_help'
 
 require 'bcrypt'
+require_relative 'support/oauth_test_helper'
 # https://brandonhilkert.com/blog/managing-login-passwords-for-capybara-with-minitest-and-rails-fixtures/
 module TestPasswordHelper
   def default_password_digest
@@ -16,6 +18,20 @@ module TestPasswordHelper
   end
 end
 
+Capybara.register_driver :ferrum_block_fonts do |app|
+  browser = Ferrum::Browser.new
+
+  browser.on(:request) do |request|
+    host = URI(request.url).host
+    if host == 'fonts.gstatic.com'
+      request.abort
+    end
+  end
+
+  Capybara::Ferrum::Driver.new(app, browser:)
+end
+
+Capybara.javascript_driver = :ferrum_block_fonts
 # module LoginHelper
 #   def login(user)
 #     raise 'user required' unless user.is_a? User
@@ -54,4 +70,3 @@ class ActiveSupport::TestCase
   end
 
 end
-

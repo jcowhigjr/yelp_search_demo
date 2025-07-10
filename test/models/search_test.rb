@@ -1,5 +1,5 @@
 require 'test_helper'
-require 'minitest/autorun'
+# require 'minitest/autorun'
 
 class SearchTest < ActiveSupport::TestCase
 

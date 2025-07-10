@@ -10,18 +10,15 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
 # I think this will allow different machines to run tests with different ruby patch versions
 
-
-ruby '~> 3.3.4'
+# ruby File.read('.ruby-version').strip
 
 gem 'bundler', '~> 2.5'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-# gem 'rails', github: 'rails/rails', branch: '7-0-stable'
+# Bundle edge Rails instead: gem 'rails', "~> 8.0"
+# gem 'rails', "~> 8.0"
 gem 'next_rails'
 
-gem 'rails', '~> 7.2.1'
-
-
+gem 'rails', '~> 8.0'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
@@ -49,8 +46,7 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'fast_sqlite', require: false, group: :test
-    gem 'sqlite3', '~> 2.0', require: false, group: :development
+    gem 'sqlite3', '~> 2.7', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -82,6 +78,7 @@ gem 'sprockets-exporters_pack'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug'
+  gem 'brakeman', require: false
 end
 
 group :development do
@@ -102,7 +99,6 @@ group :development do
   gem 'guard-rubocop'
 
   # https://dev.to/zilton7/installing-livereload-on-rails-6-5blj
-  gem 'guard-livereload', require: false # , '~> 2.4'
   gem 'rack-livereload'
 
   # foreman required to start bin/dev
@@ -114,7 +110,7 @@ group :development do
   gem 'rubocop-capybara', require: false
   gem 'prettier', require: false
   gem 'erb_lint', require: false
-  gem 'brakeman', require: false
+  gem 'yaml-lint', require: false
   # gem 'solargraph', require: false
   # gem 'solargraph-rails', require: false
 
@@ -124,10 +120,10 @@ group :development do
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
-  gem 'easy_translate', require: false
 end
 
 group :test do
+  gem 'mocha', require: false # For mocking and stubbing in tests
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara' # , '~> 3.35'
   gem 'selenium-webdriver' # , '~> 4.0'
@@ -139,12 +135,16 @@ group :test do
   gem 'cuprite'
   gem 'evil_systems'
   gem 'magic_test'
-  gem 'minitest-focus'
-  gem 'minitest-retry'
+  # gem 'minitest-focus'
+  # gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 2.7'
+gem 'tailwindcss-rails', '~> 4.2'
 
 gem 'flipper'
 
 gem 'dotenv'
+
+group :development, :ci do
+  gem 'faraday', '~> 2.13.1', require: false
+end

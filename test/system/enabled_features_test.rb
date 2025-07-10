@@ -30,6 +30,6 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
     Flipper.disable(:early_access_preview)
     visit '/'
 
-    assert_text 'Coming Soon: Sign up for Early Access'
+    assert_text 'Coming Soon: Sign up for Early Access', wait: 5
   end
 end

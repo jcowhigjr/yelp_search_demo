@@ -3,7 +3,7 @@ inherit_from: .rubocop_todo.yml
 inherit_gem:
   prettier: rubocop.yml
 
-require:
+plugins:
   - rubocop-performance
   - rubocop-rails
   - rubocop-minitest
@@ -20,8 +20,8 @@ AllCops:
     - 'tmp/**/*'
     - 'app/views/**/*'
     - 'node_modules/**/*'
-  TargetRubyVersion: 3.3
-  TargetRailsVersion: 7.1
+  TargetRubyVersion: 3.4
+  TargetRailsVersion: 8.0
   SuggestExtensions: true
 
 # Metrics Cops

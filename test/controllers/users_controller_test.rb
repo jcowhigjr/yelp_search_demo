@@ -34,17 +34,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Successfully logged in.', user_one.flash[:success]
   end
 
-  test '#destroy' do
-    skip 'not implemented'
-
-    user_one = login(:one)
-    # assert_equal 'Successfully logged in.', user_one.flash[:success]
-    assert_difference('User.count', -1) { user_one.delete '/users/1' }
-
-    assert_equal 'User 1 destroyed', user_one.flash[:notice]
-    assert_redirected_to '/login'
-  end
-
   test '#:show, missing user' do
     user_one = login(:one)
 
@@ -81,9 +70,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     def unfavorite_coffeeshop(coffeeshop)
-      # binding.break unless coffeeshop
-      # reference a named route, for maximum internal consistency!
-      # https://github.com/hotwired/turbo-rails/blob/main/test/streams/streams_controller_test.rb#L38
       delete user_favorite_path(id: coffeeshop.id), as: :turbo_stream
       follow_redirect!
     end

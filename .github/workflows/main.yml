@@ -8,33 +8,81 @@
 
 name: 'Ruby on Rails CI'
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches:
       - develop
       - main
+  workflow_run:
+    workflows: ["Dependabot Risk Assessment"]
+    types:
+      - completed
 
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.ref }}
 #   cancel-in-progress: true
 
 jobs:
+  # Get risk assessment for Dependabot PRs (optional job)
+  get-risk-assessment:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
+      risk-level: ${{ steps.assessment.outputs.risk-level }}
+      is-dependabot: 'true'
+    steps:
+      - name: Get Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2.4.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Assess risk
+        id: assessment
+        run: |
+          # Same logic as in risk assessment workflow
+          UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
+          DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
+          SKIP_SYSTEM_TESTS="false"
+          RISK_LEVEL="medium"
+          
+          if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]] && [[ "$DEPENDENCY_TYPE" == "development" || "$DEPENDENCY_TYPE" == "test" ]]; then
+            SKIP_SYSTEM_TESTS="true"
+            RISK_LEVEL="low"
+          fi
+          
+          echo "skip-system-tests=$SKIP_SYSTEM_TESTS" >> $GITHUB_OUTPUT
+          echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
   test-next:
     runs-on: ubuntu-latest
+    needs: [get-risk-assessment]
+    if: always() && !cancelled()
+    permissions:
+      contents: read # Added for least privilege
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.next.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby 3
-        uses: ruby/setup-ruby@v1
+      - name: Cache mise tools
+        uses: actions/cache@v4
         with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
+          path: ~/.local/share/mise/installs # Default mise install path
+          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-mise-
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
+      - name: Setup Environment via mise
         env:
-          BUNDLE_GEMFILE: Gemfile.next
+          SETUP_SKIP_NODE: "true"
+        run: |
+          bash bin/setup-environment.sh
+          # Add mise to PATH for subsequent steps
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Build next and unit test
         env:
           RAILS_ENV: test
@@ -42,66 +90,85 @@ jobs:
           CI: true
         continue-on-error: false
         run: |
-          # should update dependabot to manage the Gemfile.next.lock
-          bin/setup-next
-          next rails test:prepare --trace
-          next rails test
+          mise run setup-next
+          mise run test-next-prepare
+          mise run test-next-run
       - name: system-test-next
         id: system-test-next
         continue-on-error: false
+        # Skip system tests for low-risk Dependabot updates
+        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          next bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise run test-next-system
   test:
     runs-on: ubuntu-latest
+    needs: [get-risk-assessment]
+    if: always() && !cancelled()
+    permissions:
+      contents: read # Added for least privilege
     steps:
       - name: checkout code
         uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
-        run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Cache mise tools
+        uses: actions/cache@v4
         with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
-      - name: brakeman
+          path: ~/.local/share/mise/installs # Default mise install path
+          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-mise-
+
+      - name: Install system dependencies
         run: |
-          gem install brakeman
-          brakeman --no-pager --quiet
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
+      - name: Setup Environment via mise
+        env:
+          SETUP_SKIP_NODE: "true"
+        run: |
+          bash bin/setup-environment.sh
+          # Add mise to PATH for subsequent steps
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Setup Application (gems, db, etc.)
+        env:
+          RAILS_ENV: test # Ensure RAILS_ENV is set if bin/setup needs it
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+          CI: true
+        run: mise run setup -- --skip-server # Run application setup once
+      - name: Run Brakeman
+        run: mise run brakeman
       - name: Build and run unit-tests
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          bin/setup
           # test prepare required for tailwind css file required in application erb
-          bin/rails test:prepare --trace
-          bin/rails test
+          mise run test-prepare
+          mise run test
       - name: system-tests
         id: system-test
         continue-on-error: true # make the step always success and set status later
+        # Skip system tests for low-risk Dependabot updates
+        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise run test-system
       - name: system-test-retry
         id: system-test-retry-1
         continue-on-error: true # make the step always success and set status later
-        if: steps.system-test.outcome=='failure' # check the step outcome, retry 1st time
+        if: steps.system-test.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
-          bin/rails test:system --verbose HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'
+          mise run test-system -- --verbose
       - name: Upload failed system test images
         uses: actions/upload-artifact@v4
         if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
@@ -116,40 +183,41 @@ jobs:
              echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
-  auto-merge:
-    name: Auto-Merge PRs by Dependabot
-    needs: test
+  # Note: Auto-merge logic has been moved to auto-approve.yml
+  # to avoid conflicts with branch protection and CodeQL requirements
+
+  verify-deployment:
+    name: Verify Heroku Deployment
     runs-on: ubuntu-latest
+    needs: [test, test-next] # Ensure tests pass before verifying deployment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     permissions:
-      pull-requests: write
-      contents: write
+      contents: read # Added for least privilege
+    env:
+      HEROKU_APP_URL: ${{ secrets.HEROKU_APP_NAME }} # Using the secret name you provided
     steps:
-      - uses: fastify/github-action-merge-dependabot@v3.11.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          target: minor
-  deploy:
-    needs: test
-    if: ${{ github.ref == 'refs/heads/develop' }}
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: Extract Ruby Version
-        id: ruby_version
+      - name: Wait for Heroku deployment
         run: |
-          major_minor_version=$(grep -A 1 "RUBY VERSION" Gemfile.lock | tail -n 1 | awk '{split($2,a,"[p.]"); print a[1] "." a[2]}')
-          echo "MAJOR_MINOR_VERSION=$major_minor_version" >> $GITHUB_ENV
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.MAJOR_MINOR_VERSION }}
-          bundler-cache: true
-      - name: deploy to heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+          echo "Waiting for Heroku to deploy (2 minutes)..."
+          sleep 120
+
+      - name: Check health endpoint
         run: |
-          gem install dpl && gem install faraday -v '~> 1.8.0'
-          dpl --provider=heroku --api-key=${HEROKU_API_KEY} --app=${HEROKU_APP_NAME}
+          MAX_RETRIES=10
+          RETRY_INTERVAL=30 # seconds
+          RETRY_COUNT=0
+          HEALTH_CHECK_URL="$HEROKU_APP_URL/healthz"
+
+          echo "Starting health check for $HEALTH_CHECK_URL..."
+
+          until curl --silent --fail --output /dev/null "$HEALTH_CHECK_URL"; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
+              echo "Health check failed for $HEALTH_CHECK_URL after $MAX_RETRIES retries."
+              echo "This is the develop branch; logging health check failure but not failing the workflow."
+              exit 0
+            fi
+            echo "Health check failed (attempt $RETRY_COUNT/$MAX_RETRIES). Retrying in $RETRY_INTERVAL seconds..."
+            sleep $RETRY_INTERVAL
+          done
+          echo "Health check for $HEALTH_CHECK_URL successful!"

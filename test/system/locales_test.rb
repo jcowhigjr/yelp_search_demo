@@ -5,10 +5,10 @@ class LocalesTest < ApplicationSystemTestCase
   test 'the footer has a link to all available locales' do
     visit '/'
     within 'footer' do
-      assert_selector "a", text: "English"
-      assert_selector "a", text: "Português"
-      assert_selector "a", text: "Français"
-      assert_selector "a", text: "Español"
+      assert_selector 'a', text: 'English'
+      assert_selector 'a', text: 'Português'
+      assert_selector 'a', text: 'Français'
+      assert_selector 'a', text: 'Español'
     end
    end
 
@@ -40,5 +40,27 @@ class LocalesTest < ApplicationSystemTestCase
     visit '/pt-BR'
 
      assert_equal(:en, I18n.locale)
+  end
+
+  test 'search placeholder is correctly translated' do
+    # Test root path (should default to English)
+    visit '/'
+
+    assert_selector "input[placeholder='Search for coffee shops...']"
+
+    # Test explicit English path
+    visit '/en'
+
+    assert_selector "input[placeholder='Search for coffee shops...']"
+
+    # Test Spanish
+    visit '/es'
+
+    assert_selector "input[placeholder='Buscar cafeterías...']"
+
+    # Test French
+    visit '/fr'
+
+    assert_selector "input[placeholder='Rechercher des cafés...']"
   end
 end

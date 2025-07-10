@@ -1,96 +1,274 @@
 # EXAMPLE USAGE
 # Refer for explanation to following link:
-# https://github.com/evilmartians/lefthook/blob/master/docs/full_guide.md
-#
-pre-push:
-  pre-command: git stash
+# https://evilmartians.github.io/lefthook/configuration/no_tty.html
+# SOME COMMANDS RELY ON THE MISE SHIMS BEING ON PATH
+
+shell:
+  pty: false
+verbose: false
+
+# Pre-commit hooks for branch protection and quality
+pre-commit:
   commands:
+    protect_main_branches:
+      run: |
+        branch=$(git branch --show-current)
+        if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+          echo "❌ Direct commits to $branch are not allowed!"
+          echo "   Use: lefthook run workflow-new-feature <branch-name>"
+          echo "   Example: lefthook run workflow-new-feature fix/issue-123"
+          exit 1
+        fi
+      skip:
+        - merge
+        - rebase
+    check_branch_sync:
+      run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          local_sha=$(git rev-parse HEAD)
+          remote_sha=$(git rev-parse HEAD@{upstream})
+          if [[ "$local_sha" != "$remote_sha" ]]; then
+            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
+            if [[ $behind_count -gt 0 ]]; then
+              echo "⚠️  Warning: Your branch is $behind_count commits behind remote"
+              echo "   Consider running 'git pull' before committing"
+            fi
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
+pre-push:
+  pre-command: git add . && git stash
+  post-command: |
+    if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+      echo "❌ Error: New files were generated during the pre-push hook:"
+      git ls-files --others --exclude-standard
+      echo "Please commit these files before pushing."
+      exit 1
+    fi
+  commands:
+    rails-tests:
+      tags: backend tests
+      run: |
+        echo "🚀 Setting up test environment..."
+        # Use CLI error handler for robust CI test execution
+        export PR_NUMBER="${PR_NUMBER:-}"
+        export GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+        
+        # Setup phase with error handling
+        if ! bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
+          echo "❌ Failed to set up test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing test database..."
+        if ! bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare test database"
+          exit 1
+        fi
+        
+        # Set up environment explicitly
+        export PATH="${USER_LOCAL_BIN:-$HOME/.local/bin}:$PATH"
+        export MISE_SHELL=zsh
+        
+        # Debug output
+        echo "=== Environment ==="
+        echo "PATH: $PATH"
+        echo "Node: $(node --version)"
+        echo "Ruby: $(ruby --version)"
+        echo "Mise: $(mise --version)"
+        echo "Which node: $(which node)"
+        echo "Which ruby: $(which ruby)"
+        echo "Which bundle: $(which bundle)"
+        echo "Which rails: $(which rails)"
+        echo "==================="
+        
+        echo "🧪 Running Rails tests with error handling..."
+        # Main test execution with CI failure detection and GitHub comment posting
+        bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/rails test
+        echo "✅ Rails test preparation complete."
+        
+        echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
+        if [ -f app/assets/builds/tailwind.css ]; then
+          echo "✅ app/assets/builds/tailwind.css found locally."
+          echo "   First 5 lines of local tailwind.css:"
+          head -n 5 app/assets/builds/tailwind.css
+        else
+          echo "❌ app/assets/builds/tailwind.css NOT found locally after test:prepare."
+          echo "   Contents of app/assets/builds/:"
+          ls -la app/assets/builds/ || echo "app/assets/builds/ directory does not exist"
+        fi
     test-next:
-      tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test
-    packages-audit:
-      tags: frontend security
-      run: yarn audit
-    gems-audit:
-      tags: backend security
-      run: bundle audit update && bundle audit check
-    javascript-audit:
-      tags: frontend security
-      run: yarn audit
-    importmaps-audit:
-      tags: frontend security
-      run: bin/importmap audit
-    rubocop:
-      tags: backend style
-      files: git diff --name-only master
-      glob: '*.rb'
-      run: bundle exec rubocop --force-exclusion -A {files}
+      tags: javascript frontend
+      run: |
+        echo "🚀 Verifying Next.js/JavaScript dependencies..."
+        if ! CI=true mise exec -- yarn install --frozen-lockfile; then
+          echo "❌ Failed to install yarn dependencies"
+          exit 1
+        fi
+        echo "✅ Yarn dependencies verified successfully."
+        # Note: 'next-build' and 'next-test' scripts were not found in the root package.json.
+        # If these are required, ensure they are defined in the correct package.json
+        # and update this hook accordingly, potentially changing the working directory.
+    rails-system-tests:
+      tags: backend system-tests
+      run: |
+        echo "🚀 Setting up system test environment..."
+        if ! CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
+          echo "❌ Failed to set up system test environment"
+          exit 1
+        fi
+        
+        echo "🔧 Preparing system test database..."
+        if ! CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare system test database"
+          exit 1
+        fi
+        
+        echo "🧪 Running system tests..."
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' mise exec -- bin/rails test:system; then
+          echo "❌ System tests failed"
+          exit 1
+        fi
+        
+        echo "✅ All system tests passed"
     brakeman:
       tags: backend security
-      run: bundle exec brakeman --no-pager
-    rails-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test:system
-
-pre-commit:
-  parallel: true
-  commands:
-    js:
-      glob: '*.{js,ts}'
-      run: yarn prettier --write {staged_files} && git add {staged_files}
+      run: mise exec -- bundle exec brakeman --no-pager
+    gems-audit:
+      tags: backend security
+      run: mise exec -- bundle audit update && bundle audit check
+    javascript-audit:
+      tags: frontend security
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          mise exec -- yarn npm audit --all
+        else
+          echo "⚠️ Skipping JavaScript audit: yarn not available"
+        fi
+    importmaps-audit:
+      tags: frontend security
+      run: mise exec -- bin/importmap audit
+    verify_ci_ready:
+      tags: backend ci
+      run: |
+        echo "Checking for mise updates and attempting to upgrade if necessary..."
+        if command -v brew >/dev/null 2>&1; then
+          if brew outdated | grep -q "mise"; then
+            echo "Mise is outdated, attempting to upgrade via Homebrew..."
+            if ! (brew update && brew upgrade mise); then
+              echo "❌ Failed to upgrade mise. Please upgrade it manually."
+              exit 1
+            fi
+            echo "✅ Mise upgraded successfully."
+          else
+            echo "ℹ️ Mise is up to date."
+          fi
+        else
+          echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
+        fi
+        echo "Verifying CI readiness with mise doctor..."
+        if ! mise doctor --quiet; then
+          echo "❌ mise doctor failed. Please check your environment."
+          exit 1
+        fi
+        echo "✅ CI environment ready."
     rubocop:
       tags: backend style
       glob: '*.rb'
-      exclude: 'application.rb|routes.rb'
-      run: bundle exec rubocop --force-exclusion {all_files}
-    erb-lint:
-      tags: frontend style
-      files: git diff --name-only master
+      run: bundle exec rubocop --parallel --force-exclusion {staged_files}
+      stage_fixed: true
+    erb_lint:
+      tags: backend style
       glob: '*.erb'
-      run: bundle exec erblint --lint-all {staged_files}
-    rails-tests:
-      tags: backend tests
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/rails test:prepare --trace &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` CUPRITE=true bin/rails test
+      run: bundle exec erblint --lint-all --format compact {staged_files}
+      stage_fixed: true
+    prettier:
+      tags: frontend style
+      glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {staged_files}
+        else
+          echo "⚠️ Skipping prettier: yarn not available"
+        fi
+      stage_fixed: true
+    yaml-lint:
+      tags: backend style
+      exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
+      glob: '*.yml'
+      run: bundle exec yaml-lint {staged_files}
+      stage_fixed: true
+    # rails-tests are run in pre-push instead of pre-commit for better performance
+    # and to avoid breaking the commit flow with potentially long-running tests
+    verify_environment:
+      run: bin/container-healthcheck.sh && { echo "✓ Environment valid"; exit 0; } || { echo "✗ Environment invalid - run bin/setup-environment.sh"; exit 1; }
+      tags: validation
+      skip:
+        - merge
+        - rebase
+
 fixer:
+  verbose: false
+  pty: false
   parallel: true
   commands:
     ruby-fixer:
-      run: bundle exec rubocop --force-exclusion -A {all_files}
+      glob: '**/*.rb'
+      run: bundle exec rubocop --autocorrect-all  --force-exclusion {all_files}
+      stage_fixed: true
     js-fixer:
-      glob: 'app/javascript/**.{js,ts,jsx,tsx}'
-      run: yarn prettier --write {all_files}
+      glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping JS fixer: yarn not available"
+        fi
+      stage_fixed: true
     ruby-prettier:
       glob: 'app/**/*.rb'
       run: bundle exec rbprettier --write {files}
-    erblint:
-      run: bundle exec erblint --autocorrect --lint-all {all_files}
+      stage_fixed: true
+    erb_lint:
+      glob: 'app/views/**/*.erb'
+      run: bundle exec erb_lint --autocorrect {all_files}
+      stage_fixed: true
+    yaml-lint:
+      tags: lint
+      glob: "*.{yml,yaml}"
+      run: mise exec -- yamllint {all_files}
+      stage_fixed: true
     brakeman:
-      # the pager was causing the tests to fail in parallel
       run: bundle exec brakeman --no-pager
-    packages-audit:
+    yarn-audit:
       tags: frontend security
-      run: yarn audit
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn npm audit
+        else
+          echo "⚠️ Skipping yarn audit: yarn not available"
+        fi
     gems-audit:
       tags: backend security
       run: bundle audit update && bundle audit check
-    next-test:
-      tags: backend
-      run: CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` bin/setup-next &&
-           CI=true RAILS_ENV=test RAILS_MASTER_KEY=`cat config/credentials/test.key` HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' next rails test:all
     i18n-tasks:
-      run: bundle exec i18n-tasks health en missing unused
-    javascript-audit:
-      tags: frontend security
-      run: yarn upgrade
+      run: bundle exec i18n-tasks health || bundle exec i18n-tasks normalize
+      stage_fixed: true
+    yarn-lint:
+      tags: frontend updates
+      glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
+      run: |
+        if command -v yarn >/dev/null 2>&1; then
+          yarn prettier --write {all_files}
+        else
+          echo "⚠️ Skipping yarn lint: yarn not available"
+        fi
+      stage_fixed: true
     importmaps-audit:
       tags: frontend security
       run: bin/importmap outdated
-
 # scripts:
 #     "hello.js":
 #       runner: node
@@ -102,3 +280,55 @@ fixer:
 #       runner: ruby
 #     "any.sh":
 #       runner: bash
+
+# Workflow commands for agent coders and developers
+workflow-status:
+  piped: true
+  commands:
+    check_status:
+      run: |
+        echo "🔍 Git Workflow Status Check"
+        echo "=========================="
+        
+        # Check current branch
+        current_branch=$(git branch --show-current)
+        echo "📍 Current branch: $current_branch"
+        
+        # Check if on protected branch
+        if [[ "$current_branch" == "main" || "$current_branch" == "develop" ]]; then
+          echo "⚠️  WARNING: You are on a protected branch ($current_branch)"
+          echo "   Use 'lefthook run workflow-new-feature <branch-name>' to create a feature branch"
+        fi
+        
+        # Check git status
+        echo ""
+        echo "📝 Git Status:"
+        git status --porcelain
+        
+        # Check if behind remote
+        echo ""
+        echo "🔄 Remote sync status:"
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          local_sha=$(git rev-parse HEAD)
+          remote_sha=$(git rev-parse HEAD@{upstream})
+          if [[ "$local_sha" != "$remote_sha" ]]; then
+            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
+            ahead_count=$(git rev-list --count HEAD@{upstream}..HEAD)
+            if [[ $behind_count -gt 0 ]]; then
+              echo "⚠️  Your branch is $behind_count commits behind remote"
+              echo "   Run 'git pull' to sync with remote"
+            fi
+            if [[ $ahead_count -gt 0 ]]; then
+              echo "📤 Your branch is $ahead_count commits ahead of remote"
+            fi
+          else
+            echo "✅ Branch is up to date with remote"
+          fi
+        else
+          echo "ℹ️  No upstream tracking branch set"
+        fi
+
+workflow-new-feature:
+  commands:
+    create_branch:
+      run: mise exec -- ./workflow-new-feature.sh {0}

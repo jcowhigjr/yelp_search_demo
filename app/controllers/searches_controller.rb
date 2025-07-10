@@ -1,4 +1,7 @@
 class SearchesController < ApplicationController
+  # CSRF protection is enforced for all actions, including development environment.
+  # Removed skip_before_action directive to ensure security.
+
   def show
     @search = Search.find(params[:id])
   end
@@ -49,10 +52,12 @@ class SearchesController < ApplicationController
   private
 
   def search_params
-    params.require(:search).permit(:query, :latitude, :longitude)
+    params.expect(search: [:query, :latitude, :longitude])
   end
 
   def redirect_to_proper_path
     redirect_to @search
   end
+
+  # Removed development_ide_preview? method as CSRF protection is now enforced universally.
 end
