@@ -85,7 +85,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
-    bigdecimal (3.2.1)
+    bigdecimal (3.2.2)
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
@@ -389,7 +389,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.9.4)
       logger
-    rdoc (6.14.1)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
@@ -470,12 +470,12 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (4.2.3)
+    tailwindcss-rails (4.3.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.1.7-arm64-darwin)
-    tailwindcss-ruby (4.1.7-x86_64-darwin)
-    tailwindcss-ruby (4.1.7-x86_64-linux-gnu)
+    tailwindcss-ruby (4.1.11-arm64-darwin)
+    tailwindcss-ruby (4.1.11-x86_64-darwin)
+    tailwindcss-ruby (4.1.11-x86_64-linux-gnu)
     temple (0.10.3)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
@@ -564,7 +564,7 @@ DEPENDENCIES
   selenium-webdriver
   sprockets-exporters_pack
   sqlite3 (~> 2.7)
-  tailwindcss-rails (~> 4.2)
+  tailwindcss-rails (~> 4.3)
   turbo-rails (~> 2.0)
   tzinfo-data
   web-console
