@@ -1,0 +1,303 @@
+#!/bin/bash
+
+# CLI Error Handler Wrapper Script
+# Provides shell script integration with the Ruby CLIErrorHandler
+# Usage: cli-error-handler [OPTIONS] -- COMMAND [ARGS...]
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Default configuration
+RETRY_ENABLED=false
+MAX_RETRIES=3
+LOG_LEVEL="INFO"
+PR_NUMBER=""
+DRY_RUN=false
+
+# Function to show usage
+show_usage() {
+    cat << EOF
+CLI Error Handler Wrapper
+
+DESCRIPTION:
+    Provides robust error handling for CLI operations with:
+    - Automatic error classification and handling
+    - CI failure detection and GitHub comment posting
+    - Merge conflict detection and local notification
+    - API error retry with exponential backoff
+
+USAGE:
+    $0 [OPTIONS] -- COMMAND [ARGS...]
+
+OPTIONS:
+    --retry                 Enable retry logic for transient API errors
+    --max-retries COUNT     Maximum number of retries (default: 3)
+    --log-level LEVEL       Log level: DEBUG, INFO, WARN, ERROR (default: INFO)
+    --pr-number NUMBER      PR number for GitHub comments
+    --dry-run               Dry run mode - don't post GitHub comments
+    -h, --help              Show this help message
+
+EXAMPLES:
+    # Basic error handling
+    $0 -- gh run list --repo owner/repo
+
+    # With retry for API operations
+    $0 --retry -- gh api repos/owner/repo
+
+    # With custom retry configuration
+    $0 --retry --max-retries 5 -- gh pr create --title "Test PR"
+
+    # CI operation with PR context
+    $0 --pr-number 123 -- mise exec -- bin/rails test
+
+    # Merge operation with conflict handling
+    $0 -- git merge origin/main
+
+ENVIRONMENT VARIABLES:
+    GITHUB_TOKEN            GitHub token for API operations
+    PR_NUMBER               PR number (alternative to --pr-number)
+    CLI_ERROR_HANDLER_LOG   Log level override
+
+ERROR HANDLING FEATURES:
+    CI Failures:
+        - Detects CI/test failures
+        - Posts detailed GitHub comment with error details
+        - Includes failure summary and resolution steps
+
+    Merge Conflicts:
+        - Detects merge conflicts automatically
+        - Provides local notification with conflict details
+        - Aborts merge operation to prevent corruption
+        - Shows resolution steps
+
+    API Errors:
+        - Retries transient API errors with exponential backoff
+        - Handles rate limiting and network issues
+        - Posts retry exhaustion notifications
+
+    General Errors:
+        - Comprehensive logging of all command failures
+        - Structured error classification
+        - Exit code preservation
+
+EXIT CODES:
+    0    Success
+    1    General error
+    2    CI failure
+    3    Merge conflict
+    4    API failure
+    5    Retry exhausted
+
+INTEGRATION:
+    This wrapper integrates with the project's existing tools:
+    - Uses 'mise exec' for environment management
+    - Integrates with lefthook CI/CD pipelines
+    - Compatible with GitHub CLI workflows
+    - Follows project coding standards
+
+EOF
+}
+
+# Function to log messages
+log() {
+    local level="$1"
+    local message="$2"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    case "$level" in
+        "ERROR")
+            echo -e "${RED}[${timestamp}] ERROR: ${message}${NC}" >&2
+            ;;
+        "WARN")
+            echo -e "${YELLOW}[${timestamp}] WARN: ${message}${NC}" >&2
+            ;;
+        "INFO")
+            echo -e "${BLUE}[${timestamp}] INFO: ${message}${NC}"
+            ;;
+        "DEBUG")
+            if [[ "${LOG_LEVEL}" == "DEBUG" ]]; then
+                echo -e "[${timestamp}] DEBUG: ${message}"
+            fi
+            ;;
+    esac
+}
+
+# Function to check prerequisites
+check_prerequisites() {
+    log "DEBUG" "Checking prerequisites..."
+    
+    # Check if ruby is available
+    if ! command -v ruby &> /dev/null; then
+        log "ERROR" "Ruby is required but not found"
+        exit 1
+    fi
+    
+    # Check if mise is available
+    if ! command -v mise &> /dev/null; then
+        log "ERROR" "mise is required but not found"
+        exit 1
+    fi
+    
+    # Check if the error handler exists
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
+    local error_handler_path="${script_dir}/../lib/cli_error_handler.rb"
+    
+    if [[ ! -f "$error_handler_path" ]]; then
+        log "ERROR" "CLI error handler not found at: $error_handler_path"
+        exit 1
+    fi
+    
+    log "DEBUG" "Prerequisites check passed"
+}
+
+# Function to build Ruby command arguments
+build_ruby_args() {
+    local args=()
+    
+    if [[ "$RETRY_ENABLED" == "true" ]]; then
+        args+=("--retry")
+    fi
+    
+    if [[ -n "$MAX_RETRIES" ]]; then
+        args+=("--max-retries" "$MAX_RETRIES")
+    fi
+    
+    if [[ -n "$LOG_LEVEL" ]]; then
+        args+=("--log-level" "$LOG_LEVEL")
+    fi
+    
+    if [[ -n "$PR_NUMBER" ]]; then
+        args+=("--pr-number" "$PR_NUMBER")
+    fi
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        args+=("--dry-run")
+    fi
+    
+    printf '%s\n' "${args[@]}"
+}
+
+# Function to execute command with error handling
+execute_with_error_handling() {
+    local command_args=("$@")
+    
+    log "INFO" "Executing command with error handling: ${command_args[*]}"
+    
+    # Build the full command
+    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
+    local error_handler_path="${script_dir}/../lib/cli_error_handler.rb"
+    
+    # Prepare environment variables
+    export PR_NUMBER="${PR_NUMBER}"
+    export CLI_ERROR_HANDLER_LOG="${LOG_LEVEL}"
+    
+    # Build Ruby execution command
+    local ruby_args=()
+    while IFS= read -r arg; do
+        ruby_args+=("$arg")
+    done < <(build_ruby_args)
+    
+    # Execute via mise to ensure proper environment
+    local full_command=(
+        "mise" "exec" "--"
+        "ruby" "$error_handler_path"
+        "${ruby_args[@]}"
+        "--"
+        "${command_args[@]}"
+    )
+    
+    log "DEBUG" "Full command: ${full_command[*]}"
+    
+    # Execute the command
+    exec "${full_command[@]}"
+}
+
+# Parse command line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --retry)
+                RETRY_ENABLED=true
+                shift
+                ;;
+            --max-retries)
+                MAX_RETRIES="$2"
+                shift 2
+                ;;
+            --log-level)
+                LOG_LEVEL="$2"
+                shift 2
+                ;;
+            --pr-number)
+                PR_NUMBER="$2"
+                shift 2
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            -h|--help)
+                show_usage
+                exit 0
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                log "ERROR" "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+        esac
+    done
+    
+    # Check if command was provided after --
+    if [[ $# -eq 0 ]]; then
+        log "ERROR" "No command specified after '--'"
+        show_usage
+        exit 1
+    fi
+    
+    # Override with environment variables if available
+    PR_NUMBER="${PR_NUMBER:-${PR_NUMBER_ENV:-}}"
+    LOG_LEVEL="${CLI_ERROR_HANDLER_LOG:-${LOG_LEVEL}}"
+    
+    log "DEBUG" "Configuration: RETRY_ENABLED=$RETRY_ENABLED, MAX_RETRIES=$MAX_RETRIES, LOG_LEVEL=$LOG_LEVEL, PR_NUMBER=$PR_NUMBER, DRY_RUN=$DRY_RUN"
+    
+    # Pass remaining arguments as the command to execute
+    execute_with_error_handling "$@"
+}
+
+# Function to handle signals gracefully
+handle_signal() {
+    local signal="$1"
+    log "INFO" "Received signal $signal, shutting down gracefully..."
+    exit 130
+}
+
+# Set up signal handlers
+trap 'handle_signal SIGINT' SIGINT
+trap 'handle_signal SIGTERM' SIGTERM
+
+# Main execution
+main() {
+    log "INFO" "CLI Error Handler Wrapper starting..."
+    
+    # Check prerequisites
+    check_prerequisites
+    
+    # Parse arguments and execute
+    parse_arguments "$@"
+}
+
+# Execute main function if script is run directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
