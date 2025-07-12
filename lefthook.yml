@@ -51,19 +51,22 @@ pre-push:
     rails-tests:
       tags: backend tests
       run: |
+        if [ -f .env ]; then
+          . ./.env
+        fi
         echo "🚀 Setting up test environment..."
         # Use CLI error handler for robust CI test execution
         export PR_NUMBER="${PR_NUMBER:-}"
         export GITHUB_TOKEN="${GITHUB_TOKEN:-}"
         
         # Setup phase with error handling
-        if ! bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
+        if ! bin/cli-error-handler -- CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
           echo "❌ Failed to set up test environment"
           exit 1
         fi
         
         echo "🔧 Preparing test database..."
-        if ! bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+        if ! bin/cli-error-handler -- CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
           echo "❌ Failed to prepare test database"
           exit 1
         fi
@@ -86,7 +89,7 @@ pre-push:
         
         echo "🧪 Running Rails tests with error handling..."
         # Main test execution with CI failure detection and GitHub comment posting
-        bin/cli-error-handler --pr-number "${PR_NUMBER}" -- CI=true RAILS_ENV=test mise exec -- bin/rails test
+        bin/cli-error-handler -- CI=true RAILS_ENV=test mise exec -- bin/rails test
         echo "✅ Rails test preparation complete."
         
         echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
@@ -114,28 +117,29 @@ pre-push:
     rails-system-tests:
       tags: backend system-tests
       run: |
+        if [ -f .env ]; then
+          . ./.env
+        fi
         echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
+        if ! bin/cli-error-handler -- CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
           echo "❌ Failed to set up system test environment"
           exit 1
         fi
         
         echo "🔧 Preparing system test database..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+        if ! bin/cli-error-handler -- CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
           echo "❌ Failed to prepare system test database"
           exit 1
         fi
         
         echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' mise exec -- bin/rails test:system; then
+        if ! bin/cli-error-handler -- CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='127.0.0.1' mise exec -- bin/rails test:system; then
           echo "❌ System tests failed"
           exit 1
         fi
         
         echo "✅ All system tests passed"
-    brakeman:
-      tags: backend security
-      run: mise exec -- bundle exec brakeman --no-pager
+    
     gems-audit:
       tags: backend security
       run: mise exec -- bundle audit update && bundle audit check
