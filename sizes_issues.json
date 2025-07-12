@@ -4,7 +4,7 @@
     "number": 812,
     "state": "open",
     "title": "Add task priorities",
-    "body": "## Summary\n\nThis PR adds task prioritization to the project by creating a `priorities.json` file with scored and labeled issues.\n\n### Changes Made\n\n- **Created priorities.json**: Added prioritization scoring and labels for all open issues based on impact and urgency criteria\n- **Prioritization criteria**: \n  - Issues are scored on impact (1-5) and urgency (1-5)\n  - Priority levels assigned: high, medium, low\n  - Recent issues and bug fixes receive higher priority scores\n  - Dependency updates receive lower priority scores\n\n### Testing\n\n- \u2705 All security checks passed (Brakeman, gems audit, importmaps audit, JavaScript audit)\n- \u2705 All system tests passed (22 runs, 75 assertions, 0 failures)\n- \u2705 All Rails tests passed (56 runs, 143 assertions, 0 failures)\n- \u2705 Environment verification completed successfully\n\n### Impact\n\n- Provides clear prioritization framework for issue management\n- Helps team focus on high-impact and urgent tasks first\n- No breaking changes or database migrations required\n\nReady for review and merge.",
+    "body": "See PR #812 for details on task prioritization and changes made.",
     "labels": [],
     "estimated_size": "XL"
   },
