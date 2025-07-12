@@ -89,21 +89,57 @@ find_or_install_mise
 
 echo_info "Using mise executable: $MISE_CMD"
 
+# Create a backup of mise.toml to prevent corruption issues
+if [ -f "$PROJECT_ROOT/mise.toml" ] && [ ! -f "$PROJECT_ROOT/mise.toml.backup" ]; then
+  echo_info "Creating backup of mise.toml..."
+  cp "$PROJECT_ROOT/mise.toml" "$PROJECT_ROOT/mise.toml.backup"
+fi
+
 # Configure mise settings (idempotent)
 echo_info "Configuring mise settings..."
+# Small delay to prevent race conditions with file system operations
+sleep 0.5
 "$MISE_CMD" settings experimental true
 "$MISE_CMD" settings legacy_version_file true # Important if using .tool-versions or similar
 "$MISE_CMD" settings all_compile true # Ensure tools like Ruby are compiled if necessary
 
 # Trust the project's mise configuration
 echo_info "Trusting project's mise configuration ($PROJECT_ROOT/mise.toml)..."
-if ! "$MISE_CMD" trust --yes "$PROJECT_ROOT/mise.toml"; then
-  echo_error "Failed to trust $PROJECT_ROOT/mise.toml. Check permissions or mise setup."
-  # Depending on strictness, you might exit 1 here.
+# Small delay to prevent race conditions with TOML file access
+sleep 0.3
+
+# Check for TOML corruption before trusting
+if ! "$MISE_CMD" trust --yes "$PROJECT_ROOT/mise.toml" 2>/dev/null; then
+  echo_error "Failed to trust $PROJECT_ROOT/mise.toml. Checking for corruption..."
+  
+  # Check if the file appears corrupted (common pattern: missing opening bracket)
+  if head -1 "$PROJECT_ROOT/mise.toml" | grep -q "ple\[env\]"; then
+    echo_error "TOML file appears corrupted. Attempting recovery..."
+    
+    # Try to restore from backup if available
+    if [ -f "$PROJECT_ROOT/mise.toml.backup" ]; then
+      echo_info "Restoring from backup..."
+      cp "$PROJECT_ROOT/mise.toml.backup" "$PROJECT_ROOT/mise.toml"
+      echo_info "Backup restored. Retrying trust..."
+      
+      if ! "$MISE_CMD" trust --yes "$PROJECT_ROOT/mise.toml"; then
+        echo_error "Still failed to trust mise.toml after backup restoration."
+        exit 1
+      fi
+    else
+      echo_error "No backup available. Manual intervention required."
+      exit 1
+    fi
+  else
+    echo_error "Trust failed for unknown reason. Check permissions or mise setup."
+    exit 1
+  fi
 fi
 
 # Install project tools as defined in mise.toml
 echo_info "Installing project tools with mise (from $PROJECT_ROOT/mise.toml)..."
+# Small delay to prevent race conditions with TOML file access
+sleep 0.3
 INSTALL_FAILED=0
 if [ "${SETUP_SKIP_NODE:-false}" = "true" ]; then
   echo_info "SETUP_SKIP_NODE is true. Temporarily hiding Node.js ecosystem files to prevent auto-detection."
@@ -154,15 +190,30 @@ echo_info "All selected mise-managed tools are installed/updated."
 
 # Refresh mise shims
 echo_info "Refreshing mise shims..."
-if ! "$MISE_CMD" reshim; then
-  echo_error "mise reshim failed."
-  # Not exiting, as it might not be critical for all setups, but it's a warning.
+# Small delay to prevent race conditions with TOML file access
+sleep 0.3
+if ! "$MISE_CMD" reshim 2>/dev/null; then
+  echo_info "mise reshim encountered an issue (likely TOML parsing race condition). Retrying after delay..."
+  sleep 1
+  if ! "$MISE_CMD" reshim 2>/dev/null; then
+    echo_error "mise reshim failed after retry. This is non-critical but may affect tool availability."
+  else
+    echo_info "mise reshim succeeded on retry."
+  fi
 fi
 
 # Clean up unused tool versions (optional, but good practice)
 echo_info "Pruning old/unused tool versions managed by mise..."
-if ! "$MISE_CMD" prune --yes; then
-  echo_error "mise prune failed. This is non-critical."
+# Small delay to prevent race conditions with TOML file access
+sleep 0.3
+if ! "$MISE_CMD" prune --yes 2>/dev/null; then
+  echo_info "mise prune encountered an issue (likely TOML parsing race condition). Retrying after delay..."
+  sleep 1
+  if ! "$MISE_CMD" prune --yes 2>/dev/null; then
+    echo_error "mise prune failed after retry. This is non-critical and may be due to transient file system issues."
+  else
+    echo_info "mise prune succeeded on retry."
+  fi
 fi
 
 # Output the MISE_EXECUTABLE_PATH for the calling script (bin/setup)
@@ -173,6 +224,8 @@ echo_info "Mise environment setup complete."
 
 # Log key tool versions for verification (using the found mise)
 echo_info "Key tool versions (via mise exec):"
+# Small delay to prevent race conditions with TOML file access
+sleep 0.3
 "$MISE_CMD" exec -- ruby --version
 if [ "${SETUP_SKIP_NODE:-false}" != "true" ]; then
   "$MISE_CMD" exec -- node --version
