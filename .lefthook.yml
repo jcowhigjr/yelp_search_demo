@@ -1,0 +1,4 @@
+post-push:
+  commands:
+    pr-lifecycle:
+      run: mise exec -- ./scripts/pr-lifecycle.sh trigger

@@ -1,0 +1,8 @@
+[2025-07-09 23:08:15] === PR Status Polling Script Started ===
+[2025-07-09 23:08:15] PR Number: 809
+[2025-07-09 23:08:15] Log File: ./pr-status.log
+[2025-07-09 23:08:15] Querying CI status for PR #809
+[2025-07-09 23:08:15] [0;31mERROR: Failed to query workflow runs for PR #809[0m
+Wed Jul  9 23:42:33 EDT 2025 - Committed review feedback changes and pushed to PR #810
+Wed Jul  9 23:42:39 EDT 2025 - CI Workflow started (Run ID: 16185574588) - Status: in_progress
+Wed Jul  9 23:42:43 EDT 2025 - Copilot review requested for PR #810

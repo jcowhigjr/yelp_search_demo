@@ -1,0 +1,23 @@
+# Example crontab entries for PR status polling
+# Add these to your crontab with: crontab -e
+
+# Poll PR status every 5 minutes using bash script
+# Replace 123 with your actual PR number
+*/5 * * * * /bin/bash /path/to/poll-pr-status.sh 123 >> /path/to/cron.log 2>&1
+
+# Alternative: Use environment variables
+# First set PR_NUMBER environment variable in your shell profile or crontab
+# */5 * * * * export PR_NUMBER=123; /bin/bash /path/to/poll-pr-status.sh >> /path/to/cron.log 2>&1
+
+# For Node.js version (run once, it will poll internally)
+# Use this if you want to run the Node.js version as a daemon
+# @reboot /usr/bin/node /path/to/poll-pr-status.js >> /path/to/node-polling.log 2>&1
+
+# Stop any existing polling processes before starting new ones
+# */5 * * * * pkill -f "poll-pr-status" || true; /bin/bash /path/to/poll-pr-status.sh 123 >> /path/to/cron.log 2>&1
+
+# Example with specific working directory
+# */5 * * * * cd /path/to/your/repo && /bin/bash ./poll-pr-status.sh 123 >> ./cron.log 2>&1
+
+# Example with environment variables and working directory
+# */5 * * * * cd /path/to/your/repo && export PR_NUMBER=123 LOG_FILE=./pr-status.log && /bin/bash ./poll-pr-status.sh >> ./cron.log 2>&1
