@@ -72,7 +72,7 @@ Rails.application.configure do
 
   # Allow embedding in iframes for development/preview tools
   config.action_dispatch.default_headers = {
-    'X-Frame-Options' => 'ALLOWALL'
+    'X-Frame-Options' => 'ALLOWALL',
   }
 
   # Disable strict origin check for CSRF in development to allow IDE proxy ports

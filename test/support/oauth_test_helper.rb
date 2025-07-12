@@ -22,7 +22,7 @@ module OAuthTestHelper
       email: 'test@example.com',
       name: 'Test User',
       first_name: 'Test',
-      last_name: 'User'
+      last_name: 'User',
     }
     
     attrs = default_attrs.merge(user_attrs)
@@ -35,12 +35,12 @@ module OAuthTestHelper
         email: attrs[:email],
         name: attrs[:name],
         first_name: attrs[:first_name],
-        last_name: attrs[:last_name]
+        last_name: attrs[:last_name],
       },
       credentials: {
         token: 'mock_token',
-        expires_at: 1.hour.from_now.to_i
-      }
+        expires_at: 1.hour.from_now.to_i,
+      },
     )
   end
 
