@@ -29,6 +29,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
   include OAuthTestHelper
+  include LoginHelpers::System
   
   # Require search test helper
   require_relative 'support/search_test_helper'

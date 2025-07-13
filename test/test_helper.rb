@@ -1,4 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'minitest'
 require 'mocha/minitest'
 require_relative '../config/environment'
 
@@ -72,4 +73,8 @@ class ActiveSupport::TestCase
     Rails.application.routes.default_url_options
   end
 
+end
+
+class ActionDispatch::IntegrationTest
+  include LoginHelpers::Controller
 end
