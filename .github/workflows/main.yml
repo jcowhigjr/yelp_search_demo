@@ -76,6 +76,10 @@ jobs:
       RAILS_ENV: test
       RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
       CI: true
+    env:
+      RAILS_ENV: test
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+      CI: true
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -125,6 +129,10 @@ jobs:
     if: always() && !cancelled()
     permissions:
       contents: read # Added for least privilege
+    env:
+      RAILS_ENV: test
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+      CI: true
     env:
       RAILS_ENV: test
       RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
