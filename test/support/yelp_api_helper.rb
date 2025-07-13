@@ -4,10 +4,9 @@ module YelpApiHelper
     stub_request(:get, "https://api.yelp.com/v3/businesses/search").
       with(
         query: { term: search_term, latitude: latitude, longitude: longitude },
-        headers: {
-          'Authorization'=>/Bearer .*/,
-          'User-Agent'=>/.*/
-        }).
+        headers: hash_including(
+          'Authorization' => /Bearer .*/
+        )).
       to_return(status: 200, body: yelp_api_response, headers: {})
   end
 

@@ -5,6 +5,7 @@ require_relative '../config/environment'
 # require "minitest/autorun"
 require 'rails/test_help'
 require 'webmock/minitest'
+WebMock.disable_net_connect!(allow_localhost: true)
 
 Dir[Rails.root.join('test/support/**/*.rb')].each { |f| require f }
 
