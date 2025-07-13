@@ -6,9 +6,7 @@ module YelpApiHelper
         query: { term: search_term, latitude: latitude, longitude: longitude },
         headers: {
           'Authorization'=>/Bearer .*/,
-          'Connection'=>'close',
-          'Host'=>'api.yelp.com',
-          'User-Agent'=>'http.rb/5.1.1'
+          'User-Agent'=>/.*/
         }).
       to_return(status: 200, body: yelp_api_response, headers: {})
   end

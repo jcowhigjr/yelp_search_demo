@@ -1,6 +1,7 @@
-require 'application_system_test_case' 
+require 'application_system_test_case'
+
 class CoffeeshopsTest < ApplicationSystemTestCase
-  include YelpApiHelper
+  include LoginHelpers::System
   setup do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)

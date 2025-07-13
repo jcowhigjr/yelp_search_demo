@@ -9,7 +9,6 @@ require 'webmock/minitest'
 Dir[Rails.root.join('test/support/**/*.rb')].each { |f| require f }
 
 require 'bcrypt'
-require_relative 'support/oauth_test_helper'
 # https://brandonhilkert.com/blog/managing-login-passwords-for-capybara-with-minitest-and-rails-fixtures/
 module TestPasswordHelper
   def default_password_digest
