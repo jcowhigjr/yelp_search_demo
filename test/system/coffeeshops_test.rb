@@ -1,10 +1,11 @@
-require 'application_system_test_case'
-
+require 'application_system_test_case' 
 class CoffeeshopsTest < ApplicationSystemTestCase
+  include YelpApiHelper
   setup do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
     @review = reviews(:two)
+    stub_yelp_api_request('coffee', '35.91', '-78.99')
   end
 
   test 'An unauthenticated user can view coffeeshop details' do

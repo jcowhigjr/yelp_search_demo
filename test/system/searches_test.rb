@@ -1,6 +1,11 @@
 require 'application_system_test_case'
 
 class SearchesTest < ApplicationSystemTestCase
+  include YelpApiHelper
+  setup do
+    stub_yelp_api_request('yoga', '35.91', '-78.99')
+    stub_yelp_api_request('coffee', '35.91', '-78.99')
+  end
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
 

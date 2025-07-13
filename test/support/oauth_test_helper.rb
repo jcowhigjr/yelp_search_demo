@@ -2,12 +2,11 @@
 
 module OAuthTestHelper
   def should_skip_oauth_tests?
-    # Skip OAuth tests if using test/fake credentials
-    return true if Rails.application.credentials.google&.dig(:client_id)&.include?('test')
-    return true if Rails.application.credentials.google&.dig(:client_id)&.include?('fake')
-    
+    return true if Rails.application.credentials.google_test&.dig(:client_id)&.include?('test')
+    return true if Rails.application.credentials.google_test&.dig(:client_id)&.include?('fake')
+
     # Skip if no Google credentials at all
-    return true unless Rails.application.credentials.google&.dig(:client_id)
+    return true unless Rails.application.credentials.google_test&.dig(:client_id)
     
     false
   end
