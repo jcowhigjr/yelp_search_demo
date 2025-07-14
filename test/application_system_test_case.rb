@@ -98,34 +98,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Capybara.configure do |config|
   #   config.server = :puma, { Silent: true }
   # end
+  # Include YelpApiHelper for API stubbing
+  include YelpApiHelper
+  
   # Mock out the Yelp API in tests
   setup do
-    mock_yelp_response = {
-      'businesses' => [
-        {
-          'name' => 'Test Coffee Shop',
-          'rating' => 4.5,
-          'url' => 'https://yelp.com/test-coffee-shop',
-          'image_url' => 'https://example.com/coffee.jpg',
-          'display_phone' => '(555) 123-4567',
-          'location' => {
-            'display_address' => ['123 Test St', 'Test City, CA 90210'],
-          },
-        },
-        {
-          'name' => 'Another Coffee Place',
-          'rating' => 4.2,
-          'url' => 'https://yelp.com/another-coffee',
-          'image_url' => 'https://example.com/coffee2.jpg',
-          'display_phone' => '(555) 987-6543',
-          'location' => {
-            'display_address' => ['456 Main St', 'Test City, CA 90210'],
-          },
-        },
-      ],
-    }.to_json
-    
-    # Stub the RestClient call to return mock data
-    RestClient::Request.stubs(:execute).returns(mock_yelp_response)
+    # Stub Yelp API requests for any search term and location
+    stub_yelp_api_request('coffee', 40.748817, -73.985428)
   end
 end

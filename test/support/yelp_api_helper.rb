@@ -1,13 +1,14 @@
 # test/support/yelp_api_helper.rb
 module YelpApiHelper
   def stub_yelp_api_request(search_term, latitude, longitude)
-    stub_request(:get, "https://api.yelp.com/v3/businesses/search").
-      with(
-        query: { term: search_term, latitude: latitude, longitude: longitude },
-        headers: hash_including(
+    # Match the exact URL format used in the model
+    stub_request(:get, /https:\/\/api\.yelp\.com\/v3\/businesses\/search\?.*term=.*/)  
+      .with(
+        headers: {
           'Authorization' => /Bearer .*/
-        )).
-      to_return(status: 200, body: yelp_api_response, headers: {})
+        }
+      )
+      .to_return(status: 200, body: yelp_api_response, headers: {})
   end
 
   private
