@@ -13,7 +13,7 @@ require 'logger'
 require 'open3'
 require 'time'
 
-class CLIErrorHandler
+class CliErrorHandler
   class Error < StandardError; end
   class CIFailureError < Error; end
   class MergeConflictError < Error; end
@@ -543,7 +543,7 @@ class CLIRunner
     
     options = {
       retry: false,
-      max_retries: CLIErrorHandler::DEFAULT_MAX_RETRIES,
+      max_retries: CliErrorHandler::DEFAULT_MAX_RETRIES,
       log_level: 'INFO',
       pr_number: nil,
       dry_run: false
@@ -616,7 +616,7 @@ class CLIRunner
     end
     
     # Create handler with options
-    handler = CLIErrorHandler.new(
+    handler = CliErrorHandler.new(
       logger: logger,
       max_retries: options[:max_retries]
     )
@@ -636,22 +636,22 @@ class CLIRunner
       
       exit result[:exit_code]
       
-    rescue CLIErrorHandler::CIFailureError => e
+    rescue CliErrorHandler::CIFailureError => e
       logger.error("CI failure: #{e.message}")
-      exit CLIErrorHandler::EXIT_CI_FAILURE
-    rescue CLIErrorHandler::MergeConflictError => e
+      exit CliErrorHandler::EXIT_CI_FAILURE
+    rescue CliErrorHandler::MergeConflictError => e
       logger.error("Merge conflict: #{e.message}")
-      exit CLIErrorHandler::EXIT_MERGE_CONFLICT
-    rescue CLIErrorHandler::APITransientError => e
+      exit CliErrorHandler::EXIT_MERGE_CONFLICT
+    rescue CliErrorHandler::APITransientError => e
       logger.error("API failure: #{e.message}")
-      exit CLIErrorHandler::EXIT_API_FAILURE
-    rescue CLIErrorHandler::Error => e
+      exit CliErrorHandler::EXIT_API_FAILURE
+    rescue CliErrorHandler::Error => e
       logger.error("CLI error: #{e.message}")
-      exit CLIErrorHandler::EXIT_GENERAL_ERROR
+      exit CliErrorHandler::EXIT_GENERAL_ERROR
     rescue StandardError => e
       logger.error("Unexpected error: #{e.class}: #{e.message}")
       logger.debug("Backtrace:\n#{e.backtrace.join("\n")}")
-      exit CLIErrorHandler::EXIT_GENERAL_ERROR
+      exit CliErrorHandler::EXIT_GENERAL_ERROR
     end
   end
 end
@@ -660,19 +660,19 @@ end
 if __FILE__ == $0
   if ARGV.include?('--example')
     # Example usage
-    handler = CLIErrorHandler.new
+    handler = CliErrorHandler.new
     
     begin
       # Example 1: Execute with basic error handling
       result = handler.execute_with_handling('ls /nonexistent')
-    rescue CLIErrorHandler::Error => e
+    rescue CliErrorHandler::Error => e
       puts "Caught CLI error: #{e.message}"
     end
     
     begin
       # Example 2: Execute with retry logic for API operations
       result = handler.execute_with_retry('gh api repos/owner/repo')
-    rescue CLIErrorHandler::APITransientError => e
+    rescue CliErrorHandler::APITransientError => e
       puts "API operation failed after retries: #{e.message}"
     end
   else
