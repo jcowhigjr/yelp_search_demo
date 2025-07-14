@@ -103,7 +103,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   
   # Mock out the Yelp API in tests
   setup do
-    # Stub Yelp API requests for any search term and location
-    stub_yelp_api_request('coffee', 40.748817, -73.985428)
+    # Stub Yelp API requests for any search term and location with default success scenario
+    stub_yelp_api_success('coffee', 40.748817, -73.985428)
+    # Also stub for yoga searches (common in tests)
+    stub_yelp_api_success('yoga', 40.748817, -73.985428)
   end
 end
