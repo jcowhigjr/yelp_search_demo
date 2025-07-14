@@ -1,12 +1,16 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'minitest'
 require 'mocha/minitest'
 require_relative '../config/environment'
 
 # require "minitest/autorun"
 require 'rails/test_help'
+require 'webmock/minitest'
+WebMock.disable_net_connect!(allow_localhost: true)
+
+Dir[Rails.root.join('test/support/**/*.rb')].each { |f| require f }
 
 require 'bcrypt'
-require_relative 'support/oauth_test_helper'
 # https://brandonhilkert.com/blog/managing-login-passwords-for-capybara-with-minitest-and-rails-fixtures/
 module TestPasswordHelper
   def default_password_digest
@@ -69,4 +73,8 @@ class ActiveSupport::TestCase
     Rails.application.routes.default_url_options
   end
 
+end
+
+class ActionDispatch::IntegrationTest
+  include LoginHelpers::Controller
 end

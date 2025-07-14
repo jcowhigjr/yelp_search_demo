@@ -123,6 +123,7 @@ group :development do
 end
 
 group :test do
+  gem 'webmock', require: false
   gem 'mocha', require: false # For mocking and stubbing in tests
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara' # , '~> 3.35'
