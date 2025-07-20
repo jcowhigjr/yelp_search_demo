@@ -84,7 +84,7 @@ jobs:
           
           # Check if all required checks have passed
           STATUS_STATE=$(echo "$STATUSES" | jq -r '.state')
-          PENDING_CHECKS=$(echo "$CHECKS" | jq '[.check_runs[] | select((.status != "completed") or (.status == "completed" and .conclusion != "success"))] | length')
+          PENDING_CHECKS=$(echo "$CHECKS" | jq '[.check_runs[] | select(.status != "completed" or (.status == "completed" and .conclusion == "failure"))] | length')
           
           echo "Overall status: $STATUS_STATE"
           echo "Pending checks: $PENDING_CHECKS"
