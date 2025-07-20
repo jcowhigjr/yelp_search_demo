@@ -1,99 +1,34 @@
-name: Dependabot auto-approve
+name: Auto-approve & merge Dependabot PRs
+
 on:
   pull_request:
     types: [opened, synchronize]
-  # Trigger when status checks complete
-  status: {}
-  check_run:
-    types: [completed]
 
 permissions:
-  pull-requests: write
   contents: write
-  checks: read
+  pull-requests: write
 
 jobs:
-  # Immediate approval job (runs on PR events)
-  approve:
+  auto-approve-and-merge:
+    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
-    steps:
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v2.4.0
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Approve a PR
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-  # Auto-merge job (runs when status checks complete)
-  auto-merge:
-    runs-on: ubuntu-latest
-    if: ${{ (github.event_name == 'status' || github.event_name == 'check_run') && (github.event.state == 'success' || github.event.check_run.conclusion == 'success') }}
     steps:
-      - name: Find associated PR for the status/check
-        id: find-pr
-        run: |
-          # Get the commit SHA from the event
-          if [[ "${{ github.event_name }}" == "status" ]]; then
-            COMMIT_SHA="${{ github.event.sha }}"
-          else
-            COMMIT_SHA="${{ github.event.check_run.head_sha }}"
-          fi
-          
-          # Get PRs for the specific commit SHA
-          PR_DATA=$(gh api "/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls" --jq '.[0]')
-          PR_NUMBER=$(echo "$PR_DATA" | jq -r '.number // empty')
-          PR_AUTHOR=$(echo "$PR_DATA" | jq -r '.user.login // empty')
-          
-          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          echo "pr-author=$PR_AUTHOR" >> $GITHUB_OUTPUT
-          echo "Found PR #$PR_NUMBER by $PR_AUTHOR for commit $COMMIT_SHA"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Get Dependabot metadata
+      - name: Fetch Dependabot metadata
         id: metadata
-        if: steps.find-pr.outputs.pr-author == 'dependabot[bot]'
-        uses: dependabot/fetch-metadata@v2.4.0
+        uses: dependabot/fetch-metadata@v2
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      
-      - name: Check if all required checks have passed
-        if: steps.find-pr.outputs.pr-author == 'dependabot[bot]'
-        id: check-status
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for patch/minor updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: |
-          PR_NUMBER="${{ steps.find-pr.outputs.pr-number }}"
-          
-          # Get the latest commit status for the PR
-          STATUSES=$(gh api "/repos/${{ github.repository }}/pulls/$PR_NUMBER/commits" --jq '.[0].sha as $sha | "/repos/${{ github.repository }}/commits/" + $sha + "/status"' | xargs gh api)
-          CHECKS=$(gh api "/repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.head.sha' | xargs -I {} gh api "/repos/${{ github.repository }}/commits/{}/check-runs")
-          
-          # Check if all required checks have passed
-          STATUS_STATE=$(echo "$STATUSES" | jq -r '.state')
-          PENDING_CHECKS=$(echo "$CHECKS" | jq '[.check_runs[] | select(.status != "completed" or .conclusion != "success")] | length')
-          
-          echo "Overall status: $STATUS_STATE"
-          echo "Pending checks: $PENDING_CHECKS"
-          
-          if [[ "$STATUS_STATE" == "success" ]] && [[ "$PENDING_CHECKS" == "0" ]]; then
-            echo "all-checks-passed=true" >> $GITHUB_OUTPUT
-            echo "All required checks have passed!"
-          else
-            echo "all-checks-passed=false" >> $GITHUB_OUTPUT
-            echo "Not all checks have passed yet. Status: $STATUS_STATE, Pending: $PENDING_CHECKS"
-          fi
+          gh pr merge --auto --squash "$PR_URL"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Enable auto-merge for low-risk updates
-        if: steps.find-pr.outputs.pr-author == 'dependabot[bot]' && steps.check-status.outputs.all-checks-passed == 'true' && (steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor')
-        run: |
-          PR_NUMBER="${{ steps.find-pr.outputs.pr-number }}"
-          echo "All checks passed! Enabling auto-merge for ${{ steps.metadata.outputs.update-type }} update on PR #$PR_NUMBER"
-          gh pr merge --auto --squash $PR_NUMBER
-        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
