@@ -68,9 +68,14 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.find-pr.outputs.pr-number }}"
           
-          # Get the latest commit status for the PR
-          STATUSES=$(gh api "/repos/${{ github.repository }}/pulls/$PR_NUMBER/commits" --jq '.[0].sha as $sha | "/repos/${{ github.repository }}/commits/" + $sha + "/status"' | xargs gh api)
-          CHECKS=$(gh api "/repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.head.sha' | xargs -I {} gh api "/repos/${{ github.repository }}/commits/{}/check-runs")
+          # Get the latest commit SHA for the PR
+          COMMIT_SHA=$(gh api "/repos/${{ github.repository }}/pulls/$PR_NUMBER" --jq '.head.sha')
+          
+          # Get the commit status for the latest commit
+          STATUSES=$(gh api "/repos/${{ github.repository }}/commits/$COMMIT_SHA/status")
+          
+          # Get the check runs for the latest commit
+          CHECKS=$(gh api "/repos/${{ github.repository }}/commits/$COMMIT_SHA/check-runs")
           
           # Check if all required checks have passed
           STATUS_STATE=$(echo "$STATUSES" | jq -r '.state')
