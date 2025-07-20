@@ -32,7 +32,7 @@ jobs:
   # Auto-merge job (runs when status checks complete)
   auto-merge:
     runs-on: ubuntu-latest
-    if: ${{ (github.event_name == 'status' || github.event_name == 'check_run') && (github.event.state == 'success' || github.event.check_run.conclusion == 'success') }}
+    if: ${{ (github.event_name == 'status' && github.event.state == 'success') || (github.event_name == 'check_run' && github.event.check_run.conclusion == 'success') }}
     steps:
       - name: Find associated PR for the status/check
         id: find-pr
