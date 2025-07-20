@@ -1,14 +1,21 @@
 name: Dependabot auto-approve
-on: pull_request
+on:
+  pull_request:
+    types: [opened, synchronize]
+  # Trigger when all checks complete successfully  
+  check_suite:
+    types: [completed]
 
 permissions:
   pull-requests: write
   contents: write
+  checks: read
 
 jobs:
-  dependabot:
+  # Immediate approval job (runs on PR events)
+  approve:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
     steps:
       - name: Dependabot metadata
         id: metadata
@@ -20,11 +27,38 @@ jobs:
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      - name: Enable auto-merge for low-risk updates
-        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor' }}
+
+  # Auto-merge job (runs when all checks pass)
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'check_suite' && github.event.check_suite.conclusion == 'success' }}
+    steps:
+      - name: Find associated PR for the check suite
+        id: find-pr
         run: |
-          echo "Enabling auto-merge for ${{ steps.metadata.outputs.update-type }} update"
-          gh pr merge --auto --squash "$PR_URL"
+          # Get PRs for the specific commit SHA
+          PR_DATA=$(gh api "/repos/${{ github.repository }}/commits/${{ github.event.check_suite.head_sha }}/pulls" --jq '.[0]')
+          PR_NUMBER=$(echo "$PR_DATA" | jq -r '.number // empty')
+          PR_AUTHOR=$(echo "$PR_DATA" | jq -r '.user.login // empty')
+          
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "pr-author=$PR_AUTHOR" >> $GITHUB_OUTPUT
+          echo "Found PR #$PR_NUMBER by $PR_AUTHOR for commit ${{ github.event.check_suite.head_sha }}"
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Get Dependabot metadata
+        id: metadata
+        if: steps.find-pr.outputs.pr-author == 'dependabot[bot]'
+        uses: dependabot/fetch-metadata@v2.4.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      
+      - name: Enable auto-merge for low-risk updates
+        if: steps.find-pr.outputs.pr-author == 'dependabot[bot]' && (steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor')
+        run: |
+          PR_NUMBER="${{ steps.find-pr.outputs.pr-number }}"
+          echo "Enabling auto-merge for ${{ steps.metadata.outputs.update-type }} update on PR #$PR_NUMBER"
+          gh pr merge --auto --squash $PR_NUMBER
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
