@@ -45,9 +45,14 @@ jobs:
           fi
           
           # Get PRs for the specific commit SHA
-          PR_DATA=$(gh api "/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls" --jq '.[0]')
+          PR_DATA=$(gh api "/repos/${{ github.repository }}/commits/$COMMIT_SHA/pulls" --jq '.[0] // {}')
           PR_NUMBER=$(echo "$PR_DATA" | jq -r '.number // empty')
           PR_AUTHOR=$(echo "$PR_DATA" | jq -r '.user.login // empty')
+          
+          if [[ -z "$PR_NUMBER" || -z "$PR_AUTHOR" ]]; then
+            echo "No pull request found for commit $COMMIT_SHA"
+            exit 0
+          fi
           
           echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "pr-author=$PR_AUTHOR" >> $GITHUB_OUTPUT
