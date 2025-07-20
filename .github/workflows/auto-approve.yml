@@ -104,6 +104,6 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.find-pr.outputs.pr-number }}"
           echo "All checks passed! Enabling auto-merge for ${{ steps.metadata.outputs.update-type }} update on PR #$PR_NUMBER"
-          gh pr merge --auto --squash $PR_NUMBER
+          gh pr merge --auto --squash "$PR_NUMBER"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
