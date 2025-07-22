@@ -100,3 +100,16 @@ audit-output.json
 
 # Ignore mise.toml backup file
 mise.toml.backup
+# Python
+__pycache__/
+*.pyc
+*.py
+
+# Project specific
+.project/
+*.json
+*.jsonl
+*.md
+*.sh
+*.txt
+*.yml
