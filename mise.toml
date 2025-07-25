@@ -45,7 +45,7 @@ alias = ["l"]
 
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
-run = "bin/rails test:prepare --trace"
+run = "bin/rails tailwindcss:build && bin/rails test:prepare --trace"
 
 [tasks.test]
 description = "Run unit and integration tests for main application"
@@ -59,7 +59,7 @@ depends = ["test-prepare"]
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
-run = "next rails test:prepare --trace"
+run = "next rails tailwindcss:build && next rails test:prepare --trace"
 
 [tasks.test-next-run]
 description = "Run unit and integration tests for 'next' environment"
