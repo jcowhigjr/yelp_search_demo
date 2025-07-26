@@ -9,6 +9,17 @@
         <p class="center">
           <%= link_to t('.more-info'), coffeeshop_path(coffeeshop), data: { turbo: false }, class: 'btn-small' %>
         </p>
+        <% if logged_in? %>
+          <div class="center" style="margin-top: 10px;">
+            <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
+              <%= render "favorites/button",
+                    item:  coffeeshop,
+                    icon:  favorite_icon_for(local_assigns[:search_query]),
+                    liked: current_user.favorited?(coffeeshop),
+                    search_query: local_assigns[:search_query] %>
+            <% end %>
+          </div>
+        <% end %>
       </span>
     </div>
     <div class="card-content row">

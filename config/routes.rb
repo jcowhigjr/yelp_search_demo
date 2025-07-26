@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     end
     resources :reviews, only: :destroy
     resources :user_favorites, only: %i[create destroy]
+    resources :favorites, only: %i[create destroy]
 
     resources :coffeeshops, only: :show do
       resources :reviews, only: %i[new create index]

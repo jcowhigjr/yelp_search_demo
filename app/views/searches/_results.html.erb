@@ -7,10 +7,10 @@
             <span class="page-text red-text"><%= t('.no-results-found') %></span>
         </div>
     <% else %>
-        <% @search.coffeeshops.each do |coffeeshop| %>
-            <%= turbo_stream_from 'coffeeshops' %>
-            <%= turbo_frame_tag 'coffeeshops' do %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:} %>
+        <%= turbo_stream_from 'coffeeshops' %>
+        <%= turbo_frame_tag 'coffeeshops' do %>
+            <% @search.coffeeshops.each do |coffeeshop| %>
+                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:, search_query: @search.query} %>
             <% end %>
         <% end %>
     <% end %>
