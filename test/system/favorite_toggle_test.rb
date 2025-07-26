@@ -22,49 +22,50 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
 
-    # Find the favorite button turbo frame
-    favorite_frame = first("[id^='favorite_']")
-    
     # Initially should not be favorited (should show coffee icon ☕️)
-    within favorite_frame do
-      assert_selector 'button.favorite-btn'
-      button = find('button.favorite-btn')
-
-      assert_includes button.text, '☕️'
+    within first('.coffeeshop-card') do
+      # Wait for the turbo frame to be present
+      assert_selector "turbo-frame[id*='favorite']", wait: 5
+      
+      within "turbo-frame[id*='favorite']" do
+        assert_selector 'button.favorite-btn'
+        button = find('button.favorite-btn')
+        assert_includes button.text, '☕️'
+      end
     end
 
-    # Click to favorite
-    within favorite_frame do
+    # Click to favorite and wait for the specific frame to be updated
+    # Get the frame ID first to track it specifically
+    frame_id = first('.coffeeshop-card').find("turbo-frame[id*='favorite']")[:id]
+    
+    within "##{frame_id}" do
       find('button.favorite-btn').click
     end
 
-    # Wait for Turbo Frame to update
-    sleep 0.5
-
-    # Should now be favorited (still coffee icon but different state) - find frame again
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      assert_selector 'button.favorite-btn'
+    # Wait for the Turbo stream response to update the frame
+    # Use has_selector to wait for the condition without raising an error
+    assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after first click"
+    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), "Button should exist in frame #{frame_id} after first click"
+    
+    # Check button state after favoriting
+    within "##{frame_id}" do
+      assert_selector 'button.favorite-btn:not([disabled])', wait: 5
       button = find('button.favorite-btn')
-
       assert_includes button.text, '☕️'
     end
 
-    # Click to unfavorite - find frame again after update
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
+    # Click to unfavorite
+    within "##{frame_id}" do
       find('button.favorite-btn').click
     end
 
-    # Wait for Turbo Frame to update
-    sleep 0.5
-
-    # Should be back to unfavorited state - find frame again
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      assert_selector 'button.favorite-btn'
+    # Wait for final update and verify
+    assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after second click"
+    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), "Button should exist in frame #{frame_id} after second click"
+    
+    within "##{frame_id}" do
+      assert_selector 'button.favorite-btn:not([disabled])', wait: 5
       button = find('button.favorite-btn')
-
       assert_includes button.text, '☕️'
     end
   end
@@ -83,11 +84,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     find('button[type="submit"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      button = find('button.favorite-btn')
-
-      assert_includes button.text, '☕️'
+    within first('.coffeeshop-card') do
+      frame_selector = "turbo-frame[id*='favorite']"
+      assert_selector frame_selector, wait: 5
+      
+      within frame_selector do
+        button = find('button.favorite-btn')
+        assert_includes button.text, '☕️'
+      end
     end
 
     # Test pizza search - should show 🍕
@@ -96,11 +100,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     find('button[type="submit"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      button = find('button.favorite-btn')
-
-      assert_includes button.text, '🍕'
+    within first('.coffeeshop-card') do
+      frame_selector = "turbo-frame[id*='favorite']"
+      assert_selector frame_selector, wait: 5
+      
+      within frame_selector do
+        button = find('button.favorite-btn')
+        assert_includes button.text, '🍕'
+      end
     end
 
     # Test taco search - should show 🌮
@@ -109,11 +116,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     find('button[type="submit"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      button = find('button.favorite-btn')
-
-      assert_includes button.text, '🌮'
+    within first('.coffeeshop-card') do
+      frame_selector = "turbo-frame[id*='favorite']"
+      assert_selector frame_selector, wait: 5
+      
+      within frame_selector do
+        button = find('button.favorite-btn')
+        assert_includes button.text, '🌮'
+      end
     end
 
     # Test generic search - should show ❤️
@@ -122,11 +132,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     find('button[type="submit"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
-    favorite_frame = first("[id^='favorite_']")
-    within favorite_frame do
-      button = find('button.favorite-btn')
-
-      assert_includes button.text, '❤️'
+    within first('.coffeeshop-card') do
+      frame_selector = "turbo-frame[id*='favorite']"
+      assert_selector frame_selector, wait: 5
+      
+      within frame_selector do
+        button = find('button.favorite-btn')
+        assert_includes button.text, '❤️'
+      end
     end
   end
 
@@ -139,8 +152,8 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
 
-    # Should not see any favorite buttons
-    assert_no_selector "[id^='favorite_']"
+    # Should not see any favorite frames or buttons
+    assert_no_selector "turbo-frame[id*='favorite']"
     assert_no_selector 'button.favorite-btn'
   end
 end

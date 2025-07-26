@@ -1,4 +1,6 @@
 <%= turbo_stream.replace dom_id(@item, "favorite") do %>
-  <%= render "favorites/button",
-             item: @item, liked: @liked, icon: @icon, search_query: params[:search_query] %>
+  <%= turbo_frame_tag dom_id(@item, "favorite") do %>
+    <%= render "favorites/button",
+               item: @item, liked: @liked, icon: @icon, search_query: params[:search_query] %>
+  <% end %>
 <% end %>

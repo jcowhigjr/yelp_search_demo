@@ -4,10 +4,14 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
   test 'can click favorite button' do
     user = users(:one)
     
-    visit static_home_path
+    visit '/login'
     fill_in 'email', with: user.email
-    fill_in 'password', with: default_password
-    click_button 'Log in'
+    click_on 'Log In'
+    fill_in 'Password', with: default_password
+    click_on 'Log In'
+    
+    # Navigate to search page after login
+    visit new_search_path
     
     fill_in 'search[query]', with: 'coffee'
     find('button[type="submit"]').click
