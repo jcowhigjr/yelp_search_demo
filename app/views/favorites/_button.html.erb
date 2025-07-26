@@ -1,0 +1,12 @@
+<%= button_to(
+      liked ? favorite_path(item) : favorites_path,
+      method: liked ? :delete : :post,
+      params: liked ? { search_query: local_assigns[:search_query] } : { id: item.id, search_query: local_assigns[:search_query] },
+      form:   { data: { turbo_frame: dom_id(item, "favorite") } }, # stay in-frame
+      class:  "favorite-btn inline-flex items-center space-x-1"
+    ) do %>
+  <span><%= icon %></span>
+  <span class="sr-only">
+    <%= liked ? "Remove from favorites" : "Add to favorites" %>
+  </span>
+<% end %>
