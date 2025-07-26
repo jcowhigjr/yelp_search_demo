@@ -496,7 +496,16 @@ logger.debug("STDOUT: #{result[:stdout]}") unless result[:stdout].empty?
 
   def git_remote_available?
     result = execute_command('git remote get-url origin')
-    result[:exit_code] == EXIT_SUCCESS && result[:stdout].include?('github.com')
+    if result[:exit_code] == EXIT_SUCCESS
+      begin
+        uri = URI.parse(result[:stdout].strip)
+        uri.host == 'github.com'
+      rescue URI::InvalidURIError
+        false
+      end
+    else
+      false
+    end
   end
 
   def detect_pr_number
