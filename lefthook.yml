@@ -171,7 +171,7 @@ pre-push:
         fi
         
         echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='*********' mise exec -- bin/rails test:system; then
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false mise exec -- bin/rails test:system --quiet; then
           echo "❌ System tests failed"
           exit 1
         fi

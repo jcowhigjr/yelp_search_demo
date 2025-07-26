@@ -41,6 +41,10 @@ Rails.application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+  
+  # Reduce logging verbosity in tests
+  config.log_level = :warn
+  config.active_record.logger = nil if ENV['CI'] == 'true'
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true

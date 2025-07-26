@@ -22,20 +22,13 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     favorite_frame = first("[id^='favorite_']")
     within favorite_frame do
       button = find('button.favorite-btn')
-      puts "Before click: #{button.text}"
       button.click
     end
     
-    # Wait and check what happened
-    sleep 2
-    puts 'Page HTML after click:'
-    puts page.html
+    # Wait for turbo frame to update
+    silent_wait(1)
     
-    # Try to find the frame again
-    if has_selector?("[id^='favorite_']")
-      puts 'Frame still exists'
-    else
-      puts 'Frame disappeared'
-    end
+    # Verify the favorite button still exists (may have different state)
+    assert_selector "[id^='favorite_']", wait: 5
   end
 end

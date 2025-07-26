@@ -21,20 +21,15 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
 
-    # Debug: Print page content
-    puts '=== PAGE HTML ==='
-    puts page.html
-    puts '=== END HTML ==='
-
     # Check if we have any turbo frames
     frames = all('[id*="favorite"]')
-    puts "Found #{frames.count} favorite frames"
+    assert frames.count > 0, "Expected to find favorite frames"
     
     # Check if we have favorite buttons
     buttons = all('.favorite-btn')
-    puts "Found #{buttons.count} favorite buttons"
+    assert buttons.count > 0, "Expected to find favorite buttons"
     
-    # Check if logged_in? helper is working
-    puts "Current path: #{current_path}"
+    # Verify we're on the search results page
+    assert_match %r{/searches/\d+}, current_path
   end
 end

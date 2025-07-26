@@ -34,6 +34,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Require search test helper
   require_relative 'support/search_test_helper'
   include SearchTestHelper
+  
+  # Include system test helpers for cleaner debugging
+  require_relative 'support/system_test_helpers'
+  include SystemTestHelpers
 
   if ENV.fetch('SELENIUM', nil) == 'true'
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
