@@ -13,4 +13,6 @@ class User < ApplicationRecord
   def favorite?(coffeeshop)
     !!user_favorites.find_by(coffeeshop:)
   end
+
+  alias favorited? favorite?
 end

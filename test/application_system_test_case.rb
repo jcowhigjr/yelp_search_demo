@@ -34,6 +34,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Require search test helper
   require_relative 'support/search_test_helper'
   include SearchTestHelper
+  
+  # Include system test helpers for cleaner debugging
+  require_relative 'support/system_test_helpers'
+  include SystemTestHelpers
 
   if ENV.fetch('SELENIUM', nil) == 'true'
     # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
@@ -104,6 +108,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Mock out the Yelp API in tests
   setup do
     # Stub Yelp API requests for any search term and location
-    stub_yelp_api_request('coffee', 40.748817, -73.985428)
+    stub_yelp_api_request
   end
 end
