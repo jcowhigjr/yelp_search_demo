@@ -46,7 +46,7 @@ class CliErrorHandler
     /bad gateway/i,
     /gateway timeout/i,
     /too many requests/i,
-    /api rate limit exceeded/i
+    /api rate limit exceeded/i,
   ].freeze
 
   attr_reader :logger, :max_retries, :base_delay, :max_delay, :backoff_multiplier
@@ -66,32 +66,32 @@ class CliErrorHandler
   end
 
   # Main entry point for executing commands with error handling
-  def execute_with_handling(command, **options)
+  def execute_with_handling(command, **)
     logger.info("Executing command: #{command}")
     
-    result = execute_command(command, **options)
+    result = execute_command(command, **)
     
     if result[:exit_code] != EXIT_SUCCESS
-      handle_command_failure(command, result, **options)
+      handle_command_failure(command, result, **)
     end
     
     result
   rescue StandardError => e
-    handle_exception(command, e, **options)
+    handle_exception(command, e, **)
     raise
   end
 
   # Execute command with retry logic for API operations
-  def execute_with_retry(command, **options)
+  def execute_with_retry(command, **)
     retry_count = 0
     last_error = nil
 
     loop do
-      begin
-        result = execute_command(command, **options)
+      
+        result = execute_command(command, **)
         
         if result[:exit_code] == EXIT_SUCCESS
-          logger.info("Command succeeded after #{retry_count} retries") if retry_count > 0
+          logger.info("Command succeeded after #{retry_count} retries") if retry_count.positive?
           return result
         end
 
@@ -105,7 +105,7 @@ class CliErrorHandler
         end
 
         # Non-transient error or max retries exceeded
-        handle_command_failure(command, result, retry_count: retry_count, **options)
+        handle_command_failure(command, result, retry_count:, **)
         return result
 
       rescue APITransientError => e
@@ -120,7 +120,7 @@ class CliErrorHandler
           handle_retry_exhausted(command, last_error, retry_count)
           raise
         end
-      end
+      
     end
   end
 
@@ -129,27 +129,27 @@ class CliErrorHandler
   def create_default_logger
     logger = Logger.new($stdout)
     logger.level = Logger::INFO
-    logger.formatter = proc do |severity, datetime, progname, msg|
+    logger.formatter = proc do |severity, datetime, _progname, msg|
       "[#{datetime.strftime('%Y-%m-%d %H:%M:%S')}] #{severity}: #{msg}\n"
     end
     logger
   end
 
   def execute_command(command, **options)
-    start_time = Time.now
+    start_time = Time.zone.now
     
     stdout, stderr, status = Open3.capture3(command)
     
-    end_time = Time.now
+    end_time = Time.zone.now
     duration = end_time - start_time
 
     result = {
-      command: command,
+      command:,
       exit_code: status.exitstatus,
-      stdout: stdout,
-      stderr: stderr,
-      duration: duration,
-      options: options
+      stdout:,
+      stderr:,
+      duration:,
+      options:,
     }
 
     log_command_result(result)
@@ -159,24 +159,23 @@ class CliErrorHandler
   def log_command_result(result)
     if result[:exit_code] == EXIT_SUCCESS
       logger.info("Command completed successfully in #{result[:duration].round(2)}s")
-      logger.debug("STDOUT: #{result[:stdout]}") unless result[:stdout].empty?
     else
       logger.error("Command failed with exit code #{result[:exit_code]} after #{result[:duration].round(2)}s")
       logger.error("STDERR: #{result[:stderr]}") unless result[:stderr].empty?
-      logger.debug("STDOUT: #{result[:stdout]}") unless result[:stdout].empty?
     end
+logger.debug("STDOUT: #{result[:stdout]}") unless result[:stdout].empty?
   end
 
-  def handle_command_failure(command, result, **options)
+  def handle_command_failure(command, result, **)
     case classify_error(result)
     when :ci_failure
-      handle_ci_failure(command, result, **options)
+      handle_ci_failure(command, result, **)
     when :merge_conflict
-      handle_merge_conflict(command, result, **options)
+      handle_merge_conflict(command, result, **)
     when :api_error
-      handle_api_error(command, result, **options)
+      handle_api_error(command, result, **)
     else
-      handle_general_error(command, result, **options)
+      handle_general_error(command, result, **)
     end
   end
 
@@ -192,21 +191,21 @@ class CliErrorHandler
 
     # Check for CI failures
     if combined_output.match?(/ci.*fail|test.*fail|build.*fail|workflow.*fail/i) ||
-       result[:command].match?(/gh.*run|gh.*workflow|gh.*action/i)
+        result[:command].match?(/gh.*run|gh.*workflow|gh.*action/i)
       return :ci_failure
     end
 
     # Check for API errors
     if result[:command].match?(/gh |git.*push|curl.*api/i) ||
-       combined_output.match?(/api.*error|rate limit|authentication.*fail/i)
+        combined_output.match?(/api.*error|rate limit|authentication.*fail/i)
       return :api_error
     end
 
     :general
   end
 
-  def handle_ci_failure(command, result, **options)
-    logger.error("CI failure detected")
+  def handle_ci_failure(_command, result, **)
+    logger.error('CI failure detected')
     
     # Extract failure details
     failure_details = extract_ci_failure_details(result)
@@ -215,13 +214,13 @@ class CliErrorHandler
     log_ci_failure_details(failure_details)
     
     # Post comment to GitHub issue if PR context is available
-    post_ci_failure_comment(failure_details, **options)
+    post_ci_failure_comment(failure_details, **)
     
     raise CIFailureError, "CI failure: #{failure_details[:summary]}"
   end
 
-  def handle_merge_conflict(command, result, **options)
-    logger.error("Merge conflict detected")
+  def handle_merge_conflict(_command, result, **_options)
+    logger.error('Merge conflict detected')
     
     # Extract conflict details
     conflict_details = extract_merge_conflict_details(result)
@@ -235,25 +234,25 @@ class CliErrorHandler
     raise MergeConflictError, "Merge conflict: #{conflict_details[:summary]}"
   end
 
-  def handle_api_error(command, result, **options)
-    logger.error("API error detected")
+  def handle_api_error(command, result, **)
+    logger.error('API error detected')
     
-    if transient_error?(result)
-      raise APITransientError, "Transient API error: #{extract_error_message(result)}"
-    else
-      logger.error("Non-transient API error")
-      handle_general_error(command, result, **options)
-    end
+    raise APITransientError, "Transient API error: #{extract_error_message(result)}" if transient_error?(result)
+      
+    
+      logger.error('Non-transient API error')
+      handle_general_error(command, result, **)
+    
   end
 
-  def handle_general_error(command, result, **options)
-    logger.error("General command failure")
+  def handle_general_error(command, result, **_options)
+    logger.error('General command failure')
     logger.error("Exit code: #{result[:exit_code]}")
     logger.error("Command: #{command}")
     logger.error("STDERR: #{result[:stderr]}") unless result[:stderr].empty?
   end
 
-  def handle_exception(command, exception, **options)
+  def handle_exception(_command, exception, **_options)
     logger.error("Exception during command execution: #{exception.class}: #{exception.message}")
     logger.debug("Backtrace:\n#{exception.backtrace.join("\n")}")
   end
@@ -263,9 +262,9 @@ class CliErrorHandler
     logger.error("Last error: #{last_error&.message}")
     
     # Optionally post a comment about retry exhaustion
-    if github_context_available?
+    return unless github_context_available?
       post_retry_exhausted_comment(command, last_error, retry_count)
-    end
+    
   end
 
   def transient_error?(result)
@@ -287,7 +286,7 @@ class CliErrorHandler
       stdout: result[:stdout],
       duration: result[:duration],
       summary: extract_error_summary(result),
-      timestamp: Time.now.iso8601
+      timestamp: Time.now.iso8601,
     }
   end
 
@@ -298,7 +297,7 @@ class CliErrorHandler
       conflict_markers: extract_conflict_markers(result),
       summary: "Merge conflict detected during: #{result[:command]}",
       stderr: result[:stderr],
-      timestamp: Time.now.iso8601
+      timestamp: Time.now.iso8601,
     }
   end
 
@@ -311,11 +310,9 @@ class CliErrorHandler
     error_lines = stderr_lines.any? ? stderr_lines : stdout_lines
     
     # Return the first few lines that seem to contain error information
-    relevant_lines = error_lines.select { |line| 
-      line.match?(/error|fail|exception|conflict/i) 
-    }.first(3)
+    relevant_lines = error_lines.grep(/error|fail|exception|conflict/i).first(3)
     
-    relevant_lines.any? ? relevant_lines.join("; ") : "Unknown error"
+    relevant_lines.any? ? relevant_lines.join('; ') : 'Unknown error'
   end
 
   def extract_error_summary(result)
@@ -341,20 +338,20 @@ class CliErrorHandler
     
     # Look for conflict marker indicators
     if output.match?(/<<<<<<</i)
-      markers << "<<<<<<< (conflict start)"
+      markers << '<<<<<<< (conflict start)'
     end
     if output.match?(/=======/i)
-      markers << "======= (conflict separator)"
+      markers << '======= (conflict separator)'
     end
     if output.match?(/>>>>>>> /i)
-      markers << ">>>>>>> (conflict end)"
+      markers << '>>>>>>> (conflict end)'
     end
     
     markers
   end
 
   def log_ci_failure_details(details)
-    logger.error("=== CI FAILURE DETAILS ===")
+    logger.error('=== CI FAILURE DETAILS ===')
     logger.error("Command: #{details[:command]}")
     logger.error("Exit Code: #{details[:exit_code]}")
     logger.error("Duration: #{details[:duration].round(2)}s")
@@ -362,60 +359,60 @@ class CliErrorHandler
     logger.error("Timestamp: #{details[:timestamp]}")
     
     unless details[:stderr].empty?
-      logger.error("STDERR:")
+      logger.error('STDERR:')
       details[:stderr].split("\n").each { |line| logger.error("  #{line}") }
     end
     
     unless details[:stdout].empty?
-      logger.debug("STDOUT:")
+      logger.debug('STDOUT:')
       details[:stdout].split("\n").each { |line| logger.debug("  #{line}") }
     end
     
-    logger.error("=== END CI FAILURE DETAILS ===")
+    logger.error('=== END CI FAILURE DETAILS ===')
   end
 
   def notify_merge_conflict_locally(details)
-    puts "\n" + "="*60
-    puts "🚨 MERGE CONFLICT DETECTED"
-    puts "="*60
-    puts "Command: #{details[:command]}"
-    puts "Summary: #{details[:summary]}"
-    puts "Timestamp: #{details[:timestamp]}"
+    Rails.logger.debug { "\n#{'='*60}" }
+    Rails.logger.debug '🚨 MERGE CONFLICT DETECTED'
+    Rails.logger.debug '='*60
+    Rails.logger.debug { "Command: #{details[:command]}" }
+    Rails.logger.debug { "Summary: #{details[:summary]}" }
+    Rails.logger.debug { "Timestamp: #{details[:timestamp]}" }
     
     if details[:conflicted_files].any?
-      puts "\nConflicted Files:"
-      details[:conflicted_files].each { |file| puts "  - #{file}" }
+      Rails.logger.debug "\nConflicted Files:"
+      details[:conflicted_files].each { |file| Rails.logger.debug "  - #{file}" }
     end
     
     if details[:conflict_markers].any?
-      puts "\nConflict Markers Found:"
-      details[:conflict_markers].each { |marker| puts "  - #{marker}" }
+      Rails.logger.debug "\nConflict Markers Found:"
+      details[:conflict_markers].each { |marker| Rails.logger.debug "  - #{marker}" }
     end
     
-    puts "\nResolution Steps:"
-    puts "1. Review the conflicted files listed above"
-    puts "2. Edit files to resolve conflicts (remove <<<<<<, ======, >>>>>> markers)"
-    puts "3. Stage resolved files: git add <file>"
-    puts "4. Complete the merge: git commit"
-    puts "5. Or abort the merge: git merge --abort"
+    Rails.logger.debug "\nResolution Steps:"
+    Rails.logger.debug '1. Review the conflicted files listed above'
+    Rails.logger.debug '2. Edit files to resolve conflicts (remove <<<<<<, ======, >>>>>> markers)'
+    Rails.logger.debug '3. Stage resolved files: git add <file>'
+    Rails.logger.debug '4. Complete the merge: git commit'
+    Rails.logger.debug '5. Or abort the merge: git merge --abort'
     
-    puts "\nMerge operation has been aborted to prevent corruption."
-    puts "="*60 + "\n"
+    Rails.logger.debug "\nMerge operation has been aborted to prevent corruption."
+    Rails.logger.debug { "#{'='*60}\n" }
   end
 
   def abort_merge_operation
-    logger.info("Attempting to abort ongoing merge operation...")
+    logger.info('Attempting to abort ongoing merge operation...')
     
     # Check if we're in the middle of a merge
     if File.exist?('.git/MERGE_HEAD')
       result = execute_command('git merge --abort')
       if result[:exit_code] == EXIT_SUCCESS
-        logger.info("Successfully aborted merge operation")
+        logger.info('Successfully aborted merge operation')
       else
         logger.warn("Failed to abort merge operation: #{result[:stderr]}")
       end
     else
-      logger.info("No ongoing merge operation to abort")
+      logger.info('No ongoing merge operation to abort')
     end
   end
 
@@ -494,12 +491,12 @@ class CliErrorHandler
   end
 
   def github_context_available?
-    ENV['GITHUB_TOKEN'] && (ENV['GITHUB_REPOSITORY'] || git_remote_available?)
+    ENV.fetch('GITHUB_TOKEN', nil) && (ENV['GITHUB_REPOSITORY'] || git_remote_available?)
   end
 
   def git_remote_available?
     result = execute_command('git remote get-url origin')
-    result[:exit_code] == EXIT_SUCCESS && result[:stdout].match?(/github\.com/)
+    result[:exit_code] == EXIT_SUCCESS && result[:stdout].include?('github.com')
   end
 
   def detect_pr_number
@@ -513,7 +510,7 @@ class CliErrorHandler
         data = JSON.parse(result[:stdout])
         return data['number']
       rescue JSON::ParserError
-        logger.debug("Failed to parse PR number from gh pr view")
+        logger.debug('Failed to parse PR number from gh pr view')
       end
     end
     
@@ -529,7 +526,7 @@ class CliErrorHandler
     result = execute_command(command)
     
     if result[:exit_code] == EXIT_SUCCESS
-      logger.info("Successfully posted GitHub comment")
+      logger.info('Successfully posted GitHub comment')
     else
       logger.error("Failed to post GitHub comment: #{result[:stderr]}")
     end
@@ -546,11 +543,11 @@ class CLIRunner
       max_retries: CliErrorHandler::DEFAULT_MAX_RETRIES,
       log_level: 'INFO',
       pr_number: nil,
-      dry_run: false
+      dry_run: false,
     }
     
     parser = OptionParser.new do |opts|
-      opts.banner = "Usage: #{$0} [options] -- command [args...]"
+      opts.banner = "Usage: #{$PROGRAM_NAME} [options] -- command [args...]"
       
       opts.on('--retry', 'Enable retry logic for API operations') do
         options[:retry] = true
@@ -573,7 +570,7 @@ class CLIRunner
       end
       
       opts.on('-h', '--help', 'Show this help message') do
-        puts opts
+        Rails.logger.debug opts
         exit 0
       end
     end
@@ -581,8 +578,8 @@ class CLIRunner
     # Find the -- separator
     separator_index = args.index('--')
     if separator_index.nil?
-      puts "Error: Command separator '--' not found"
-      puts parser
+      Rails.logger.debug "Error: Command separator '--' not found"
+      Rails.logger.debug parser
       exit 1
     end
     
@@ -591,16 +588,16 @@ class CLIRunner
     command_args = args[(separator_index + 1)..]
     
     if command_args.empty?
-      puts "Error: No command specified after '--'"
-      puts parser
+      Rails.logger.debug "Error: No command specified after '--'"
+      Rails.logger.debug parser
       exit 1
     end
     
     begin
       parser.parse!(option_args)
     rescue OptionParser::InvalidOption => e
-      puts "Error: #{e.message}"
-      puts parser
+      Rails.logger.debug { "Error: #{e.message}" }
+      Rails.logger.debug parser
       exit 1
     end
     
@@ -611,14 +608,14 @@ class CLIRunner
     # Set up logger with specified level
     logger = Logger.new($stdout)
     logger.level = Logger.const_get(options[:log_level])
-    logger.formatter = proc do |severity, datetime, progname, msg|
+    logger.formatter = proc do |severity, datetime, _progname, msg|
       "[#{datetime.strftime('%Y-%m-%d %H:%M:%S')}] #{severity}: #{msg}\n"
     end
     
     # Create handler with options
     handler = CliErrorHandler.new(
-      logger: logger,
-      max_retries: options[:max_retries]
+      logger:,
+      max_retries: options[:max_retries],
     )
     
     # Build the command string
@@ -657,23 +654,23 @@ class CLIRunner
 end
 
 # Usage examples and CLI integration
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   if ARGV.include?('--example')
     # Example usage
     handler = CliErrorHandler.new
     
     begin
       # Example 1: Execute with basic error handling
-      result = handler.execute_with_handling('ls /nonexistent')
+      handler.execute_with_handling('ls /nonexistent')
     rescue CliErrorHandler::Error => e
-      puts "Caught CLI error: #{e.message}"
+      Rails.logger.debug { "Caught CLI error: #{e.message}" }
     end
     
     begin
       # Example 2: Execute with retry logic for API operations
-      result = handler.execute_with_retry('gh api repos/owner/repo')
+      handler.execute_with_retry('gh api repos/owner/repo')
     rescue CliErrorHandler::APITransientError => e
-      puts "API operation failed after retries: #{e.message}"
+      Rails.logger.debug { "API operation failed after retries: #{e.message}" }
     end
   else
     # Run CLI interface

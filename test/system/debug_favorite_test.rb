@@ -1,11 +1,11 @@
-require "application_system_test_case"
+require 'application_system_test_case'
 
 class DebugFavoriteTest < ApplicationSystemTestCase
   setup do
     @user = users(:one)
   end
 
-  test "debug search results and favorite elements" do
+  test 'debug search results and favorite elements' do
     # Login
     visit '/login'
     fill_in 'email', with: @user.email
@@ -22,9 +22,9 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
 
     # Debug: Print page content
-    puts "=== PAGE HTML ==="
+    puts '=== PAGE HTML ==='
     puts page.html
-    puts "=== END HTML ==="
+    puts '=== END HTML ==='
 
     # Check if we have any turbo frames
     frames = all('[id*="favorite"]')

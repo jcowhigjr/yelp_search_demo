@@ -1,7 +1,7 @@
-require "application_system_test_case"
+require 'application_system_test_case'
 
 class SimpleFavoriteTest < ApplicationSystemTestCase
-  test "can click favorite button" do
+  test 'can click favorite button' do
     user = users(:one)
     
     visit static_home_path
@@ -15,7 +15,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
     
     # Find and click the favorite button
-    favorite_frame = find("[id^='favorite_']", match: :first)
+    favorite_frame = first("[id^='favorite_']")
     within favorite_frame do
       button = find('button.favorite-btn')
       puts "Before click: #{button.text}"
@@ -24,14 +24,14 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     
     # Wait and check what happened
     sleep 2
-    puts "Page HTML after click:"
+    puts 'Page HTML after click:'
     puts page.html
     
     # Try to find the frame again
     if has_selector?("[id^='favorite_']")
-      puts "Frame still exists"
+      puts 'Frame still exists'
     else
-      puts "Frame disappeared"
+      puts 'Frame disappeared'
     end
   end
 end

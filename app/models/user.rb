@@ -14,5 +14,5 @@ class User < ApplicationRecord
     !!user_favorites.find_by(coffeeshop:)
   end
 
-  alias_method :favorited?, :favorite?
+  alias favorited? favorite?
 end
