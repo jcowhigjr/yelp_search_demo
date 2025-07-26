@@ -136,11 +136,11 @@ class CliErrorHandler
   end
 
   def execute_command(command, **options)
-    start_time = Time.zone.now
+    start_time = Time.now
     
     stdout, stderr, status = Open3.capture3(command)
     
-    end_time = Time.zone.now
+    end_time = Time.now
     duration = end_time - start_time
 
     result = {
@@ -372,32 +372,32 @@ logger.debug("STDOUT: #{result[:stdout]}") unless result[:stdout].empty?
   end
 
   def notify_merge_conflict_locally(details)
-    Rails.logger.debug { "\n#{'='*60}" }
-    Rails.logger.debug '🚨 MERGE CONFLICT DETECTED'
-    Rails.logger.debug '='*60
-    Rails.logger.debug { "Command: #{details[:command]}" }
-    Rails.logger.debug { "Summary: #{details[:summary]}" }
-    Rails.logger.debug { "Timestamp: #{details[:timestamp]}" }
+    puts "\n#{'='*60}"
+    puts '🚨 MERGE CONFLICT DETECTED'
+    puts '='*60
+    puts "Command: #{details[:command]}"
+    puts "Summary: #{details[:summary]}"
+    puts "Timestamp: #{details[:timestamp]}"
     
     if details[:conflicted_files].any?
-      Rails.logger.debug "\nConflicted Files:"
-      details[:conflicted_files].each { |file| Rails.logger.debug "  - #{file}" }
+      puts "\nConflicted Files:"
+      details[:conflicted_files].each { |file| puts "  - #{file}" }
     end
     
     if details[:conflict_markers].any?
-      Rails.logger.debug "\nConflict Markers Found:"
-      details[:conflict_markers].each { |marker| Rails.logger.debug "  - #{marker}" }
+      puts "\nConflict Markers Found:"
+      details[:conflict_markers].each { |marker| puts "  - #{marker}" }
     end
     
-    Rails.logger.debug "\nResolution Steps:"
-    Rails.logger.debug '1. Review the conflicted files listed above'
-    Rails.logger.debug '2. Edit files to resolve conflicts (remove <<<<<<, ======, >>>>>> markers)'
-    Rails.logger.debug '3. Stage resolved files: git add <file>'
-    Rails.logger.debug '4. Complete the merge: git commit'
-    Rails.logger.debug '5. Or abort the merge: git merge --abort'
+    puts "\nResolution Steps:"
+    puts '1. Review the conflicted files listed above'
+    puts '2. Edit files to resolve conflicts (remove <<<<<<, ======, >>>>>> markers)'
+    puts '3. Stage resolved files: git add <file>'
+    puts '4. Complete the merge: git commit'
+    puts '5. Or abort the merge: git merge --abort'
     
-    Rails.logger.debug "\nMerge operation has been aborted to prevent corruption."
-    Rails.logger.debug { "#{'='*60}\n" }
+    puts "\nMerge operation has been aborted to prevent corruption."
+    puts "#{'='*60}\n"
   end
 
   def abort_merge_operation
@@ -570,7 +570,7 @@ class CLIRunner
       end
       
       opts.on('-h', '--help', 'Show this help message') do
-        Rails.logger.debug opts
+        puts opts
         exit 0
       end
     end
@@ -578,8 +578,8 @@ class CLIRunner
     # Find the -- separator
     separator_index = args.index('--')
     if separator_index.nil?
-      Rails.logger.debug "Error: Command separator '--' not found"
-      Rails.logger.debug parser
+      puts "Error: Command separator '--' not found"
+      puts parser
       exit 1
     end
     
@@ -588,16 +588,16 @@ class CLIRunner
     command_args = args[(separator_index + 1)..]
     
     if command_args.empty?
-      Rails.logger.debug "Error: No command specified after '--'"
-      Rails.logger.debug parser
+      puts "Error: No command specified after '--'"
+      puts parser
       exit 1
     end
     
     begin
       parser.parse!(option_args)
     rescue OptionParser::InvalidOption => e
-      Rails.logger.debug { "Error: #{e.message}" }
-      Rails.logger.debug parser
+      puts "Error: #{e.message}"
+      puts parser
       exit 1
     end
     
@@ -663,14 +663,14 @@ if __FILE__ == $PROGRAM_NAME
       # Example 1: Execute with basic error handling
       handler.execute_with_handling('ls /nonexistent')
     rescue CliErrorHandler::Error => e
-      Rails.logger.debug { "Caught CLI error: #{e.message}" }
+      puts "Caught CLI error: #{e.message}"
     end
     
     begin
       # Example 2: Execute with retry logic for API operations
       handler.execute_with_retry('gh api repos/owner/repo')
     rescue CliErrorHandler::APITransientError => e
-      Rails.logger.debug { "API operation failed after retries: #{e.message}" }
+      puts "API operation failed after retries: #{e.message}"
     end
   else
     # Run CLI interface
