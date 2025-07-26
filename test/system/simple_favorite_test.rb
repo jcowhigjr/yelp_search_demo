@@ -26,7 +26,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     end
     
     # Wait for turbo frame to update
-    silent_wait(1)
+    assert_selector "[id^='favorite_'] button.favorite-btn", wait: 5
     
     # Verify the favorite button still exists (may have different state)
     assert_selector "[id^='favorite_']", wait: 5
