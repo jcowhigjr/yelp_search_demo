@@ -1,0 +1,57 @@
+<%# Demo partial to show contextual favorite icons %>
+<div class="favorites-demo" style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+  <h4>Contextual Favorite Icons Demo</h4>
+  <p>Favorite icons change based on search terms:</p>
+  
+  <div class="demo-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+    <% demo_terms = ["coffee", "taco", "pizza", "burger", "sushi", "chinese", "dessert", "beer", "wine", "restaurant"] %>
+    
+    <% demo_terms.each do |term| %>
+      <div class="demo-item" style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+        <div style="font-weight: bold; margin-bottom: 8px;"><%= term.capitalize %></div>
+        
+        <div style="margin-bottom: 8px;">
+          <% states = favorite_icon_states_for(term, false) %>
+          <button class="<%= favorite_button_classes_for(term) %>" style="margin: 0 5px;">
+            <%= states[:unfilled] %>
+          </button>
+          <button class="<%= favorite_button_classes_for(term) %>" style="margin: 0 5px;">
+            <%= states[:filled] %>
+          </button>
+        </div>
+        
+        <div style="font-size: 0.8em; color: #666;">
+          Unfilled → Filled
+        </div>
+      </div>
+    <% end %>
+    
+    <%# Default case %>
+    <div class="demo-item" style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+      <div style="font-weight: bold; margin-bottom: 8px;">Default</div>
+      
+      <div style="margin-bottom: 8px;">
+        <% states = favorite_icon_states_for("random", false) %>
+        <button class="<%= favorite_button_classes_for("random") %>" style="margin: 0 5px;">
+          <%= states[:unfilled] %>
+        </button>
+        <button class="<%= favorite_button_classes_for("random") %>" style="margin: 0 5px;">
+          <%= states[:filled] %>
+        </button>
+      </div>
+      
+      <div style="font-size: 0.8em; color: #666;">
+        Unfilled → Filled
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 20px; padding: 15px; background: #e9ecef; border-radius: 6px;">
+    <h5>Test the three main use cases:</h5>
+    <ul style="margin: 10px 0;">
+      <li><strong>Coffee:</strong> <%= favorite_icon_for("coffee") %> (☕️ when favorited, ☕ when not)</li>
+      <li><strong>Taco:</strong> <%= favorite_icon_for("taco") %> (🌮 when favorited, 🥙 when not)</li>
+      <li><strong>Pizza:</strong> <%= favorite_icon_for("pizza") %> (🍕 when favorited, 🍽️ when not)</li>
+    </ul>
+  </div>
+</div>

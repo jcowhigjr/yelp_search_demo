@@ -1,13 +1,32 @@
-<div class="form-group">
+<div class="form-group" data-controller="search" data-search-target="theme">
     <%= form_for @search do |f| %>
         <div class="row center search-bar">
-            <%= f.search_field(:query, placeholder: t('views.searches.placeholder'), required: true,
-                data: {turbo: false}) do %>
+            <div class="search-input-container">
+                <div data-search-target="icon" class="search-icon" 
+                     data-icon-default="fas fa-map-marker-alt"
+                     data-icon-transition="smooth"
+                     data-icon-animation="enabled">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                </div>
+                <%= f.search_field(:query, 
+                    placeholder: t('views.searches.placeholder'), 
+                    required: true,
+                    data: { 
+                        turbo: false, 
+                        search_target: 'input',
+                        action: 'input->search#handleInput focus->search#handleFocus blur->search#handleBlur',
+                        icon_context: 'search',
+                        dynamic_icon: 'enabled'
+                    }) %>
+            </div>
+            <%= f.button :submit, data: { 
+                turbo: false, 
+                search_target: 'submitButton',
+                icon_context: 'dynamic'
+            }, class: 'search-submit-btn' do %>
+              <i class="flex-col material-icons" aria-label="search" data-search-target="submitIcon">search</i>
             <% end %>
-            <%= f.button :submit, data: { turbo: false} do %>
-              <i class="flex-col material-icons" aria-label="search">search</i>
-            <% end %>
-            <%= link_to(new_search_path, method: :get, class: 'pull-right', data: { turbo_frame: dom_id(@search) }) do %>
+            <%= link_to(new_search_path, method: :get, class: 'pull-right search-clear-btn', data: { turbo_frame: dom_id(@search) }) do %>
               <i class="flex-col material-icons" aria-label="Clear">clear</i>
             <% end %>
         </div>
