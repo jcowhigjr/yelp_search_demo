@@ -1,7 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-# Realistic search history with common queries, user associations, timestamps, and location data
 
-# Coffee searches - popular morning queries
+# Fixtures for old tests
+one:
+  id: 100
+  user: one
+  query: coffee
+  latitude: 37.7849
+  longitude: -122.4094
+
+two:
+  id: 101
+  user: two
+  query: tacos
+  latitude: 34.0522
+  longitude: -118.2437
+
+# Realistic search history with common queries, user associations, timestamps, and location data
 coffee_downtown_morning:
   id: 1
   user: one
