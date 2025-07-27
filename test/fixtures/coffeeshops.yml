@@ -2,12 +2,12 @@
 
 one:
   id: 1
-  name: Coffeeshop 1
-  address: MyString
-  rating: 1.5
-  yelp_url: MyString
-  image_url: tea.png
-  phone_number: MyString
+  name: Local Coffee House
+  address: 123 Main St, Atlanta, GA 30309
+  rating: 4.5
+  yelp_url: https://www.yelp.com/biz/local-coffee-house
+  image_url: /assets/sample_coffeeshop_1.svg
+  phone_number: (*************
   search_id: 1
 
 two:
@@ -16,6 +16,6 @@ two:
   address: 1366 Glenwood Ave SE Atlanta, GA 30316
   rating: 5.0
   yelp_url: https://www.yelp.com/biz/bellwood-coffee-atlanta-2?adjust_creative=w5PTbzPdJ3ga3COoPOz9DA&utm_campaign=yelp_api_v3&utm_medium=api_v3_business_search&utm_source=w5PTbzPdJ3ga3COoPOz9DA
-  image_url: tea.png
+  image_url: /assets/sample_coffeeshop_2.svg
   phone_number: +1(919)929-6566
   search_id: 2
