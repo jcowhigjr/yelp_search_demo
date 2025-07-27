@@ -10,21 +10,25 @@ class Coffeeshop < ApplicationRecord
   #               target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
 
   def self.get_search_results(search)
-    query = search.query
-    lat = search.latitude
-    long = search.longitude
-    begin
-      response = RestClient::Request.execute(
-        method: 'GET',
-        url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
-        headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" },
-      )
-      results = JSON.parse(response)
-    rescue RestClient::Exception => e
-      return "error #{e.inspect}"
+    cache_key = "yelp_search/#{search.query.to_s.gsub(/\s+/, '_').downcase}/#{search.latitude}/#{search.longitude}"
+    coffeeshops = Rails.cache.fetch(cache_key, expires_in: 24.hours) do
+      query = search.query
+      lat = search.latitude
+      long = search.longitude
+      begin
+        response = RestClient::Request.execute(
+          method: 'GET',
+          url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
+          headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" },
+        )
+        results = JSON.parse(response)
+        results['businesses']
+      rescue RestClient::Exception => e
+        Rails.logger.error "Yelp API Error: #{e.inspect}"
+        [] # Return an empty array on error
+      end
     end
 
-    coffeeshops = results['businesses']
     create_coffee_shops_from_results(coffeeshops, search)
   end
 
