@@ -27,6 +27,34 @@ class CoffeeshopTest < ActiveSupport::TestCase
 
     assert_predicate @coffeeshop, :valid?
   end
+
+  test 'get_search_results uses local data when flag is enabled' do
+    # Create a search
+    search = Search.create!(query: 'coffee', latitude: 40.7128, longitude: -74.0060)
+    
+    # Temporarily enable local data mode by defining the configuration
+    Rails.application.config.define_singleton_method(:use_local_data) { true }
+    
+    begin
+      # Call get_search_results
+      Coffeeshop.get_search_results(search)
+      
+      # Verify that coffeeshops were created
+      assert_operator search.coffeeshops.count, :>, 0
+      
+      # Verify that mock data was used (should include "Local Coffee House")
+      coffee_shop_names = search.coffeeshops.pluck(:name)
+
+      assert_includes coffee_shop_names, 'Local Coffee House'
+    ensure
+      # Remove the temporary method
+      begin
+        Rails.application.config.singleton_class.send(:remove_method, :use_local_data)
+      rescue StandardError
+        nil
+      end
+    end
+  end
   test 'get_search_results caches API responses' do
     # Enable caching for this test
     original_cache_store = Rails.cache
