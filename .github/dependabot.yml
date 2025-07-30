@@ -1,20 +1,59 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# Dependabot configuration for automated dependency updates
+# Enables safe updates for patch and minor versions without human intervention
+# Documentation: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
 updates:
+  # GitHub Actions updates
   - package-ecosystem: github-actions
     directory: /
     schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: all
+        update-type: minor
+      - dependency-type: all
+        update-type: patch
+      - dependency-type: all
+        update-type: security
+    
+  # Ruby/Bundler dependencies
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
       interval: daily
-  - package-ecosystem: "bundler" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "daily"
-  - package-ecosystem: ruby
-    directory: "/"
-    update-strategy: patch
-    schedule:
-      interval: "daily"
+      time: "09:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    # Enable safe automated updates for patch and minor versions
+    allow:
+      - dependency-type: production
+        update-type: security
+      - dependency-type: production
+        update-type: patch
+      - dependency-type: production
+        update-type: minor
+      - dependency-type: development
+        update-type: all
+    # Group related updates to reduce PR noise
+    groups:
+      test-dependencies:
+        patterns:
+          - "rspec*"
+          - "capybara*"
+          - "factory_bot*"
+          - "faker"
+          - "shoulda*"
+      rails-ecosystem:
+        patterns:
+          - "rails*"
+          - "actionpack*"
+          - "activerecord*"
+          - "activesupport*"
+          - "actionview*"
+          - "actionmailer*"
+          - "activejob*"
+          - "actioncable*"
+          - "activestorage*"
