@@ -38,5 +38,5 @@ jobs:
             echo "Update requires manual review: $UPDATE_TYPE ($DEPENDENCY_TYPE)"
           fi
         env:
-          PR_URL: ${{github.event.pull_request.html_url}}
+          PR_URL: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
