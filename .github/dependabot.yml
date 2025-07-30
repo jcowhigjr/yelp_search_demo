@@ -12,7 +12,10 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     allow:
-      - dependency-type: all
+      - dependency-type: direct
+        update-type: "version-update:semver-patch"
+      - dependency-type: direct
+        update-type: "version-update:semver-minor"
     
   # Ruby/Bundler dependencies
   - package-ecosystem: bundler
