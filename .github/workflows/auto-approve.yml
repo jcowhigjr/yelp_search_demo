@@ -26,12 +26,14 @@ jobs:
           # Auto-approve low-risk updates
           if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
             echo "Auto-approving patch update"
-            gh pr review --approve "$PR_URL" --body "Auto-approved patch dependency update"
-            gh pr merge --auto --squash "$PR_URL"
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+            gh pr review --approve "$PR_NUMBER" --body "Auto-approved patch dependency update"
+            gh pr merge --auto --squash "$PR_NUMBER"
           elif [[ "$UPDATE_TYPE" == "version-update:semver-minor" && "$DEPENDENCY_TYPE" == "development" ]]; then
             echo "Auto-approving minor development dependency update"
-            gh pr review --approve "$PR_URL" --body "Auto-approved minor development dependency update"
-            gh pr merge --auto --squash "$PR_URL"
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+            gh pr review --approve "$PR_NUMBER" --body "Auto-approved minor development dependency update"
+            gh pr merge --auto --squash "$PR_NUMBER"
           else
             echo "Update requires manual review: $UPDATE_TYPE ($DEPENDENCY_TYPE)"
           fi
