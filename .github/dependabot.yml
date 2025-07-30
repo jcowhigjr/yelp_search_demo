@@ -13,11 +13,11 @@ updates:
     open-pull-requests-limit: 5
     allow:
       - dependency-type: all
-        update-type: minor
+        update-types: ["version-update:semver-minor"]
       - dependency-type: all
-        update-type: patch
+        update-types: ["version-update:semver-patch"]
       - dependency-type: all
-        update-type: security
+        update-types: ["security-update"]
     
   # Ruby/Bundler dependencies
   - package-ecosystem: bundler
@@ -30,13 +30,13 @@ updates:
     # Enable safe automated updates for patch and minor versions
     allow:
       - dependency-type: production
-        update-type: security
+        update-types: ["security-update"]
       - dependency-type: production
-        update-type: patch
+        update-types: ["version-update:semver-patch"]
       - dependency-type: production
-        update-type: minor
+        update-types: ["version-update:semver-minor"]
       - dependency-type: development
-        update-type: all
+        update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
     # Group related updates to reduce PR noise
     groups:
       test-dependencies:
