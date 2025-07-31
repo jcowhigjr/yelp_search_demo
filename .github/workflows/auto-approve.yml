@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Dependabot metadata
         id: metadata
         uses: dependabot/fetch-metadata@v2
@@ -22,21 +27,23 @@ jobs:
         run: |
           UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
           DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          echo "Processing PR #$PR_NUMBER"
+          echo "Update type: $UPDATE_TYPE"
+          echo "Dependency type: $DEPENDENCY_TYPE"
           
           # Auto-approve low-risk updates
           if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
             echo "Auto-approving patch update"
-            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
             gh pr review --approve "$PR_NUMBER" --body "Auto-approved patch dependency update"
             gh pr merge --auto --squash "$PR_NUMBER"
           elif [[ "$UPDATE_TYPE" == "version-update:semver-minor" && "$DEPENDENCY_TYPE" == "development" ]]; then
             echo "Auto-approving minor development dependency update"
-            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
             gh pr review --approve "$PR_NUMBER" --body "Auto-approved minor development dependency update"
             gh pr merge --auto --squash "$PR_NUMBER"
           else
             echo "Update requires manual review: $UPDATE_TYPE ($DEPENDENCY_TYPE)"
           fi
         env:
-          PR_URL: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

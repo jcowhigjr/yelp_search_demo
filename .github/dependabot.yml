@@ -12,12 +12,10 @@ updates:
       day: monday
     open-pull-requests-limit: 5
     allow:
-      - dependency-type: all
-        update-type: minor
-      - dependency-type: all
-        update-type: patch
-      - dependency-type: all
-        update-type: security
+      - dependency-type: direct
+        update-type: "version-update:semver-patch"
+      - dependency-type: direct
+        update-type: "version-update:semver-minor"
     
   # Ruby/Bundler dependencies
   - package-ecosystem: bundler
@@ -30,13 +28,7 @@ updates:
     # Enable safe automated updates for patch and minor versions
     allow:
       - dependency-type: production
-        update-type: security
-      - dependency-type: production
-        update-type: patch
-      - dependency-type: production
-        update-type: minor
       - dependency-type: development
-        update-type: all
     # Group related updates to reduce PR noise
     groups:
       test-dependencies:
