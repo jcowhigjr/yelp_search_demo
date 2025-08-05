@@ -72,7 +72,7 @@ begin
       if attributes['updated_at'].present?
         if attributes['updated_at'].include?('<%=')
           # This is an ERB template, evaluate it
-          search.updated_at = eval(attributes['updated_at'].gsub(/<%=\s*(.*)\s*%>/, '\1'))
+          search.updated_at = Time.parse(ERB.new(attributes['updated_at']).result(binding))
         else
           search.updated_at = Time.parse(attributes['updated_at'])
         end
