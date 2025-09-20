@@ -115,11 +115,15 @@ group :development do
   # gem 'solargraph-rails', require: false
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
-  gem 'lefthook', require: false
   gem 'bundler-audit', require: false
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
+end
+
+group :development, :ci do
+  # Ensure Lefthook is available in CI for installing Git hooks
+  gem 'lefthook', require: false
 end
 
 group :test do

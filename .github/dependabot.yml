@@ -1,3 +1,70 @@
+version: 2
+updates:
+  # Ruby (Bundler)
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"        # reduce churn
+      day: "sunday"
+      time: "07:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    groups:
+      rubocop-suite:
+        patterns:
+          - "rubocop"
+          - "rubocop-*"
+      rails-ecosystem:
+        patterns:
+          - "rails"
+          - "action*"
+          - "active*"
+      dev-tools:
+        dependency-type: "development"
+        patterns:
+          - "brakeman"
+          - "lefthook"
+          - "erb_lint"
+          - "yaml-lint"
+          - "i18n-tasks"
+          - "guard*"
+      test-stack:
+        patterns:
+          - "capybara"
+          - "selenium-webdriver"
+          - "cuprite"
+          - "webmock"
+          - "mocha"
+          - "magic_test"
+          - "evil_systems"
+      perf-and-runtime:
+        patterns:
+          - "puma"
+          - "bootsnap"
+          - "propshaft"
+          - "importmap-rails"
+          - "turbo-rails"
+          - "hotwire-rails"
+          - "tailwindcss-rails"
+      patch-and-minor:
+        update-types:
+          - "patch"
+          - "minor"
+
+  # GitHub Actions (optional, quiet weekly)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "07:15"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 2
+    groups:
+      gha-minor-patch:
+        update-types: ["minor", "patch"]
+
 # Dependabot configuration for automated dependency updates
 # Enables safe updates for patch and minor versions without human intervention
 # Documentation: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
