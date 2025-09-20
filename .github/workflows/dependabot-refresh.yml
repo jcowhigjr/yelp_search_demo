@@ -1,0 +1,65 @@
+name: Refresh stale Dependabot PRs and queue auto-merge
+on:
+  schedule:
+    - cron: "15 */6 * * *"  # every 6 hours
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  refresh-and-queue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (shallow)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Ensure gh present
+        run: gh --version
+
+      - name: Refresh stale Dependabot PRs and enable auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # List all open Dependabot PRs (numbers, updatedAt, body)
+          prs_json=$(gh pr list --author "dependabot[bot]" --state open --json number,updatedAt,body)
+          count=$(echo "$prs_json" | jq 'length')
+          echo "Found $count open Dependabot PRs"
+
+          # Threshold for "stale" (days)
+          THRESHOLD_DAYS=25
+          now_epoch=$(date +%s)
+
+          # Iterate PRs
+          echo "$prs_json" | jq -c '.[]' | while read -r pr; do
+            num=$(echo "$pr" | jq -r '.number')
+            updated=$(echo "$pr" | jq -r '.updatedAt')
+            body=$(echo "$pr" | jq -r '.body // ""')
+
+            # Compute age in days (GNU date on Linux, BSD date fallback for macOS)
+            pr_epoch=$(date -d "$updated" +%s 2>/dev/null || date -jf "%Y-%m-%dT%H:%M:%SZ" "$updated" +%s)
+            age_days=$(( (now_epoch - pr_epoch) / 86400 ))
+
+            needs_recreate="false"
+            if echo "$body" | grep -qi "Automatic rebases have been disabled"; then
+              needs_recreate="true"
+            elif [ "$age_days" -ge "$THRESHOLD_DAYS" ]; then
+              needs_recreate="true"
+            fi
+
+            echo "PR #$num age=${age_days}d needs_recreate=$needs_recreate"
+
+            if [ "$needs_recreate" = "true" ]; then
+              echo "Commenting @dependabot recreate on #$num"
+              gh pr comment "$num" -b "@dependabot recreate" || true
+            fi
+
+            echo "Enabling auto-merge (squash) on #$num"
+            gh pr merge --auto --squash "$num" || true
+          done
