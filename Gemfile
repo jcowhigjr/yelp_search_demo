@@ -31,7 +31,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'json'
 gem 'rest-client'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 6.6'
+gem 'puma', '~> 7.0'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -115,11 +115,15 @@ group :development do
   # gem 'solargraph-rails', require: false
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
-  gem 'lefthook', require: false
   gem 'bundler-audit', require: false
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
+end
+
+group :development, :ci do
+  # Ensure Lefthook is available in CI for installing Git hooks
+  gem 'lefthook', require: false
 end
 
 group :test do
