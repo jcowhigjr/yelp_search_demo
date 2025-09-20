@@ -18,7 +18,7 @@ gem 'bundler', '~> 2.5'
 # gem 'rails', "~> 8.0"
 gem 'next_rails'
 
-gem 'rails', '~> 8.1'
+gem 'rails', '>= 8.1.0.beta1', '< 8.2'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
