@@ -45,10 +45,17 @@ jobs:
           echo "PRs to update: ${PRS[*]}"
           for PR in "${PRS[@]}"; do
             echo "Updating branch on PR #${PR}"
-            # Use the Update a pull request branch API to bring the branch up to date with base
-            gh api \
-              -X PUT \
-              "repos/${{ github.repository }}/pulls/${PR}/update-branch" \
-              -f expected_head_sha= || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
-          done
+            # Fetch the current head SHA for concurrency control
+            HEAD_SHA=$(gh pr view "$PR" --json headRefOid --jq .headRefOid)
+            # Conditionally include expected_head_sha only if non-empty
+            if [[ -n "$HEAD_SHA" ]]; then
+              gh api \
+                -X PUT \
+                "repos/${{ github.repository }}/pulls/${PR}/update-branch" \
+                -f expected_head_sha="$HEAD_SHA" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
+            else
+              gh api \
+                -X PUT \
+                "repos/${{ github.repository }}/pulls/${PR}/update-branch" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
+            fi
           echo "Done."  
