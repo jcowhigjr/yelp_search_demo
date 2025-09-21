@@ -23,17 +23,32 @@ jobs:
       - name: Setup GitHub CLI
         uses: cli/cli-action@v2
       
-      - name: Auto-update PRs
-        run: |
-          # Get all open PRs targeting develop branch
-          PR_NUMBERS=$(gh pr list --base develop --json number --jq '.[].number')
-          
-          echo "Found the following PRs targeting develop: $PR_NUMBERS"
-          
-          # Update each PR
-          for PR_NUMBER in $PR_NUMBERS; do
-            echo "Updating PR #$PR_NUMBER"
-            gh pr update $PR_NUMBER --repo ${{ github.repository }} || echo "Failed to update PR #$PR_NUMBER, continuing with others"
-          done
+      - name: Update PR branches that are behind develop
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Listing PRs targeting develop that are behind..."
+          # Fetch PRs with fields we need and select those behind base
+          mapfile -t PRS < <(gh pr list \
+            --base develop \
+            --state open \
+            --json number,mergeableState,isCrossRepository,headRefName \
+            --jq '.[] | select(.mergeableState == "behind" and .isCrossRepository == false) | .number')
+
+          if [[ ${#PRS[@]} -eq 0 ]]; then
+            echo "No open PRs behind develop."
+            exit 0
+          fi
+
+          echo "PRs to update: ${PRS[*]}"
+          for PR in "${PRS[@]}"; do
+            echo "Updating branch on PR #${PR}"
+            # Use the Update a pull request branch API to bring the branch up to date with base
+            gh api \
+              -X PUT \
+              "repos/${{ github.repository }}/pulls/${PR}/update-branch" \
+              -f expected_head_sha= || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
+          done
+          echo "Done."  
