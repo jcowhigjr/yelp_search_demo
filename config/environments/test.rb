@@ -7,11 +7,9 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Ensure asset builds directory is on the asset load path in tests
-  config.assets.paths << Rails.root.join("app/assets/builds")
+
 
   # In tests, do not fail if an asset (like tailwind.css) is missing; render without it instead
-  config.assets.unknown_asset_fallback = true
-
   # While tests run files are not watched, reloading is not necessary.
   config.enable_reloading = false
 
