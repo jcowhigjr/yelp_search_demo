@@ -24,3 +24,7 @@ Rails.configuration.action_controller.action_on_path_relative_redirect = :raise
 # PR6: Stop escaping HTML entities and line separators in JSON responses to match 8.1 defaults.
 # Applications that need the previous escaping behavior can set this to true.
 Rails.configuration.action_controller.escape_json_responses = false
+
+# ActiveRecord defaults
+# Raise an exception when finder methods (first, second, etc.) are used without explicit ordering.
+Rails.configuration.active_record.raise_on_missing_required_finder_order_columns = true
