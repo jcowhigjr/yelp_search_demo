@@ -34,8 +34,8 @@ jobs:
           mapfile -t PRS < <(gh pr list \
             --base develop \
             --state open \
-            --json number,mergeableState,isCrossRepository,headRefName \
-            --jq '.[] | select(.mergeableState == "behind" and .isCrossRepository == false) | .number')
+            --json number,isCrossRepository,headRefName \
+            --jq '.[] | select(.isCrossRepository == false) | .number')
 
           if [[ ${#PRS[@]} -eq 0 ]]; then
             echo "No open PRs behind develop."
