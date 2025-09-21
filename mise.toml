@@ -54,7 +54,7 @@ depends = ["test-prepare"]
 
 [tasks.test-system]
 description = "Run system tests for main application"
-run = "bin/rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' bin/rails test:system"
 depends = ["test-prepare"]
 
 [tasks.test-next-prepare]
@@ -68,5 +68,5 @@ depends = ["test-next-prepare"]
 
 [tasks.test-next-system]
 description = "Run system tests for 'next' environment"
-run = "next rails test:system HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='127.0.0.1'"
+run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' next rails test:system"
 depends = ["test-next-prepare"]
