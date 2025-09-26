@@ -25,6 +25,9 @@ module Jitter
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Ensure Tailwind build directory is on the asset load path in all envs
+    config.assets.paths << Rails.root.join("app/assets/builds")
+
     # Allow embedding in iframes for development previews (e.g., Windsurf, VS Code Simple Browser)
     if Rails.env.development?
       config.action_dispatch.default_headers['X-Frame-Options'] = 'ALLOWALL'
