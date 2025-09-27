@@ -163,7 +163,7 @@ on:
 
 **Fix**: After reopening PRs, re-enable auto-merge:
 ```bash
-gh pr merge --auto --squash <PR_NUMBER>
+gh pr merge --auto --squash $PR_NUMBER
 ```
 
 ### Issue 3: Sequential Merging Causes Branch Behind State
@@ -174,10 +174,11 @@ gh pr merge --auto --squash <PR_NUMBER>
 **Fix**: Use GitHub API to update branches programmatically:
 ```bash
 # Update branch for a PR
-gh api repos/{owner}/{repo}/pulls/{PR_NUMBER}/update-branch --method PUT
+# Note: Replace $GITHUB_REPOSITORY with actual owner/repo or use environment variable
+gh api repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/update-branch --method PUT
 
 # Or close/reopen to trigger fresh CI
-gh pr close {PR_NUMBER} && gh pr reopen {PR_NUMBER}
+gh pr close $PR_NUMBER && gh pr reopen $PR_NUMBER
 ```
 
 ### Issue 4: Update Gemfile.next.lock Workflow Creates New Commits
@@ -202,6 +203,7 @@ done
 
 # Wait for CI to complete, then update branches for sequential merging
 for pr in $(gh pr list --author "dependabot[bot]" --json number --jq '.[].number'); do
-  gh api repos/{owner}/{repo}/pulls/$pr/update-branch --method PUT
+  # Note: Set GITHUB_REPOSITORY environment variable to owner/repo format
+  gh api repos/$GITHUB_REPOSITORY/pulls/$pr/update-branch --method PUT
 done
 ```
