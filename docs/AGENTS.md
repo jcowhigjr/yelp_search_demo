@@ -1,5 +1,92 @@
 # Agents: No-Toil Dependabot Automation (One-Pass)
 
+## 🎯 Definition of Done - Complete PR Workflow
+
+**IMPORTANT**: Every PR must follow this complete workflow to ensure quality and maintainability.
+
+### Automated PR Completion Loop
+When creating any PR, the workflow should:
+
+1. **Request Copilot Review**
+   ```bash
+   gh pr comment <PR_NUMBER> -b "@copilot-reviewer review"
+   ```
+
+2. **Monitor Loop** (automated sleep/check pattern)
+   - Wait for Copilot review to complete
+   - Address all review comments programmatically or manually
+   - Re-request review if changes were made
+   - Monitor CI status until all checks pass
+   - Confirm auto-merge is enabled (or merge manually if needed)
+
+3. **Verify Merge**
+   - Poll PR status until `state: merged`
+   - Confirm merge commit exists in base branch
+
+4. **Clean Local Environment**
+   ```bash
+   # After PR is merged
+   git checkout develop
+   git pull origin develop
+   git branch -d <feature-branch>  # Delete local feature branch
+   git remote prune origin         # Clean up remote tracking branches
+   ```
+
+### Definition of Done Checklist
+- [ ] Copilot review requested and feedback addressed
+- [ ] All CI checks passing (tests, linting, security)
+- [ ] Review comments resolved and approved
+- [ ] PR merged to base branch
+- [ ] Local repository on develop branch
+- [ ] Latest changes pulled from remote
+- [ ] Feature branch deleted locally
+- [ ] Ready for next feature (clean working tree)
+
+### Automated Implementation Pattern
+```bash
+#!/bin/bash
+# Complete PR workflow automation
+
+PR_NUMBER=$1
+MAX_WAIT=1800  # 30 minutes timeout
+CHECK_INTERVAL=30  # Check every 30 seconds
+
+# Step 1: Request Copilot review
+gh pr comment $PR_NUMBER -b "@copilot-reviewer review"
+
+# Step 2: Monitor loop
+elapsed=0
+while [ $elapsed -lt $MAX_WAIT ]; do
+  # Check PR status
+  pr_status=$(gh pr view $PR_NUMBER --json state,mergeable,reviews,statusCheckRollup -q '.state')
+  
+  if [ "$pr_status" = "MERGED" ]; then
+    echo "✅ PR merged successfully"
+    break
+  fi
+  
+  # Check if intervention needed
+  reviews=$(gh pr view $PR_NUMBER --json reviews -q '.reviews[] | select(.state == "CHANGES_REQUESTED")')
+  if [ -n "$reviews" ]; then
+    echo "⚠️ Changes requested - manual intervention needed"
+    # Could trigger automated fixes here
+  fi
+  
+  sleep $CHECK_INTERVAL
+  elapsed=$((elapsed + CHECK_INTERVAL))
+done
+
+# Step 3: Post-merge cleanup
+if [ "$pr_status" = "MERGED" ]; then
+  current_branch=$(git branch --show-current)
+  git checkout develop
+  git pull origin develop
+  git branch -d $current_branch 2>/dev/null || echo "Branch already deleted"
+  git remote prune origin
+  echo "🎉 Ready for next feature!"
+fi
+```
+
 Use this quick checklist when eliminating manual Dependabot toil.
 
 ## TL;DR checklist
