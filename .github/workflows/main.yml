@@ -14,10 +14,9 @@ on:
     branches:
       - develop
       - main
-  workflow_run:
-    workflows: ["Dependabot Risk Assessment"]
-    types:
-      - completed
+    types: [opened, synchronize, reopened]
+  # Removed workflow_run trigger that was preventing CI from running
+  # on updated Dependabot PR commits. Risk assessment logic moved inline.
 
 # Add workflow-level permissions to fix permission issues
 permissions:
@@ -65,7 +64,7 @@ jobs:
   test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() && !cancelled()
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     steps:
@@ -114,7 +113,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() && !cancelled()
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     steps:
