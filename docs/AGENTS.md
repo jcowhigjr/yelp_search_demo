@@ -37,6 +37,84 @@ Use this quick checklist when eliminating manual Dependabot toil.
   - `gh pr merge --auto --squash <num>`
 
 ## Notes
-- Requires: repo “Allow auto-merge” enabled; Actions `GITHUB_TOKEN` has PR write perms
+- Requires: repo "Allow auto-merge" enabled; Actions `GITHUB_TOKEN` has PR write perms
 - Branch protection: required checks must pass for auto-merge to execute
 - Run this reminder anytime: `lefthook run workflow-status`
+
+## ⚠️ CRITICAL: `@dependabot rebase` vs `@dependabot recreate`
+
+**Problem**: When Dependabot PRs have been modified by automation (auto-approve workflows, manual edits), Dependabot refuses `@dependabot rebase` with:
+```
+"looks like this PR has been edited by someone other than Dependabot. That means Dependabot can't rebase it - sorry!
+If you're happy for Dependabot to recreate it from scratch, overwriting any edits, you can request @dependabot recreate."
+```
+
+**Solution**: Always use `@dependabot recreate` instead of `@dependabot rebase` when PRs have been auto-approved or modified.
+
+**Commands**:
+- ❌ `@dependabot rebase` - Will fail if PR was modified
+- ✅ `@dependabot recreate` - Always works, creates fresh PR from scratch
+
+## CI Workflow Troubleshooting
+
+### Issue 1: Workflow_run Trigger Blocking CI
+**Issue**: Dependabot PRs showing 0 status checks, stuck as "blocked" despite auto-merge enabled.
+
+**Root Cause**: `workflow_run` triggers can prevent CI from running on PR synchronize events.
+
+**Fix**: Replace `workflow_run` with direct `pull_request` triggers:
+```yaml
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+```
+
+### Issue 2: Auto-Merge Disabled After Close/Reopen
+**Issue**: When PRs are closed and reopened (to trigger CI), auto-merge gets disabled.
+
+**Root Cause**: GitHub disables auto-merge when a PR is closed.
+
+**Fix**: After reopening PRs, re-enable auto-merge:
+```bash
+gh pr merge --auto --squash <PR_NUMBER>
+```
+
+### Issue 3: Sequential Merging Causes Branch Behind State
+**Issue**: After one Dependabot PR merges, remaining PRs become "behind" base branch.
+
+**Root Cause**: Each merge changes the base branch, making other PRs outdated.
+
+**Fix**: Use GitHub API to update branches programmatically:
+```bash
+# Update branch for a PR
+gh api repos/{owner}/{repo}/pulls/{PR_NUMBER}/update-branch --method PUT
+
+# Or close/reopen to trigger fresh CI
+gh pr close {PR_NUMBER} && gh pr reopen {PR_NUMBER}
+```
+
+### Issue 4: Update Gemfile.next.lock Workflow Creates New Commits
+**Issue**: When `Gemfile.next.lock` workflow creates commits, CI runs on old SHA.
+
+**Root Cause**: The workflow creates a new commit after initial CI starts.
+
+**Fix**: Ensure branch updates trigger new CI runs:
+1. Use `update-branch` API after workflow completes
+2. Or close/reopen PR to trigger fresh CI on latest commit
+
+### Complete Recovery Process for Stuck Dependabot PRs
+```bash
+# For each stuck Dependabot PR
+for pr in $(gh pr list --author "dependabot[bot]" --json number --jq '.[].number'); do
+  echo "Processing PR #$pr..."
+  # Close and reopen to trigger CI
+  gh pr close $pr && gh pr reopen $pr
+  # Re-enable auto-merge
+  gh pr merge --auto --squash $pr
+done
+
+# Wait for CI to complete, then update branches for sequential merging
+for pr in $(gh pr list --author "dependabot[bot]" --json number --jq '.[].number'); do
+  gh api repos/{owner}/{repo}/pulls/$pr/update-branch --method PUT
+done
+```
