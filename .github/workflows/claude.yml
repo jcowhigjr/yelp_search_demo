@@ -50,7 +50,7 @@ jobs:
             actions: read
 
       - name: Run Claude Code (OAuth token)
-        if: ${{ secrets.ANTHROPIC_API_KEY == '' && secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+        if: ${{ !secrets.ANTHROPIC_API_KEY && secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         id: claude-oauth
         uses: anthropics/claude-code-action@v1
         with:
