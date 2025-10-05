@@ -75,10 +75,13 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_equal 'text/vnd.turbo-stream.html', @response.media_type
-    assert_includes @response.body, '<turbo-stream action="replace"'
-    assert_includes @response.body,
-                    "<turbo-frame id=\"#{ActionView::RecordIdentifier.dom_id(@review)}\""
-    assert_includes @response.body, 'Edit your review for'
+
+    assert_turbo_stream action: :replace, target: @review, status: :unprocessable_entity do |fragment|
+      assert_select fragment, "turbo-frame##{ActionView::RecordIdentifier.dom_id(@review)}" do
+        assert_select 'form'
+        assert_select '*', text: /Edit your review for/
+      end
+    end
   end
 
   test 'should destroy the user review' do
