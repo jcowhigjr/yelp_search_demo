@@ -1,19 +1,20 @@
 name: Claude Debug Authentication
 
 on:
-  push:
-    branches:
-      - debug/claude-auth-minimal
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+  id-token: write  # Required for OIDC token generation
+  contents: write  # Required for commits
   pull-requests: write
 
 jobs:
   debug-claude-auth:
     runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,14 +44,14 @@ jobs:
           fi
           
       - name: Test Claude Code Action with API Key
-        if: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
         continue-on-error: true
         
       - name: Test Claude Code Action with OAuth Token
-        if: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+        if: ${{ env.CLAUDE_CODE_OAUTH_TOKEN != '' }}
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
