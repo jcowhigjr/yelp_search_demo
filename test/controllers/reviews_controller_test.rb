@@ -76,6 +76,8 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal 'text/vnd.turbo-stream.html', @response.media_type
     assert_includes @response.body, '<turbo-stream action="replace"'
+    assert_includes @response.body,
+                    "<turbo-frame id=\"#{ActionView::RecordIdentifier.dom_id(@review)}\""
     assert_includes @response.body, 'Edit your review for'
   end
 
