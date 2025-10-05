@@ -207,3 +207,60 @@ for pr in $(gh pr list --author "dependabot[bot]" --json number --jq '.[].number
   gh api repos/$GITHUB_REPOSITORY/pulls/$pr/update-branch --method PUT
 done
 ```
+
+---
+
+# AI Agent Hypothesis-Driven Development Methodology
+
+## Problem: Race Conditions & Premature Conclusions
+
+AI agents operating on remote systems (GitHub Actions, CI/CD, etc.) often fail by:
+1. Checking results before processes complete
+2. Not establishing measurable hypotheses
+3. Missing feedback from automated reviewers
+4. Declaring success without empirical validation
+
+## The 6-Step Process
+
+### Step 1: Record Timestamp & State Hypothesis
+
+```
+TIMESTAMP: [current time]
+HYPOTHESIS: "When I [ACTION], I expect [MEASURABLE_OUTCOME] within [TIME_WINDOW]"
+VALIDATION: [How will I know it worked?]
+RISKS: [What could go wrong?]
+```
+
+### Step 2: Execute Action & Record Completion
+
+### Step 3: Calculate & Wait Minimum Time
+
+**Process Timing Windows:**
+- Workflow trigger: 60-120s
+- Workflow execution: 3-7 min  
+- Automated review (Codex): 3-6 min
+- PR merge (auto): 30-60s
+
+### Step 4: Check Automated Feedback FIRST
+
+```bash
+# Wait 3+ minutes for automated reviewers
+gh pr view <PR> --json comments,reviews
+```
+
+### Step 5: Check Results (After Min Wait)
+
+### Step 6: Evaluate Hypothesis
+
+```
+HYPOTHESIS: [prediction]
+RESULT: [actual outcome]
+FEEDBACK: [all automated comments]
+CONCLUSION: Correct/Incorrect/Inconclusive
+```
+
+## Key Rule
+
+**Include automated reviewer feedback BEFORE evaluating hypothesis.**
+
+Example: PR #911 Codex review caught that `env` variables were unset in `if` conditions, making the "fix" actually break the workflow.
