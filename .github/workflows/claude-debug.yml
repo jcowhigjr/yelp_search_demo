@@ -1,11 +1,8 @@
 name: Claude Debug Authentication
 
 on:
-  push:
-    branches:
-      - debug/claude-auth-minimal
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
