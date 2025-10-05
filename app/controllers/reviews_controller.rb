@@ -39,8 +39,8 @@ class ReviewsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(@review,
                                                     partial: 'reviews/edit_form',
-                                                    locals: { review: @review, coffeeshop: @coffeeshop }),
-                 status: :unprocessable_entity
+                                                    locals: { review: @review, coffeeshop: @coffeeshop }
+                 , status: :unprocessable_entity
         end
       end
     end
