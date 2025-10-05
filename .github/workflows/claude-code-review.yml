@@ -1,0 +1,41 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  id-token: write  # Required for OIDC token generation
+  contents: write  # Required for commits
+  pull-requests: write
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    # Skip for Dependabot PRs (already auto-approved)
+    # Skip if not triggered by comment or PR
+    if: |
+      github.actor != 'dependabot[bot]' && (
+        github.event_name == 'pull_request' ||
+        (github.event_name == 'issue_comment' && 
+         github.event.issue.pull_request &&
+         contains(github.event.comment.body, '@claude'))
+      )
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          # Use API key by default (more straightforward)
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Trigger on @claude comments (agent mode)
+          trigger_phrase: "@claude"
+          # Or add 'claude-review' label to trigger
+          label_trigger: "claude-review"
