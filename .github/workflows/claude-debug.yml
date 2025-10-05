@@ -5,7 +5,8 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+  id-token: write  # Required for OIDC token generation
+  contents: write  # Required for commits
   pull-requests: write
 
 jobs:
