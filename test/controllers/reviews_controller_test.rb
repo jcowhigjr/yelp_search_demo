@@ -7,9 +7,11 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
     @user = users(:one)
-    ActionController::Base.helpers.stubs(:asset_path).returns('/assets/tailwind.css')
   end
 
+  teardown do
+    ActionController::Base.helpers.unstub(:asset_path)
+  end
   def login_as(user)
     ApplicationController.any_instance.stubs(:current_user).returns(user)
     ApplicationController.any_instance.stubs(:logged_in?).returns(true)
