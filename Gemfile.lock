@@ -139,7 +139,7 @@ GEM
     evil_systems (1.1.5)
       capybara
       zeitwerk (>= 2)
-    faraday (2.13.4)
+    faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -543,7 +543,7 @@ DEPENDENCIES
   dotenv
   erb_lint
   evil_systems
-  faraday (~> 2.13.4)
+  faraday (~> 2.14.0)
   flipper
   foreman
   guard
