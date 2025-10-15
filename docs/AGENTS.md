@@ -391,3 +391,64 @@ Claude reviews integrate seamlessly with existing PR workflows:
 4. **Iterative Process** → Request follow-up reviews after fixes
 
 The Claude integration follows the same hypothesis-driven methodology as other automated tools - waiting for complete execution and including automated feedback in evaluation process.
+
+## 🚀 Phase 1 Enhancement: GitHub Suggestion Comments
+
+### New Feature: `@claude-suggest` Command
+
+The enhanced Claude integration now supports **one-click code suggestions** through GitHub's native suggestion comment system.
+
+#### How It Works
+
+1. **Trigger**: Comment `@claude-suggest` on any PR
+2. **Analysis**: Claude analyzes changed files and generates specific code improvements
+3. **Suggestions**: Posted as GitHub suggestion comments on individual lines
+4. **Apply**: Click "Apply suggestion" button to implement changes immediately
+
+#### Suggestion Format
+
+Claude generates suggestions in the proper GitHub format:
+
+```markdown
+**🤖 Claude Suggestion**
+
+[Explanation of why this improves the code]
+
+```suggestion
+[actual code replacement]
+```
+```
+
+#### Benefits Over Regular Comments
+
+- **One-click application**: No copy/paste needed
+- **Line-specific**: Suggestions appear exactly where needed
+- **Version control**: Applied suggestions create proper commits
+- **Batch application**: Apply multiple suggestions efficiently
+- **Conflict prevention**: GitHub handles merge conflicts automatically
+
+#### Usage Examples
+
+**Security Fix Suggestion:**
+```suggestion
+return 0 if items.nil? || items.empty?
+```
+
+**Ruby Idiom Improvement:**
+```suggestion
+items.sum { |item| item.fetch('price', 0) }
+```
+
+**Performance Optimization:**
+```suggestion
+User.includes(:reviews).where(active: true)
+```
+
+#### Technical Implementation
+
+- **Workflow**: `.github/workflows/claude-code-review-suggestions.yml`
+- **Trigger**: `@claude-suggest` comments (separate from `@claude`)
+- **Parser**: Python script handles suggestion formatting and GitHub API
+- **Review API**: Uses GitHub's pull request review system for line comments
+
+This enhancement maintains all existing Claude functionality while adding actionable, one-click code improvements.
