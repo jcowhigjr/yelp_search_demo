@@ -28,6 +28,7 @@ class GitHubAPI:
             comment = {
                 'path': suggestion['file'],
                 'line': suggestion['line'],
+                'side': 'RIGHT',  # Required by GitHub API - refers to the new version of the file
                 'body': self._format_suggestion_comment(
                     suggestion['explanation'], 
                     suggestion['code']
