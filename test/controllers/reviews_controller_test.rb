@@ -7,10 +7,21 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
     @user = users(:one)
+
+    original_asset_path_helper = ActionController::Base.helpers.method(:asset_path)
+    @original_asset_path_helper = original_asset_path_helper
+
+    ActionController::Base.helpers.define_singleton_method(:asset_path) do |source, *args|
+      if source.to_s == 'tailwind.css' || source.to_s == 'tailwind'
+        '/assets/tailwind.css'
+      else
+        original_asset_path_helper.call(source, *args)
+      end
+    end
   end
 
   teardown do
-    ActionController::Base.helpers.unstub(:asset_path)
+    ActionController::Base.helpers.define_singleton_method(:asset_path, @original_asset_path_helper)
   end
   def login_as(user)
     ApplicationController.any_instance.stubs(:current_user).returns(user)
