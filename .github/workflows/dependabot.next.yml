@@ -1,4 +1,7 @@
 name: Dependabot Update Gemfile.next.lock
+# This workflow runs on push to dependabot branches to update Gemfile.next.lock
+# The auto-approve.yml workflow waits for this to complete before approving PRs
+# to ensure CI runs on the final commit with all lock files updated
 on:
   push:
     branches:
