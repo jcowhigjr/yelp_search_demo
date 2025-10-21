@@ -190,6 +190,27 @@ gh pr close $PR_NUMBER && gh pr reopen $PR_NUMBER
 1. Use `update-branch` API after workflow completes
 2. Or close/reopen PR to trigger fresh CI on latest commit
 
+### Issue 5: Auto-Approval Race Condition with Gemfile.next.lock Updates ✅ RESOLVED
+**Issue**: Dependabot PRs get auto-approved before `Gemfile.next.lock` updates complete, causing CI to never run on the final commit.
+
+**Root Cause**: 
+1. Dependabot creates PR → triggers `auto-approve.yml` + `main.yml` (CI)
+2. `auto-approve.yml` immediately approves and enables auto-merge
+3. `dependabot.next.yml` runs on push → updates Gemfile.next.lock → creates new commit
+4. **New commit doesn't trigger fresh CI** because workflows were already running
+5. Result: Auto-merge enabled but CI never ran on final commit
+
+**Fix Applied (PR #[pending])**: Modified `auto-approve.yml` workflow to:
+- **Wait for Gemfile.next.lock workflow**: Checks for running "Dependabot Update Gemfile.next.lock" workflow (5-minute timeout)
+- **Sequential approval**: Only approves after Gemfile.next.lock workflow completes
+- **Fresh CI trigger**: Updates PR branch after approval to ensure CI runs on final commit
+- **Improved messaging**: Approval message indicates proper sequencing
+
+**Validation**: 
+- Pre-push hooks pass: 27 system tests, 59 Rails tests, all passing
+- Zero breaking changes to existing workflows
+- Backward compatible with branch protection rules
+
 ### Complete Recovery Process for Stuck Dependabot PRs
 ```bash
 # For each stuck Dependabot PR

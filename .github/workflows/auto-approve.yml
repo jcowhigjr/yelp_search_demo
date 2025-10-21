@@ -21,6 +21,39 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Wait for Gemfile.next.lock workflow to complete
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Waiting for Gemfile.next.lock update workflow to complete..."
+          
+          # Wait up to 5 minutes for the dependabot.next.yml workflow to complete
+          timeout_seconds=300
+          check_interval=15
+          elapsed=0
+          
+          while [ $elapsed -lt $timeout_seconds ]; do
+            # Check if there are any running workflows on the PR branch
+            running_workflows=$(gh api repos/${{ github.repository }}/actions/runs \
+              --jq '.workflow_runs[] | select(.head_branch == "${{ github.head_ref }}" and .status == "in_progress") | .name' \
+              --method GET)
+            
+            # If no "Dependabot Update Gemfile.next.lock" workflow is running, we can proceed
+            if ! echo "$running_workflows" | grep -q "Dependabot Update Gemfile.next.lock"; then
+              echo "Gemfile.next.lock workflow completed or not running. Proceeding with approval."
+              break
+            fi
+            
+            echo "Gemfile.next.lock workflow still running. Waiting $check_interval seconds..."
+            sleep $check_interval
+            elapsed=$((elapsed + check_interval))
+          done
+          
+          if [ $elapsed -ge $timeout_seconds ]; then
+            echo "WARNING: Timeout waiting for Gemfile.next.lock workflow. Proceeding anyway."
+          fi
+
       - name: Approve and enable auto-merge for Dependabot PR
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -31,7 +64,23 @@ jobs:
           echo "Dependency type: ${{ steps.metadata.outputs.dependency-type }}"
 
           # Always approve Dependabot PRs; merging is gated by required checks
-          gh pr review --approve "$PR_NUMBER" --body "Auto-approved by CI for Dependabot PR. Auto-merge will occur after required checks pass."
+          gh pr review --approve "$PR_NUMBER" --body "Auto-approved by CI for Dependabot PR after Gemfile.next.lock update. Auto-merge will occur after required checks pass."
 
           # Enable GitHub auto-merge (squash). It will merge automatically once all required checks pass and branch protection is satisfied.
           gh pr merge --auto --squash "$PR_NUMBER"
+
+      - name: Ensure fresh CI run on final commit
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Updating PR branch to trigger fresh CI on final commit..."
+          
+          # Wait a moment for auto-merge to be set
+          sleep 5
+          
+          # Update the branch to trigger fresh CI on the latest commit
+          # This handles the case where the Gemfile.next.lock commit happened after initial CI started
+          gh api repos/${{ github.repository }}/pulls/$PR_NUMBER/update-branch --method PUT || {
+            echo "Branch update failed or not needed. PR may already be up to date."
+          }
