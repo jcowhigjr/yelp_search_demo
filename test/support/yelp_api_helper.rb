@@ -13,6 +13,7 @@ module YelpApiHelper
 
   private
 
+  # rubocop:disable Metrics/MethodLength
   def yelp_api_response(search_term)
     # Generate appropriate mock data based on search term
     business_name = case search_term&.downcase
@@ -41,4 +42,5 @@ module YelpApiHelper
       ],
     }.to_json
   end
+  # rubocop:enable Metrics/MethodLength
 end

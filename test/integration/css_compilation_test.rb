@@ -5,7 +5,7 @@ class CssCompilationTest < ActiveSupport::TestCase
 
   setup do
     # Rely on test:prepare (hooks/CI) to build Tailwind once. If not present, skip to avoid flaky native watcher issues.
-    skip "Tailwind build missing; test environment did not precompile assets" unless File.exist?(BUILD_PATH)
+    skip 'Tailwind build missing; test environment did not precompile assets' unless File.exist?(BUILD_PATH)
   end
 
   test 'tailwind.css is built and exists' do
@@ -24,7 +24,9 @@ class CssCompilationTest < ActiveSupport::TestCase
     assert_path_exists BUILD_PATH, 'Tailwind CSS build file missing.'
     css_content = File.read(BUILD_PATH)
     # Matches --color-primary: #4B9CD3; or --color-primary:#4B9CD3;
-    assert_match(/--color-primary:\s*#4B9CD3;/i, css_content,
+    pattern_primary = /--color-primary:\s*#4B9CD3;/i
+
+    assert_match(pattern_primary, css_content,
                  'Expected --color-primary CSS variable with #4B9CD3 in compiled CSS.')
   end
 
@@ -32,7 +34,11 @@ class CssCompilationTest < ActiveSupport::TestCase
     assert_path_exists BUILD_PATH, 'Tailwind CSS build file missing.'
     css_content = File.read(BUILD_PATH)
     # Matches --color-primary: #223556; or --color-primary:#223556; within a dark mode media query
-    assert_match(/@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root\s*{\s*--color-primary:\s*#223556;/i, css_content,
+    pattern_dark = /
+      @media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{\s*--color-primary:\s*#223556;
+    /ix
+
+    assert_match(pattern_dark, css_content,
                  'Expected dark mode override for --color-primary with #223556.')
   end
 end

@@ -6,6 +6,7 @@ module SearchTestHelper
     assert_selector('.search-results, .coffeeshop-card, [data-results]', wait: timeout)
   end
 
+  # rubocop:disable Naming/PredicateMethod
   def wait_for_more_info_button(timeout: 10)
     # Wait for "More Info" button to be available
     # Try multiple selectors in case the button text is localized differently
@@ -15,18 +16,16 @@ module SearchTestHelper
       '.btn-small',
       'a.btn-small',
     ]
-    
+
     selectors.each do |selector|
-      
-        find(selector, wait: timeout / selectors.length)
+      if has_selector?(selector, wait: timeout / selectors.length)
         return true
-      rescue Capybara::ElementNotFound
-        next
-      
+      end
     end
-    
+
     false
   end
+  # rubocop:enable Naming/PredicateMethod
 
   def click_more_info_safely
     # Try multiple strategies to click "More Info"

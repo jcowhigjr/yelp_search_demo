@@ -1,5 +1,6 @@
 require 'application_system_test_case'
 
+# rubocop:disable Capybara/SpecificActions, Metrics/ClassLength
 class FavoriteToggleTest < ApplicationSystemTestCase
   setup do
     @user = users(:one)
@@ -30,6 +31,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
       within "turbo-frame[id*='favorite']" do
         assert_selector 'button.favorite-btn'
         button = find('button.favorite-btn')
+
         assert_includes button.text, '☕️'
       end
     end
@@ -45,12 +47,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     # Wait for the Turbo stream response to update the frame
     # Use has_selector to wait for the condition without raising an error
     assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after first click"
-    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), "Button should exist in frame #{frame_id} after first click"
+    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), 
+           "Button should exist in frame #{frame_id} after first click"
     
     # Check button state after favoriting
     within "##{frame_id}" do
       assert_selector 'button.favorite-btn:not([disabled])', wait: 5
       button = find('button.favorite-btn')
+
       assert_includes button.text, '☕️'
     end
 
@@ -61,11 +65,13 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Wait for final update and verify
     assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after second click"
-    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), "Button should exist in frame #{frame_id} after second click"
+    assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), 
+           "Button should exist in frame #{frame_id} after second click"
     
     within "##{frame_id}" do
       assert_selector 'button.favorite-btn:not([disabled])', wait: 5
       button = find('button.favorite-btn')
+
       assert_includes button.text, '☕️'
     end
   end
@@ -86,10 +92,12 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
+
       assert_selector frame_selector, wait: 5
       
       within frame_selector do
         button = find('button.favorite-btn')
+
         assert_includes button.text, '☕️'
       end
     end
@@ -102,10 +110,12 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
+
       assert_selector frame_selector, wait: 5
       
       within frame_selector do
         button = find('button.favorite-btn')
+
         assert_includes button.text, '🍕'
       end
     end
@@ -118,10 +128,12 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
+
       assert_selector frame_selector, wait: 5
       
       within frame_selector do
         button = find('button.favorite-btn')
+
         assert_includes button.text, '🌮'
       end
     end
@@ -134,10 +146,12 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
+
       assert_selector frame_selector, wait: 5
       
       within frame_selector do
         button = find('button.favorite-btn')
+
         assert_includes button.text, '❤️'
       end
     end
@@ -157,3 +171,4 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     assert_no_selector 'button.favorite-btn'
   end
 end
+# rubocop:enable Capybara/SpecificActions, Metrics/ClassLength

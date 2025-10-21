@@ -4,7 +4,7 @@ class Review < ApplicationRecord
   belongs_to :user
   belongs_to :coffeeshop
   scope :order_reviews,
-        ->(user_id) { where('user_id == ?', user_id).order('rating desc') }
+        ->(user_id) { where('user_id == ?', user_id).order(rating: :desc) }
 
   # after_create_commit { broadcast_prepend_to 'reviews' }
   # after_update_commit { broadcast_replace_to 'reviews' }

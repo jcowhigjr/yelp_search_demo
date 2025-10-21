@@ -16,7 +16,7 @@ class ReviewsController < ApplicationController
     if @review.save
       redirect_to @coffeeshop
     else
-      flash.now[:review_error] = t('error.something_went_wrong')
+      flash.now[:error] = t('error.something_went_wrong')
       render @coffeeshop
     end
   end
@@ -24,28 +24,43 @@ class ReviewsController < ApplicationController
   def update
     @coffeeshop = @review.coffeeshop
 
-    respond_to do |format|
-      if @review.update(review_params)
-        format.html { redirect_to @coffeeshop }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(@review,
-                                                    partial: 'reviews/show',
-                                                    locals: { review: @review })
-        end
-      else
-        flash.now[:review_error] = t('error.something_went_wrong')
+    if @review.update(review_params)
+      respond_to_success
+    else
+      flash.now[:error] = t('error.something_went_wrong')
+      respond_to_failure
+    end
+  end
 
-        format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream do
-          render(
-            turbo_stream: turbo_stream.replace(@review,
-                                               partial: 'reviews/edit_frame',
-                                               locals: { review: @review, coffeeshop: @coffeeshop }),
-            status: :unprocessable_entity
-          )
-        end
+  def respond_to_success
+    respond_to do |format|
+      format.html { redirect_to @coffeeshop }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          @review,
+          partial: 'reviews/show',
+          locals: { review: @review },
+        )
       end
     end
+  end
+
+  def respond_to_failure
+    # rubocop:disable Metrics/BlockLength
+    respond_to do |format|
+      format.html { render :edit, status: :unprocessable_entity }
+      format.turbo_stream do
+        render(
+          turbo_stream: turbo_stream.replace(
+            @review,
+            partial: 'reviews/edit_frame',
+            locals: { review: @review, coffeeshop: @coffeeshop },
+          ),
+          status: :unprocessable_entity,
+        )
+      end
+    end
+    # rubocop:enable Metrics/BlockLength
   end
 
   def destroy
@@ -73,7 +88,7 @@ class ReviewsController < ApplicationController
     return unless @review.nil?
 
     if params[:coffeeshop_id]
-      redirect_to coffeeshop_path(params[:coffeshop_id])
+      redirect_to coffeeshop_path(params[:coffeeshop_id])
     else
       redirect_to static_home_url
     end

@@ -3,6 +3,7 @@ require 'test_helper'
 # FIXME: nested turbo streams need special treatment https://discuss.hotwired.dev/t/broadcasting-to-nested-turbo-frame-tag/3659/6
 
 class ReviewsControllerTest < ActionDispatch::IntegrationTest
+  # rubocop:disable Metrics/BlockLength
   setup do
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
@@ -12,13 +13,14 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     @original_asset_path_helper = original_asset_path_helper
 
     ActionController::Base.helpers.define_singleton_method(:asset_path) do |source, *args|
-      if source.to_s == 'tailwind.css' || source.to_s == 'tailwind'
+      if %w[tailwind.css tailwind].include?(source.to_s)
         '/assets/tailwind.css'
       else
         original_asset_path_helper.call(source, *args)
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   teardown do
     ActionController::Base.helpers.define_singleton_method(:asset_path, @original_asset_path_helper)
@@ -70,7 +72,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
           }
 
     assert_response :unprocessable_entity
-    assert_equal I18n.t('error.something_went_wrong'), flash[:review_error]
+    assert_equal I18n.t('error.something_went_wrong'), flash[:error]
     assert_includes @response.body, 'Edit your review for'
   end
 

@@ -1,5 +1,6 @@
 require 'application_system_test_case'
 
+# rubocop:disable Capybara/SpecificActions
 class SimpleFavoriteTest < ApplicationSystemTestCase
   test 'can click favorite button' do
     user = users(:one)
@@ -32,3 +33,4 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     assert_selector "[id^='favorite_']", wait: 5
   end
 end
+# rubocop:enable Capybara/SpecificActions

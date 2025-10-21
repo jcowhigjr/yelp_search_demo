@@ -11,9 +11,9 @@ module SystemTestHelpers
   def debug_page_html
     return unless ENV['SYSTEM_TEST_DEBUG'] == 'true'
     
-    puts "=== PAGE HTML ==="
+    puts '=== PAGE HTML ==='
     puts page.html
-    puts "=== END HTML ==="
+    puts '=== END HTML ==='
   end
 
   # More focused debugging - just print element counts and basic info

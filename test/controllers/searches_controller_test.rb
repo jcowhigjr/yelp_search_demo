@@ -1,12 +1,13 @@
 require 'test_helper'
 
 class SearchesControllerTest < ActionDispatch::IntegrationTest
+  # rubocop:disable Metrics/BlockLength
   setup do
     @user = users(:two)
     @search = searches(:one)
     @coffeeshop = coffeeshops(:one)
     @review = reviews(:one)
-    
+
     # Mock Yelp API response to prevent real API calls in tests
     mock_api_response = {
       'businesses' => [
@@ -15,16 +16,17 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
           'rating' => 4.5,
           'url' => 'https://yelp.com/test',
           'image_url' => 'https://example.com/image.jpg',
-          'display_phone' => '(555) 123-4567',
+          'display_phone' => '(*************',
           'location' => {
             'display_address' => ['123 Test St', 'Test City, CA'],
           },
         },
       ],
     }.to_json
-    
+
     RestClient::Request.stubs(:execute).returns(mock_api_response)
   end
+  # rubocop:enable Metrics/BlockLength
 
   test '#new' do
     get new_search_url

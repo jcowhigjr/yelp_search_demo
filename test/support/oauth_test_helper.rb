@@ -2,13 +2,10 @@
 
 module OAuthTestHelper
   def should_skip_oauth_tests?
-    # Skip OAuth tests if using test/fake credentials
-    return true if Rails.application.credentials.google&.dig(:client_id)&.include?('test')
-    return true if Rails.application.credentials.google&.dig(:client_id)&.include?('fake')
-    
-    # Skip if no Google credentials at all
-    return true unless Rails.application.credentials.google&.dig(:client_id)
-    
+    client_id = Rails.application.credentials.google&.dig(:client_id)
+    return true if client_id.nil?
+    return true if client_id.include?('test') || client_id.include?('fake')
+
     false
   end
 
@@ -16,6 +13,7 @@ module OAuthTestHelper
     skip 'OAuth tests require real Google credentials' if should_skip_oauth_tests?
   end
 
+  # rubocop:disable Metrics/MethodLength
   def stub_google_oauth_success(user_attrs = {})
     default_attrs = {
       uid: '123456789',
@@ -24,9 +22,9 @@ module OAuthTestHelper
       first_name: 'Test',
       last_name: 'User',
     }
-    
+
     attrs = default_attrs.merge(user_attrs)
-    
+
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
       provider: 'google_oauth2',
@@ -43,6 +41,7 @@ module OAuthTestHelper
       },
     )
   end
+  # rubocop:enable Metrics/MethodLength
 
   def stub_google_oauth_failure(failure_reason = :invalid_credentials)
     OmniAuth.config.test_mode = true

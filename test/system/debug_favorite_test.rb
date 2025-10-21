@@ -1,5 +1,6 @@
 require 'application_system_test_case'
 
+# rubocop:disable Capybara/SpecificActions
 class DebugFavoriteTest < ApplicationSystemTestCase
   setup do
     @user = users(:one)
@@ -23,13 +24,16 @@ class DebugFavoriteTest < ApplicationSystemTestCase
 
     # Check if we have any turbo frames
     frames = all('[id*="favorite"]')
-    assert frames.count > 0, "Expected to find favorite frames"
+
+    assert_predicate frames, :any?, 'Expected to find favorite frames'
     
     # Check if we have favorite buttons
     buttons = all('.favorite-btn')
-    assert buttons.count > 0, "Expected to find favorite buttons"
+
+    assert_predicate buttons, :any?, 'Expected to find favorite buttons'
     
     # Verify we're on the search results page
     assert_match %r{/searches/\d+}, current_path
   end
 end
+# rubocop:enable Capybara/SpecificActions
