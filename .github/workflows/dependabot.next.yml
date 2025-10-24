@@ -2,8 +2,6 @@ name: Dependabot Update Gemfile.next.lock
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - 'dependabot/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,9 +14,12 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'dependabot/')
     steps:
       - name: checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Extract Ruby Version
         id: ruby_version
         env:

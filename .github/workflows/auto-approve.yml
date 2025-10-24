@@ -17,20 +17,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v2
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Get PR number from workflow run
+        id: pr
+        run: |
+          # Extract PR number from the workflow_run event
+          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "Found PR number: $PR_NUMBER"
 
       - name: Approve and enable auto-merge for Dependabot PR
+        if: steps.pr.outputs.number != ''
         env:
-          PR_NUMBER: ${{ steps.metadata.outputs.pull-request-number }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Processing Dependabot PR #$PR_NUMBER"
-          echo "Update type: ${{ steps.metadata.outputs.update-type }}"
-          echo "Dependency type: ${{ steps.metadata.outputs.dependency-type }}"
 
           # Always approve Dependabot PRs; merging is gated by required checks
           gh pr review --approve "$PR_NUMBER" --body "Auto-approved by CI for Dependabot PR. Auto-merge will occur after required checks pass."
