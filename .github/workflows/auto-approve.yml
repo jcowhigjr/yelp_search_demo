@@ -1,7 +1,9 @@
 name: Auto-approve & merge Dependabot PRs
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_run:
+    workflows: ["Ruby on Rails CI"]
+    types:
+      - completed
 
 permissions:
   pull-requests: write
@@ -10,7 +12,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.workflow_run.conclusion == 'success' && github.actor == 'dependabot[bot]'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,7 +25,7 @@ jobs:
 
       - name: Approve and enable auto-merge for Dependabot PR
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ steps.metadata.outputs.pull-request-number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Processing Dependabot PR #$PR_NUMBER"

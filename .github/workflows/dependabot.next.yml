@@ -1,11 +1,9 @@
 name: Dependabot Update Gemfile.next.lock
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - dependabot/**/**
-  # pull_request:
-  #   branches:
-  #     - develop
+      - 'dependabot/**/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
