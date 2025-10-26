@@ -1,14 +1,19 @@
 # test/support/yelp_api_helper.rb
 module YelpApiHelper
   def stub_yelp_api_request(search_term = nil, _latitude = nil, _longitude = nil)
-    # Match any Yelp API search request
-    stub_request(:get, %r{https://api\.yelp\.com/v3/businesses/search})
+    # Match any Yelp API search request with query parameters
+    stub_request(:get, "https://api.yelp.com/v3/businesses/search")
       .with(
         headers: {
           'Authorization' => /Bearer .*/,
+          'Accept' => '*/*',
+          'Accept-Encoding' => /gzip/,
+          'Host' => 'api.yelp.com',
+          'User-Agent' => /rest-client/
         },
+        query: hash_including({})
       )
-      .to_return(status: 200, body: yelp_api_response(search_term), headers: {})
+      .to_return(status: 200, body: yelp_api_response(search_term), headers: { 'Content-Type' => 'application/json' })
   end
 
   private
