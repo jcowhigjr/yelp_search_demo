@@ -18,7 +18,7 @@ gem 'bundler', '~> 2.5'
 # gem 'rails', "~> 8.0"
 gem 'next_rails'
 
-gem 'rails', '~> 8.0'
+gem 'rails', '>= 8.1.0.beta1', '< 8.2'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails"
@@ -31,7 +31,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'json'
 gem 'rest-client'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 6.4'
+gem 'puma', '~> 7.1'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -115,14 +115,19 @@ group :development do
   # gem 'solargraph-rails', require: false
 
   # if you don't use brew bundle to install with the Brewfile, you can install it with:
-  gem 'lefthook', require: false
   gem 'bundler-audit', require: false
   gem 'better_html', require: false
 
   gem 'i18n-tasks', require: false
 end
 
+group :development, :ci do
+  # Ensure Lefthook is available in CI for installing Git hooks
+  gem 'lefthook', require: false
+end
+
 group :test do
+  gem 'webmock', require: false
   gem 'mocha', require: false # For mocking and stubbing in tests
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara' # , '~> 3.35'
@@ -146,5 +151,5 @@ gem 'flipper'
 gem 'dotenv'
 
 group :development, :ci do
-  gem 'faraday', '~> 2.13.2', require: false
+  gem 'faraday', '~> 2.14.0', require: false
 end

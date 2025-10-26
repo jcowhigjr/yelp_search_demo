@@ -22,16 +22,29 @@ class ReviewsController < ApplicationController
   end
 
   def update
-    @review.update(review_params)
-    if @review.save
-      redirect_to @review.coffeeshop
-    else
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(:review, partial: 'reviews/form',
-                                                           locals: { review: @review })
+    @coffeeshop = @review.coffeeshop
+
+    respond_to do |format|
+      if @review.update(review_params)
+        format.html { redirect_to @coffeeshop }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@review,
+                                                    partial: 'reviews/show',
+                                                    locals: { review: @review })
+        end
+      else
+        flash.now[:review_error] = t('error.something_went_wrong')
+
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream do
+          render(
+            turbo_stream: turbo_stream.replace(@review,
+                                               partial: 'reviews/edit_frame',
+                                               locals: { review: @review, coffeeshop: @coffeeshop }),
+            status: :unprocessable_entity
+          )
+        end
       end
-      flash.now[:error] = t('error.something_went_wrong')
-      render @review.coffeeshop
     end
   end
 

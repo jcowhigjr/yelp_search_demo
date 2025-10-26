@@ -1,0 +1,162 @@
+name: Claude Code Review with Suggestions
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  id-token: write  # Required for OIDC token generation
+  contents: write  # Required for commits
+  pull-requests: write
+
+jobs:
+  claude-review-suggestions:
+    runs-on: ubuntu-latest
+    # Skip for Dependabot PRs (already auto-approved)
+    # Trigger only on @claude-suggest comments for suggestion mode
+    if: |
+      github.actor != 'dependabot[bot]' && 
+      github.event_name == 'issue_comment' && 
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@claude-suggest')
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get PR files and changes
+        id: pr-files
+        run: |
+          # Get the PR number from the issue
+          PR_NUMBER=${{ github.event.issue.number }}
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          
+          # Get list of changed files with their content
+          gh pr diff $PR_NUMBER --name-only > changed_files.txt
+          
+          # Create a summary of changes for Claude
+          echo "## Changed Files and Content" > pr_context.md
+          echo "" >> pr_context.md
+          
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              echo "### File: $file" >> pr_context.md
+              echo '```' >> pr_context.md
+              cat "$file" >> pr_context.md
+              echo '```' >> pr_context.md
+              echo "" >> pr_context.md
+            fi
+          done < changed_files.txt
+          
+          # Get the diff for each file
+          echo "## Diff Summary" >> pr_context.md
+          gh pr diff $PR_NUMBER >> pr_context.md
+
+      - name: Generate Claude suggestions
+        id: claude-analysis
+        run: |
+          # Read the PR context
+          PR_CONTEXT=$(cat pr_context.md)
+          
+          # Prepare prompt for Claude with simplified formatting instructions
+          PROMPT="You are a senior code reviewer. Analyze the pull request changes and provide specific, line-by-line suggestions that can be applied with GitHub's suggestion feature.
+
+          For each suggestion, use this EXACT format:
+
+          File: [filename]
+          Line: [line_number]
+          Suggestion: [exact replacement code for that line]
+          Explanation: [brief explanation]
+
+          Example:
+          File: app/services/demo_service.rb
+          Line: 10
+          Suggestion: if input.present?
+          Explanation: Use Rails present? method instead of != nil
+
+          Focus on Ruby/Rails idioms, performance, and code clarity. Only suggest direct line replacements.
+
+          Here is the PR content:
+
+          $PR_CONTEXT"
+
+          # Call Claude API
+          RESPONSE=$(curl -s -X POST https://api.anthropic.com/v1/messages \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -d "{
+              \"model\": \"claude-3-sonnet-20240229\",
+              \"max_tokens\": 4000,
+              \"messages\": [
+                {
+                  \"role\": \"user\",
+                  \"content\": $(echo "$PROMPT" | jq -Rs .)
+                }
+              ]
+            }")
+
+          # Extract the content from Claude's response
+          SUGGESTIONS=$(echo "$RESPONSE" | jq -r '.content[0].text' 2>/dev/null || echo "Error processing Claude response")
+          
+          # Save suggestions to file
+          echo "$SUGGESTIONS" > claude_suggestions.md
+          
+          # Output for next step
+          echo "suggestions<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUGGESTIONS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Parse suggestions and create review
+        env:
+          PR_NUMBER: ${{ steps.pr-files.outputs.pr_number }}
+        run: |
+          # Get the head commit SHA for the review
+          HEAD_SHA=$(gh api repos/jcowhigjr/yelp_search_demo/pulls/$PR_NUMBER --jq .head.sha)
+
+          # Parse Claude's response for suggestions using awk
+          COMMENTS=$(awk '
+          BEGIN {
+            printf "["
+            first = 1
+          }
+          /^File: / { file = substr($0, 7) }
+          /^Line: / { line = substr($0, 7) }
+          /^Suggestion: / { suggestion = substr($0, 13) }
+          /^Explanation: / {
+            explanation = substr($0, 14)
+            if (!first) printf ","
+            first = 0
+            printf "{\n"
+            printf "  \"path\": \"%s\",\n", file
+            printf "  \"position\": %s,\n", line
+            printf "  \"body\": \"```suggestion\\n    %s\\n```\\n**Claude Suggestion**: %s\"\n", suggestion, explanation
+            printf "}"
+          }
+          END { printf "]" }' claude_suggestions.md)
+
+          # Create review with suggestions if we have comments
+          if [ "$COMMENTS" != "[]" ]; then
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/jcowhigjr/yelp_search_demo/pulls/$PR_NUMBER/reviews \
+              --input - << EOF
+{
+  "commit_id": "$HEAD_SHA",
+  "body": "🤖 **Claude Code Suggestions**\n\nI've analyzed your changes and provided line-specific suggestions below. Click 'Apply suggestion' to implement them!",
+  "event": "COMMENT",
+  "comments": $COMMENTS
+}
+EOF
+            echo "✅ Successfully posted Claude suggestions as review comments"
+          else
+            echo "No suggestions found to post"
+          fi

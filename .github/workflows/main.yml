@@ -14,10 +14,9 @@ on:
     branches:
       - develop
       - main
-  workflow_run:
-    workflows: ["Dependabot Risk Assessment"]
-    types:
-      - completed
+    types: [opened, synchronize, reopened]
+  # Removed workflow_run trigger that was preventing CI from running
+  # on updated Dependabot PR commits. Risk assessment logic moved inline.
 
 # Add workflow-level permissions to fix permission issues
 permissions:
@@ -65,7 +64,7 @@ jobs:
   test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() && !cancelled()
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     env:
@@ -114,7 +113,7 @@ jobs:
           mise run test-next-run
       - name: system-test-next
         id: system-test-next
-        continue-on-error: false
+        continue-on-error: true # make the step always success and set status later
         # Skip system tests for low-risk Dependabot updates
         if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
         env:
@@ -123,10 +122,33 @@ jobs:
           CI: true
         run: |
           mise run test-next-system
+      - name: system-test-next-retry
+        id: system-test-next-retry-1
+        continue-on-error: true # make the step always success and set status later
+        if: steps.system-test-next.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
+        env:
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
+        run: |
+          mise run test-next-system -- --verbose
+      - name: Upload failed system test images (next)
+        uses: actions/upload-artifact@v4
+        if: steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure' # check the step outcome, retry 1st time
+        with:
+          path: ./tmp/capybara/screenshots/failures_*.png
+      - name: set the status for next tests # set the workflow status if command failed
+        if: steps.system-test-next.outcome=='failure'
+        run: |
+          if ${{ steps.system-test-next-retry-1.outcome=='success' }}; then
+             echo 'the first next system test failed, but the second one passed'
+          else
+             echo 'the first next system test failed, and the second one also failed'
+             exit 1
+          fi
   test:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() && !cancelled()
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     env:

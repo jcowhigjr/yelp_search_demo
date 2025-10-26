@@ -78,7 +78,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
       # Form should appear in the Turbo frame
       assert_selector('form')
       fill_in 'review[content]', with: 'Amazing coffee!'
-      click_on 'Submit Review'
+      click_on 'SUBMIT REVIEW'
     end
 
     # The page should not change, but content should update

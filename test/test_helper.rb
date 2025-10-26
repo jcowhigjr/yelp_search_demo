@@ -1,4 +1,5 @@
 ENV['RAILS_ENV'] ||= 'test'
+require 'minitest'
 require 'mocha/minitest'
 require_relative '../config/environment'
 
@@ -6,9 +7,8 @@ require_relative '../config/environment'
 require 'rails/test_help'
 require 'webmock/minitest'
 WebMock.disable_net_connect!(allow_localhost: true)
-WebMock.disable_net_connect!(allow_localhost: true)
 
-Dir[Rails.root.join('test/support/**/*.rb')].each { |f| require f }
+Rails.root.glob('test/support/**/*.rb').each { |f| require f.to_s }
 
 require 'bcrypt'
 # https://brandonhilkert.com/blog/managing-login-passwords-for-capybara-with-minitest-and-rails-fixtures/
@@ -73,4 +73,8 @@ class ActiveSupport::TestCase
     Rails.application.routes.default_url_options
   end
 
+end
+
+class ActionDispatch::IntegrationTest
+  include LoginHelpers::Controller
 end
