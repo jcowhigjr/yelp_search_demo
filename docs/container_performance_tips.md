@@ -15,9 +15,9 @@ The following tactics have worked well to keep the bootstrapping time down.
   shared `/root/.local/share/mise/installs` directory. Because the directory is
   cached between jobs, subsequent containers can reuse the toolchains without
   re-downloading.
-* If you need a bleeding-edge Ruby that is not cached yet, add a
-  `scripts/prewarm_mise.sh` helper that runs during CI to install it once and
-  leave the artifacts behind for developers.
+* If you need a bleeding-edge Ruby that is not cached yet, you can create an
+  example helper script such as `scripts/prewarm_mise.sh` that runs during CI to install it once and
+  leave the artifacts behind for developers. (This is a placeholder; teams should create such a script if needed.)
 
 ## 2. Cache Bundler and Yarn installs
 
