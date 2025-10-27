@@ -868,6 +868,14 @@ python automated_code_review.py --dry-run
 - [Git Hooks Documentation](https://git-scm.com/docs/githooks)
 - [MCP Protocol Documentation](https://modelcontextprotocol.io/)
 
+## Using prompts
+
+Prompts live under `.github/prompts/` and provide concise, task-focused guidance aligned with our tooling.
+
+- Start with `.github/prompts/rails-system-tests.prompt.md` to visually verify app behavior using Rails system tests (Cuprite).
+- Follow the commands as written to match CI: `mise run test-prepare`, `mise exec -- bin/rails test`, and `HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system`.
+- Keep changes small and verify before/after using screenshots or focused temporary assertions.
+
 ## Project-Specific Notes
 
 This project uses:
