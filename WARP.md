@@ -24,6 +24,73 @@ lefthook run workflow-new-feature feature/<branch-name>
 
 The sync also runs automatically when creating branches, but run it explicitly at conversation start.
 
+## 🔄 PR COMPLETION PROTOCOL
+
+**When working on an existing PR, ALWAYS follow this autonomous completion loop:**
+
+### Phase 0: Review-First Loop (HIGHEST PRIORITY)
+
+**Check for reviews BEFORE any other action:**
+```bash
+./scripts/review-loop.sh
+```
+
+If unresolved reviews exist:
+1. Read ALL review comments
+2. Fix each issue in code
+3. Commit and push (pre-push hooks validate automatically)
+4. Reply to each comment documenting the fix
+5. Resolve each thread via GitHub GraphQL API:
+   ```bash
+   gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "THREAD_ID"}) { thread { id isResolved } } }'
+   ```
+6. **LOOP BACK** - Check for reviews again (Step 1)
+
+**Critical**: Never wait for user to say "address feedback" - fix immediately and autonomously.
+
+### Complete PR Workflow
+
+Once all reviews are addressed:
+
+```bash
+# Check overall PR completion status
+./scripts/pr-completion-check.sh
+```
+
+This validates:
+- ✅ Phase 0: All review threads resolved
+- ✅ Phase 1-2: CI checks passing
+- ✅ Phase 3: Approval requirements met
+- ✅ Phase 4: Branch up-to-date, no conflicts
+- ✅ Phase 5: Ready to merge
+
+### Merge Execution
+
+When all phases complete:
+
+```bash
+# If approvals are pending (will merge when approved)
+gh pr merge --auto --squash
+
+# If self-approval blocked and changes are uncontroversial
+gh pr merge --admin --squash
+```
+
+### Key Principles
+
+1. **Review-first always** - Check for reviews before any other PR action
+2. **Fix immediately** - Don't wait for prompts; address feedback autonomously
+3. **Resolve explicitly** - Use GraphQL API to mark threads resolved
+4. **Loop automatically** - Keep checking until no reviews remain
+5. **Push immediately** - Pre-push hooks validate; don't wait for remote CI
+6. **Complete to merge** - Goal is merged PR, not just "ready for review"
+
+### Documentation
+
+- **Full workflow**: [docs/pr-completion-workflow.md](./docs/pr-completion-workflow.md)
+- **Review loop details**: [docs/review-first-autopilot.md](./docs/review-first-autopilot.md)
+- **Helper scripts**: `./scripts/review-loop.sh`, `./scripts/pr-completion-check.sh`
+
 ## General Rules
 - Always prefix runtime commands with: mise exec --
 - Never bypass git hooks with --no-verify
