@@ -163,16 +163,26 @@ fi
 
 case "$MERGE_STATE" in
   "BLOCKED")
-    if [[ "$REVIEW_DECISION" == "" || "$REVIEW_DECISION" == "null" ]]; then
+    if [[ "$REVIEW_DECISION" == "APPROVED" ]]; then
+      STATUS_APPROVALS=true
+      if [[ "$OUTPUT_JSON" == "false" ]]; then
+        echo "   ✅ Approvals met (merge blocked by other reason)"
+      fi
+    elif [[ "$REVIEW_DECISION" == "CHANGES_REQUESTED" ]]; then
+      BLOCKERS+=("Changes requested by reviewer")
+      if [[ "$OUTPUT_JSON" == "false" ]]; then
+        echo "   ❌ Changes requested by reviewer"
+      fi
+    elif [[ "$REVIEW_DECISION" == "REVIEW_REQUIRED" ]]; then
+      BLOCKERS+=("Review required before merge")
+      if [[ "$OUTPUT_JSON" == "false" ]]; then
+        echo "   ❌ Review required before merge"
+      fi
+    else
       BLOCKERS+=("Approval required (self-approval blocked)")
       if [[ "$OUTPUT_JSON" == "false" ]]; then
         echo "   ⚠️  Approval required (self-approval blocked)"
         echo "      Consider admin merge if appropriate"
-      fi
-    else
-      STATUS_APPROVALS=true
-      if [[ "$OUTPUT_JSON" == "false" ]]; then
-        echo "   ✅ Approvals met (merge blocked by other reason)"
       fi
     fi
     ;;
