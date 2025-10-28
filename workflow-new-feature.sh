@@ -11,17 +11,22 @@ fi
 branch_name="$1"
 echo "🌿 Creating new feature branch: $branch_name"
 
-# Check if on main/develop
-current_branch=$(git branch --show-current)
-if [[ "$current_branch" != "develop" && "$current_branch" != "main" ]]; then
-  echo "⚠️  Currently on branch: $current_branch"
-  echo "   Switching to develop first..."
-  git checkout develop
+# First, sync the repository to ensure we're working with latest code
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
+if [[ -f "$script_dir/scripts/git-sync.sh" ]]; then
+  echo "🔄 Syncing repository first..."
+  "$script_dir/scripts/git-sync.sh"
+else
+  # Fallback to old behavior if sync script doesn't exist
+  echo "⚠️  Sync script not found, using fallback..."
+  current_branch=$(git branch --show-current)
+  if [[ "$current_branch" != "develop" && "$current_branch" != "main" ]]; then
+    echo "   Switching to develop first..."
+    git checkout develop
+  fi
+  echo "🔄 Pulling latest changes..."
+  git pull --ff --no-edit origin develop
 fi
-
-# Pull latest
-echo "🔄 Pulling latest changes..."
-git pull --ff --no-edit origin develop
 
 # Create and switch to new branch
 echo "✅ Creating branch: $branch_name"
