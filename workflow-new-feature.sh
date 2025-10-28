@@ -16,6 +16,9 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)"
 if [[ -f "$script_dir/scripts/git-sync.sh" ]]; then
   echo "🔄 Syncing repository first..."
   "$script_dir/scripts/git-sync.sh"
+  # Ensure we're on develop after sync (sync returns to original branch)
+  echo "📍 Ensuring we're on develop..."
+  git checkout develop
 else
   # Fallback to old behavior if sync script doesn't exist
   echo "⚠️  Sync script not found, using fallback..."
