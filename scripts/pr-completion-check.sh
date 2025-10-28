@@ -45,12 +45,11 @@ if [[ "$OUTPUT_JSON" == "false" ]]; then
 fi
 
 # Initialize status tracking
-declare -A STATUS
-STATUS[reviews]=false
-STATUS[ci]=false
-STATUS[up_to_date]=false
-STATUS[mergeable]=false
-STATUS[approvals]=false
+STATUS_REVIEWS=false
+STATUS_CI=false
+STATUS_UP_TO_DATE=false
+STATUS_MERGEABLE=false
+STATUS_APPROVALS=false
 
 BLOCKERS=()
 
@@ -77,7 +76,7 @@ REVIEW_DATA=$(gh api graphql -f query='
 UNRESOLVED_REVIEWS=$(echo "$REVIEW_DATA" | jq '[.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false)] | length')
 
 if [[ "$UNRESOLVED_REVIEWS" -eq 0 ]]; then
-  STATUS[reviews]=true
+  STATUS_REVIEWS=true
   if [[ "$OUTPUT_JSON" == "false" ]]; then
     echo "   ✅ All review threads resolved"
   fi
@@ -109,7 +108,7 @@ elif [[ "$PENDING_CHECKS" -gt 0 ]]; then
     echo "   ⏳ $PENDING_CHECKS pending CI check(s)"
   fi
 else
-  STATUS[ci]=true
+  STATUS_CI=true
   if [[ "$OUTPUT_JSON" == "false" ]]; then
     echo "   ✅ All CI checks passing"
   fi
@@ -124,7 +123,7 @@ git fetch origin develop --quiet 2>/dev/null || true
 BEHIND_COUNT=$(git rev-list --count HEAD..origin/develop 2>/dev/null || echo "0")
 
 if [[ "$BEHIND_COUNT" -eq 0 ]]; then
-  STATUS[up_to_date]=true
+  STATUS_UP_TO_DATE=true
   if [[ "$OUTPUT_JSON" == "false" ]]; then
     echo "   ✅ Branch is up-to-date with develop"
   fi
@@ -146,7 +145,7 @@ MERGE_STATE=$(echo "$MERGE_DATA" | jq -r '.mergeStateStatus')
 REVIEW_DECISION=$(echo "$MERGE_DATA" | jq -r '.reviewDecision')
 
 if [[ "$MERGEABLE" == "MERGEABLE" ]]; then
-  STATUS[mergeable]=true
+  STATUS_MERGEABLE=true
   if [[ "$OUTPUT_JSON" == "false" ]]; then
     echo "   ✅ No merge conflicts"
   fi
@@ -171,14 +170,14 @@ case "$MERGE_STATE" in
         echo "      Consider admin merge if appropriate"
       fi
     else
-      STATUS[approvals]=true
+      STATUS_APPROVALS=true
       if [[ "$OUTPUT_JSON" == "false" ]]; then
         echo "   ✅ Approvals met (merge blocked by other reason)"
       fi
     fi
     ;;
   "CLEAN")
-    STATUS[approvals]=true
+    STATUS_APPROVALS=true
     if [[ "$OUTPUT_JSON" == "false" ]]; then
       echo "   ✅ Ready to merge"
     fi
@@ -199,11 +198,11 @@ if [[ "$OUTPUT_JSON" == "true" ]]; then
   "pr_number": $PR_NUMBER,
   "ready_to_merge": $([ ${#BLOCKERS[@]} -eq 0 ] && echo "true" || echo "false"),
   "status": {
-    "reviews_resolved": ${STATUS[reviews]},
-    "ci_passing": ${STATUS[ci]},
-    "branch_up_to_date": ${STATUS[up_to_date]},
-    "no_conflicts": ${STATUS[mergeable]},
-    "approvals_met": ${STATUS[approvals]}
+    "reviews_resolved": ${STATUS_REVIEWS},
+    "ci_passing": ${STATUS_CI},
+    "branch_up_to_date": ${STATUS_UP_TO_DATE},
+    "no_conflicts": ${STATUS_MERGEABLE},
+    "approvals_met": ${STATUS_APPROVALS}
   },
   "blockers": $BLOCKERS_JSON,
   "merge_state": "$MERGE_STATE",
