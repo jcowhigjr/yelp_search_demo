@@ -88,8 +88,23 @@ The workflow configuration is in `lefthook.yml`. Key sections:
 
 ## 📝 For Agent Coders
 
-When working with this codebase:
+**🚨 ALWAYS START BY SYNCING THE REPOSITORY:**
+```bash
+./scripts/git-sync.sh
+```
 
+This must be the **first command** you run when starting work. It:
+- Updates local develop branch from GitHub
+- Cleans up merged branches
+- Prevents conflicts from stale code
+- Takes ~5 seconds
+
+After syncing, create your branch:
+```bash
+lefthook run workflow-new-feature feature/<name>
+```
+
+Additional rules:
 1. **Never bypass lefthook**: The hooks are there for critical protections
 2. **Use lefthook commands**: Prefer `lefthook run workflow-status` over manual git commands
 3. **Understand the protections**: Know why branch protection exists
