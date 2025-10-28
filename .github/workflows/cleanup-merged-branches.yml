@@ -1,0 +1,33 @@
+name: Cleanup Merged Branches
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+      - main
+
+jobs:
+  cleanup:
+    # Only run if the PR was actually merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Delete merged branch
+        run: |
+          echo "🗑️ PR #${{ github.event.pull_request.number }} was merged"
+          echo "   Branch: ${{ github.event.pull_request.head.ref }}"
+          echo "   Merged into: ${{ github.event.pull_request.base.ref }}"
+          
+          # GitHub automatically deletes the branch if the repo setting is enabled
+          # This job just logs the event for visibility
+          echo "✅ Branch cleanup handled by GitHub (if auto-delete is enabled)"
+          
+      - name: Notify cleanup
+        run: |
+          echo "💡 Local developers should run: ./scripts/git-sync.sh"
+          echo "   This will update their local develop branch and prune deleted branches"
