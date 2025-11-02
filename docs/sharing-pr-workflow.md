@@ -459,7 +459,7 @@ git branch -D test/pr-workflow-setup
 
 | Scenario | Action | Command |
 |----------|--------|---------|
-| Base branch is `main` not `develop` | Update script line 122-123 | `git fetch origin main` |
+| Base branch is `main` not `develop` | Update script line 122 | `git fetch origin main` |
 | Use merge (not squash) | Update WARP.md merge command | `gh pr merge --auto --merge` |
 | Multiple approvals required | Update pr-completion-check.sh | See "Custom Approval Requirements" below |
 | External CI (not GitHub Actions) | Update CI check logic | Query your CI API in script |
