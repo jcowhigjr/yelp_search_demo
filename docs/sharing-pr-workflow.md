@@ -242,7 +242,7 @@ chmod +x scripts/*.sh
 Edit `scripts/pr-completion-check.sh`:
 
 ```bash
-# Line 122-123: Change base branch (replace 'develop' with your base branch)
+# Line 122: Change base branch (replace 'develop' with your base branch)
 git fetch origin main --quiet 2>/dev/null || true  # If you use 'main' instead of 'develop'
 BEHIND_COUNT=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "0")
 
