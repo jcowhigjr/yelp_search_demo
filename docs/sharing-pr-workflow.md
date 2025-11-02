@@ -173,7 +173,7 @@ chmod +x scripts/review-loop.sh
 
 **Customization needed:**
 - Line 122-123: Change `develop` to your base branch name
-- Line 252: Update sync command to match your base branch (will reference `sync-branch.sh`)
+- Line 245: Update sync command to match your base branch (will reference `sync-branch.sh`)
 - CI check validation is automatic (uses `gh pr checks`), but verify it matches your workflow
 
 **Target:** `scripts/pr-completion-check.sh`
