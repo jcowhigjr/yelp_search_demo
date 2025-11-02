@@ -56,15 +56,27 @@ Your project needs:
 - Updates remote PR branches automatically without manual intervention
 - **Source project has this:** Copy `.github/workflows/auto-update-prs.yml` from yelp_search_demo
 
-**Result:** Branches stay current through agent actions, script detection, and optional automated workflows.
+### 4. **Automatic Branch Cleanup** (After PR Merge) - Recommended
+- Add `.github/workflows/cleanup-merged-branches.yml` to automatically clean up merged branches
+- Runs when PRs are merged into base branches (`develop`, `main`)
+- **Requires GitHub setting:** Enable "Automatically delete head branches" in repository settings
+- Local cleanup: `git-sync.sh` prunes deleted branches when agents run it at session start
 
-**To enable auto-update workflow:**
+**Result:** Branches stay current through agent actions, script detection, and optional automated workflows. Merged branches are automatically cleaned up.
+
+**To enable auto-update and cleanup workflows:**
 ```bash
-# Copy the workflow file
+# Copy the workflow files
+mkdir -p .github/workflows
 cp /path/to/yelp_search_demo/.github/workflows/auto-update-prs.yml .github/workflows/
+cp /path/to/yelp_search_demo/.github/workflows/cleanup-merged-branches.yml .github/workflows/
 
-# Update the base branch name in the workflow (line 6) if not 'develop'
-# The workflow will run on every push to your base branch
+# Update base branch names in workflows if not 'develop':
+# - auto-update-prs.yml line 6: Change 'develop' to your base branch
+# - cleanup-merged-branches.yml lines 7-8: Update base branches list
+
+# Enable GitHub auto-delete for merged branches:
+# Settings → General → Pull Requests → Enable "Automatically delete head branches"
 ```
 
 ## Files to Copy
@@ -873,15 +885,27 @@ if [ ! -x "scripts/git-sync.sh" ] || [ ! -x "scripts/sync-branch.sh" ] || [ ! -x
   chmod +x scripts/*.sh
 fi
 
-# Copy optional auto-update workflow
-echo "⚙️  Copying optional GitHub Actions workflow..."
+# Copy optional GitHub Actions workflows
+echo "⚙️  Copying optional GitHub Actions workflows..."
 mkdir -p .github/workflows
+
 if [ -f "$SOURCE_PROJECT/.github/workflows/auto-update-prs.yml" ]; then
   cp "$SOURCE_PROJECT/.github/workflows/auto-update-prs.yml" .github/workflows/
   echo "   ✅ Copied auto-update-prs.yml (update base branch name if needed)"
 else
   echo "   ⚠️  auto-update-prs.yml not found in source (optional)"
 fi
+
+if [ -f "$SOURCE_PROJECT/.github/workflows/cleanup-merged-branches.yml" ]; then
+  cp "$SOURCE_PROJECT/.github/workflows/cleanup-merged-branches.yml" .github/workflows/
+  echo "   ✅ Copied cleanup-merged-branches.yml (update base branches if needed)"
+else
+  echo "   ⚠️  cleanup-merged-branches.yml not found in source (optional)"
+fi
+
+echo ""
+echo "   💡 Remember to enable GitHub auto-delete in repository settings:"
+echo "      Settings → General → Pull Requests → Enable 'Automatically delete head branches'"
 
 # Update agent instructions
 echo "📝 Updating agent instructions..."
@@ -912,14 +936,17 @@ echo "   - Line 122-123: Change 'develop' to your base branch name"
 echo "   - Line 252: Update sync command if different"
 echo "4. Update .github/workflows/auto-update-prs.yml (if copied):"
 echo "   - Line 6: Change 'develop' to your base branch name"
-echo "5. Review and customize docs/pr-completion-workflow.md (update base branch, test commands)"
-echo "6. Configure GitHub branch protection rules:"
+echo "5. Update .github/workflows/cleanup-merged-branches.yml (if copied):"
+echo "   - Lines 7-8: Update base branches list if different"
+echo "   - Enable GitHub setting: Settings → General → Pull Requests → 'Automatically delete head branches'"
+echo "6. Review and customize docs/pr-completion-workflow.md (update base branch, test commands)"
+echo "7. Configure GitHub branch protection rules:"
 echo "   https://github.com/[owner]/[repo]/settings/branches"
-echo "7. Test setup:"
+echo "8. Test setup:"
 echo "   ./scripts/git-sync.sh          # Test session sync"
 echo "   ./scripts/review-loop.sh --json"
 echo "   ./scripts/pr-completion-check.sh --json"
-echo "8. Create test PR and verify workflow end-to-end"
+echo "9. Create test PR and verify workflow end-to-end"
 echo ""
 echo "📚 Documentation: docs/sharing-pr-workflow.md"
 ```

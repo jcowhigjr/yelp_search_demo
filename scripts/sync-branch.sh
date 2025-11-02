@@ -76,7 +76,7 @@ check_branch_behind() {
     
     # Method 2: Fallback to git fetch && git status
     log_info "Fetching latest changes from origin..."
-    mise exec -- git fetch origin
+    git fetch origin
     
     local merge_base
     local origin_commit
@@ -111,24 +111,17 @@ auto_merge_base() {
     current_branch=$(git branch --show-current)
     log_info "Auto-merging 'origin/$base_branch' into '$current_branch'"
     
-    # Use CLI error handler for merge operation
-    local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
-    local error_handler="${script_dir}/bin/cli-error-handler"
-    
-    # Attempt merge with error handling
-    if "$error_handler" -- mise exec -- git merge "origin/$base_branch" --no-edit; then
+    # Attempt merge - handle conflicts gracefully
+    if git merge "origin/$base_branch" --no-edit 2>/dev/null; then
         log_success "Successfully merged 'origin/$base_branch' into '$current_branch'"
         return 0
     else
         local exit_code=$?
-        case $exit_code in
-            3) # Merge conflict
-                log_error "Merge conflicts detected and handled by error handler"
-                ;;
-            *)
-                log_error "Merge failed with exit code $exit_code"
-                ;;
-        esac
+        if git merge --abort 2>/dev/null; then
+            log_error "Merge conflicts detected - aborting merge"
+        else
+            log_error "Merge failed with exit code $exit_code"
+        fi
         return 1
     fi
 }
@@ -140,7 +133,7 @@ handle_conflicts() {
     log_error "Merge conflicts detected. Aborting merge..."
     
     # Abort the merge
-    mise exec -- git merge --abort
+    git merge --abort
     
     log_info "Conflict details:"
     echo "=== Files that would conflict ==="
@@ -168,7 +161,7 @@ push_and_verify() {
     current_branch=$(git branch --show-current)
     log_info "Pushing updates to 'origin/$current_branch'..."
     
-    if mise exec -- git push origin "$current_branch"; then
+    if git push origin "$current_branch"; then
         log_success "Successfully pushed to 'origin/$current_branch'"
     else
         log_error "Failed to push to remote"
@@ -177,7 +170,7 @@ push_and_verify() {
     
     # Verify push
     log_info "Verifying push..."
-    mise exec -- git fetch origin
+    git fetch origin
     
     local local_commit
     local remote_commit
@@ -260,10 +253,10 @@ sync_branch() {
     
     # Final status check
     log_info "Final git status:"
-    mise exec -- git status
+    git status
     
     log_info "Latest commit:"
-    mise exec -- git log --oneline -1
+    git log --oneline -1
 }
 
 # Function to display usage
@@ -275,7 +268,7 @@ Synchronize current feature branch with base branch (default: main).
 
 This script will:
 1. Detect if local branch is behind origin/BASE_BRANCH via gh api or git fetch
-2. If behind, auto-merge base into feature branch using 'mise exec -- git merge origin/BASE_BRANCH'
+2. If behind, auto-merge base into feature branch using 'git merge origin/BASE_BRANCH'
 3. Push updates and verify synchronization
 4. If conflicts occur, abort and surface conflict details
 
