@@ -132,8 +132,12 @@ handle_conflicts() {
     
     log_error "Merge conflicts detected. Aborting merge..."
     
-    # Abort the merge
-    git merge --abort
+    # Abort the merge if it is still in progress
+    if git rev-parse -q --verify MERGE_HEAD >/dev/null 2>&1; then
+        git merge --abort
+    else
+        log_info "No active merge to abort (already handled)"
+    fi
     
     log_info "Conflict details:"
     echo "=== Files that would conflict ==="
