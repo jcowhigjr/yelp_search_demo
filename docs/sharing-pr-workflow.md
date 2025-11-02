@@ -137,7 +137,7 @@ chmod +x scripts/git-sync.sh
 - Handles conflicts gracefully
 
 **Customization needed:**
-- Change default base branch from `main` to your base (line 224)
+- Change default base branch from `main` to your base (line 217)
 
 **Target:** `scripts/sync-branch.sh`
 
