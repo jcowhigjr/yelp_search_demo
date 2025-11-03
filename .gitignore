@@ -111,5 +111,6 @@ __pycache__/
 *.jsonl
 *.md
 *.sh
+!scripts/*.sh
 *.txt
 *.yml
