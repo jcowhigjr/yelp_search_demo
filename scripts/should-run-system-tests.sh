@@ -27,27 +27,30 @@ if [[ "$DIFF_BASE" == "HEAD^" ]]; then
 fi
 
 # Gather changed files (including deletions) between DIFF_BASE and HEAD.
-mapfile -d '' -t CHANGED_FILES < <(git diff --name-only --diff-filter=ACDMR -z "${DIFF_BASE}..HEAD")
+CHANGED_FILES=()
+while IFS= read -r -d '' file; do
+  CHANGED_FILES+=("$file")
+done < <(git diff --name-only --diff-filter=ACDMR -z "${DIFF_BASE}..HEAD")
 
 SAFE_PATTERNS=(
   '^docs/'
-  '^\\.github/'
-  '^README\\.md$'
+  '^\.github/'
+  '^README\.md$'
   '^LICENSE$'
-  '^WARP\\.md$'
-  '^\\.rubocop\\.yml$'
-  '^\\.rubocop_todo\\.yml$'
-  '^\\.erb_lint\\.yml$'
-  '^\\.better-html\\.yml$'
-  '^\\.solargraph\\.yml$'
-  '^\\.prettier'
-  '^cspell\\.config\\.yaml$'
-  '^\\.gitignore$'
+  '^WARP\.md$'
+  '^\.rubocop\.yml$'
+  '^\.rubocop_todo\.yml$'
+  '^\.erb_lint\.yml$'
+  '^\.better-html\.yml$'
+  '^\.solargraph\.yml$'
+  '^\.prettier'
+  '^cspell\.config\.yaml$'
+  '^\.gitignore$'
   '^CODEOWNERS$'
-  '^\\.yarnrc\\.yml$'
-  '^static-analysis\\.datadog\\.yml$'
-  '^agent\\.prompt\\.yml$'
-  '^\\.pr-workflow\\.yml$'
+  '^\.yarnrc\.yml$'
+  '^static-analysis\.datadog\.yml$'
+  '^agent\.prompt\.yml$'
+  '^\.pr-workflow\.yml$'
 )
 
 if ((${#CHANGED_FILES[@]} == 0)); then
