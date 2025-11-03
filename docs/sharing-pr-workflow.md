@@ -72,8 +72,8 @@ cp /path/to/yelp_search_demo/.github/workflows/auto-update-prs.yml .github/workf
 cp /path/to/yelp_search_demo/.github/workflows/cleanup-merged-branches.yml .github/workflows/
 
 # Update base branch names in workflows if not 'develop':
-# - auto-update-prs.yml line 6: Change 'develop' to your base branch
-# - cleanup-merged-branches.yml lines 7-8: Update base branches list
+# - auto-update-prs.yml: Update the base branch listed under `on.push.branches`
+# - cleanup-merged-branches.yml: Update the branch list under `on.pull_request.branches`
 
 # Enable GitHub auto-delete for merged branches:
 # Settings → General → Pull Requests → Enable "Automatically delete head branches"
@@ -118,7 +118,7 @@ cp /path/to/yelp_search_demo/.github/workflows/cleanup-merged-branches.yml .gith
 - Should be run at conversation start to keep local repo fresh
 
 **Customization needed:**
-- Change `develop` to your base branch name (line 28, 38)
+- Replace each `develop` reference in the checkout and pull commands with your base branch name
 - Adjust branch cleanup logic if needed
 
 **Target:** `scripts/git-sync.sh`
@@ -137,7 +137,7 @@ chmod +x scripts/git-sync.sh
 - Handles conflicts gracefully
 
 **Customization needed:**
-- Change default base branch from `main` to your base (line 217)
+- Update the default base branch parameter (`local base_branch="${1:-main}"`) if your base branch differs
 
 **Target:** `scripts/sync-branch.sh`
 
@@ -172,8 +172,8 @@ chmod +x scripts/review-loop.sh
 - Provides actionable next steps including sync command
 
 **Customization needed:**
-- Line 122-123: Change `develop` to your base branch name
-- Line 245: Update sync command to match your base branch (will reference `sync-branch.sh`)
+- Update the `git fetch origin develop` command and behind-count calculation to use your base branch name
+- Update the suggested sync command (`./scripts/sync-branch.sh develop`) to reference your base branch
 - CI check validation is automatic (uses `gh pr checks`), but verify it matches your workflow
 
 **Target:** `scripts/pr-completion-check.sh`
@@ -242,11 +242,11 @@ chmod +x scripts/*.sh
 Edit `scripts/pr-completion-check.sh`:
 
 ```bash
-# Line 122: Change base branch (replace 'develop' with your base branch)
+# Update the base branch (replace 'develop' with your base branch)
 git fetch origin main --quiet 2>/dev/null || true  # If you use 'main' instead of 'develop'
 BEHIND_COUNT=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "0")
 
-# Line 252: Update sync command to match your base branch
+# Update the sync command to match your base branch
 echo "  • Sync branch: ./scripts/sync-branch.sh main"  # If you use 'main'
 ```
 
@@ -459,7 +459,7 @@ git branch -D test/pr-workflow-setup
 
 | Scenario | Action | Command |
 |----------|--------|---------|
-| Base branch is `main` not `develop` | Update script line 122 | `git fetch origin main` |
+| Base branch is `main` not `develop` | Update `git fetch origin develop` in `scripts/pr-completion-check.sh` | `git fetch origin main` |
 | Use merge (not squash) | Update WARP.md merge command | `gh pr merge --auto --merge` |
 | Multiple approvals required | Update pr-completion-check.sh | See "Custom Approval Requirements" below |
 | External CI (not GitHub Actions) | Update CI check logic | Query your CI API in script |
@@ -930,14 +930,14 @@ echo "⚠️  REQUIRED NEXT STEPS:"
 echo "1. Update scripts/git-sync.sh:"
 echo "   - Line 28, 38: Change 'develop' to your base branch name if different"
 echo "2. Update scripts/sync-branch.sh:"
-echo "   - Line 224: Change default from 'main' to your base branch if different"
+echo "   - Line 217: Change default from 'main' to your base branch if different"
 echo "3. Update scripts/pr-completion-check.sh:"
-echo "   - Line 122-123: Change 'develop' to your base branch name"
-echo "   - Line 252: Update sync command if different"
+echo "   - Update 'git fetch origin develop' and behind-count for your base branch"
+echo "   - Update the suggested sync command if your base branch differs"
 echo "4. Update .github/workflows/auto-update-prs.yml (if copied):"
-echo "   - Line 6: Change 'develop' to your base branch name"
+echo "   - Update the base branch listed under on.push.branches"
 echo "5. Update .github/workflows/cleanup-merged-branches.yml (if copied):"
-echo "   - Lines 7-8: Update base branches list if different"
+echo "   - Update the branch list under on.pull_request.branches if different"
 echo "   - Enable GitHub setting: Settings → General → Pull Requests → 'Automatically delete head branches'"
 echo "6. Review and customize docs/pr-completion-workflow.md (update base branch, test commands)"
 echo "7. Configure GitHub branch protection rules:"
