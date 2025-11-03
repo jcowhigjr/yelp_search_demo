@@ -8,7 +8,7 @@ DIFF_BASE=""
 if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
   DIFF_BASE="HEAD@{upstream}"
 elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
-  DIFF_BASE="$(git merge-base HEAD origin/develop 2>/dev/null || true)"
+  DIFF_BASE="$(git merge-base HEAD origin/develop 2>/dev/null)"
   if [[ -z "$DIFF_BASE" ]]; then
     echo "ℹ️  Unable to determine upstream comparison point."
     echo "   Running system tests by default."
