@@ -33,6 +33,52 @@ Your project needs:
 5. **CI/CD pipeline** (GitHub Actions or similar)
 6. **Git workflow** with pull requests
 
+## How Branch Syncing Works
+
+**This solution keeps branches up-to-date through multiple mechanisms:**
+
+### 1. **Agent-Level Syncing** (Local)
+- Agents run `./scripts/git-sync.sh` at session start (per WARP.md instructions)
+- Syncs local `develop` with `origin/develop`
+- Cleans up merged branches automatically
+- Ensures agents always work with fresh code
+
+### 2. **Automatic Detection** (During PR Work)
+- `pr-completion-check.sh` detects when PR branch is behind base branch
+- Reports it as a blocker in Phase 4
+- Suggests running `./scripts/sync-branch.sh [base-branch]`
+- Agents should automatically sync when detected
+
+### 3. **GitHub Actions Workflow** (Remote PR Updates) - Optional but Recommended
+- You can add `.github/workflows/auto-update-prs.yml` to automatically update PR branches when base branch changes
+- Uses GitHub's `update-branch` API endpoint
+- Runs whenever base branch (e.g., `develop`) is pushed to
+- Updates remote PR branches automatically without manual intervention
+- **Source project has this:** Copy `.github/workflows/auto-update-prs.yml` from yelp_search_demo
+
+### 4. **Automatic Branch Cleanup** (After PR Merge) - Recommended
+- Add `.github/workflows/cleanup-merged-branches.yml` to automatically clean up merged branches
+- Runs when PRs are merged into base branches (`develop`, `main`)
+- **Requires GitHub setting:** Enable "Automatically delete head branches" in repository settings
+- Local cleanup: `git-sync.sh` prunes deleted branches when agents run it at session start
+
+**Result:** Branches stay current through agent actions, script detection, and optional automated workflows. Merged branches are automatically cleaned up.
+
+**To enable auto-update and cleanup workflows:**
+```bash
+# Copy the workflow files
+mkdir -p .github/workflows
+cp /path/to/yelp_search_demo/.github/workflows/auto-update-prs.yml .github/workflows/
+cp /path/to/yelp_search_demo/.github/workflows/cleanup-merged-branches.yml .github/workflows/
+
+# Update base branch names in workflows if not 'develop':
+# - auto-update-prs.yml: Update the base branch listed under `on.push.branches`
+# - cleanup-merged-branches.yml: Update the branch list under `on.pull_request.branches`
+
+# Enable GitHub auto-delete for merged branches:
+# Settings → General → Pull Requests → Enable "Automatically delete head branches"
+```
+
 ## Files to Copy
 
 ### 1. Core Documentation
@@ -66,6 +112,43 @@ Your project needs:
 
 ### 2. Helper Scripts
 
+**Source:** `scripts/git-sync.sh`
+- Syncs local develop branch with origin
+- Prunes merged branches
+- Should be run at conversation start to keep local repo fresh
+
+**Customization needed:**
+- Replace each `develop` reference in the checkout and pull commands with your base branch name
+- Adjust branch cleanup logic if needed
+
+**Target:** `scripts/git-sync.sh`
+
+```bash
+chmod +x scripts/git-sync.sh
+```
+
+**Note:** This script is recommended for agents to run at the start of each session to ensure they're working with latest code.
+
+---
+
+**Source:** `scripts/sync-branch.sh`
+- Syncs feature branch with base branch
+- Detects if branch is behind and auto-merges
+- Handles conflicts gracefully
+
+**Customization needed:**
+- Update the default base branch parameter (`local base_branch="${1:-main}"`) if your base branch differs
+
+**Target:** `scripts/sync-branch.sh`
+
+```bash
+chmod +x scripts/sync-branch.sh
+```
+
+**Note:** This is called automatically when `pr-completion-check.sh` detects branch is behind.
+
+---
+
 **Source:** `scripts/review-loop.sh`
 - Checks for unresolved review threads
 - JSON and human-readable output
@@ -85,17 +168,21 @@ chmod +x scripts/review-loop.sh
 **Source:** `scripts/pr-completion-check.sh`
 - Validates all 5 phases for PR readiness
 - Checks CI status, reviews, conflicts, approvals
-- Provides actionable next steps
+- **Detects if branch is behind base branch** (Phase 4)
+- Provides actionable next steps including sync command
 
 **Customization needed:**
-- Line 123: Change `develop` to your base branch name
-- Line 194-210: Update for your specific CI check names
+- Update the `git fetch origin develop` command and behind-count calculation to use your base branch name
+- Update the suggested sync command (`./scripts/sync-branch.sh develop`) to reference your base branch
+- CI check validation is automatic (uses `gh pr checks`), but verify it matches your workflow
 
 **Target:** `scripts/pr-completion-check.sh`
 
 ```bash
 chmod +x scripts/pr-completion-check.sh
 ```
+
+**Note:** When this script detects branch is behind, it will suggest running `sync-branch.sh`. Agents should do this automatically.
 
 ### 3. Agent Instructions
 
@@ -133,13 +220,20 @@ cp /path/to/yelp_search_demo/docs/review-first-autopilot.md docs/
 ### Step 3: Copy Scripts
 
 ```bash
+cp /path/to/yelp_search_demo/scripts/git-sync.sh scripts/
+cp /path/to/yelp_search_demo/scripts/sync-branch.sh scripts/
 cp /path/to/yelp_search_demo/scripts/review-loop.sh scripts/
 cp /path/to/yelp_search_demo/scripts/pr-completion-check.sh scripts/
 
 # Make executable
-chmod +x scripts/review-loop.sh
-chmod +x scripts/pr-completion-check.sh
+chmod +x scripts/*.sh
 ```
+
+**Script roles:**
+- `git-sync.sh`: Sync local develop with origin (run at session start)
+- `sync-branch.sh`: Sync feature branch with base branch (called automatically when behind)
+- `review-loop.sh`: Check for unresolved review threads
+- `pr-completion-check.sh`: Validate PR completion status
 
 ### Step 4: Customize for Your Project
 
@@ -148,15 +242,15 @@ chmod +x scripts/pr-completion-check.sh
 Edit `scripts/pr-completion-check.sh`:
 
 ```bash
-# Line 123: Change base branch
+# Update the base branch (replace 'develop' with your base branch)
 git fetch origin main --quiet 2>/dev/null || true  # If you use 'main' instead of 'develop'
 BEHIND_COUNT=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo "0")
 
-# Line 242: Update sync command
+# Update the sync command to match your base branch
 echo "  • Sync branch: ./scripts/sync-branch.sh main"  # If you use 'main'
 ```
 
-If you have custom CI check names, update the script to look for those.
+**Note**: CI checks are automatically detected via `gh pr checks`, so no manual configuration needed unless you use a non-GitHub CI system.
 
 #### B. Update Documentation
 
@@ -179,9 +273,38 @@ Edit `docs/pr-completion-workflow.md`:
 
 #### C. Update Agent Instructions
 
-Add to your project's agent instruction file (`WARP.md`, `CLAUDE.md`, etc.):
+**For different agent types:**
+
+**GitHub Copilot Chat / GitHub Actions:**
+- Add instructions to `.github/copilot-instructions.md` or similar
+- Or include in repository README.md
+- Agents will read these when scanning the repo
+
+**WARP (warp.dev):**
+- Add to `WARP.md` in project root (WARP automatically reads this)
+- Or add to Warp's persistent rules feature
+
+**Cursor / Claude (via Cursor):**
+- Add to `.cursorrules` file
+- Or include in `CLAUDE.md` in project root
+- Or add to `.claude/` directory if using Claude Desktop
+
+Add the following to your project's agent instruction file:
 
 ```markdown
+## 🤖 SESSION START PROTOCOL
+
+**ALWAYS run this FIRST before starting any work:**
+```bash
+./scripts/git-sync.sh
+```
+
+This ensures:
+- Your local develop branch is synced with GitHub
+- Old merged branches are cleaned up
+- You're working with the latest code
+- No conflicts from stale local state
+
 ## 🔄 PR COMPLETION PROTOCOL
 
 **When working on an existing PR, ALWAYS follow this autonomous completion loop:**
@@ -222,6 +345,17 @@ This validates:
 - ✅ Phase 4: Branch up-to-date, no conflicts
 - ✅ Phase 5: Ready to merge
 
+**If branch is behind base:** The script will detect and suggest syncing. Agents should automatically sync:
+```bash
+./scripts/sync-branch.sh develop  # or your base branch name
+```
+
+This will:
+1. Fetch latest from origin
+2. Auto-merge base branch into feature branch
+3. Push updates
+4. Handle conflicts if any
+
 ### Merge Execution
 
 When all phases complete:
@@ -240,8 +374,9 @@ gh pr merge --admin --squash
 2. **Fix immediately** - Don't wait for prompts; address feedback autonomously
 3. **Resolve explicitly** - Use GraphQL API to mark threads resolved
 4. **Loop automatically** - Keep checking until no reviews remain
-5. **Push immediately** - Pre-push hooks validate; don't wait for remote CI
-6. **Complete to merge** - Goal is merged PR, not just "ready for review"
+5. **Sync when behind** - If `pr-completion-check.sh` reports branch is behind, automatically run `./scripts/sync-branch.sh [base-branch]`
+6. **Push immediately** - Pre-push hooks validate; don't wait for remote CI
+7. **Complete to merge** - Goal is merged PR, not just "ready for review"
 
 ### Documentation
 
@@ -254,48 +389,82 @@ gh pr merge --admin --squash
 
 Ensure your GitHub repository has these branch protection rules enabled for your base branch:
 
+**Quick Link Format:**
 ```
-Settings → Branches → Branch protection rules → Edit [your-base-branch]
-
-Required:
-✓ Require a pull request before merging
-✓ Require conversation resolution before merging
-✓ Require status checks to pass before merging
-  - Add your CI check name (e.g., "test", "CI", "build")
-✓ Require branches to be up to date before merging
-
-Optional but recommended:
-✓ Require review from Code Owners (if you have CODEOWNERS file)
-✓ Require signed commits
-✓ Require linear history
-✓ Do not allow bypassing the above settings (for strict enforcement)
+https://github.com/[owner]/[repo]/settings/branches
 ```
 
-### Step 6: Test the Setup
+**Steps:**
+1. Go to: Settings → Branches → Branch protection rules → Edit [your-base-branch]
+2. Enable these required settings:
+   - ✓ Require a pull request before merging
+   - ✓ Require conversation resolution before merging
+   - ✓ Require status checks to pass before merging
+     - Add your CI check name(s) (e.g., "test", "CI", "build", "lint")
+   - ✓ Require branches to be up to date before merging
 
-Create a test PR to verify:
+**Optional but recommended:**
+- ✓ Require review from Code Owners (if you have CODEOWNERS file)
+- ✓ Require signed commits
+- ✓ Require linear history
+- ⚠️ **Note**: If you want agents to use `--admin` merge, ensure "Do not allow bypassing" is **disabled** for admin accounts
+
+### Step 6: Verify the Setup
+
+**Run these verification commands before using in production:**
 
 ```bash
-# 1. Create a test branch
-git checkout -b test/pr-workflow-setup
+# 1. Verify scripts are executable and work
+./scripts/review-loop.sh --json 2>&1 || echo "Expected: 'Not on a branch with an open PR' or JSON output"
+./scripts/pr-completion-check.sh --json 2>&1 || echo "Expected: 'Not on a branch with an open PR' or JSON output"
 
-# 2. Make a trivial change
+# 2. Verify gh CLI authentication
+gh auth status
+gh pr view 2>&1 || echo "Expected: Error if not on PR branch, or PR details if on PR branch"
+
+# 3. Verify jq is installed
+jq --version
+
+# 4. Create a test PR and verify workflow
+git checkout -b test/pr-workflow-setup
 echo "# Test PR Workflow" >> TEST.md
 git add TEST.md
-git commit -m "Test PR workflow setup"
+git commit -m "Test: PR workflow setup"
 git push -u origin test/pr-workflow-setup
-
-# 3. Create PR
 gh pr create --title "Test: PR Workflow Setup" --body "Testing autonomous PR completion workflow"
 
-# 4. Test the scripts
-./scripts/review-loop.sh           # Should show no unresolved reviews
-./scripts/pr-completion-check.sh   # Should show PR status
+# 5. Test scripts on actual PR
+./scripts/review-loop.sh           # Should show no unresolved reviews initially
+./scripts/pr-completion-check.sh   # Should show PR status and blockers
 
-# 5. Have someone add a review comment, then test the review loop
 # 6. Clean up test PR
-gh pr close && git checkout main && git branch -D test/pr-workflow-setup
+gh pr close test/pr-workflow-setup
+git checkout develop  # or your base branch
+git branch -D test/pr-workflow-setup
 ```
+
+**Verification Checklist:**
+
+- [ ] Scripts execute without permission errors
+- [ ] `gh auth status` shows authenticated user
+- [ ] `gh pr view` works (when on PR branch) or errors gracefully (when not)
+- [ ] `jq --version` shows installed version
+- [ ] Scripts return proper JSON with `--json` flag
+- [ ] Scripts return proper exit codes (0 = success, 1 = blockers, 2 = error)
+- [ ] Test PR creation and script execution work end-to-end
+
+## Quick Reference Table
+
+**Common Scenarios - Quick Lookup:**
+
+| Scenario | Action | Command |
+|----------|--------|---------|
+| Base branch is `main` not `develop` | Update `git fetch origin develop` in `scripts/pr-completion-check.sh` | `git fetch origin main` |
+| Use merge (not squash) | Update WARP.md merge command | `gh pr merge --auto --merge` |
+| Multiple approvals required | Update pr-completion-check.sh | See "Custom Approval Requirements" below |
+| External CI (not GitHub Actions) | Update CI check logic | Query your CI API in script |
+| Monorepo structure | Place scripts at root | Keep shared at `/scripts/` |
+| GitLab instead of GitHub | Replace `gh` CLI calls | Use GitLab API directly |
 
 ## Project-Specific Customizations
 
@@ -416,41 +585,116 @@ fi
 
 ### Scripts Don't Execute
 
+**Symptom:** `Permission denied` or `command not found` errors
+
+**Solutions:**
 ```bash
-# Ensure scripts are executable
+# 1. Ensure scripts are executable
 chmod +x scripts/*.sh
 
-# Check shebang line
-head -1 scripts/review-loop.sh  # Should be #!/bin/bash
+# 2. Verify shebang line (should be #!/bin/bash)
+head -1 scripts/review-loop.sh
+
+# 3. Check if bash is available
+which bash
+
+# 4. Try running with explicit bash
+bash scripts/review-loop.sh
 ```
 
 ### GraphQL API Permissions
 
+**Symptom:** `gh api graphql` returns authentication errors or `Bad credentials`
+
+**Solutions:**
 ```bash
-# Ensure gh CLI has proper scopes
+# 1. Check authentication status
 gh auth status
+
+# 2. Refresh authentication with repo scope
 gh auth refresh -s repo
+
+# 3. If using token, verify it has 'repo' scope
+gh auth token | cut -d. -f2 | base64 -d | jq .scope  # On Linux/Mac with base64
+# Should include "repo" in the output
+
+# 4. Re-authenticate if needed
+gh auth login
 ```
+
+**Example Error:**
+```
+gh: Bad credentials
+```
+
+**Fix:** Run `gh auth refresh -s repo` or `gh auth login`
 
 ### Branch Protection Conflicts
 
-If admin merge fails even with admin rights:
+**Symptom:** `gh pr merge --admin --squash` fails even with admin rights
 
-1. Check "Do not allow bypassing" is disabled (if you want admin override)
-2. Or enable "Require approval of most recent push" and have another user approve
+**Solutions:**
+1. **Check bypass settings:**
+   - Go to: Settings → Branches → [your-base-branch]
+   - Disable "Do not allow bypassing the above settings" if you want admin override
+   
+2. **Alternative approach:**
+   - Enable "Require approval of most recent push"
+   - Have another user approve after your changes
+   - Then merge normally with `gh pr merge --auto --squash`
+
+**Example Error:**
+```
+gh: You don't have permission to merge this pull request
+```
+
+**Fix:** Adjust branch protection rules or get another user's approval
+
+### Script Returns Wrong Exit Code
+
+**Symptom:** Script says "ready to merge" but GitHub shows blockers
+
+**Solutions:**
+```bash
+# 1. Verify you're on the PR branch
+git branch --show-current
+gh pr view --json headRefName
+
+# 2. Get fresh PR data
+gh pr view --json mergeable,mergeStateStatus,reviewDecision
+
+# 3. Check for stale git state
+git fetch origin
+git status
+
+# 4. Run script with debug output
+bash -x scripts/pr-completion-check.sh
+```
 
 ### CI Check Names Don't Match
 
-```bash
-# List actual check names
-gh pr checks --json name
+**Symptom:** Script reports CI passing but GitHub shows pending checks
 
-# Update pr-completion-check.sh with actual names
+**Note:** The script automatically detects CI checks via `gh pr checks`. This is usually accurate.
+
+**If you need to verify:**
+```bash
+# List actual check names from GitHub
+gh pr checks --json name,state,conclusion
+
+# Compare with script output
+./scripts/pr-completion-check.sh --json | jq '.status.ci_passing'
 ```
 
-## Integration with Warp Rules
+**If checks are from external CI (not GitHub Actions):**
+- Update `pr-completion-check.sh` to query your CI system's API
+- Or ensure external CI reports status back to GitHub via Commit Status API
 
-If you use Warp's persistent rules feature, add these rules:
+## Agent-Specific Integration
+
+### WARP (warp.dev)
+
+If you use Warp's persistent rules feature, add these rules to your Warp settings:
 
 ```markdown
 **Rule: PR Review-First Protocol**
@@ -461,6 +705,35 @@ When user says "continue" or "work on PR", the goal is a MERGED PR, not just "re
 
 **Rule: Review Thread Resolution**
 After fixing review comments, always explicitly resolve threads using GraphQL API. Never assume threads auto-resolve.
+```
+
+**Or add directly to `WARP.md` in your project root** (WARP reads this automatically).
+
+### GitHub Copilot Chat
+
+GitHub Copilot Chat reads repository documentation. Ensure:
+1. Your `WARP.md` or `README.md` contains the PR protocol
+2. Or create `.github/copilot-instructions.md` with the protocol
+3. Agents will reference this when you ask about PRs
+
+### Cursor / Claude Desktop
+
+**For Cursor:**
+- Add to `.cursorrules` file (Cursor-specific format)
+- Or add to `CLAUDE.md` in project root
+
+**For Claude Desktop:**
+- Add to `.claude/` directory
+- Or include in project root documentation files
+
+**Example `.cursorrules` format:**
+```markdown
+When working on an existing PR:
+1. Always run ./scripts/review-loop.sh first
+2. Fix any review comments immediately
+3. Resolve threads via GraphQL API
+4. Check PR completion with ./scripts/pr-completion-check.sh
+5. Goal is MERGED PR, not just "ready for review"
 ```
 
 ## Maintenance
@@ -482,12 +755,27 @@ done
 
 ### Version Tracking
 
-Consider tracking which version of the workflow each project uses:
+Track which version of the workflow each project uses for easier updates:
 
-```bash
-# Add to each project's WARP.md
+**Format:**
+```markdown
 <!-- PR Workflow Version: 1.0.0 (from yelp_search_demo @ 2025-10-28) -->
 ```
+
+**Where to add:**
+- At the top of `WARP.md` (or your agent instruction file)
+- Or in `docs/sharing-pr-workflow.md` itself
+
+**Version format:** `MAJOR.MINOR.PATCH`
+- `MAJOR`: Breaking changes requiring script/directory updates
+- `MINOR`: New features or new customization points
+- `PATCH`: Bug fixes or documentation clarifications
+
+**Example versions:**
+- `1.0.0`: Initial release
+- `1.1.0`: Added support for monorepos
+- `1.1.1`: Fixed base branch detection bug
+- `2.0.0`: Rewrote scripts to support GitLab
 
 ## Template Repository
 
@@ -542,9 +830,37 @@ Complete script to set up in a new project:
 ```bash
 #!/bin/bash
 # setup-pr-workflow.sh - Migrate PR workflow to new project
+# Usage: ./setup-pr-workflow.sh [source-project-path]
 
-SOURCE_PROJECT="/path/to/yelp_search_demo"
+set -e
+
+SOURCE_PROJECT="${1:-}"
 TARGET_PROJECT="$(pwd)"
+
+# Validate source project
+if [ -z "$SOURCE_PROJECT" ] || [ ! -d "$SOURCE_PROJECT" ]; then
+  echo "❌ Error: Source project path required"
+  echo "Usage: $0 /path/to/yelp_search_demo"
+  exit 1
+fi
+
+# Verify required files exist in source
+REQUIRED_FILES=(
+  "$SOURCE_PROJECT/docs/pr-completion-workflow.md"
+  "$SOURCE_PROJECT/docs/review-first-autopilot.md"
+  "$SOURCE_PROJECT/scripts/git-sync.sh"
+  "$SOURCE_PROJECT/scripts/sync-branch.sh"
+  "$SOURCE_PROJECT/scripts/review-loop.sh"
+  "$SOURCE_PROJECT/scripts/pr-completion-check.sh"
+  "$SOURCE_PROJECT/WARP.md"
+)
+
+for file in "${REQUIRED_FILES[@]}"; do
+  if [ ! -f "$file" ]; then
+    echo "❌ Error: Required file not found: $file"
+    exit 1
+  fi
+done
 
 echo "🔄 Setting up PR workflow in $TARGET_PROJECT"
 
@@ -557,28 +873,88 @@ cp "$SOURCE_PROJECT/docs/pr-completion-workflow.md" docs/
 cp "$SOURCE_PROJECT/docs/review-first-autopilot.md" docs/
 
 echo "📜 Copying scripts..."
+cp "$SOURCE_PROJECT/scripts/git-sync.sh" scripts/
+cp "$SOURCE_PROJECT/scripts/sync-branch.sh" scripts/
 cp "$SOURCE_PROJECT/scripts/review-loop.sh" scripts/
 cp "$SOURCE_PROJECT/scripts/pr-completion-check.sh" scripts/
 chmod +x scripts/*.sh
 
-echo "📝 Updating WARP.md..."
-if [ ! -f "WARP.md" ]; then
-  echo "# Project Instructions" > WARP.md
+# Verify scripts are executable
+if [ ! -x "scripts/git-sync.sh" ] || [ ! -x "scripts/sync-branch.sh" ] || [ ! -x "scripts/review-loop.sh" ] || [ ! -x "scripts/pr-completion-check.sh" ]; then
+  echo "⚠️  Warning: Scripts may not be executable, fixing..."
+  chmod +x scripts/*.sh
 fi
 
-# Extract PR protocol section from source
-sed -n '/^## 🔄 PR COMPLETION PROTOCOL/,/^## /p' "$SOURCE_PROJECT/WARP.md" \
-  | sed '$ d' >> WARP.md
+# Copy optional GitHub Actions workflows
+echo "⚙️  Copying optional GitHub Actions workflows..."
+mkdir -p .github/workflows
 
+if [ -f "$SOURCE_PROJECT/.github/workflows/auto-update-prs.yml" ]; then
+  cp "$SOURCE_PROJECT/.github/workflows/auto-update-prs.yml" .github/workflows/
+  echo "   ✅ Copied auto-update-prs.yml (update base branch name if needed)"
+else
+  echo "   ⚠️  auto-update-prs.yml not found in source (optional)"
+fi
+
+if [ -f "$SOURCE_PROJECT/.github/workflows/cleanup-merged-branches.yml" ]; then
+  cp "$SOURCE_PROJECT/.github/workflows/cleanup-merged-branches.yml" .github/workflows/
+  echo "   ✅ Copied cleanup-merged-branches.yml (update base branches if needed)"
+else
+  echo "   ⚠️  cleanup-merged-branches.yml not found in source (optional)"
+fi
+
+echo ""
+echo "   💡 Remember to enable GitHub auto-delete in repository settings:"
+echo "      Settings → General → Pull Requests → Enable 'Automatically delete head branches'"
+
+# Update agent instructions
+echo "📝 Updating agent instructions..."
+AGENT_FILE="WARP.md"
+if [ ! -f "$AGENT_FILE" ]; then
+  echo "# Project Instructions" > "$AGENT_FILE"
+fi
+
+# Extract PR protocol section from source (between ## markers)
+if grep -q "^## 🔄 PR COMPLETION PROTOCOL" "$SOURCE_PROJECT/WARP.md"; then
+  sed -n '/^## 🔄 PR COMPLETION PROTOCOL/,/^## /p' "$SOURCE_PROJECT/WARP.md" \
+    | sed '$ d' >> "$AGENT_FILE"
+  echo "" >> "$AGENT_FILE"
+else
+  echo "⚠️  Warning: Could not find PR protocol in source WARP.md"
+fi
+
+echo ""
 echo "✅ Setup complete!"
 echo ""
-echo "Next steps:"
-echo "1. Review and customize docs/pr-completion-workflow.md"
-echo "2. Update scripts/pr-completion-check.sh for your base branch"
-echo "3. Configure GitHub branch protection rules"
-echo "4. Test with a sample PR"
+echo "⚠️  REQUIRED NEXT STEPS:"
+echo "1. Update scripts/git-sync.sh:"
+echo "   - Line 28, 38: Change 'develop' to your base branch name if different"
+echo "2. Update scripts/sync-branch.sh:"
+echo "   - Line 217: Change default from 'main' to your base branch if different"
+echo "3. Update scripts/pr-completion-check.sh:"
+echo "   - Update 'git fetch origin develop' and behind-count for your base branch"
+echo "   - Update the suggested sync command if your base branch differs"
+echo "4. Update .github/workflows/auto-update-prs.yml (if copied):"
+echo "   - Update the base branch listed under on.push.branches"
+echo "5. Update .github/workflows/cleanup-merged-branches.yml (if copied):"
+echo "   - Update the branch list under on.pull_request.branches if different"
+echo "   - Enable GitHub setting: Settings → General → Pull Requests → 'Automatically delete head branches'"
+echo "6. Review and customize docs/pr-completion-workflow.md (update base branch, test commands)"
+echo "7. Configure GitHub branch protection rules:"
+echo "   https://github.com/[owner]/[repo]/settings/branches"
+echo "8. Test setup:"
+echo "   ./scripts/git-sync.sh          # Test session sync"
+echo "   ./scripts/review-loop.sh --json"
+echo "   ./scripts/pr-completion-check.sh --json"
+echo "9. Create test PR and verify workflow end-to-end"
 echo ""
-echo "Documentation: docs/sharing-pr-workflow.md"
+echo "📚 Documentation: docs/sharing-pr-workflow.md"
+```
+
+**To use:**
+```bash
+# From your target project directory
+./setup-pr-workflow.sh /path/to/yelp_search_demo
 ```
 
 ## Resources
