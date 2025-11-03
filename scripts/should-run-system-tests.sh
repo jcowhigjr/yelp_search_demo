@@ -26,11 +26,21 @@ if [[ "$DIFF_BASE" == "HEAD^" ]]; then
   echo "ℹ️  No upstream branch detected; comparing against the previous local commit."
 fi
 
-# Gather changed files (including deletions) between DIFF_BASE and HEAD.
+# Gather changed files (including deletions and renames) between DIFF_BASE and HEAD.
+# Use --name-status to detect renames and check both source and destination paths.
 CHANGED_FILES=()
-while IFS= read -r -d '' file; do
-  CHANGED_FILES+=("$file")
-done < <(git diff --name-only --diff-filter=ACDMR -z "${DIFF_BASE}..HEAD")
+while IFS=$'\t' read -r status file; do
+  # For renames (R), check both old and new paths
+  if [[ $status =~ ^R ]]; then
+    # Status is like "R100" or "R095", file is "old_path<tab>new_path"
+    # Split on tab to get both paths
+    old_path="${file%%$'\t'*}"
+    new_path="${file#*$'\t'}"
+    CHANGED_FILES+=("$old_path" "$new_path")
+  else
+    CHANGED_FILES+=("$file")
+  fi
+done < <(git diff --name-status --diff-filter=ACDMR "${DIFF_BASE}..HEAD")
 
 SAFE_PATTERNS=(
   '^docs/'
