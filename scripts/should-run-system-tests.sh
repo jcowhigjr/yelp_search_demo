@@ -26,8 +26,8 @@ if [[ "$DIFF_BASE" == "HEAD^" ]]; then
   echo "ℹ️  No upstream branch detected; comparing against the previous local commit."
 fi
 
-# Gather changed files (added, copied, modified, renamed) between DIFF_BASE and HEAD.
-mapfile -d '' -t CHANGED_FILES < <(git diff --name-only --diff-filter=ACMR -z "${DIFF_BASE}..HEAD")
+# Gather changed files (including deletions) between DIFF_BASE and HEAD.
+mapfile -d '' -t CHANGED_FILES < <(git diff --name-only --diff-filter=ACDMR -z "${DIFF_BASE}..HEAD")
 
 SAFE_PATTERNS=(
   '^docs/'
