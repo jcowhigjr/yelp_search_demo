@@ -3,8 +3,7 @@
 # https://evilmartians.github.io/lefthook/configuration/no_tty.html
 # SOME COMMANDS RELY ON THE MISE SHIMS BEING ON PATH
 
-shell:
-  pty: false
+shell: bash
 verbose: false
 
 # Pre-commit hooks for branch protection and quality
@@ -12,8 +11,9 @@ pre-commit:
   commands:
     protect_main_branches:
       run: |
+        #!/bin/bash
         branch=$(git branch --show-current)
-        if [[ "$branch" == "main" || "$branch" == "develop" ]]; then
+        if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
           echo "❌ Direct commits to $branch are not allowed!"
           echo "   Use: lefthook run workflow-new-feature <branch-name>"
           echo "   Example: lefthook run workflow-new-feature fix/issue-123"
@@ -24,12 +24,13 @@ pre-commit:
         - rebase
     check_branch_sync:
       run: |
+        #!/bin/bash
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           local_sha=$(git rev-parse HEAD)
           remote_sha=$(git rev-parse HEAD@{upstream})
-          if [[ "$local_sha" != "$remote_sha" ]]; then
+          if [ "$local_sha" != "$remote_sha" ]; then
             behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
-            if [[ $behind_count -gt 0 ]]; then
+            if [ $behind_count -gt 0 ]; then
               echo "⚠️  Warning: Your branch is $behind_count commits behind remote"
               echo "   Consider running 'git pull' before committing"
             fi
@@ -333,6 +334,7 @@ workflow-status:
   commands:
     check_status:
       run: |
+        #!/bin/bash
         echo "🔍 Git Workflow Status Check"
         echo "=========================="
         
@@ -341,7 +343,7 @@ workflow-status:
         echo "📍 Current branch: $current_branch"
         
         # Check if on protected branch
-        if [[ "$current_branch" == "main" || "$current_branch" == "develop" ]]; then
+        if [ "$current_branch" = "main" ] || [ "$current_branch" = "develop" ]; then
           echo "⚠️  WARNING: You are on a protected branch ($current_branch)"
           echo "   Use 'lefthook run workflow-new-feature <branch-name>' to create a feature branch"
         fi
@@ -357,14 +359,14 @@ workflow-status:
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           local_sha=$(git rev-parse HEAD)
           remote_sha=$(git rev-parse HEAD@{upstream})
-          if [[ "$local_sha" != "$remote_sha" ]]; then
+          if [ "$local_sha" != "$remote_sha" ]; then
             behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
             ahead_count=$(git rev-list --count HEAD@{upstream}..HEAD)
-            if [[ $behind_count -gt 0 ]]; then
+            if [ $behind_count -gt 0 ]; then
               echo "⚠️  Your branch is $behind_count commits behind remote"
               echo "   Run 'git pull' to sync with remote"
             fi
-            if [[ $ahead_count -gt 0 ]]; then
+            if [ $ahead_count -gt 0 ]; then
               echo "📤 Your branch is $ahead_count commits ahead of remote"
             fi
           else
@@ -377,4 +379,4 @@ workflow-status:
 workflow-new-feature:
   commands:
     create_branch:
-      run: mise exec -- ./workflow-new-feature.sh {0}
+      run: bash ./workflow-new-feature.sh {0}
