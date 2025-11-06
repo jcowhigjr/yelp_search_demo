@@ -42,7 +42,8 @@ pre-commit:
 pre-push:
   pre-command: git add . && git stash
   post-command: |
-    if [[ -n $(git ls-files --others --exclude-standard) ]]; then
+    #!/bin/bash
+    if [ -n "$(git ls-files --others --exclude-standard)" ]; then
       echo "❌ Error: New files were generated during the pre-push hook:"
       git ls-files --others --exclude-standard
       echo "Please commit these files before pushing."
@@ -52,36 +53,38 @@ pre-push:
     dependency_check:
       tags: validation
       run: |
+        #!/bin/bash
         echo "🔍 Checking for missing gem dependencies..."
         
         # Check if any require statements don't have corresponding gems
-        missing_deps=()
+        missing_deps=""
         
         # Find all require statements in committed files
         for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(rb|erb)$'); do
-          if [[ -f "$file" ]]; then
+          if [ -f "$file" ]; then
             # Look for require statements (excluding require_relative)
-            requires=$(grep -n "require ['\"]" "$file" | grep -v "require_relative" | sed "s/.*require ['\"]/g" | sed "s/['\"].*//g")
+            requires=$(grep -n "require ['\"]" "$file" | grep -v "require_relative" | sed "s/.*require ['\"]//" | sed "s/['\"].*//")
             for req in $requires; do
               gem_name=$(echo "$req" | cut -d'/' -f1)
               # Skip standard library requires and Rails core
-              if [[ "$gem_name" =~ ^(date|json|uri|net|open-uri|digest|base64|securerandom|logger|pathname|fileutils|tmpdir|yaml|csv|stringio|ostruct|set|forwardable|delegate|benchmark|timeout|pp|pstore|dbm|etc|fcntl|fiddle|io|nkf|openssl|psych|pty|racc|rbconfig|readline|ripper|socket|syslog|thread|time|zlib|english|irb|mkmf|optparse|prime|profiler|rake|rdoc|rss|rubygems|shellwords|singleton|test|un|weakref|webrick|win32ole|xmlrpc)$ ]]; then
-                continue
-              fi
-              # Skip Rails core components that don't need gems
-              if [[ "$gem_name" =~ ^(rails|active_|action_).*$ ]]; then
-                continue
-              fi
+              case "$gem_name" in
+                date|json|uri|net|open-uri|digest|base64|securerandom|logger|pathname|fileutils|tmpdir|yaml|csv|stringio|ostruct|set|forwardable|delegate|benchmark|timeout|pp|pstore|dbm|etc|fcntl|fiddle|io|nkf|openssl|psych|pty|racc|rbconfig|readline|ripper|socket|syslog|thread|time|zlib|english|irb|mkmf|optparse|prime|profiler|rake|rdoc|rss|rubygems|shellwords|singleton|test|un|weakref|webrick|win32ole|xmlrpc)
+                  continue
+                  ;;
+                rails*|active_*|action_*)
+                  continue
+                  ;;
+              esac
               if ! grep -q "gem ['\"]$gem_name['\"]" Gemfile; then
-                missing_deps+=("$gem_name (required in $file)")
+                missing_deps="$missing_deps$gem_name (required in $file)\n"
               fi
             done
           fi
         done
         
-        if [[ ${#missing_deps[@]} -gt 0 ]]; then
+        if [ -n "$missing_deps" ]; then
           echo "❌ Missing gem dependencies detected:"
-          printf "   %s\n" "${missing_deps[@]}"
+          echo "$missing_deps"
           echo "   Please add these gems to your Gemfile"
           exit 1
         fi
