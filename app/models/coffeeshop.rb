@@ -14,10 +14,17 @@ class Coffeeshop < ApplicationRecord
     lat = search.latitude
     long = search.longitude
     begin
+      # Try to get API key from credentials, fallback to environment variable
+      api_key = Rails.application.credentials.dig(:yelp, :api_key) || ENV['YELP_API_KEY']
+      
+      if api_key.blank? || api_key == 'REPLACE_WITH_YOUR_YELP_API_KEY'
+        return "error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/documentation/v3/authentication"
+      end
+      
       response = RestClient::Request.execute(
         method: 'GET',
         url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
-        headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" },
+        headers: { Authorization: "Bearer #{api_key}" },
       )
       results = JSON.parse(response)
     rescue RestClient::Exception => e

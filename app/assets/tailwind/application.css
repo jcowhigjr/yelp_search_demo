@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-@theme {
+
+:root {
   /* Theme colors (light mode defaults) */
   --color-primary: #4B9CD3; /* Carolina Blue */
   --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */
@@ -30,8 +31,12 @@
   }
   .bg-base {
     background-color: var(--color-bg);
+    /* fallback for browsers not supporting CSS vars */
+    background-color: #fff;
   }
   .text-base {
     color: var(--color-text);
+    /* fallback for browsers not supporting CSS vars */
+    color: #000;
   }
 }
