@@ -1,7 +1,8 @@
 <div class="col xl l6 m12 s12">
-  <%# Use Tailwind dark: classes to avoid Materialize CSS override conflict.
-      Materialize's .card { background-color: #fff } would win over .bg-base utility. %>
-  <div class="card large coffeeshop-card dark:bg-slate-900 dark:text-white">
+  <%# Dark mode handled via .coffeeshop-card.card CSS rule in coffeeshops.scss
+      which uses CSS variables (--color-bg, --color-text) that respond to prefers-color-scheme.
+      Tailwind dark: classes don't work due to invalid nested @media syntax in v4 build. %>
+  <div class="card large coffeeshop-card">
     <div class="card-image">
       <p><%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %></p>
     </div>

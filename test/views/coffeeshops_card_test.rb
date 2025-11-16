@@ -9,7 +9,7 @@ class CoffeeshopsCardTest < ActionView::TestCase
     view.stubs(:coffeeshop_path).returns('/coffeeshops/1')
   end
 
-  test 'coffeeshop card uses Tailwind dark classes to avoid Materialize CSS conflicts' do
+  test 'coffeeshop card has required class for CSS variable dark mode' do
     render partial: 'coffeeshops/coffeeshop', locals: {
       coffeeshop: @coffeeshop,
       search_query: 'coffee',
@@ -18,13 +18,13 @@ class CoffeeshopsCardTest < ActionView::TestCase
     assert_includes rendered, 'coffeeshop-card',
                     'Expected rendered card to include coffeeshop-card class'
 
-    # Require dark:bg-slate-900 specifically to prevent regression.
-    # bg-base utility doesn't work because Materialize's .card { background-color: #fff }
-    # overrides it due to CSS specificity. Tailwind dark: classes avoid this conflict.
-    assert_includes rendered, 'dark:bg-slate-900',
-                    'Expected card to use dark:bg-slate-900 (not bg-base) to avoid Materialize CSS override'
-    
-    assert_includes rendered, 'dark:text-white',
-                    'Expected card to use dark:text-white for proper text contrast in dark mode'
+    # Dark mode works via .coffeeshop-card.card CSS rule in coffeeshops.scss
+    # which uses CSS variables (--color-bg, --color-text) that respond to prefers-color-scheme.
+    # This is necessary because:
+    # 1. Materialize's .card { background-color: #fff } overrides Tailwind utilities
+    # 2. Tailwind v4 dark: classes generate invalid nested @media syntax
+    # 3. .coffeeshop-card.card has higher specificity than .card alone
+    assert_includes rendered, 'class="card large coffeeshop-card"',
+                    'Expected card to have both card and coffeeshop-card classes for CSS override'
   end
 end

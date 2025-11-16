@@ -57,19 +57,28 @@ When creating any PR, the workflow should:
 .bg-base { background-color: var(--color-bg); }
 ```
 
-**Solution**: Always use Tailwind's `dark:` prefix classes for dark mode instead of custom CSS variable utilities:
+**Solution**: Use a higher-specificity selector in SCSS with CSS variables that respond to `prefers-color-scheme`:
 
-✅ **Correct**:
-```erb
-<div class="card coffeeshop-card dark:bg-slate-900 dark:text-white">
+✅ **Correct** (in `app/assets/stylesheets/coffeeshops.scss` or `application.css`):
+```scss
+.coffeeshop-card.card {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+}
 ```
 
-❌ **Incorrect** (will show white background in dark mode):
+❌ **Incorrect** (won't work):
+- Using `.bg-base` utility alone (same specificity as `.card`)
+- Using Tailwind `dark:` classes (Tailwind v4 generates invalid nested `@media` syntax)
 ```erb
-<div class="card coffeeshop-card bg-base text-base">
+<div class="card coffeeshop-card dark:bg-slate-900">  <!-- Invalid CSS generated -->
 ```
 
-**Why**: Tailwind's `dark:` classes use `@media (prefers-color-scheme: dark)` which adds specificity, whereas custom utilities like `.bg-base` have the same specificity as Materialize's `.card`.
+**Why**: 
+1. Materialize's `.card` has single-class specificity
+2. Our `.coffeeshop-card.card` has two-class specificity (wins)
+3. The CSS variables `--color-bg` and `--color-text` automatically change based on `@media (prefers-color-scheme: dark)` rules in `tailwind/application.css`
+4. The `!important` ensures it overrides Materialize regardless of load order
 
 **Prevention**: 
 - The test `test/views/coffeeshops_card_test.rb` enforces this pattern
