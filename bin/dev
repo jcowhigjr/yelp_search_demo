@@ -5,6 +5,12 @@ if ! gem list foreman -i --silent; then
   gem install foreman
 fi
 
+# Ensure stale Puma PID files never block restarts
+if [ -f tmp/pids/server.pid ]; then
+  echo "Removing stale tmp/pids/server.pid"
+  rm -f tmp/pids/server.pid
+fi
+
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
