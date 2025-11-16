@@ -18,7 +18,7 @@ class Coffeeshop < ApplicationRecord
       api_key = Rails.application.credentials.dig(:yelp, :api_key) || ENV.fetch('YELP_API_KEY', nil)
       
       if api_key.blank? || api_key == 'REPLACE_WITH_YOUR_YELP_API_KEY'
-        return "error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/documentation/v3/authentication"
+        return "error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/v3/manage_app"
       end
       
       response = RestClient::Request.execute(
