@@ -1,5 +1,7 @@
 <div class="col xl l6 m12 s12">
-  <div class="card large coffeeshop-card bg-base text-base">
+  <%# Use Tailwind dark: classes to avoid Materialize CSS override conflict.
+      Materialize's .card { background-color: #fff } would win over .bg-base utility. %>
+  <div class="card large coffeeshop-card dark:bg-slate-900 dark:text-white">
     <div class="card-image">
       <p><%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %></p>
     </div>

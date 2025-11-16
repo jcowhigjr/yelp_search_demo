@@ -43,6 +43,39 @@ When creating any PR, the workflow should:
 - [ ] Ready for next feature (clean working tree)
 - [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed with Puppeteer/Windsurf screenshot
 
+### ⚠️ Known CSS Conflicts & Gotchas
+
+#### Materialize CSS Override Issue
+
+**Problem**: Materialize CSS (loaded from CDN) defines hard-coded background colors that override Tailwind utilities with equal specificity:
+
+```css
+/* Materialize (wins in specificity tie) */
+.card { background-color: #fff; }
+
+/* Our Tailwind (loses even though loaded later) */
+.bg-base { background-color: var(--color-bg); }
+```
+
+**Solution**: Always use Tailwind's `dark:` prefix classes for dark mode instead of custom CSS variable utilities:
+
+✅ **Correct**:
+```erb
+<div class="card coffeeshop-card dark:bg-slate-900 dark:text-white">
+```
+
+❌ **Incorrect** (will show white background in dark mode):
+```erb
+<div class="card coffeeshop-card bg-base text-base">
+```
+
+**Why**: Tailwind's `dark:` classes use `@media (prefers-color-scheme: dark)` which adds specificity, whereas custom utilities like `.bg-base` have the same specificity as Materialize's `.card`.
+
+**Prevention**: 
+- The test `test/views/coffeeshops_card_test.rb` enforces this pattern
+- Always run `bin/dev` and visually verify dark cards before committing UI changes
+- The `tailwind-build-check` hook ensures compiled CSS contains dark-mode utilities
+
 ### Automated Implementation Pattern
 ```bash
 #!/bin/bash
