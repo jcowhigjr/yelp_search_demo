@@ -23,7 +23,8 @@ echo "🔍 Validating required dark-mode tokens in $BUILD_PATH"
 missing_tokens=0
 css_contents=$(<"$BUILD_PATH")
 for token in "${TOKENS[@]}"; do
-  if ! grep -q "$token" <<<"$css_contents"; then
+  # Use `--` to ensure tokens like `--color-bg` are treated as patterns, not options
+  if ! grep -q -- "$token" <<<"$css_contents"; then
     echo "❌ Missing token: $token"
     missing_tokens=1
   fi
