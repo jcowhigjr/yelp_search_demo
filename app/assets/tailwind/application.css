@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-@theme {
+
+:root {
   /* Theme colors (light mode defaults) */
   --color-primary: #4B9CD3; /* Carolina Blue */
   --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */

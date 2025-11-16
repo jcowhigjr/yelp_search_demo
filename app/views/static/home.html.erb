@@ -1,17 +1,15 @@
-<body class="landing-body">
-    <div class="container">
-        <div class="row center">
-            <h2 class="white-text">Save time by sharing your device location</h2>
-        <% if flash[:error] %>
-          <div>
-            <p class="red-text"> <%= flash[:error] %> </p>
-          </div>
-        <% end %>
-        </div>
-            <%= render 'searches/form' %>
-
-        </div>
+<% content_for :body_class, 'landing-body' %>
+<div class="container">
+    <div class="row center">
+        <h2 class="white-text">Save time by sharing your device location</h2>
+    <% if flash[:error] %>
+      <div>
+        <p class="red-text"> <%= flash[:error] %> </p>
+      </div>
+    <% end %>
+    </div>
+        <%= render 'searches/form' %>
 
     </div>
 
-</body>
+</div>
