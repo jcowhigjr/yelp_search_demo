@@ -4,7 +4,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 BUILD_PATH="app/assets/builds/tailwind.css"
-TOKENS=(".bg-base" ".text-base" "--color-bg" "@media (prefers-color-scheme:dark)")
+TOKENS=(".bg-base" ".text-base" "--color-bg")
+MEDIA_TOKEN_REGEX='@media \(prefers-color-scheme: ?dark\)'
 
 echo "🌬️  Building Tailwind assets (production mode)"
 MISE_ENV=${MISE_ENV:-}
@@ -29,6 +30,11 @@ for token in "${TOKENS[@]}"; do
     missing_tokens=1
   fi
 done
+
+if ! grep -Eq "$MEDIA_TOKEN_REGEX" <<<"$css_contents"; then
+  echo "❌ Missing token: @media (prefers-color-scheme: dark)"
+  missing_tokens=1
+fi
 
 if [[ "$missing_tokens" -ne 0 ]]; then
   cat <<'EOF'
