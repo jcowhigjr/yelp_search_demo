@@ -1,30 +1,29 @@
-<body class="landing-body">
-    <div class="container page-container">
-        <div class="row center">
-            <% if flash[:error] %>
-                <div class="row center">
-                    <span class="page-text red-text"><%= flash[:error] %></span>
-                </div>
-             <% end %>
-            <h1 class="flow-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
-        </div>
-        <% if !current_user || current_user.user_favorites.empty? %>
+<% content_for :body_class, 'landing-body' %>
+<div class="container page-container">
+    <div class="row center">
+        <% if flash[:error] %>
             <div class="row center">
-                <span class="page-text"><%= t('.you-dont-have-a') %></span>
+                <span class="page-text red-text"><%= flash[:error] %></span>
             </div>
-            <br><br><br>
-            <div class="row center">
-                <span class="page-text"><%= link_to t('.search-for-a-sh'), new_search_url %></span>
-            </div>
-        <% else %>
+         <% end %>
+        <h1 class="flow-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
+    </div>
+    <% if !current_user || current_user.user_favorites.empty? %>
         <div class="row center">
-            <span class="page-text">Your favorite spots:</span>
+            <span class="page-text"><%= t('.you-dont-have-a') %></span>
         </div>
+        <br><br><br>
         <div class="row center">
-            <% current_user.user_favorites.each do |fav| %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: fav.coffeeshop} %>
-            <% end %>
+            <span class="page-text"><%= link_to t('.search-for-a-sh'), new_search_url %></span>
         </div>
+    <% else %>
+    <div class="row center">
+        <span class="page-text">Your favorite spots:</span>
+    </div>
+    <div class="row center">
+        <% current_user.user_favorites.each do |fav| %>
+            <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop: fav.coffeeshop} %>
         <% end %>
     </div>
-</body>
+    <% end %>
+</div>
