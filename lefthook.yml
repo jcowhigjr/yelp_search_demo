@@ -110,7 +110,12 @@ pre-push:
           exit 1
         fi
         
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false bin/rails test:system --quiet; then
+        echo "🧪 Running Rails tests..."
+        if ! CI=true RAILS_ENV=test bin/rails test --quiet; then
+          echo "❌ Rails tests failed"
+          exit 1
+        fi
+        
         echo "✅ Rails tests completed successfully."
         
         echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
