@@ -17,7 +17,7 @@
     <script data-turbo-track="reload" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
     <%= javascript_importmap_tags %>
   </head>
-  <body>
+  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
   <% if logged_in? %>
     <%= render 'layouts/navbar' %>
   <% end %>

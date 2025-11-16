@@ -14,14 +14,24 @@ class Coffeeshop < ApplicationRecord
     lat = search.latitude
     long = search.longitude
     begin
+      # Try to get API key from credentials, fallback to environment variable
+      api_key = Rails.application.credentials.dig(:yelp, :api_key) || ENV.fetch('YELP_API_KEY', nil)
+      
+      if api_key.blank? || api_key == 'REPLACE_WITH_YOUR_YELP_API_KEY'
+        return "error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/v3/manage_app"
+      end
+      
       response = RestClient::Request.execute(
         method: 'GET',
         url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
-        headers: { Authorization: "Bearer #{Rails.application.credentials.yelp[:api_key]}" },
+        headers: { Authorization: "Bearer #{api_key}" },
       )
       results = JSON.parse(response)
     rescue RestClient::Exception => e
-      return "error #{e.inspect}"
+      # Log the detailed error for debugging but return a generic message to users
+      Rails.logger.error("Yelp API request failed: #{e.class} - #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      return "error: Unable to connect to Yelp. Please try again later."
     end
 
     coffeeshops = results['businesses']

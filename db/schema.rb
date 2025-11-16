@@ -10,55 +10,55 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2023_01_08_185633) do
+ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
   create_table "coffeeshops", force: :cascade do |t|
-    t.string "name"
     t.string "address"
-    t.float "rating"
-    t.string "yelp_url"
-    t.string "image_url"
-    t.string "phone_number", default: "None"
-    t.integer "search_id"
     t.datetime "created_at", null: false
+    t.string "image_url"
+    t.string "name"
+    t.string "phone_number", default: "None"
+    t.float "rating"
+    t.integer "search_id"
     t.datetime "updated_at", null: false
+    t.string "yelp_url"
     t.index ["search_id"], name: "index_coffeeshops_on_search_id"
   end
 
   create_table "reviews", force: :cascade do |t|
-    t.string "content"
-    t.float "rating"
-    t.integer "user_id"
     t.integer "coffeeshop_id"
+    t.string "content"
     t.datetime "created_at", null: false
+    t.float "rating"
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["coffeeshop_id"], name: "index_reviews_on_coffeeshop_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "searches", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "query"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.decimal "latitude", precision: 16, scale: 6
     t.decimal "longitude", precision: 16, scale: 6
+    t.string "query"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["user_id"], name: "index_searches_on_user_id"
   end
 
   create_table "user_favorites", force: :cascade do |t|
-    t.integer "user_id"
     t.integer "coffeeshop_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
     t.index ["coffeeshop_id"], name: "index_user_favorites_on_coffeeshop_id"
     t.index ["user_id"], name: "index_user_favorites_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "password_digest"
     t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "password_digest"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true

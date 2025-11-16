@@ -38,6 +38,10 @@ This script will:
 5.  Set up the database.
 6.  Set up Git hooks using Lefthook.
 
+**⚠️ Important: API Configuration Required**
+
+After setup, you'll need to configure the Yelp API key for the application to work properly. See [API_SETUP.md](API_SETUP.md) for detailed instructions.
+
 **Environment and Automated Checks:**
 
 This project leverages `mise` for consistent tool versioning and `Lefthook` for managing Git hooks and automated checks (e.g., tests, linters) defined in `lefthook.yml`.
