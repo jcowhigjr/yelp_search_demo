@@ -36,3 +36,20 @@
     color: var(--color-text);
   }
 }
+
+@layer components {
+  .coffeeshop-card.card {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .coffeeshop-card .card-content,
+  .coffeeshop-card .card-action {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .coffeeshop-card .card-action {
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+  }
+}
