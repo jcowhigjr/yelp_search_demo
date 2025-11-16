@@ -6,7 +6,7 @@
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
 [tools]
-ruby = "3.4.4"
+ruby = "3.3.10"
 # lefthook is installed via Homebrew
 # Node.js and yarn are NOT included here to prevent CI compilation issues
 # They should be managed separately for local development if needed
@@ -16,11 +16,18 @@ SYSTEMD_PAGER = "cat"
 GIT_PAGER = "cat"
 SKIP_SYSTEM_TESTS = "true" # Skip browser-based tests by default
 # Act configuration - using Node.js 20 for GitHub Actions validation
+# Force use of precompiled binaries for faster installation
+RUBY_BUILD_CACHE_PATH = "$HOME/.cache/ruby-build"
+RUBY_CONFIGURE_OPTS = "--disable-install-doc"
+# Use precompiled Ruby binaries when available
+MISE_RUBY_BUILD_OPTS = "--disable-install-doc"
 
 [settings]
 # Container-specific settings
 experimental = true
 legacy_version_file = true # Changed as per PR 3 Option A
+# Enable faster installation via precompiled binaries
+always_keep_download = true
 
 [tasks.setup]
 description = "Run development setup script"
