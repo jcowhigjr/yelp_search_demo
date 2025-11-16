@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 BUILD_PATH="app/assets/builds/tailwind.css"
-TOKENS=(".bg-base" ".text-base" "--color-bg" "@media (prefers-color-scheme: dark)")
+TOKENS=(".bg-base" ".text-base" "--color-bg" "@media (prefers-color-scheme:dark)")
 
 echo "🌬️  Building Tailwind assets (production mode)"
 MISE_ENV=${MISE_ENV:-}
