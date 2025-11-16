@@ -19,7 +19,12 @@ class SearchesController < ApplicationController
 
     search_result = Coffeeshop.get_search_results(@search)
     if search_result.is_a?(String) && search_result.start_with?('error')
-      flash[:error] = search_result
+      # Display generic error message; detailed errors are logged server-side
+      if search_result.include?('not configured')
+        flash[:error] = search_result  # Show API key setup message
+      else
+        flash[:error] = t('something_went_wrong')  # Generic message for other errors
+      end
       redirect_to static_home_url
     else
       @search.save

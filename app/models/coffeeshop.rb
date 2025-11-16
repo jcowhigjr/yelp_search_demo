@@ -28,7 +28,10 @@ class Coffeeshop < ApplicationRecord
       )
       results = JSON.parse(response)
     rescue RestClient::Exception => e
-      return "error #{e.inspect}"
+      # Log the detailed error for debugging but return a generic message to users
+      Rails.logger.error("Yelp API request failed: #{e.class} - #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n")) if e.backtrace
+      return "error: Unable to connect to Yelp. Please try again later."
     end
 
     coffeeshops = results['businesses']
