@@ -15,7 +15,7 @@ class Coffeeshop < ApplicationRecord
     long = search.longitude
     begin
       # Try to get API key from credentials, fallback to environment variable
-      api_key = Rails.application.credentials.dig(:yelp, :api_key) || ENV['YELP_API_KEY']
+      api_key = Rails.application.credentials.dig(:yelp, :api_key) || ENV.fetch('YELP_API_KEY', nil)
       
       if api_key.blank? || api_key == 'REPLACE_WITH_YOUR_YELP_API_KEY'
         return "error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/documentation/v3/authentication"
