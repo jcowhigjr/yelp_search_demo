@@ -16,7 +16,8 @@ class CssCompilationTest < ActiveSupport::TestCase
     assert_path_exists BUILD_PATH, 'Tailwind CSS build file missing.'
     css_content = File.read(BUILD_PATH)
 
-    assert_match(/\.bg-primary\s*{\s*background-color:\s*var\(--color-primary\)\s*}/, css_content,
+    # Allow an optional trailing semicolon before the closing brace in the declaration
+    assert_match(/\.bg-primary\s*{\s*background-color:\s*var\(--color-primary\)\s*;?\s*}/, css_content,
                  'Expected .bg-primary class definition in compiled CSS.')
   end
 

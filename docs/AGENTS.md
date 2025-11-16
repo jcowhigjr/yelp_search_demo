@@ -41,6 +41,7 @@ When creating any PR, the workflow should:
 - [ ] Latest changes pulled from remote
 - [ ] Feature branch deleted locally
 - [ ] Ready for next feature (clean working tree)
+- [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed with Puppeteer/Windsurf screenshot
 
 ### Automated Implementation Pattern
 ```bash
