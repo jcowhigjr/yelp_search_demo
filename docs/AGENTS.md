@@ -43,6 +43,48 @@ When creating any PR, the workflow should:
 - [ ] Ready for next feature (clean working tree)
 - [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed with Puppeteer/Windsurf screenshot
 
+### ⚠️ Known CSS Conflicts & Gotchas
+
+#### Materialize CSS Override Issue
+
+**Problem**: Materialize CSS (loaded from CDN) defines hard-coded background colors that override Tailwind utilities with equal specificity:
+
+```css
+/* Materialize (wins in specificity tie) */
+.card { background-color: #fff; }
+
+/* Our Tailwind (loses even though loaded later) */
+.bg-base { background-color: var(--color-bg); }
+```
+
+**Solution**: Use a higher-specificity selector in SCSS with CSS variables that respond to `prefers-color-scheme`:
+
+✅ **Correct** (in `app/assets/stylesheets/coffeeshops.scss` or `application.css`):
+```scss
+.coffeeshop-card.card {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+}
+```
+
+❌ **Incorrect** (won't work):
+- Using `.bg-base` utility alone (same specificity as `.card`)
+- Using Tailwind `dark:` classes (Tailwind v4 generates invalid nested `@media` syntax)
+```erb
+<div class="card coffeeshop-card dark:bg-slate-900">  <!-- Invalid CSS generated -->
+```
+
+**Why**: 
+1. Materialize's `.card` has single-class specificity
+2. Our `.coffeeshop-card.card` has two-class specificity (wins)
+3. The CSS variables `--color-bg` and `--color-text` automatically change based on `@media (prefers-color-scheme: dark)` rules in `tailwind/application.css`
+4. The `!important` ensures it overrides Materialize regardless of load order
+
+**Prevention**: 
+- The test `test/views/coffeeshops_card_test.rb` enforces this pattern
+- Always run `bin/dev` and visually verify dark cards before committing UI changes
+- The `tailwind-build-check` hook ensures compiled CSS contains dark-mode utilities
+
 ### Automated Implementation Pattern
 ```bash
 #!/bin/bash
