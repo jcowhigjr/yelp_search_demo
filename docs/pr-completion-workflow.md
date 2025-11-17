@@ -12,6 +12,8 @@ This workflow ensures agents can work on PRs without requiring repeated "continu
 
 **Always start here when working on an existing PR.**
 
+> **Reminder:** GitHub sets `mergeStateStatus=BLOCKED` whenever *any* review thread (human or automated) remains unresolved. Treat Codex (`@codex review` / `@codex address that feedback`) and Claude (`@claude`, `@claude-suggest`) comments exactly like human reviewers: fix, reply, resolve.
+
 ### Checklist
 
 - [ ] Check for PR reviews using GitHub API/GraphQL
@@ -24,6 +26,8 @@ This workflow ensures agents can work on PRs without requiring repeated "continu
   - [ ] Resolve each thread via GitHub GraphQL API
   - [ ] GOTO Phase 0 (check for new reviews)
 - [ ] If NO reviews exist, proceed to Phase 1
+
+If GitHub still reports `mergeStateStatus=BLOCKED`, re-run `./scripts/review-loop.sh`—even automated reviewers show up as threads in that output.
 
 ### Commands
 

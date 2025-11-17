@@ -2,7 +2,7 @@
 # scripts/pr-completion-check.sh
 #
 # Validate PR completion state by checking all requirements for merge
-# Usage: ./scripts/pr-completion-check.sh [--json]
+# Usage: ./scripts/pr-completion-check.sh [--json] [--auto-merge]
 #
 # Checks:
 #   - Review threads resolved
@@ -20,9 +20,23 @@ set -e
 
 # Parse arguments
 OUTPUT_JSON=false
-if [[ "$1" == "--json" ]]; then
-  OUTPUT_JSON=true
-fi
+AUTO_MERGE=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --json)
+      OUTPUT_JSON=true
+      ;;
+    --auto-merge)
+      AUTO_MERGE=true
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      echo "Usage: $0 [--json] [--auto-merge]" >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
 
 # Check if we're on a branch with a PR
 if ! gh pr view &>/dev/null; then
@@ -163,6 +177,10 @@ fi
 
 case "$MERGE_STATE" in
   "BLOCKED")
+    if [[ "$UNRESOLVED_REVIEWS" -gt 0 && "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ⚠️  GitHub reports mergeStateStatus=BLOCKED because $UNRESOLVED_REVIEWS review thread(s) remain unresolved (including Codex/Claude automation)."
+      echo "      Resolve every thread to unblock auto-merge."
+    fi
     if [[ "$REVIEW_DECISION" == "APPROVED" ]]; then
       STATUS_APPROVALS=true
       if [[ "$OUTPUT_JSON" == "false" ]]; then
@@ -209,6 +227,7 @@ if [[ "$OUTPUT_JSON" == "true" ]]; then
   "ready_to_merge": $([ ${#BLOCKERS[@]} -eq 0 ] && echo "true" || echo "false"),
   "status": {
     "reviews_resolved": ${STATUS_REVIEWS},
+    "unresolved_review_threads": $UNRESOLVED_REVIEWS,
     "ci_passing": ${STATUS_CI},
     "branch_up_to_date": ${STATUS_UP_TO_DATE},
     "no_conflicts": ${STATUS_MERGEABLE},
@@ -250,6 +269,24 @@ else
     fi
     if [[ "$BEHIND_COUNT" -gt 0 ]]; then
       echo "  • Sync branch: ./scripts/sync-branch.sh develop"
+    fi
+  fi
+fi
+
+# Queue auto-merge if requested and no blockers
+if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
+  if [[ "$OUTPUT_JSON" == "false" ]]; then
+    echo ""
+    echo "🚀 Queueing GitHub auto-merge (squash)..."
+  fi
+  if gh pr merge --auto --squash "$PR_NUMBER"; then
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ✅ Auto-merge queued successfully."
+    fi
+  else
+    BLOCKERS+=("Failed to queue auto-merge")
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ❌ Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
     fi
   fi
 fi
