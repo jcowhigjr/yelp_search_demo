@@ -847,6 +847,7 @@ python automated_code_review.py --dry-run
 - Test hooks locally before committing
 - Never use `--no-verify` (per user preferences)
 - Keep hooks fast to avoid interrupting development flow
+- For every PR, explicitly check for automated reviewer comments (e.g. `@chatgpt-codex-connector`) and ensure their suggestions are either implemented or consciously rejected with rationale, and the corresponding threads are marked **resolved**.
 
 ### 5. Team Collaboration
 
@@ -873,8 +874,11 @@ python automated_code_review.py --dry-run
 Prompts live under `.github/prompts/` and provide concise, task-focused guidance aligned with our tooling.
 
 - Start with `.github/prompts/rails-system-tests.prompt.md` to visually verify app behavior using Rails system tests (Cuprite).
+- Use `.github/prompts/headless-visual-verification.prompt.md` when working on non-trivial visual/UI changes that should be empirically verified with headless browser tests (Puppeteer MCP or Playwright), aligned with Issue #982.
 - Follow the commands as written to match CI: `mise run test-prepare`, `mise exec -- bin/rails test`, and `HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system`.
+- For additional deterministic visual checks, run the Puppeteer-based script described in `README.md` (e.g., `mise exec -- yarn visual:verify --urls "/,/search?query=coffee,/favorites"`) and diff the generated screenshots under `tmp/visual-verification`.
 - Keep changes small and verify before/after using screenshots or focused temporary assertions.
+- When headless visual verification or automated reviewers (Claude/Codex/etc.) surface issues, you **must address** those issues and mark the corresponding PR comments/threads as **resolved** before treating the PR as done.
 
 ## Project-Specific Notes
 

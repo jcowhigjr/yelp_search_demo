@@ -10,6 +10,12 @@ messages:
           E --> F[Creates new branch '<branch-name>'];
           F --> G[Switches to '<branch-name>'];
           G --> H[Developer/Agent starts coding on new branch];
+
+      For any non-trivial visual/UI change (layout, CSS, DOM structure, or interactions),
+      you MUST follow the "Headless Browser Verification for Visual Changes (Issue #982)"
+      policy documented in docs/AGENTS.md and, when available, use headless browser tests
+      (Puppeteer MCP integration preferred, otherwise Playwright CLI) to empirically
+      verify behavior instead of relying on memory or assumptions.
   - role: user
     content: >-
       Please pick up this Issue {{input}}, identify where it is and what is
