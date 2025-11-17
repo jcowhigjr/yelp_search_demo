@@ -50,6 +50,9 @@ pre-push:
       exit 1
     fi
   commands:
+    review-loop-enforcement:
+      run: scripts/enforce-review-loop.sh
+      tags: meta reviews
     dependency_check:
       tags: validation
       run: |
