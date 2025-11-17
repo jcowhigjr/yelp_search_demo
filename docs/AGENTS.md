@@ -43,6 +43,37 @@ When creating any PR, the workflow should:
 - [ ] Ready for next feature (clean working tree)
 - [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed with Puppeteer/Windsurf screenshot
 
+### Empirical Verification & Cross-Model Escalation (Issue #981)
+
+Before opening or merging a bug-fix PR, follow this safety loop:
+
+1. **Implement + run tests**
+   - Apply your primary fix.
+   - Ensure unit/integration/system suites relevant to the surface are green.
+2. **Empirical check**
+   - UI: run `bin/dev`, reproduce the real screen, grab screenshots if possible.
+   - API: hit the endpoint (e.g., `curl` or API client) and capture the actual response.
+   - Jobs: enqueue/run the job and confirm downstream side-effects.
+   - If you *cannot* verify the behavior directly, treat it as “not verified.”
+3. **Escalate when behavior is wrong or unverified**
+   - Run a focused second-opinion review using Claude CLI (or another model) **after** the first empirical attempt fails or is inconclusive.
+   - Use the helper script to generate a ready-to-send prompt:
+     ```bash
+     scripts/generate-cross-model-prompt.sh <ISSUE_URL_OR_NUMBER> <surface>
+     # surface options: ui | api | job (defaults to ui)
+     ```
+   - Paste the output into `claude` / `claude-cli`:
+     ```bash
+     claude --model opus --message "$(scripts/generate-cross-model-prompt.sh https://github.com/.../issues/981 ui)"
+     ```
+   > Replace `https://github.com/.../issues/981` (or `<ISSUE_URL_OR_NUMBER>`) with the actual GitHub issue URL or number for the bug you’re working on.
+4. **Document outcomes**
+   - Summarize what the second agent/tool recommended and how you acted on it in the PR discussion or commit message when relevant.
+
+This escalation loop is opt-in but strongly recommended for layered issues (CSS specificity vs. Tailwind, production-only config, CI-vs-local mismatches). It acts as the final safety valve before declaring a tricky bug “done.”
+
+> For full GitHub-based Claude review automation (`@claude`, `@claude-suggest`), see the “Claude AI Code Review Integration” section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
+
 ### ⚠️ Known CSS Conflicts & Gotchas
 
 #### Materialize CSS Override Issue
