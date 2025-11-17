@@ -74,6 +74,44 @@ This escalation loop is opt-in but strongly recommended for layered issues (CSS 
 
 > For full GitHub-based Claude review automation (`@claude`, `@claude-suggest`), see the “Claude AI Code Review Integration” section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
 
+#### Planning-time Claude CLI review
+
+For non-trivial bugs or features, local agents should also ask Claude (via `claude` / `claude-cli`) to review their **plan** before writing significant code:
+
+1. Draft a short plan that includes:
+   - Symptom and expected behavior
+   - Suspected layers involved (UI, API, jobs, config, etc.)
+   - Proposed implementation steps
+2. Run a one-shot Claude review of the plan:
+   ```bash
+   claude --model opus --message "Planning review for <ISSUE_URL_OR_NUMBER>...
+   Symptom: <what’s broken>
+   Expected: <how it should behave>
+   Suspected layers: <ui/api/job/config>
+   Proposed plan:
+   1) <step 1>
+   2) <step 2>
+   3) <step 3>
+   What edge cases or cross-layer issues am I missing?"
+   ```
+3. Incorporate any critical feedback (missed surfaces, env differences, logging/observability gaps) **before** implementing the fix.
+
+#### Template prompts by surface
+
+When escalating to Claude CLI after an empirical check, bias toward concise, surface-specific prompts:
+
+- **UI / Styling issues**
+  - Include: screenshots (or descriptions), key HTML/ERB snippets, Tailwind/Materialize classes, and relevant CSS/SCSS.
+  - Ask Claude to reason about: CSS specificity, asset pipeline ordering, dark-mode behavior, Hotwire/Turbo interactions.
+- **API / HTTP issues**
+  - Include: endpoint, HTTP method, sample request/response (redacting secrets), and controller/serializer snippets.
+  - Ask Claude to reason about: parameter handling, authentication/authorization, serialization, status codes, and env-specific config.
+- **Background job / worker issues**
+  - Include: job class name, arguments, logs, and downstream models/services affected.
+  - Ask Claude to reason about: enqueue vs perform timing, retries, idempotency, and side-effect visibility.
+
+You can either write these prompts by hand or let `scripts/generate-cross-model-prompt.sh` / `scripts/ai-css-review.sh` assemble the details for you.
+
 ### Headless Browser Verification for Visual Changes (Issue #982)
 
 For any non-trivial visual/UI change (layout, CSS, DOM structure, or interactions), agents MUST follow this policy:
