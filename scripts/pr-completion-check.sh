@@ -237,7 +237,11 @@ fi
 
 # Summary (after auto-merge attempt)
 if [[ "$OUTPUT_JSON" == "true" ]]; then
-  BLOCKERS_JSON=$(printf '%s\n' "${BLOCKERS[@]}" | jq -R . | jq -s .)
+  if [ ${#BLOCKERS[@]} -eq 0 ]; then
+    BLOCKERS_JSON="[]"
+  else
+    BLOCKERS_JSON=$(printf '%s\n' "${BLOCKERS[@]}" | jq -R . | jq -s .)
+  fi
   cat <<EOF
 {
   "pr_number": $PR_NUMBER,
