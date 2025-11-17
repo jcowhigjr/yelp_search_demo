@@ -2,7 +2,7 @@
 # scripts/pr-completion-check.sh
 #
 # Validate PR completion state by checking all requirements for merge
-# Usage: ./scripts/pr-completion-check.sh [--json]
+# Usage: ./scripts/pr-completion-check.sh [--json] [--auto-merge]
 #
 # Checks:
 #   - Review threads resolved
@@ -20,9 +20,23 @@ set -e
 
 # Parse arguments
 OUTPUT_JSON=false
-if [[ "$1" == "--json" ]]; then
-  OUTPUT_JSON=true
-fi
+AUTO_MERGE=false
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --json)
+      OUTPUT_JSON=true
+      ;;
+    --auto-merge)
+      AUTO_MERGE=true
+      ;;
+    *)
+      echo "Unknown argument: $1" >&2
+      echo "Usage: $0 [--json] [--auto-merge]" >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
 
 # Check if we're on a branch with a PR
 if ! gh pr view &>/dev/null; then
@@ -163,6 +177,10 @@ fi
 
 case "$MERGE_STATE" in
   "BLOCKED")
+    if [[ "$UNRESOLVED_REVIEWS" -gt 0 && "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ⚠️  GitHub reports mergeStateStatus=BLOCKED because $UNRESOLVED_REVIEWS review thread(s) remain unresolved (including Codex/Claude automation)."
+      echo "      Resolve every thread to unblock auto-merge."
+    fi
     if [[ "$REVIEW_DECISION" == "APPROVED" ]]; then
       STATUS_APPROVALS=true
       if [[ "$OUTPUT_JSON" == "false" ]]; then
@@ -177,6 +195,13 @@ case "$MERGE_STATE" in
       BLOCKERS+=("Review required before merge")
       if [[ "$OUTPUT_JSON" == "false" ]]; then
         echo "   ❌ Review required before merge"
+      fi
+    elif [[ -z "$REVIEW_DECISION" || "$REVIEW_DECISION" == "null" ]]; then
+      # No explicit review requirement configured (common when only "all conversations resolved" is enforced).
+      # Treat approvals as satisfied so unresolved threads remain the true gate.
+      STATUS_APPROVALS=true
+      if [[ "$OUTPUT_JSON" == "false" ]]; then
+        echo "   ✅ No explicit approval requirement detected (treating approvals as satisfied)"
       fi
     else
       BLOCKERS+=("Approval required (self-approval blocked)")
@@ -199,16 +224,38 @@ case "$MERGE_STATE" in
     ;;
 esac
 
-# Summary
+# Queue auto-merge if requested and no blockers
+if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
+  if [[ "$OUTPUT_JSON" == "false" ]]; then
+    echo ""
+    echo "🚀 Queueing GitHub auto-merge (squash)..."
+  fi
+  if gh pr merge --auto --squash "$PR_NUMBER"; then
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ✅ Auto-merge queued successfully."
+    fi
+  else
+    BLOCKERS+=("Failed to queue auto-merge")
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
+    fi
+  fi
+fi
+
+# Summary (after auto-merge attempt)
 if [[ "$OUTPUT_JSON" == "true" ]]; then
-  # JSON output
-  BLOCKERS_JSON=$(printf '%s\n' "${BLOCKERS[@]}" | jq -R . | jq -s .)
+  if [ ${#BLOCKERS[@]} -eq 0 ]; then
+    BLOCKERS_JSON="[]"
+  else
+    BLOCKERS_JSON=$(printf '%s\n' "${BLOCKERS[@]}" | jq -R . | jq -s .)
+  fi
   cat <<EOF
 {
   "pr_number": $PR_NUMBER,
   "ready_to_merge": $([ ${#BLOCKERS[@]} -eq 0 ] && echo "true" || echo "false"),
   "status": {
     "reviews_resolved": ${STATUS_REVIEWS},
+    "unresolved_review_threads": $UNRESOLVED_REVIEWS,
     "ci_passing": ${STATUS_CI},
     "branch_up_to_date": ${STATUS_UP_TO_DATE},
     "no_conflicts": ${STATUS_MERGEABLE},
@@ -220,20 +267,19 @@ if [[ "$OUTPUT_JSON" == "true" ]]; then
 }
 EOF
 else
-  # Human-readable summary
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "Summary for PR #$PR_NUMBER"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   
   if [ ${#BLOCKERS[@]} -eq 0 ]; then
-    echo "✅ PR is ready to merge!"
+    echo " PR is ready to merge!"
     echo ""
     echo "Next steps:"
     echo "  - Run: gh pr merge --auto --squash"
     echo "  - Or:  gh pr merge --admin --squash (if self-approval blocked)"
   else
-    echo "❌ PR has ${#BLOCKERS[@]} blocker(s):"
+    echo " PR has ${#BLOCKERS[@]} blocker(s):"
     for blocker in "${BLOCKERS[@]}"; do
       echo "  • $blocker"
     done
@@ -250,6 +296,27 @@ else
     fi
     if [[ "$BEHIND_COUNT" -gt 0 ]]; then
       echo "  • Sync branch: ./scripts/sync-branch.sh develop"
+    fi
+    if [[ "$AUTO_MERGE" == "true" ]]; then
+      echo "  • Re-run auto-merge once blockers are cleared"
+    fi
+  fi
+fi
+
+# Queue auto-merge if requested and no blockers
+if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
+  if [[ "$OUTPUT_JSON" == "false" ]]; then
+    echo ""
+    echo "🚀 Queueing GitHub auto-merge (squash)..."
+  fi
+  if gh pr merge --auto --squash "$PR_NUMBER"; then
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ✅ Auto-merge queued successfully."
+    fi
+  else
+    BLOCKERS+=("Failed to queue auto-merge")
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ❌ Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
     fi
   fi
 fi
