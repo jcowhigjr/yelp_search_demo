@@ -30,6 +30,8 @@ The sync also runs automatically when creating branches, but run it explicitly a
 
 ### Phase 0: Review-First Loop (HIGHEST PRIORITY)
 
+**GitHub branch protection treats _any_ unresolved review thread (human, Codex, Claude, etc.) as "needs approval" and keeps `mergeStateStatus=BLOCKED` until every thread is resolved.**
+
 **Check for reviews BEFORE any other action:**
 ```bash
 ./scripts/review-loop.sh
@@ -44,9 +46,16 @@ If unresolved reviews exist:
    ```bash
    gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "THREAD_ID"}) { thread { id isResolved } } }'
    ```
+   - Convenience helpers:
+     - `scripts/resolve-thread.sh <THREAD_ID>`
+     - `scripts/resolve-all-threads.sh [--force]`
 6. **LOOP BACK** - Check for reviews again (Step 1)
 
 **Critical**: Never wait for user to say "address feedback" - fix immediately and autonomously.
+
+Codex runs automatically when you open/ready a PR or comment `@codex review`; Claude runs on `@claude` / `@claude-suggest`. Both produce standard review threads and must be resolved exactly like human feedback.
+
+Use `lefthook run workflow-review-loop` at any time for the structured review check (same output as the script above). Pre-push hooks now run this automatically and block pushes while reviews remain.
 
 ### Complete PR Workflow
 
@@ -54,7 +63,7 @@ Once all reviews are addressed:
 
 ```bash
 # Check overall PR completion status
-./scripts/pr-completion-check.sh
+./scripts/pr-completion-check.sh --auto-merge
 ```
 
 This validates:

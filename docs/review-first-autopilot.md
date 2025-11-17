@@ -4,7 +4,7 @@ Detailed protocol for AI agents to autonomously handle PR review feedback withou
 
 ## Core Principle
 
-**Always check for reviews FIRST before any other action when working on a PR.**
+**Always check for reviews FIRST before any other action when working on a PR.** GitHub keeps `mergeStateStatus=BLOCKED` (often misread as “needs human approval”) until **every** review thread—including Codex/Claude automation—is resolved, so this loop is the real gate to merging.
 
 This creates a continuous review-response loop that eliminates the need for users to prompt "address the feedback" or "continue."
 
@@ -246,6 +246,8 @@ Mark the thread as resolved using GraphQL.
 # Resolve the thread
 THREAD_ID="PRRT_kwDOAGYtD85fh47z"  # From Step 2
 
+scripts/resolve-thread.sh "$THREAD_ID"
+# or (manual GraphQL):
 gh api graphql -f query="
   mutation {
     resolveReviewThread(input: {threadId: \"$THREAD_ID\"}) {
@@ -257,6 +259,8 @@ gh api graphql -f query="
   }
 "
 ```
+
+Need to clear several threads at once? Run `scripts/resolve-all-threads.sh` (add `--force` to skip confirmation) after you’ve fixed and replied to everything.
 
 **Expected response:**
 ```json
@@ -288,7 +292,7 @@ Why? Because:
 
 ## Complete Script Example
 
-Here's a full script that implements the review loop:
+Here's a full script that implements the review loop (also available via `lefthook run workflow-review-loop` which calls the same script):
 
 ```bash
 #!/bin/bash
