@@ -217,9 +217,26 @@ case "$MERGE_STATE" in
     ;;
 esac
 
-# Summary
+# Queue auto-merge if requested and no blockers
+if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
+  if [[ "$OUTPUT_JSON" == "false" ]]; then
+    echo ""
+    echo "🚀 Queueing GitHub auto-merge (squash)..."
+  fi
+  if gh pr merge --auto --squash "$PR_NUMBER"; then
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   ✅ Auto-merge queued successfully."
+    fi
+  else
+    BLOCKERS+=("Failed to queue auto-merge")
+    if [[ "$OUTPUT_JSON" == "false" ]]; then
+      echo "   Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
+    fi
+  fi
+fi
+
+# Summary (after auto-merge attempt)
 if [[ "$OUTPUT_JSON" == "true" ]]; then
-  # JSON output
   BLOCKERS_JSON=$(printf '%s\n' "${BLOCKERS[@]}" | jq -R . | jq -s .)
   cat <<EOF
 {
@@ -239,20 +256,19 @@ if [[ "$OUTPUT_JSON" == "true" ]]; then
 }
 EOF
 else
-  # Human-readable summary
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "Summary for PR #$PR_NUMBER"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   
   if [ ${#BLOCKERS[@]} -eq 0 ]; then
-    echo "✅ PR is ready to merge!"
+    echo " PR is ready to merge!"
     echo ""
     echo "Next steps:"
     echo "  - Run: gh pr merge --auto --squash"
     echo "  - Or:  gh pr merge --admin --squash (if self-approval blocked)"
   else
-    echo "❌ PR has ${#BLOCKERS[@]} blocker(s):"
+    echo " PR has ${#BLOCKERS[@]} blocker(s):"
     for blocker in "${BLOCKERS[@]}"; do
       echo "  • $blocker"
     done
@@ -269,6 +285,9 @@ else
     fi
     if [[ "$BEHIND_COUNT" -gt 0 ]]; then
       echo "  • Sync branch: ./scripts/sync-branch.sh develop"
+    fi
+    if [[ "$AUTO_MERGE" == "true" ]]; then
+      echo "  • Re-run auto-merge once blockers are cleared"
     fi
   fi
 fi
