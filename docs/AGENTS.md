@@ -359,6 +359,12 @@ CONCLUSION: Correct/Incorrect/Inconclusive
 
 **Include automated reviewer feedback BEFORE evaluating hypothesis.**
 
+When GitHub reviewers or bots (including `chatgpt-codex-connector`) leave comments on a PR, agents MUST:
+- Read and understand the feedback.
+- Address each actionable issue in code or docs.
+- Re-run any affected tests/workflows when appropriate.
+- Mark the corresponding PR threads/comments as **resolved** once the issue is actually fixed.
+
 Example: PR #911 Codex review caught that `env` variables were unset in `if` conditions, making the "fix" actually break the workflow.
 
 ---

@@ -847,6 +847,7 @@ python automated_code_review.py --dry-run
 - Test hooks locally before committing
 - Never use `--no-verify` (per user preferences)
 - Keep hooks fast to avoid interrupting development flow
+- For every PR, explicitly check for automated reviewer comments (e.g. `@chatgpt-codex-connector`) and ensure their suggestions are either implemented or consciously rejected with rationale, and the corresponding threads are marked **resolved**.
 
 ### 5. Team Collaboration
 

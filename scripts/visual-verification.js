@@ -3,7 +3,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer');
 
 const argv = process.argv.slice(2);
 
@@ -110,6 +109,8 @@ const captureScreenshot = async (browser, targetPath, index) => {
 };
 
 const run = async () => {
+  const { default: puppeteer } = await import('puppeteer');
+
   describeTarget();
   fs.mkdirSync(outputDir, { recursive: true });
 
