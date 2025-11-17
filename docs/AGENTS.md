@@ -90,6 +90,7 @@ For any non-trivial visual/UI change (layout, CSS, DOM structure, or interaction
 - Do not declare visual work “done” unless:
   - Headless browser verification has run, and
   - Either tests pass or the user explicitly accepts the visual diffs.
+- For pull requests, any issues, review comments, or automated feedback related to headless visual verification **must be addressed**, and the corresponding PR threads/remarks must be marked **resolved** in GitHub before considering the PR complete.
 
 If headless browser verification is not configured or fails to run, the agent must say so explicitly and treat the change as **not empirically verified**.
 

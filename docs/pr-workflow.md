@@ -877,6 +877,7 @@ Prompts live under `.github/prompts/` and provide concise, task-focused guidance
 - Follow the commands as written to match CI: `mise run test-prepare`, `mise exec -- bin/rails test`, and `HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system`.
 - For additional deterministic visual checks, run the Puppeteer-based script described in `README.md` (e.g., `mise exec -- yarn visual:verify --urls "/,/search?query=coffee,/favorites"`) and diff the generated screenshots under `tmp/visual-verification`.
 - Keep changes small and verify before/after using screenshots or focused temporary assertions.
+- When headless visual verification or automated reviewers (Claude/Codex/etc.) surface issues, you **must address** those issues and mark the corresponding PR comments/threads as **resolved** before treating the PR as done.
 
 ## Project-Specific Notes
 
