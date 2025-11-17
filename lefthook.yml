@@ -212,7 +212,7 @@ pre-push:
         echo "    Staged files touch: ${surfaces[*]} surfaces"
         echo "    If today's fix was hard to verify, run:"
         echo "      scripts/generate-cross-model-prompt.sh <issue-url-or-number> ${surfaces[0]}"
-        echo "      claude --model opus --message \"$(scripts/generate-cross-model-prompt.sh <issue-url-or-number> ${surfaces[0]})\""
+        echo "      claude --model opus --message \"\$(scripts/generate-cross-model-prompt.sh <issue-url-or-number> ${surfaces[0]})\""
         echo "    Details: docs/AGENTS.md#empirical-verification--cross-model-escalation-issue-981"
     gems-audit:
       tags: backend security
