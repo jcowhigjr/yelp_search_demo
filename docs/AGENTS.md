@@ -74,6 +74,28 @@ This escalation loop is opt-in but strongly recommended for layered issues (CSS 
 
 > For full GitHub-based Claude review automation (`@claude`, `@claude-suggest`), see the “Claude AI Code Review Integration” section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
 
+### Headless Browser Verification for Visual Changes (Issue #982)
+
+For any non-trivial visual/UI change (layout, CSS, DOM structure, or interactions), agents MUST follow this policy:
+
+- Treat the change as **not verified** until it has been empirically checked in a browser.
+- Prefer a headless browser runner over memory or inference:
+  - If a Puppeteer MCP tool is available, use it to run relevant headless tests and capture screenshots/diffs.
+  - Otherwise, if Playwright is configured for the project, run the configured Playwright test command to exercise affected views.
+- Run a targeted or full headless test suite that covers the changed surface.
+- Summarize results explicitly in the agent output:
+  - If tests pass: state that headless browser tests passed and no unexpected visual diffs were detected.
+  - If tests fail or baselines differ: list failing specs and point to screenshot/diff artifacts.
+- Never silently update screenshot baselines. If new baselines are needed, explain why and ask the user to confirm updating them.
+- Do not declare visual work “done” unless:
+  - Headless browser verification has run, and
+  - Either tests pass or the user explicitly accepts the visual diffs.
+- For pull requests, any issues, review comments, or automated feedback related to headless visual verification **must be addressed**, and the corresponding PR threads/remarks must be marked **resolved** in GitHub before considering the PR complete.
+
+If headless browser verification is not configured or fails to run, the agent must say so explicitly and treat the change as **not empirically verified**.
+
+This is a **prompt-level/dev workflow** policy only. It does not require any changes to the Rails application itself.
+
 ### ⚠️ Known CSS Conflicts & Gotchas
 
 #### Materialize CSS Override Issue
@@ -336,6 +358,12 @@ CONCLUSION: Correct/Incorrect/Inconclusive
 ## Key Rule
 
 **Include automated reviewer feedback BEFORE evaluating hypothesis.**
+
+When GitHub reviewers or bots (including `chatgpt-codex-connector`) leave comments on a PR, agents MUST:
+- Read and understand the feedback.
+- Address each actionable issue in code or docs.
+- Re-run any affected tests/workflows when appropriate.
+- Mark the corresponding PR threads/comments as **resolved** once the issue is actually fixed.
 
 Example: PR #911 Codex review caught that `env` variables were unset in `if` conditions, making the "fix" actually break the workflow.
 

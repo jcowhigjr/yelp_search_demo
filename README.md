@@ -12,6 +12,27 @@ Use the application at https://dorkbob.herokuapp.com
 - Before pushing, regenerate the production Tailwind bundle with `scripts/verify-tailwind-build.sh` (or let the `tailwind-build-check` pre-push step run) to confirm dark-mode utilities exist in `app/assets/builds/tailwind.css`.
 - When touching UI styles, run `bin/dev` and validate the rendered page with the built-in Puppeteer tooling (or Windsurf browser preview). Capture a quick search result screenshot to confirm dark cards look correct in dark mode.
 
+### Visual verification workflow
+
+We now ship a lightweight Puppeteer script to capture deterministic screenshots for any route you specify. Run it via mise/yarn so agents get the right environment:
+
+```bash
+mise exec -- yarn visual:verify --urls "/,/search?query=coffee,/favorites"
+```
+
+Key flags/environment variables:
+
+| Option | Env Var | Default | Description |
+| --- | --- | --- | --- |
+| `--base-url` | `VISUAL_VERIFY_BASE_URL` | `http://localhost:3000` | Root app URL (use staging/prod for remote checks). |
+| `--urls` | `VISUAL_VERIFY_URLS` | `/` | Comma-separated route list to capture. |
+| `--out-dir` | `VISUAL_VERIFY_OUTPUT_DIR` | `tmp/visual-verification` | Output directory for PNGs. |
+| `--width/--height` | `VISUAL_VERIFY_WIDTH/HEIGHT` | `1280x720` | Viewport size. |
+| `--wait-ms` | `VISUAL_VERIFY_WAIT_MS` | `500` | Extra delay after page load before snapshotting. |
+| `--full-page` | `VISUAL_VERIFY_FULL_PAGE` | `true` | Capture full scroll height when `true`. |
+
+Use this before shipping any non-trivial visual change so reviewers can diff the generated screenshots (they land in `tmp/visual-verification`).
+
 ## Motivation:
 
 I was looking for a project to practice on when i had spare time.
