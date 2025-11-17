@@ -873,7 +873,9 @@ python automated_code_review.py --dry-run
 Prompts live under `.github/prompts/` and provide concise, task-focused guidance aligned with our tooling.
 
 - Start with `.github/prompts/rails-system-tests.prompt.md` to visually verify app behavior using Rails system tests (Cuprite).
+- Use `.github/prompts/headless-visual-verification.prompt.md` when working on non-trivial visual/UI changes that should be empirically verified with headless browser tests (Puppeteer MCP or Playwright), aligned with Issue #982.
 - Follow the commands as written to match CI: `mise run test-prepare`, `mise exec -- bin/rails test`, and `HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system`.
+- For additional deterministic visual checks, run the Puppeteer-based script described in `README.md` (e.g., `mise exec -- yarn visual:verify --urls "/,/search?query=coffee,/favorites"`) and diff the generated screenshots under `tmp/visual-verification`.
 - Keep changes small and verify before/after using screenshots or focused temporary assertions.
 
 ## Project-Specific Notes

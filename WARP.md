@@ -194,13 +194,15 @@ gh pr merge --admin --squash
   - make tailwind_enforce_config
 
 5) Pointers to in-repo docs
-- README.md: project overview and agent-coder notices
+- README.md: project overview, agent-coder notices, and Puppeteer-based visual verification workflow
 - docs/git-workflow.md: lefthook-centric git process and protections
-- docs/pr-workflow.md: PR lifecycle, sample configurations, troubleshooting
+- docs/pr-workflow.md: PR lifecycle, sample configurations, troubleshooting, and how to use prompts (including headless visual verification)
 - docs/intelligent-ci-cd.md: Dependabot-aware CI test selection strategy
+- docs/AGENTS.md: agent policies including empirical verification (Issue #981) and headless browser verification for visual changes (Issue #982)
 - scripts/README.md: details for sync-branch.sh and pr-lifecycle.sh
 
 Notes
+- For non-trivial visual/UI changes, prefer headless browser verification (Puppeteer MCP or Playwright) per Issue #982, and/or the Rails Cuprite system test prompt under `.github/prompts/`.
 - Secrets: never commit or echo secrets. If a command requires credentials, ensure they are sourced into environment variables by the user prior to execution.
 - Network/API: Tests stub external calls (WebMock); run real API calls only in development with proper environment.
 

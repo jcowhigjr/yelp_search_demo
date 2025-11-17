@@ -8,10 +8,12 @@
   },
   "scripts": {
     "lint": "prettier --write 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'",
-    "lint:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'"
+    "lint:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'",
+    "visual:verify": "node scripts/visual-verification.js"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
+    "puppeteer": "^24.30.0",
     "tailwindcss": "^4.1.7"
   }
 }
