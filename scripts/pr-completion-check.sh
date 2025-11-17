@@ -196,6 +196,13 @@ case "$MERGE_STATE" in
       if [[ "$OUTPUT_JSON" == "false" ]]; then
         echo "   ❌ Review required before merge"
       fi
+    elif [[ -z "$REVIEW_DECISION" || "$REVIEW_DECISION" == "null" ]]; then
+      # No explicit review requirement configured (common when only "all conversations resolved" is enforced).
+      # Treat approvals as satisfied so unresolved threads remain the true gate.
+      STATUS_APPROVALS=true
+      if [[ "$OUTPUT_JSON" == "false" ]]; then
+        echo "   ✅ No explicit approval requirement detected (treating approvals as satisfied)"
+      fi
     else
       BLOCKERS+=("Approval required (self-approval blocked)")
       if [[ "$OUTPUT_JSON" == "false" ]]; then
