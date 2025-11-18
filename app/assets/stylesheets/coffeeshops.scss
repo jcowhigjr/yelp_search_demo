@@ -21,7 +21,9 @@
 
   .card-title,
   .card-title a {
-    color: var(--color-text) !important; // ensure shop name contrasts with dark backgrounds
+    color: var(
+      --color-text
+    ) !important; // ensure shop name contrasts with dark backgrounds
   }
 
   .card-action {
@@ -38,7 +40,14 @@
   margin-bottom: 60px;
 }
 .shop-info {
-  border: #302b2b solid 1px;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   border-radius: 15px;
   padding: 20px;
+  background-color: color-mix(
+    in srgb,
+    var(--color-bg) 94%,
+    var(--color-text) 6%
+  );
+  color: var(--color-text);
+  box-shadow: none !important; // z-depth shadow looked gray on dark backgrounds
 }
