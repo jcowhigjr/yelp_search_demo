@@ -58,6 +58,7 @@ body {
 .page-name {
   font-size: 60px;
   margin-bottom: 40px;
+  color: var(--color-text);
 }
 select {
   display: inline-block;
