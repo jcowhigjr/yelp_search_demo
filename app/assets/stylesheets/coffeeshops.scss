@@ -19,6 +19,11 @@
     color: var(--color-text) !important;
   }
 
+  .card-title,
+  .card-title a {
+    color: var(--color-text) !important; // ensure shop name contrasts with dark backgrounds
+  }
+
   .card-action {
     border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   }

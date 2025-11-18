@@ -49,6 +49,11 @@
     color: var(--color-text);
   }
 
+  .coffeeshop-card .card-title,
+  .coffeeshop-card .card-title a {
+    color: var(--color-text) !important;
+  }
+
   .coffeeshop-card .card-action {
     border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   }
