@@ -27,6 +27,11 @@ class DarkModeTest < ApplicationSystemTestCase
 
     assert_equal 'rgb(18, 52, 86)', page_name_color
 
+    shop_info_shadow =
+      page.evaluate_script('window.getComputedStyle(document.querySelector(".shop-info")).boxShadow')
+
+    assert_equal 'none', shop_info_shadow
+
     capture_show_page if capture_dark_mode?
   end
 
@@ -52,11 +57,11 @@ class DarkModeTest < ApplicationSystemTestCase
 
   def capture_search_results
     set_theme_text('#ffffff')
-    page.save_screenshot(Rails.root.join('tmp', 'dark-mode-search.png'), full: true)
+    page.save_screenshot(Rails.root.join('tmp/dark-mode-search.png'), full: true)
   end
 
   def capture_show_page
     set_theme_text('#ffffff')
-    page.save_screenshot(Rails.root.join('tmp', 'dark-mode-show.png'), full: true)
+    page.save_screenshot(Rails.root.join('tmp/dark-mode-show.png'), full: true)
   end
 end
