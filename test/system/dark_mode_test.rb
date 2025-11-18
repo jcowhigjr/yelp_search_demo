@@ -27,6 +27,11 @@ class DarkModeTest < ApplicationSystemTestCase
 
     assert_equal 'rgb(18, 52, 86)', page_name_color
 
+    shop_info_shadow =
+      page.evaluate_script('window.getComputedStyle(document.querySelector(".shop-info")).boxShadow')
+
+    assert_equal 'none', shop_info_shadow
+
     capture_show_page if capture_dark_mode?
   end
 
