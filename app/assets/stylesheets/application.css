@@ -177,13 +177,12 @@ select {
   color: var(--color-text) !important;
 }
 
-.sidenav li > a,
-.sidenav li > p {
+.sidenav li a,
+.sidenav li p {
   color: var(--color-text) !important;
 }
 
-.sidenav li > a:hover,
-.sidenav li > p:hover {
+.sidenav li a:hover {
   background-color: color-mix(
     in srgb,
     var(--color-text) 10%,
