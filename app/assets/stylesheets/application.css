@@ -190,3 +190,21 @@ select {
     transparent
   ) !important;
 }
+
+/* Form inputs dark mode support */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  color: var(--color-text) !important;
+  background-color: var(--color-bg) !important;
+}
+
+/* Ensure placeholder text is visible in dark mode */
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 60%, transparent) !important;
+  opacity: 1;
+}
