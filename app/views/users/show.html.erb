@@ -6,7 +6,7 @@
                 <span class="page-text red-text"><%= flash[:error] %></span>
             </div>
          <% end %>
-        <h1 class="flow-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
+        <h1 class="flow-text page-text"><%= t('.hello-0') %> <%= current_user&.name || t('.guest-user') %>!</h1>
     </div>
     <% if !current_user || current_user.user_favorites.empty? %>
         <div class="row center">

@@ -148,3 +148,16 @@ select {
   background-color: var(--color-bg) !important;
   color: var(--color-text) !important;
 }
+
+/* Standardize icon colors across all views - use theme color variable */
+.material-icons,
+.fa,
+.fab,
+.fas {
+  color: var(--color-text);
+}
+
+/* Yelp icon must stay Yelp brand red */
+.yelp_color {
+  color: #ff1a1a !important;
+}
