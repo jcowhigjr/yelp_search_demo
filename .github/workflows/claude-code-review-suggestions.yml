@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Get PR files and changes
+      - name: Determine PR Number
         id: pr-files
         run: |
           # Get the PR number from the issue or manual input
@@ -45,11 +45,16 @@ jobs:
             PR_NUMBER=${{ github.event.issue.number }}
           fi
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          
-          # Get list of changed files with their content
-          gh pr diff $PR_NUMBER --name-only > changed_files.txt
-          
-          # Create a summary of changes for Claude
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ steps.pr-files.outputs.pr_number }}/head
+          fetch-depth: 0
+      
+      - name: Get PR files and changes
+        run: |
+          PR_NUMBER=${{ steps.pr-files.outputs.pr_number }}
           echo "## Changed Files and Content" > pr_context.md
           echo "" >> pr_context.md
           
@@ -112,8 +117,19 @@ jobs:
               ]
             }")
 
+          # Debug Output
+          echo "=== API Response Debug ==="
+          echo "$RESPONSE" | head -c 500
+          echo "..."
+
           # Extract the content from Claude's response
           SUGGESTIONS=$(echo "$RESPONSE" | jq -r '.content[0].text' 2>/dev/null || echo "Error processing Claude response")
+          
+          if [ "$SUGGESTIONS" == "Error processing Claude response" ]; then
+            echo "❌ Error parsing Claude response"
+            echo "$RESPONSE"
+            exit 1
+          fi
           
           # Save suggestions to file
           echo "$SUGGESTIONS" > claude_suggestions.md
@@ -147,11 +163,15 @@ try:
     pattern = r"File: (.+?)\nLine: (\d+)\nSuggestion: (.+?)\nExplanation: (.+?)(?=\nFile: |\Z)"
     matches = re.finditer(pattern, content, re.DOTALL)
     
+    found_count = 0
     for match in matches:
+        found_count += 1
         file_path = match.group(1).strip()
         line_num = int(match.group(2).strip())
         suggestion_code = match.group(3).strip()
         explanation = match.group(4).strip()
+        
+        print(f"DEBUG: Found suggestion for {file_path}:{line_num}", file=sys.stderr)
         
         suggestions.append({
             "path": file_path,
@@ -160,6 +180,7 @@ try:
             "body": f"```suggestion\n{suggestion_code}\n```\n**Claude Suggestion**: {explanation}"
         })
 
+    print(f"DEBUG: Total suggestions found: {found_count}", file=sys.stderr)
     print(json.dumps(suggestions))
 except Exception as e:
     sys.stderr.write(str(e))
