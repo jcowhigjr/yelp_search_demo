@@ -161,3 +161,32 @@ select {
 .yelp_color {
   color: #ff1a1a !important;
 }
+
+/* Mobile sidenav dark mode support */
+.sidenav {
+  background-color: var(--color-bg) !important;
+}
+
+.sidenav .user-view {
+  background-color: var(--color-bg) !important;
+  padding: 32px 32px 0;
+}
+
+.sidenav .user-view h6,
+.sidenav .user-view span {
+  color: var(--color-text) !important;
+}
+
+.sidenav li > a,
+.sidenav li > p {
+  color: var(--color-text) !important;
+}
+
+.sidenav li > a:hover,
+.sidenav li > p:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--color-text) 10%,
+    transparent
+  ) !important;
+}
