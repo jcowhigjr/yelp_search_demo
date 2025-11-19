@@ -157,6 +157,14 @@ select {
   color: var(--color-text);
 }
 
+/* Navbar icons should be visible on dark navbar background */
+nav .material-icons,
+nav .fa,
+nav .fab,
+nav .fas {
+  color: #fff;
+}
+
 /* Yelp icon must stay Yelp brand red */
 .yelp_color {
   color: #ff1a1a !important;
