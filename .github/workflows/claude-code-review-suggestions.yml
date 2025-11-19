@@ -1,6 +1,7 @@
 name: Claude Code Review with Suggestions
 
 on:
+  workflow_dispatch:
   issue_comment:
     types: [created]
 
@@ -120,7 +121,7 @@ jobs:
           HEAD_SHA=$(gh api repos/jcowhigjr/yelp_search_demo/pulls/$PR_NUMBER --jq .head.sha)
 
           # Parse Claude's response for suggestions using Python
-          cat <<EOF > parse_suggestions.py
+          cat <<'EOF' > parse_suggestions.py
 import json
 import re
 import sys
