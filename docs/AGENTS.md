@@ -96,6 +96,16 @@ For non-trivial bugs or features, local agents should also ask Claude (via `clau
    ```
 3. Incorporate any critical feedback (missed surfaces, env differences, logging/observability gaps) **before** implementing the fix.
 
+#### Local Code Review with Claude CLI
+
+Before pushing code, ask Claude to review your changes using the `-p` flag to print the review to stdout:
+
+```bash
+claude -p "Please review the following changes. Focus on robustness, edge cases, and idiomatic code:
+
+$(git show HEAD)"
+```
+
 #### Template prompts by surface
 
 When escalating to Claude CLI after an empirical check, bias toward concise, surface-specific prompts:
