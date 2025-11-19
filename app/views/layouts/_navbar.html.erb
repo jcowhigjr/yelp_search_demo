@@ -12,27 +12,26 @@
     </div>
   </nav>
  </div>
- <div class="sidenav dark:bg-slate-900 dark:text-white" id="mobile-demo">
+ <div class="sidenav" id="mobile-demo">
    <ul>
     <li>
-      <div class="background"></div>
       <div class="user-view">
-              <h6 class="white-text">  <i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
-              <span class="white-text"><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
+              <h6><i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
+              <span><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
       </div>
       </li>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to logout_path, data: { turbo_method: :delete }  do %>
+      <li><p><%= link_to logout_path, data: { turbo_method: :delete }  do %>
           <i class="small material-icons">exit_to_app</i><%= t('.logout') %>
-          <% end %>
+          <% end %></p>
       </li>
       <%# be careful turbo false is here to prevent breaking the slide-nav %>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to user_path(current_user), data: { turbo: false} do %>
+      <li><p><%= link_to user_path(current_user), data: { turbo: false} do %>
             <i class="small material-icons">person</i><%= t('.my-profile') %>
             <% end %>
            </p>
       </li>
       <%# be careful turbo false is here to prevent breaking the slide-nav %>
-      <li><p class="dark:bg-slate-900 dark:text-white"><%= link_to new_search_path, data: { turbo: false}  do %>
+      <li><p><%= link_to new_search_path, data: { turbo: false}  do %>
              <i class="small material-icons">search</i><%= t('views.searches.new') %>
              <% end %>
           </p>
