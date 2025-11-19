@@ -45,9 +45,9 @@ body {
   margin-top: 100px;
 }
 .page-container {
-  margin-top: 50px;
+  margin-top: 20px;
   border-radius: 25px;
-  padding: 50px;
+  padding: 30px 50px;
   margin-bottom: 50px;
 }
 .page-text {
@@ -147,4 +147,71 @@ select {
 .coffeeshop-card.card .card-action {
   background-color: var(--color-bg) !important;
   color: var(--color-text) !important;
+}
+
+/* Standardize icon colors across all views - use theme color variable */
+.material-icons,
+.fa,
+.fab,
+.fas {
+  color: var(--color-text);
+}
+
+/* Navbar icons should be visible on dark navbar background */
+nav .material-icons,
+nav .fa,
+nav .fab,
+nav .fas {
+  color: #fff;
+}
+
+/* Yelp icon must stay Yelp brand red */
+.yelp_color {
+  color: #ff1a1a !important;
+}
+
+/* Mobile sidenav dark mode support */
+.sidenav {
+  background-color: var(--color-bg) !important;
+}
+
+.sidenav .user-view {
+  background-color: var(--color-bg) !important;
+  padding: 32px 32px 0;
+}
+
+.sidenav .user-view h6,
+.sidenav .user-view span {
+  color: var(--color-text) !important;
+}
+
+.sidenav li a,
+.sidenav li p {
+  color: var(--color-text) !important;
+}
+
+.sidenav li a:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--color-text) 10%,
+    transparent
+  ) !important;
+}
+
+/* Form inputs dark mode support */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  color: var(--color-text) !important;
+  background-color: var(--color-bg) !important;
+}
+
+/* Ensure placeholder text is visible in dark mode */
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 60%, transparent) !important;
+  opacity: 1;
 }
