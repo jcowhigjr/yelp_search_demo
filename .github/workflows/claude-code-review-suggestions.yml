@@ -2,6 +2,11 @@ name: Claude Code Review with Suggestions
 
 on:
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR Number to review'
+        required: true
+        type: string
   issue_comment:
     types: [created]
 
@@ -14,12 +19,13 @@ jobs:
   claude-review-suggestions:
     runs-on: ubuntu-latest
     # Skip for Dependabot PRs (already auto-approved)
-    # Trigger only on @claude-suggest comments for suggestion mode
+    # Trigger only on @claude-suggest comments for suggestion mode or manual dispatch
     if: |
-      github.actor != 'dependabot[bot]' && 
-      github.event_name == 'issue_comment' && 
-      github.event.issue.pull_request &&
-      contains(github.event.comment.body, '@claude-suggest')
+      (github.event_name == 'workflow_dispatch') ||
+      (github.actor != 'dependabot[bot]' && 
+       github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude-suggest'))
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,8 +38,12 @@ jobs:
       - name: Get PR files and changes
         id: pr-files
         run: |
-          # Get the PR number from the issue
-          PR_NUMBER=${{ github.event.issue.number }}
+          # Get the PR number from the issue or manual input
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            PR_NUMBER=${{ github.event.inputs.pr_number }}
+          else
+            PR_NUMBER=${{ github.event.issue.number }}
+          fi
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
           
           # Get list of changed files with their content
