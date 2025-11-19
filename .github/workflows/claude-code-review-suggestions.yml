@@ -46,24 +46,29 @@ jobs:
           fi
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
-        with:
-          ref: refs/pull/${{ steps.pr-files.outputs.pr_number }}/head
-          fetch-depth: 0
-          persist-credentials: false
-      
-      - name: Get PR files and changes
+      - name: Get PR context via API
+        env:
+          PR_NUMBER: ${{ steps.pr-files.outputs.pr_number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER=${{ steps.pr-files.outputs.pr_number }}
           echo "## Changed Files and Content" > pr_context.md
           echo "" >> pr_context.md
           
+          # Get list of changed files
+          gh pr diff $PR_NUMBER --name-only > changed_files.txt
+          
           while IFS= read -r file; do
-            if [ -f "$file" ]; then
+            echo "Processing file: $file"
+            
+            # Only process text files that exist in the PR head
+            if gh api "repos/${{ github.repository }}/contents/$file?ref=refs/pull/$PR_NUMBER/head" > /dev/null 2>&1; then
               echo "### File: $file" >> pr_context.md
               echo '```' >> pr_context.md
-              cat "$file" >> pr_context.md
+              
+              # Fetch file content via API (decode base64)
+              gh api "repos/${{ github.repository }}/contents/$file?ref=refs/pull/$PR_NUMBER/head" --jq .content | base64 -d >> pr_context.md
+              
+              echo "" >> pr_context.md
               echo '```' >> pr_context.md
               echo "" >> pr_context.md
             fi
