@@ -1,8 +1,6 @@
 name: Claude Code Review with Suggestions
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   issue_comment:
     types: [created]
 
@@ -67,7 +65,7 @@ jobs:
           # Prepare prompt for Claude with simplified formatting instructions
           PROMPT="You are a senior code reviewer. Analyze the pull request changes and provide specific, line-by-line suggestions that can be applied with GitHub's suggestion feature.
 
-          For each suggestion, use this EXACT format:
+          For each suggestion, use this EXACT format (no markdown formatting for keys):
 
           File: [filename]
           Line: [line_number]
@@ -81,6 +79,7 @@ jobs:
           Explanation: Use Rails present? method instead of != nil
 
           Focus on Ruby/Rails idioms, performance, and code clarity. Only suggest direct line replacements.
+          Do not use markdown formatting for the keys (e.g. **File:**). Keep it plain text.
 
           Here is the PR content:
 
@@ -120,26 +119,43 @@ jobs:
           # Get the head commit SHA for the review
           HEAD_SHA=$(gh api repos/jcowhigjr/yelp_search_demo/pulls/$PR_NUMBER --jq .head.sha)
 
-          # Parse Claude's response for suggestions using awk
-          COMMENTS=$(awk '
-          BEGIN {
-            printf "["
-            first = 1
-          }
-          /^File: / { file = substr($0, 7) }
-          /^Line: / { line = substr($0, 7) }
-          /^Suggestion: / { suggestion = substr($0, 13) }
-          /^Explanation: / {
-            explanation = substr($0, 14)
-            if (!first) printf ","
-            first = 0
-            printf "{\n"
-            printf "  \"path\": \"%s\",\n", file
-            printf "  \"position\": %s,\n", line
-            printf "  \"body\": \"```suggestion\\n    %s\\n```\\n**Claude Suggestion**: %s\"\n", suggestion, explanation
-            printf "}"
-          }
-          END { printf "]" }' claude_suggestions.md)
+          # Parse Claude's response for suggestions using Python
+          cat <<EOF > parse_suggestions.py
+import json
+import re
+import sys
+
+try:
+    with open('claude_suggestions.md', 'r') as f:
+        content = f.read()
+
+    suggestions = []
+    
+    # Pattern: File: <path>\nLine: <line>\nSuggestion: <code>\nExplanation: <text>
+    # regex that matches the specific structure
+    pattern = r"File: (.+)\nLine: (\d+)\nSuggestion: (.+)\nExplanation: (.+)"
+    matches = re.finditer(pattern, content)
+    
+    for match in matches:
+        file_path = match.group(1).strip()
+        line_num = int(match.group(2).strip())
+        suggestion_code = match.group(3).strip()
+        explanation = match.group(4).strip()
+        
+        suggestions.append({
+            "path": file_path,
+            "line": line_num,
+            "side": "RIGHT",
+            "body": f"```suggestion\n{suggestion_code}\n```\n**Claude Suggestion**: {explanation}"
+        })
+
+    print(json.dumps(suggestions))
+except Exception as e:
+    sys.stderr.write(str(e))
+    print("[]")
+EOF
+          
+          COMMENTS=$(python3 parse_suggestions.py)
 
           # Create review with suggestions if we have comments
           if [ "$COMMENTS" != "[]" ]; then
