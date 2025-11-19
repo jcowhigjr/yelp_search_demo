@@ -132,9 +132,9 @@ try:
     suggestions = []
     
     # Pattern: File: <path>\nLine: <line>\nSuggestion: <code>\nExplanation: <text>
-    # regex that matches the specific structure
-    pattern = r"File: (.+)\nLine: (\d+)\nSuggestion: (.+)\nExplanation: (.+)"
-    matches = re.finditer(pattern, content)
+    # regex that matches the specific structure, handling multi-line content non-greedily
+    pattern = r"File: (.+?)\nLine: (\d+)\nSuggestion: (.+?)\nExplanation: (.+?)(?=\nFile: |\Z)"
+    matches = re.finditer(pattern, content, re.DOTALL)
     
     for match in matches:
         file_path = match.group(1).strip()
