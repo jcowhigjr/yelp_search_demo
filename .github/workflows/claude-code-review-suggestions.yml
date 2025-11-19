@@ -51,6 +51,7 @@ jobs:
         with:
           ref: refs/pull/${{ steps.pr-files.outputs.pr_number }}/head
           fetch-depth: 0
+          persist-credentials: false
       
       - name: Get PR files and changes
         run: |
