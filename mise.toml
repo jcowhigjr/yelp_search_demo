@@ -63,6 +63,10 @@ depends = ["test-prepare"]
 description = "Run only system tests against an already-prepared test env (matches lefthook env)"
 run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false bin/rails test:system"
 
+[tasks.test-system-strict]
+description = "Run system tests with JS errors treated as failures"
+run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=true bin/rails test:system"
+
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
 run = "next rails tailwindcss:build && next rails test:prepare --trace"
