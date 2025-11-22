@@ -1,20 +1,6 @@
 require 'application_system_test_case'
 
 class NavigationTest < ApplicationSystemTestCase
-  # setup {  }
-  setup do
-    @user = users(:two)
-    page.driver.browser.command('Browser.grantPermissions',
-                                origin: 'http://127.0.0.1',
-                                permissions: ['geolocation'],
-    )
-
-    # page.driver.browser.command('Emulation.setGeolocationOverride',
-    #                             latitude: 0.0,
-    #                             longitude: 0.0,
-    #                             accuracy: 100,
-    # )
-  end
   test 'A user can search and return using the back button' do
     # From the search form
     visit new_search_path

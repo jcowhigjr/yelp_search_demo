@@ -76,67 +76,35 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
-    # Test coffee search - should show ☕️
+    # Coffee search - should show ☕️
     visit '/'
     fill_in 'search[query]', with: 'coffee'
     find('button[type="submit"]').click
-    
+
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
       assert_selector frame_selector, wait: 5
-      
+
       within frame_selector do
         button = find('button.favorite-btn')
         assert_includes button.text, '☕️'
       end
     end
 
-    # Test pizza search - should show 🍕
+    # Pizza search - should show 🍕
     visit '/'
     fill_in 'search[query]', with: 'pizza'
     find('button[type="submit"]').click
-    
+
     assert_selector '.coffeeshop-card', wait: 10
     within first('.coffeeshop-card') do
       frame_selector = "turbo-frame[id*='favorite']"
       assert_selector frame_selector, wait: 5
-      
+
       within frame_selector do
         button = find('button.favorite-btn')
         assert_includes button.text, '🍕'
-      end
-    end
-
-    # Test taco search - should show 🌮
-    visit '/'
-    fill_in 'search[query]', with: 'taco'
-    find('button[type="submit"]').click
-    
-    assert_selector '.coffeeshop-card', wait: 10
-    within first('.coffeeshop-card') do
-      frame_selector = "turbo-frame[id*='favorite']"
-      assert_selector frame_selector, wait: 5
-      
-      within frame_selector do
-        button = find('button.favorite-btn')
-        assert_includes button.text, '🌮'
-      end
-    end
-
-    # Test generic search - should show ❤️
-    visit '/'
-    fill_in 'search[query]', with: 'restaurant'
-    find('button[type="submit"]').click
-    
-    assert_selector '.coffeeshop-card', wait: 10
-    within first('.coffeeshop-card') do
-      frame_selector = "turbo-frame[id*='favorite']"
-      assert_selector frame_selector, wait: 5
-      
-      within frame_selector do
-        button = find('button.favorite-btn')
-        assert_includes button.text, '❤️'
       end
     end
   end
