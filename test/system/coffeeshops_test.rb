@@ -104,7 +104,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     visit new_search_path
     fill_in 'search[query]', with: 'coffee'
 
-    click_on 'search'
+    # Use the first submit button in the search form to avoid ambiguous "search" matches
+    first('form button[type="submit"]').click
 
     # Find and click the first More Info link
     wait_for_search_results
