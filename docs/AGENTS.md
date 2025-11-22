@@ -385,7 +385,23 @@ RISKS: [What could go wrong?]
 - Automated review (Codex): 3-6 min
 - PR merge (auto): 30-60s
 
-### Step 4: Check Automated Feedback FIRST
+### Step 4: Check Automated Feedback FIRST (Review-First GitHub MCP Loop)
+For any branch with an open GitHub pull request, agents MUST proactively check for delayed automated feedback (Codex, Claude, Copilot, human reviewers) before evaluating hypotheses:
+
+1. Prefer the GitHub MCP server over CLI when available:
+   - Call the `pull_request_read` tool with `method: "get_reviews"` to see the latest review states (APPROVED, CHANGES_REQUESTED, COMMENT) on the PR.
+   - Call the `pull_request_read` tool with `method: "get_review_comments"` to read inline review comments, including file path and line.
+   - Treat any *new* reviews/comments (not previously processed) as the highest-priority work items: summarize them, propose concrete fixes, and plan code changes before doing anything else.
+2. Track review state across runs:
+   - Remember which review IDs and review comment IDs have already been addressed.
+   - On each new invocation, surface only newly-arrived reviews/comments and update the tracked state after fixes are planned.
+3. For this repository (`jcowhigjr/yelp_search_demo`), also run the review loop script so agents align with branch protection behavior and Codex/Claude review threads:
+
+```bash
+./scripts/review-loop.sh
+```
+
+4. If no MCP GitHub server or helper scripts are available, fall back to the GitHub CLI:
 
 ```bash
 # Wait 3+ minutes for automated reviewers
