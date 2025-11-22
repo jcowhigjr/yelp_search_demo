@@ -17,7 +17,18 @@
     <script data-turbo-track="reload" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
     <%= javascript_importmap_tags %>
   </head>
-  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
+  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>"
+        data-controller="theme">
+    <!-- Theme Toggle -->
+    <button
+      data-action="click->theme#toggle"
+      class="fixed top-4 right-4 z-50 p-3 rounded-full shadow-lg transition-transform hover:scale-110 bg-[var(--color-primary)] text-white"
+      aria-label="Toggle theme"
+      style="position: fixed; top: 1rem; right: 1rem; z-index: 50;"
+    >
+      <i class="material-icons" style="color: white;">brightness_4</i>
+    </button>
+
   <% if logged_in? %>
     <%= render 'layouts/navbar' %>
   <% end %>

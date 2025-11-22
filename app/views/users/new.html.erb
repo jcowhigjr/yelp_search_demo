@@ -1,24 +1,43 @@
 <% content_for :body_class, 'landing-body' %>
-<div class="container">
-    <div class="container">
-        <% if flash[:error] %>
-            <div class="row center">
-                <span class="page-text red-text">
-                    <%= flash[:error] %>
-                </span>
-            </div>
-            <% end %>
-                <%= render 'users/form' %>
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-md mx-auto">
+    <div class="page-container">
+      <h1 class="page-name text-center mb-8">Sign Up</h1>
+
+      <% if flash[:error] %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-center">
+          <%= flash[:error] %>
+        </div>
+      <% end %>
+
+      <!-- The user form partial should be updated to match inputs if possible, but for now we wrap it -->
+      <div class="space-y-6">
+        <%= render 'users/form' %>
+      </div>
+
+      <div class="mt-8">
+        <div class="relative mb-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-[var(--color-bg)] text-[var(--color-text)] opacity-70">Or continue with</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50', style: "background-color: #fff; color: #333; width: 100%;" do %>
+            <i class="fab fa-google" style="margin-right: 10px; color: #DB4437;"></i> <b>Sign Up With Google</b>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="page-text" style="font-size: 16px;">
+          Already have an account?
+          <%= link_to 'Login here', login_path, class: 'form-link', style: "color: var(--color-primary);" %>
+        </p>
+      </div>
     </div>
-    <div class="row center">
-        <%= button_to '/auth/google_oauth2' , data: { turbo: false }, class: 'btn-large' do %>
-            <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Sign Up With Google</b>
-            <% end %>
-    </div>
-    <div class="row center">
-        <span class="white-text form-link">Already have an account?</span>
-    </div>
-    <div class="row center">
-        <%= link_to 'Login here' , login_path, class: 'form-link' %>
-    </div>
+  </div>
 </div>
