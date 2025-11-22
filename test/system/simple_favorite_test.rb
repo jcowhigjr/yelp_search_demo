@@ -1,7 +1,7 @@
 require 'application_system_test_case'
 
 class SimpleFavoriteTest < ApplicationSystemTestCase
-  test 'can click favorite button' do
+  test 'can click favorite button and see it on profile favorites' do
     user = users(:one)
     
     visit '/login'
@@ -30,5 +30,11 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     
     # Verify the favorite button still exists (may have different state)
     assert_selector "[id^='favorite_']", wait: 5
+
+    # Visit the user's profile page and verify favorites layout
+    visit user_path(user, locale: nil)
+
+    assert_selector 'h2.page-name', text: 'My Favorites'
+    assert_selector '.coffeeshop-card', minimum: 1
   end
 end
