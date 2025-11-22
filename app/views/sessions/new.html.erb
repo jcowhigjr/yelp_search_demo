@@ -1,37 +1,59 @@
 <% content_for :body_class, 'landing-body' %>
-<div class="container">
-    <div class="row center">
-        <h1 class="white-text">Welcome Back</h1>
-    </div>
-    <div class="container">
-        <%= form_tag sessions_path do %>
-        <div class="row center user-form">
-            <% if flash[:error] %>
-                <div class="row center">
-                    <span class="red-text"><%= flash[:error] %></span>
-                </div>
-            <% end %>
-            <%= label_tag :email %>
-            <%= text_field_tag :email, nil, placeholder: 'example@email.com', required: true %>
-            <%= label_tag :password %>
-            <%= password_field_tag :password, nil, required: true %>
-            <br><br>
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-md mx-auto">
+    <div class="page-container">
+      <h1 class="page-name text-center mb-8">Welcome Back</h1>
 
-        </div>
-        <div class="row center">
-            <%= submit_tag 'Log In', data: { turbo: false }, class: 'btn-large' %>
-        </div>
+      <%= form_tag sessions_path, class: "space-y-6" do %>
+        <% if flash[:error] %>
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-center">
+            <%= flash[:error] %>
+          </div>
         <% end %>
-        <div class="row center">
-            <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large' do %>
-            <i class="fab fa-google" style="margin-right: 10px;"></i> <b>Login With Google</b>
-            <% end %>
+
+        <div>
+          <%= label_tag :email, "Email", class: "block mb-2 page-text", style: "font-size: 16px;" %>
+          <%= text_field_tag :email, nil,
+              placeholder: 'example@email.com',
+              required: true,
+              class: "w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors bg-[var(--color-bg)] text-[var(--color-text)]" %>
         </div>
-        <div class="row center">
-            <span class="white-text form-link">Don't have an account?</span>
+
+        <div>
+          <%= label_tag :password, "Password", class: "block mb-2 page-text", style: "font-size: 16px;" %>
+          <%= password_field_tag :password, nil,
+              required: true,
+              class: "w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors bg-[var(--color-bg)] text-[var(--color-text)]" %>
         </div>
-        <div class="row center">
-            <p class="form-link"><%= link_to 'Sign Up', signup_path %> </p>
+
+        <div class="mt-8">
+          <%= submit_tag 'Log In', data: { turbo: false }, class: 'btn-large w-full', style: "width: 100%;" %>
         </div>
+      <% end %>
+
+      <div class="mt-8">
+        <div class="relative mb-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-[var(--color-bg)] text-[var(--color-text)] opacity-70">Or continue with</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50', style: "background-color: #fff; color: #333; width: 100%;" do %>
+            <i class="fab fa-google" style="margin-right: 10px; color: #DB4437;"></i> <b>Login With Google</b>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <p class="page-text" style="font-size: 16px;">
+          Don't have an account?
+          <%= link_to 'Sign Up', signup_path, class: 'form-link', style: "color: var(--color-primary);" %>
+        </p>
+      </div>
     </div>
+  </div>
 </div>
