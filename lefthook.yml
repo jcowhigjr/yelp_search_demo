@@ -427,3 +427,33 @@ workflow-new-feature:
   commands:
     create_branch:
       run: bash ./workflow-new-feature.sh {0}
+
+workflow-stack-create:
+  commands:
+    create_branch:
+      run: bash ./scripts/stacked-pr.sh create {0}
+
+workflow-stack-sync:
+  commands:
+    sync_branch:
+      run: |
+        if [ -z "{0}" ]; then
+          bash ./scripts/stacked-pr.sh sync
+        else
+          bash ./scripts/stacked-pr.sh sync {0}
+        fi
+
+workflow-stack-show:
+  commands:
+    show_branch:
+      run: |
+        if [ -z "{0}" ]; then
+          bash ./scripts/stacked-pr.sh show
+        else
+          bash ./scripts/stacked-pr.sh show {0}
+        fi
+
+workflow-queue-pr:
+  commands:
+    queue_branch:
+      run: bash ./scripts/stacked-pr.sh queue

@@ -42,7 +42,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
   test '#create' do
     assert_difference('Search.count') do
-      post searches_path, params: { search: { query: 'tacos' } }
+      post searches_path, params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
     end
 
     assert_response :found
@@ -62,18 +62,18 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#update' do
-    post searches_path, params: { search: { query: 'tacos' } }
+    post searches_path, params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
     @search = Search.last
-    patch search_url(@search.id), params: { search: { query: 'yoga' } }
+    patch search_url(@search.id), params: { search: { query: 'yoga', latitude: 0, longitude: 0 } }
 
     assert_response :found
     assert_equal 'Successfully updated search.', flash[:success]
   end
 
   test '#update changes query' do
-    post searches_path, params: { search: { query: 'yoga' } }
+    post searches_path, params: { search: { query: 'yoga', latitude: 0, longitude: 0 } }
     @search = Search.last
-    patch search_url(@search.id), params: { search: { query: 'tacos' } }
+    patch search_url(@search.id), params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
     assert_equal 'tacos', @search.reload.query
   end
 

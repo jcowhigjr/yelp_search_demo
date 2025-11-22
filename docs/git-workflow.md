@@ -33,6 +33,12 @@ lefthook run workflow-status
 # Create a new feature branch (requires feature name as argument)
 lefthook run workflow-new-feature fix/some-issue
 
+# Stack helpers (new!)
+lefthook run workflow-stack-create feature/foo-child
+lefthook run workflow-stack-sync          # rebases current branch on parent
+lefthook run workflow-stack-show          # prints parent chain
+lefthook run workflow-queue-pr            # runs readiness + queues auto-merge
+
 # Run code quality fixes
 lefthook run fixer
 
@@ -72,10 +78,13 @@ bin/safe-workflow push
 ## 🎯 Recommended Workflow
 
 1. **Start work**: `lefthook run workflow-new-feature feature/my-feature`
-2. **Make changes**: Edit your code
-3. **Commit**: `git commit -m "Your message"` (automatic quality checks run)
-4. **Push**: `git push origin feature/my-feature` (comprehensive testing runs)
-5. **Create PR**: Use GitHub interface
+2. **Stack follow-up work** (optional): `lefthook run workflow-stack-create feature/my-feature-part-2`
+3. **Make changes**: Edit your code
+4. **Sync stack before push**: `lefthook run workflow-stack-sync`
+5. **Commit**: `git commit -m "Your message"` (automatic quality checks run)
+6. **Push**: `git push origin feature/my-feature` (comprehensive testing runs)
+7. **Queue PR**: `lefthook run workflow-queue-pr`
+8. **Create PR**: Use GitHub interface if auto-merge/queue is not enabled
 
 ## 🔧 Configuration
 
