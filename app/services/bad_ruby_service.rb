@@ -25,3 +25,4 @@ class BadRubyService
     active
   end
 end
+# A comment to trigger change
