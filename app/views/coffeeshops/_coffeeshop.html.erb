@@ -1,17 +1,21 @@
 <div class="col xl l6 m12 s12">
-  <%# Dark mode handled via .coffeeshop-card.card CSS rule in coffeeshops.scss
-      which uses CSS variables (--color-bg, --color-text) that respond to prefers-color-scheme.
-      Tailwind dark: classes don't work due to invalid nested @media syntax in v4 build. %>
+  <%# Dark mode handled via .coffeeshop-card.card CSS rule in application.css
+      which uses CSS variables (--color-bg, --color-text) that respond to prefers-color-scheme. %>
   <div class="card large coffeeshop-card">
     <div class="card-image">
       <p><%= image_tag coffeeshop.large_image_url, class: 'card-img responsive-img' %></p>
     </div>
+
     <div class="card-content row">
       <span class="card-title">
-        <p class="center"><%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %></p>
-        <p class="center">
+        <p class="center page-text" style="margin-bottom: 0;">
+          <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), data: { turbo: false } %>
+        </p>
+
+        <p class="center" style="margin-top: 10px;">
           <%= link_to t('.more-info'), coffeeshop_path(coffeeshop), data: { turbo: false }, class: 'btn-small' %>
         </p>
+
         <% if logged_in? %>
           <div class="center" style="margin-top: 10px;">
             <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
@@ -25,15 +29,21 @@
         <% end %>
       </span>
     </div>
+
     <div class="card-content row">
       <span>
         <address class="card-action columns-2">
-          <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}", target:
-          :blank, class: 'truncate material-icons' do %>
-          <i class="material-icons">place</i> <a class="truncate"><%= coffeeshop.address %></a>
-          <% end %> <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}", class: 'truncate' do %>
-          <i class="material-icons">phone</i>
-          <a class="truncate"><%= number_to_phone(coffeeshop.phone_number, area_code: true) %></a>
+          <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
+                       target: :blank,
+                       class: 'truncate material-icons' do %>
+            <i class="material-icons">place</i>
+            <a class="truncate"><%= coffeeshop.address %></a>
+          <% end %>
+
+          <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
+                       class: 'truncate' do %>
+            <i class="material-icons">phone</i>
+            <a class="truncate"><%= number_to_phone(coffeeshop.phone_number, area_code: true) %></a>
           <% end %>
         </address>
       </span>
