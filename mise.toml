@@ -78,6 +78,10 @@ description = "Run system tests for 'next' environment"
 run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' next rails test:system"
 depends = ["test-next-prepare"]
 
+[tasks.test-scripts]
+description = "Shell-level CLI tests for helper scripts (stacked-pr.sh, etc.)"
+run = "bash test/scripts/stacked_pr_cli_test.sh"
+
 [tasks.test-smoke]
 description = "Fast Rails smoke tests without system/browser suites"
 run = "bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
