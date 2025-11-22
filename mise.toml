@@ -77,3 +77,11 @@ depends = ["test-next-prepare"]
 description = "Run system tests for 'next' environment"
 run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' next rails test:system"
 depends = ["test-next-prepare"]
+
+[tasks.test-smoke]
+description = "Fast Rails smoke tests without system/browser suites"
+run = "bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
+
+[tasks.test-next-smoke]
+description = "Fast Next Rails smoke tests"
+run = "next rails test:prepare --trace && next rails test test/controllers test/models"
