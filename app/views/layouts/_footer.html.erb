@@ -1,9 +1,18 @@
 <footer>
-  <div class="nav-wrapper">
-    <nav class="language-nav" aria-label="Language links">
+  <div class="nav-wrapper" style="padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div class="page-text" style="font-size: 14px; padding: 0; margin: 0;">
+      © <%= Time.current.year %> Jitter
+    </div>
+
+    <nav class="language-nav" aria-label="Language and footer links" style="padding: 0;">
       <% I18n.available_locales.each_with_index do |locale, index| %>
         <span class="language-nav__item">
-          <%= link_to request.params.merge(locale: resolve_locale(locale)), class: ["language-nav__link", ("language-nav__link--active" if locale == I18n.locale)].compact.join(" "), "aria-label": t('.language_name_of_locale', locale:) do %>
+          <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                      class: [
+                        'language-nav__link',
+                        ("language-nav__link--active" if locale == I18n.locale)
+                      ].compact.join(" "),
+                      "aria-label": t('.language_name_of_locale', locale:) do %>
             <%= t('.language_name_of_locale', locale:) %>
           <% end %>
         </span>
