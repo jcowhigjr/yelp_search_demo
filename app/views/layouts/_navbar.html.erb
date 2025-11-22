@@ -1,40 +1,68 @@
 <%# https://materializecss.com/navbar.html %>
- <div class="navbar-fixed">
-   <nav class="transparentBG">
+<div class="navbar-fixed">
+  <nav class="transparentBG">
     <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
       <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <%# https://chimkan.com/rails-7-and-devise-issue-with-sign-out/ %>
-        <li><%= link_to t('.logout'), logout_path, data: { turbo_method: :delete } %></li>
-        <li><%= link_to t('.my-profile'), user_path(current_user), method: :get %></li>
-        <li><%= link_to t('views.searches.new'), new_search_path, method: :get %></li>
+        <li>
+          <%= link_to t('.logout'), logout_path,
+                      class: 'language-nav__link',
+                      data: { turbo_method: :delete } %>
+        </li>
+        <li>
+          <%= link_to t('.my-profile'),
+                      user_path(current_user),
+                      method: :get,
+                      class: [
+                        'language-nav__link',
+                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil)
+                      ].compact.join(' ') %>
+        </li>
+        <li>
+          <%= link_to t('views.searches.new'),
+                      new_search_path,
+                      method: :get,
+                      class: [
+                        'language-nav__link',
+                        (current_page?(new_search_path) ? 'language-nav__link--active' : nil)
+                      ].compact.join(' ') %>
+        </li>
       </ul>
     </div>
   </nav>
- </div>
- <div class="sidenav" id="mobile-demo">
-   <ul>
+</div>
+
+<div class="sidenav" id="mobile-demo">
+  <ul>
     <li>
       <div class="user-view">
-              <h6><i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
-              <span><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
+        <h6><i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
+        <span><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
       </div>
-      </li>
-      <li><p><%= link_to logout_path, data: { turbo_method: :delete }  do %>
+    </li>
+    <li>
+      <p>
+        <%= link_to logout_path, data: { turbo_method: :delete } do %>
           <i class="small material-icons">exit_to_app</i><%= t('.logout') %>
-          <% end %></p>
-      </li>
-      <%# be careful turbo false is here to prevent breaking the slide-nav %>
-      <li><p><%= link_to user_path(current_user), data: { turbo: false} do %>
-            <i class="small material-icons">person</i><%= t('.my-profile') %>
-            <% end %>
-           </p>
-      </li>
-      <%# be careful turbo false is here to prevent breaking the slide-nav %>
-      <li><p><%= link_to new_search_path, data: { turbo: false}  do %>
-             <i class="small material-icons">search</i><%= t('views.searches.new') %>
-             <% end %>
-          </p>
-      </li>
-    </ul>
-  </div>
+        <% end %>
+      </p>
+    </li>
+    <%# be careful turbo false is here to prevent breaking the slide-nav %>
+    <li>
+      <p>
+        <%= link_to user_path(current_user), data: { turbo: false } do %>
+          <i class="small material-icons">person</i><%= t('.my-profile') %>
+        <% end %>
+      </p>
+    </li>
+    <%# be careful turbo false is here to prevent breaking the slide-nav %>
+    <li>
+      <p>
+        <%= link_to new_search_path, data: { turbo: false } do %>
+          <i class="small material-icons">search</i><%= t('views.searches.new') %>
+        <% end %>
+      </p>
+    </li>
+  </ul>
+</div>
