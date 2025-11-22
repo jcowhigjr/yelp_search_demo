@@ -4,6 +4,13 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 Project: Rails 8 app ("Jitter") for location-based search using Yelp Fusion. Tooling is centered on mise, lefthook, and Rails' native stack (importmap, propshaft, tailwindcss-rails, Hotwire). System tests use Cuprite.
 
+## Multi-agent configuration
+
+This repository uses `AGENTS.md` at the project root as the **cross-agent configuration file** for Warp, Codex, Claude, and other agents that understand the AGENTS.md convention. Warp agents should:
+- Treat `AGENTS.md` as the primary project contract for all agents.
+- Use `WARP.md` for Warp-specific runtime commands, git workflows, and the PR completion protocol.
+- Consult `docs/AGENTS.md` for deeper policies (empirical verification, review-first loops, Claude integration, etc.).
+
 ## 🤖 CRITICAL FOR AI AGENTS
 
 **ALWAYS run this FIRST before starting any work:**
