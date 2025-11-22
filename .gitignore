@@ -116,3 +116,6 @@ __pycache__/
 !scripts/*.sh
 *.txt
 *.yml
+
+# Design reference prototypes (not for production)
+Website Design Improvement/
