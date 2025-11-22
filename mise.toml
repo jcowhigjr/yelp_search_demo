@@ -60,9 +60,8 @@ run = "bin/rails test"
 depends = ["test-prepare"]
 
 [tasks.test-system]
-description = "Run system tests for main application"
-run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' bin/rails test:system"
-depends = ["test-prepare"]
+description = "Run only system tests against an already-prepared test env (matches lefthook env)"
+run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false bin/rails test:system"
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"

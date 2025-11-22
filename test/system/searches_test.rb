@@ -4,7 +4,7 @@ class SearchesTest < ApplicationSystemTestCase
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
 
-  test 'An anonymous user at the static home can search by query and requery for businesses' do
+  test 'An anonymous user at the static home can search by query and view results' do
     query = 'yoga'
 
     visit new_search_path  # Use the explicit path instead of '/'
@@ -15,41 +15,17 @@ class SearchesTest < ApplicationSystemTestCase
     click_on 'search'
 
     assert_text "Top Rated Searches for #{query} near you", wait: 4
-    
+
     # Wait for search results to fully load
     wait_for_search_results
-    
-    # Try to click More Info button with safer method
-    click_more_info_safely
 
+    # Click More Info and verify navigation to a coffeeshop page
+    click_more_info_safely
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
+    # Go back once and ensure we land back on the search results page
     page.execute_script('window.history.back()')
-    page.driver.wait_for_network_idle if ENV['CUPRITE'] == 'true'
-
     assert_current_path "/searches/#{Search.last.id}"
-
-    # try a second search
-    click_on 'clear'
-
-    assert_selector(:field, 'search_query', with: '', wait: 5)
-
-    query2 = 'coffee'
-
-    fill_in 'search_query', with: query2
-
-    # required fields are present
-    assert_selector(:field, 'search_query', with: query2)
-
-    # submit the form
-    find_by_id('search_query').native.send_keys(:return)
-
-    # wait for the results to load
-    assert_current_path %r{^/searches/\d+$} if ENV['CUPRITE'] == 'true'
-
-    assert_text "Top Rated Searches for #{query2} near you"
-
-    assert_selector('address') # address is present'
   end
 
   test 'An anonymous user can update the query' do

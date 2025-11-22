@@ -9,7 +9,6 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     # Login
     visit '/login'
     fill_in 'email', with: @user.email
-    click_on 'Log In'
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
