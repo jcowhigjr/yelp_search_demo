@@ -13,13 +13,19 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
+    # Address and phone links
     assert_selector :link, text: 'phone'
     assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
     assert_selector :link, text: 'place'
     assert_link 'place',
                 href:
                   "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+
+    # Yelp link
     assert_selector :link, href: @coffeeshop.yelp_url
+
+    # Rating and reviews section container still present
+    assert_selector '.review-container', minimum: 1, wait: 5
   end
 
   test 'A logged in user can submit a review' do
