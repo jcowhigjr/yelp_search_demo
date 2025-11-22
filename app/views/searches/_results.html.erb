@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row center">
-        <h2 class="white-text"><%= t('views.searches.results', query: @search.query ) %></h2>
+        <h2 class="results-heading"><%= t('views.searches.results', query: @search.query ) %></h2>
     </div>
     <% if @search.coffeeshops.empty? %>
         <div class="row center">
