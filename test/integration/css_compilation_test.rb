@@ -33,7 +33,8 @@ class CssCompilationTest < ActiveSupport::TestCase
     assert_path_exists BUILD_PATH, 'Tailwind CSS build file missing.'
     css_content = File.read(BUILD_PATH)
     # Matches --color-primary: #223556; or --color-primary:#223556; within a dark mode media query
-    assert_match(/@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root\s*{\s*--color-primary:\s*#223556;/i, css_content,
+    # Updated to expect :root:not([data-theme='light']) selector (quotes may be stripped by minifier)
+    assert_match(/@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root:not\(\[data-theme=['"]?light['"]?\]\)\s*{\s*--color-primary:\s*#223556;/i, css_content,
                  'Expected dark mode override for --color-primary with #223556.')
   end
 end
