@@ -1,13 +1,23 @@
-<body>
-    <div class="container">
-        <% if flash[:error] %>
-            <div class="row center">
-                <span class="page-text red-text"><%= flash[:error] %></span>
-            </div>
-        <% end %>
-
-          <h2 class="text-xs text-transparent"><%= t('views.searches.new') %></h2>
-
-         <%= render 'searches/form', locals: { search: @search } if @search %>
+<div class="container mx-auto px-4 py-8">
+  <% if flash[:error] %>
+    <div class="row center mb-6">
+      <span class="page-text red-text"><%= flash[:error] %></span>
     </div>
-</body>
+  <% end %>
+
+  <h2 class="text-xs text-transparent"><%= t('views.searches.new') %></h2>
+
+  <div class="text-center">
+    <h1 class="page-name mb-8">
+      COFFEE NEAR YOU!
+    </h1>
+
+    <p class="page-text mb-12">
+      Find the best coffee shops in your area
+    </p>
+
+    <div class="max-w-3xl mx-auto">
+      <%= render 'searches/form', locals: { search: @search } if @search %>
+    </div>
+  </div>
+</div>

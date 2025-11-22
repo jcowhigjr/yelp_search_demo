@@ -30,7 +30,14 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     get new_search_url
 
     assert_response :success
-    assert_select 'form'
+
+    # Hero heading from the redesigned search page
+    assert_select 'h1', text: 'COFFEE NEAR YOU!'
+
+    # Ensure the search form and input are present
+    assert_select 'form' do
+      assert_select 'input[name=?]', 'search[query]'
+    end
   end
 
   test '#create' do
@@ -49,6 +56,9 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h2',
                   text: "Top Rated Searches for #{@search.query} near you!",
                   match: :second
+
+    # Ensure at least one coffeeshop card is rendered when results are present
+    assert_select '.coffeeshop-card', minimum: 1
   end
 
   test '#update' do

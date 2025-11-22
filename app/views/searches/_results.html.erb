@@ -1,17 +1,20 @@
 <div class="container">
+  <div class="row center">
+    <h2 class="white-text"><%= t('views.searches.results', query: @search.query ) %></h2>
+  </div>
+
+  <% if @search.coffeeshops.empty? %>
     <div class="row center">
-        <h2 class="white-text"><%= t('views.searches.results', query: @search.query ) %></h2>
+      <span class="page-text red-text"><%= t('.no-results-found') %></span>
     </div>
-    <% if @search.coffeeshops.empty? %>
-        <div class="row center">
-            <span class="page-text red-text"><%= t('.no-results-found') %></span>
-        </div>
-    <% else %>
-        <%= turbo_stream_from 'coffeeshops' %>
-        <%= turbo_frame_tag 'coffeeshops' do %>
-            <% @search.coffeeshops.each do |coffeeshop| %>
-                <%= render partial: 'coffeeshops/coffeeshop', locals: {coffeeshop:, search_query: @search.query} %>
-            <% end %>
+  <% else %>
+    <%= turbo_stream_from 'coffeeshops' %>
+    <%= turbo_frame_tag 'coffeeshops' do %>
+      <div class="row">
+        <% @search.coffeeshops.each do |coffeeshop| %>
+          <%= render partial: 'coffeeshops/coffeeshop', locals: { coffeeshop:, search_query: @search.query } %>
         <% end %>
+      </div>
     <% end %>
+  <% end %>
 </div>
