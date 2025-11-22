@@ -116,3 +116,4 @@ __pycache__/
 !scripts/*.sh
 *.txt
 *.yml
+!.github/workflows/*.yml
