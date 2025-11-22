@@ -25,7 +25,8 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 - **Prefer lefthook workflows for Git operations**
   - Example: create a new feature branch using:
-    - `lefthook run workflow-new-feature <branch-name>`
+    - `lefthook run workflow-new-feature feature/<branch-name>`
+  - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
 
 ---
@@ -63,6 +64,19 @@ For this repository specifically:
   - Resolve the review threads via the documented GraphQL / helper scripts.
 
 This behavior matches the Phase 0 "review-first" protocol described in `WARP.md` and expanded in `docs/AGENTS.md`.
+
+### 2.3. Example review-first loop iteration
+
+A single iteration of the review-first loop should look like this:
+
+1. **Check for feedback**
+   - Use the GitHub MCP `pull_request_read` tool (`get_reviews` + `get_review_comments`) and `./scripts/review-loop.sh` to detect any new reviews or unresolved threads for the current PR.
+2. **Plan fixes**
+   - For each new comment, identify the file/line, restate the issue in your own words, and plan the minimal code/doc change needed.
+3. **Implement + verify**
+   - Make the changes, run relevant tests (and visual checks when needed), and ensure everything passes locally.
+4. **Respond and re-check**
+   - Push the changes, respond on the PR if appropriate, then re-run the review loop to confirm there is no remaining unresolved feedback before moving on.
 
 ---
 

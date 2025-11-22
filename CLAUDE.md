@@ -1,5 +1,7 @@
 @AGENTS.md
 
+> Note: The `@AGENTS.md` directive is understood by Claude Code / `claude` CLI as an instruction to include the contents of `AGENTS.md` in the configuration prompt. Other tools may treat this as plain text.
+
 # Claude-specific notes
 
 This file configures how **Claude and claude-cli** should behave in this repository, on top of the shared rules in `AGENTS.md`.
