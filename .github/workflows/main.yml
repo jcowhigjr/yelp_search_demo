@@ -67,6 +67,9 @@ jobs:
     if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
+    env:
+      # Control Rails test parallelization for "next" jobs (default: 3 workers)
+      RAILS_TEST_WORKERS: 3
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -139,6 +142,9 @@ jobs:
     if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
+    env:
+      # Control Rails test parallelization for classic tests (default: 3 workers)
+      RAILS_TEST_WORKERS: 3
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -169,6 +175,8 @@ jobs:
         run: mise run setup -- --skip-server # Run application setup once
       - name: Run Brakeman
         run: mise run brakeman
+      - name: Script CLI tests (stacked-pr.sh)
+        run: mise run test-scripts
       - name: Build and run unit-tests
         env:
           RAILS_ENV: test
