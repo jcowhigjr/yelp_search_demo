@@ -1,0 +1,219 @@
+add_comment_to_pending_review	
+Add review comment to the requester's latest pending pull request review. A pending review needs to already exist to call this (check with the user if not sure).
+
+add_issue_comment	
+Add a comment to a specific issue in a GitHub repository.
+
+assign_copilot_to_issue	
+Assign Copilot to a specific issue in a GitHub repository. This tool can help with the following outcomes: - a Pull Request created with source code changes to resolve the issue More information can be found at: - https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent-to-work-on-tasks/about-assigning-tasks-to-copilot
+
+cancel_workflow_run	
+Cancel a workflow run
+
+create_and_submit_pull_request_review	
+Create and submit a review for a pull request without review comments.
+
+create_branch	
+Create a new branch in a GitHub repository
+
+create_issue	
+Create a new issue in a GitHub repository.
+
+create_or_update_file	
+Create or update a single file in a GitHub repository. If updating, you must provide the SHA of the file you want to update. Use this tool to create or update a file in a GitHub repository remotely; do not use it for local file operations.
+
+create_pending_pull_request_review	
+Create a pending review for a pull request. Call this first before attempting to add comments to a pending review, and ultimately submitting it. A pending pull request review means a pull request review, it is pending because you create it first and submit it later, and the PR author will not see it until it is submitted.
+
+create_pull_request	
+Create a new pull request in a GitHub repository.
+
+create_repository	
+Create a new GitHub repository in your account
+
+delete_file	
+Delete a file from a GitHub repository
+
+delete_pending_pull_request_review	
+Delete the requester's latest pending pull request review. Use this after the user decides not to submit a pending review, if you don't know if they already created one then check first.
+
+delete_workflow_run_logs	
+Delete logs for a workflow run
+
+dismiss_notification	
+Dismiss a notification by marking it as read or done
+
+download_workflow_run_artifact	
+Get download URL for a workflow run artifact
+
+fork_repository	
+Fork a GitHub repository to your account or specified organization
+
+get_code_scanning_alert	
+Get details of a specific code scanning alert in a GitHub repository.
+
+get_commit	
+Get details for a commit from a GitHub repository
+
+get_dependabot_alert	
+Get details of a specific dependabot alert in a GitHub repository.
+
+get_discussion	
+Get a specific discussion by ID
+
+get_discussion_comments	
+Get comments from a discussion
+
+get_file_contents	
+Get the contents of a file or directory from a GitHub repository
+
+get_issue	
+Get details of a specific issue in a GitHub repository.
+
+get_issue_comments	
+Get comments for a specific issue in a GitHub repository.
+
+get_job_logs	
+Download logs for a specific workflow job or efficiently get all failed job logs for a workflow run
+
+get_me	
+Get details of the authenticated GitHub user. Use this when a request is about the user's own profile for GitHub. Or when information is missing to build other tool calls.
+
+get_notification_details	
+Get detailed information for a specific GitHub notification, always call this tool when the user asks for details about a specific notification, if you don't know the ID list notifications first.
+
+get_pull_request	
+Get details of a specific pull request in a GitHub repository.
+
+get_pull_request_comments	
+Get comments for a specific pull request.
+
+get_pull_request_diff	
+Get the diff of a pull request.
+
+get_pull_request_files	
+Get the files changed in a specific pull request.
+
+get_pull_request_reviews	
+Get reviews for a specific pull request.
+
+get_pull_request_status	
+Get the status of a specific pull request.
+
+get_secret_scanning_alert	
+Get details of a specific secret scanning alert in a GitHub repository.
+
+get_tag	
+Get details about a specific git tag in a GitHub repository
+
+get_workflow_run	
+Get details of a specific workflow run
+
+get_workflow_run_logs	
+Download logs for a specific workflow run (EXPENSIVE: downloads ALL logs as ZIP. Consider using get_job_logs with failed_only=true for debugging failed jobs)
+
+get_workflow_run_usage	
+Get usage metrics for a workflow run
+
+list_branches	
+List branches in a GitHub repository
+
+list_code_scanning_alerts	
+List code scanning alerts in a GitHub repository.
+
+list_commits	
+Get list of commits of a branch in a GitHub repository. Returns at least 30 results per page by default, but can return more if specified using the perPage parameter (up to 100).
+
+list_dependabot_alerts	
+List dependabot alerts in a GitHub repository.
+
+list_discussion_categories	
+List discussion categories with their id and name, for a repository
+
+list_discussions	
+List discussions for a repository
+
+list_issues	
+List issues in a GitHub repository.
+
+list_notifications	
+Lists all GitHub notifications for the authenticated user, including unread notifications, mentions, review requests, assignments, and updates on issues or pull requests. Use this tool whenever the user asks what to work on next, requests a summary of their GitHub activity, wants to see pending reviews, or needs to check for new updates or tasks. This tool is the primary way to discover actionable items, reminders, and outstanding work on GitHub. Always call this tool when asked what to work on next, what is pending, or what needs attention in GitHub.
+
+list_pull_requests	
+List pull requests in a GitHub repository. If the user specifies an author, then DO NOT use this tool and use the search_pull_requests tool instead.
+
+list_secret_scanning_alerts	
+List secret scanning alerts in a GitHub repository.
+
+list_tags	
+List git tags in a GitHub repository
+
+list_workflow_jobs	
+List jobs for a specific workflow run
+
+list_workflow_run_artifacts	
+List artifacts for a workflow run
+
+list_workflow_runs	
+List workflow runs for a specific workflow
+
+list_workflows	
+List workflows in a repository
+
+manage_notification_subscription	
+Manage a notification subscription: ignore, watch, or delete a notification thread subscription.
+
+manage_repository_notification_subscription	
+Manage a repository notification subscription: ignore, watch, or delete repository notifications subscription for the provided repository.
+
+mark_all_notifications_read	
+Mark all notifications as read
+
+merge_pull_request	
+Merge a pull request in a GitHub repository.
+
+push_files	
+Push multiple files to a GitHub repository in a single commit
+
+request_copilot_review	
+Request a GitHub Copilot code review for a pull request. Use this for automated feedback on pull requests, usually before requesting a human reviewer.
+
+rerun_failed_jobs	
+Re-run only the failed jobs in a workflow run
+
+rerun_workflow_run	
+Re-run an entire workflow run
+
+run_workflow	
+Run an Actions workflow by workflow ID or filename
+
+search_code	
+Search for code across GitHub repositories
+
+search_issues	
+Search for issues in GitHub repositories using issues search syntax already scoped to is:issue
+
+search_orgs	
+Search for GitHub organizations exclusively
+
+search_pull_requests	
+Search for pull requests in GitHub repositories using issues search syntax already scoped to is:pr
+
+search_repositories	
+Search for GitHub repositories
+
+search_users	
+Search for GitHub users exclusively
+
+submit_pending_pull_request_review	
+Submit the requester's latest pending pull request review, normally this is a final step after creating a pending review, adding comments first, unless you know that the user already did the first two steps, you should check before calling this.
+
+update_issue	
+Update an existing issue in a GitHub repository.
+
+update_pull_request	
+Update an existing pull request in a GitHub repository.
+
+update_pull_request_branch	
+Update the branch of a pull request with the latest changes from the base branch.
+
