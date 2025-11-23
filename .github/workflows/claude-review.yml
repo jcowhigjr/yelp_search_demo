@@ -1,0 +1,183 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - develop
+  pull_request_review_comment:
+    types: [created]
+  issue_comment:
+    types: [created]
+
+jobs:
+  claude-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    # Only run on PRs or when @claude is mentioned
+    if: |
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft) ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment')
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      checks: write
+    
+    steps:
+      - name: Determine Ref
+        id: get-ref
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+          DEFAULT_REF: ${{ github.ref }}
+        run: |
+          if [ "$EVENT_NAME" == "pull_request" ]; then
+            echo "ref=refs/pull/$PR_NUMBER/head" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "issue_comment" ]; then
+            echo "ref=refs/pull/$ISSUE_NUM/head" >> $GITHUB_OUTPUT
+          else
+            echo "ref=$DEFAULT_REF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Event Info
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+          REF: ${{ steps.get-ref.outputs.ref }}
+        run: |
+          echo "Event: $EVENT"
+          echo "PR: #$PR_NUMBER"
+          echo "Actor: $ACTOR"
+          echo "Ref: $REF"
+      
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.get-ref.outputs.ref }}
+          persist-credentials: false
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      
+      - name: Claude Review (Attempt 1)
+        id: claude-1
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Wait and Retry (Attempt 2)
+        if: steps.claude-1.outcome == 'failure'
+        run: |
+          echo "⚠️ First attempt failed, retrying in 10 seconds..."
+          sleep 10
+      
+      - name: Claude Review (Attempt 2)
+        if: steps.claude-1.outcome == 'failure'
+        id: claude-2
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Wait and Retry (Attempt 3)
+        if: |
+          steps.claude-1.outcome == 'failure' &&
+          steps.claude-2.outcome == 'failure'
+        run: |
+          echo "⚠️ Second attempt failed, final retry in 15 seconds..."
+          sleep 15
+      
+      - name: Claude Review (Attempt 3 - Final)
+        if: |
+          steps.claude-1.outcome == 'failure' &&
+          steps.claude-2.outcome == 'failure'
+        id: claude-3
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Success Report
+        if: |
+          steps.claude-1.outcome == 'success' ||
+          steps.claude-2.outcome == 'success' ||
+          steps.claude-3.outcome == 'success'
+        run: |
+          if [ "${{ steps.claude-1.outcome }}" == "success" ]; then
+            echo "✅ Claude review completed on attempt 1"
+          elif [ "${{ steps.claude-2.outcome }}" == "success" ]; then
+            echo "✅ Claude review completed on attempt 2"
+          else
+            echo "✅ Claude review completed on attempt 3"
+          fi
+      
+      - name: Failure Report
+        if: |
+          steps.claude-1.outcome == 'failure' &&
+          steps.claude-2.outcome == 'failure' &&
+          steps.claude-3.outcome == 'failure'
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+          RUN_ID: ${{ github.run_id }}
+          SERVER_URL: ${{ github.server_url }}
+          REPO: ${{ github.repository }}
+          OUTCOME_1: ${{ steps.claude-1.outcome }}
+          OUTCOME_2: ${{ steps.claude-2.outcome }}
+          OUTCOME_3: ${{ steps.claude-3.outcome }}
+        with:
+          script: |
+            const pr_number = process.env.PR_NUMBER;
+            const run_url = `${process.env.SERVER_URL}/${process.env.REPO}/actions/runs/${process.env.RUN_ID}`;
+            
+            const comment = `## ⚠️ Claude Review Failed
+            
+            The AI code review failed after 3 attempts.
+            
+            **Attempts:**
+            - Attempt 1: ${process.env.OUTCOME_1}
+            - Attempt 2: ${process.env.OUTCOME_2}
+            - Attempt 3: ${process.env.OUTCOME_3}
+            
+            **Debug Steps:**
+            1. Check [workflow run logs](${run_url})
+            2. Verify ANTHROPIC_API_KEY is valid
+            3. Check for rate limiting
+            4. Ensure branch exists and is up to date
+            
+            The review will be retried automatically on the next push or when you comment \`@claude\` to retry manually.
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr_number,
+              body: comment
+            });
+      
+      - name: Final Status
+        if: |
+          steps.claude-1.outcome == 'failure' &&
+          steps.claude-2.outcome == 'failure' &&
+          steps.claude-3.outcome == 'failure'
+        run: |
+          echo "❌ All Claude review attempts failed"
+          exit 1

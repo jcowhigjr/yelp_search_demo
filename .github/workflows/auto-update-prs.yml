@@ -20,9 +20,6 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for all branches and tags
       
-      - name: Setup GitHub CLI
-        uses: cli/cli-action@v2
-      
       - name: Update PR branches that are behind develop
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,4 +55,5 @@ jobs:
                 -X PUT \
                 "repos/${{ github.repository }}/pulls/${PR}/update-branch" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
             fi
-          echo "Done."  
+          done
+          echo "Done."

@@ -1,0 +1,5 @@
+---
+# Ignore certain advisories:
+# ignore:
+#   - GHSA-xxxx-xxxx-xxxx
+#   - CVE-XXXX-XXXX
