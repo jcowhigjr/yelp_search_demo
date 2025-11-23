@@ -37,15 +37,14 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           ISSUE_NUM: ${{ github.event.issue.number }}
           DEFAULT_REF: ${{ github.ref }}
         run: |
           if [ "$EVENT_NAME" == "pull_request" ]; then
-            echo "ref=$PR_HEAD_SHA" >> $GITHUB_OUTPUT
+            echo "ref=refs/pull/$PR_NUMBER/head" >> $GITHUB_OUTPUT
           elif [ "$EVENT_NAME" == "issue_comment" ]; then
-            SHA=$(gh pr view "$ISSUE_NUM" --json headRefOid --jq .headRefOid)
-            echo "ref=$SHA" >> $GITHUB_OUTPUT
+            echo "ref=refs/pull/$ISSUE_NUM/head" >> $GITHUB_OUTPUT
           else
             echo "ref=$DEFAULT_REF" >> $GITHUB_OUTPUT
           fi
@@ -67,6 +66,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ steps.get-ref.outputs.ref }}
+          persist-credentials: false
       
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
