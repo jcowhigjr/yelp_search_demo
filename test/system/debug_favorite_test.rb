@@ -12,9 +12,10 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
-    # Search for coffee
-    visit '/'
-    fill_in 'search[query]', with: 'coffee'
+    # Navigate explicitly to the search page and wait for the form
+    visit new_search_path
+    search_box = find(:fillable_field, 'search[query]', wait: 10)
+    search_box.fill_in(with: 'coffee')
     find('button[type="submit"]').click
 
     # Wait for search results
