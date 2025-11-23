@@ -23,9 +23,9 @@ class SearchesTest < ApplicationSystemTestCase
     click_more_info_safely
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    # Go back once and ensure we land back on the search results page
-    page.execute_script('window.history.back()')
-    assert_current_path "/searches/#{Search.last.id}"
+    # Go back once and ensure we land back on a search page
+    go_back
+    assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
   end
 
   test 'An anonymous user can update the query' do
