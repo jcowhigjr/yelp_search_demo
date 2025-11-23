@@ -169,6 +169,8 @@ jobs:
         run: mise run setup -- --skip-server # Run application setup once
       - name: Run Brakeman
         run: mise run brakeman
+      - name: Script CLI tests (stacked-pr.sh)
+        run: mise run test-scripts
       - name: Build and run unit-tests
         env:
           RAILS_ENV: test

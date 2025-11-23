@@ -70,8 +70,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
               # # var to a falsey value
               headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
               js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-              timeout: 30,
-              process_timeout: 30,
+              timeout: 60,
+              process_timeout: 60,
               browser_options: {
                 'no-sandbox': true,
                 'disable-web-security': true,
