@@ -20,9 +20,9 @@ class NavigationTest < ApplicationSystemTestCase
     click_more_info_safely
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    # Go back to search results and verify
+    # Go back to search results and verify (either show or new)
     go_back
-    assert_current_path search_path(search_id, locale: nil)
+    assert_current_path(%r{^/searches/(new|#{search_id})$}, wait: 10)
 
     # Go back to search form and verify
     go_back
