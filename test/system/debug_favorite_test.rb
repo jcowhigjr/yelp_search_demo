@@ -21,15 +21,16 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
 
-    # Check if we have any turbo frames
-    frames = all('[id*="favorite"]')
-    assert frames.count > 0, "Expected to find favorite frames"
-    
-    # Check if we have favorite buttons
-    buttons = all('.favorite-btn')
-    assert buttons.count > 0, "Expected to find favorite buttons"
-    
-    # Verify we're on the search results page
+    # Check if we have at least one favorite turbo frame and button on the first card
+    within first('.coffeeshop-card') do
+      assert_selector "turbo-frame[id*='favorite']", wait: 10
+
+      within "turbo-frame[id*='favorite']" do
+        assert_selector 'button.favorite-btn', wait: 5
+      end
+    end
+
+    # Verify we're on a search results page
     assert_match %r{/searches/\d+}, current_path
   end
 end
