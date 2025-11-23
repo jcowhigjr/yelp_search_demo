@@ -25,4 +25,5 @@ if "$REVIEW_LOOP_SCRIPT"; then
 fi
 
 echo "❌ Unresolved review threads detected. Please address, reply, and resolve each thread before pushing."
+echo "💡 Hint: If you are pushing the fix for these reviews, you can bypass this check with: git push --no-verify"
 exit 1
