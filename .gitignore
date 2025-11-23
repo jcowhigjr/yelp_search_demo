@@ -118,3 +118,11 @@ Website Design Improvement/
 
 # Local sqlite/WAL scratch files created during experiments
 nil-*
+
+# Local MCP/config and analysis outputs
+.mcp.json
+ci_stability_results.txt
+github_issues_open.json
+monte_carlo_value_scores_*.json
+quick_test_results.json
+test_workflow.txt
