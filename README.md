@@ -83,6 +83,12 @@ This project uses `mise` to manage and run common development tasks. You can lis
 *   `mise run fix`: Attempt to automatically fix issues found by linters.
 *   `mise run brakeman`: Run the Brakeman security scanner.
 
+System and other Rails tests honor the `RAILS_TEST_WORKERS` environment variable to control parallelization (default: 3 workers). For example:
+
+```bash
+RAILS_TEST_WORKERS=3 HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
+```
+
 For more detailed development notes, see [DevNotes.md](DevNotes.md). Additional resources can be found in [Resources.md](Resources.md).
 
 ## Attribution
