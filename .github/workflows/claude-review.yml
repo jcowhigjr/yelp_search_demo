@@ -26,7 +26,7 @@ jobs:
       (github.event_name == 'pull_request_review_comment')
     
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
       checks: write
@@ -36,15 +36,18 @@ jobs:
         id: get-ref
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          ISSUE_NUM: ${{ github.event.issue.number }}
+          DEFAULT_REF: ${{ github.ref }}
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "ref=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event_name }}" == "issue_comment" ]; then
-            PR_NUM=${{ github.event.issue.number }}
-            REF=$(gh pr view $PR_NUM --json headRefName --jq .headRefName)
+          if [ "$EVENT_NAME" == "pull_request" ]; then
+            echo "ref=$PR_HEAD_REF" >> $GITHUB_OUTPUT
+          elif [ "$EVENT_NAME" == "issue_comment" ]; then
+            REF=$(gh pr view "$ISSUE_NUM" --json headRefName --jq .headRefName)
             echo "ref=$REF" >> $GITHUB_OUTPUT
           else
-            echo "ref=${{ github.ref }}" >> $GITHUB_OUTPUT
+            echo "ref=$DEFAULT_REF" >> $GITHUB_OUTPUT
           fi
 
       - name: Event Info
