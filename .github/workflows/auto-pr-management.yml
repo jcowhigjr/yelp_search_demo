@@ -1,0 +1,51 @@
+name: Automated PR Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: "Base branch whose PRs should be updated"
+        required: false
+        default: "develop"
+
+# Define permissions at workflow level
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+
+  # Manually update PRs targeting a base branch
+  auto-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Auto-update PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BASE_BRANCH="${{ github.event.inputs.base_branch || 'develop' }}"
+
+          echo "Updating PRs targeting base branch: $BASE_BRANCH"
+
+          PR_NUMBERS=$(gh pr list --base "$BASE_BRANCH" --json number --jq '.[].number')
+
+          if [ -z "$PR_NUMBERS" ]; then
+            echo "No open PRs found targeting $BASE_BRANCH"
+            exit 0
+          fi
+
+          echo "Found the following PRs targeting $BASE_BRANCH: $PR_NUMBERS"
+
+          for PR_NUMBER in $PR_NUMBERS; do
+            echo "Updating PR #$PR_NUMBER"
+            gh pr update "$PR_NUMBER" --repo "${GITHUB_REPOSITORY:-${{ github.repository }}}" || \
+              echo "Failed to update PR #$PR_NUMBER, continuing with others"
+          done
