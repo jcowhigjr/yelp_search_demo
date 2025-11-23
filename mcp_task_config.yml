@@ -1,0 +1,293 @@
+# MCP Task Prioritization Configuration
+# This file configures the MCP task prioritization tools
+
+mcp_settings:
+  # GitHub repository settings
+  owner: jcowhigjr
+  repo: jitter
+  
+  # T-shirt sizing configuration
+  sizing:
+    # Score thresholds for each size
+    thresholds:
+      XS: 0-4      # 1-2 hours
+      S: 5-12      # 2-4 hours  
+      M: 13-20     # 4-8 hours (0.5-1 day)
+      L: 21-35     # 1-2 days
+      XL: 36+      # 2-5 days
+    
+    # Keywords that increase complexity score
+    complexity_keywords:
+      - refactor
+      - migration
+      - security
+      - authentication
+      - authorization
+      - api
+      - database
+      - performance
+      - breaking
+      - dependency
+      - upgrade
+      - architecture
+      - integration
+      - deploy
+      - infrastructure
+      - scalability
+      - ci/cd
+      - docker
+      - kubernetes
+    
+    # Keywords that suggest simpler tasks
+    simple_keywords:
+      - fix
+      - update
+      - bump
+      - add
+      - remove
+      - typo
+      - docs
+      - documentation
+      - readme
+      - comment
+      - style
+      - format
+    
+    # Confidence levels
+    confidence_thresholds:
+      high: 0.8
+      medium: 0.5
+      low: 0.0
+
+  # Work item analysis settings
+  analysis:
+    # Consider items stale after this many days
+    stale_threshold_days: 7
+    
+    # Recommended size distribution (percentages)
+    recommended_distribution:
+      XS: 20
+      S: 30
+      M: 35
+      L: 10
+      XL: 5
+    
+    # Alert thresholds
+    alerts:
+      max_unestimated: 5
+      max_xl_items: 2
+      max_stale_prs: 3
+
+  # PR status tracking settings
+  pr_status:
+    # Risk assessment thresholds
+    risk_thresholds:
+      files_changed:
+        medium: 10
+        high: 20
+      lines_changed:
+        medium: 500
+        high: 1000
+    
+    # Sensitive file patterns
+    sensitive_patterns:
+      - migration
+      - schema
+      - config
+      - deploy
+      - security
+      - auth
+      - credential
+      - .env
+      - database.yml
+      - secrets
+      - keys
+      - certificate
+    
+    # Status update templates
+    templates:
+      review_reminder_days: 2
+      merge_ready_checks:
+        - "All reviews approved"
+        - "All checks passing" 
+        - "No merge conflicts"
+        - "Documentation updated"
+        - "Ready for deployment"
+
+  # Comment formatting settings
+  formatting:
+    # Emoji mapping for sizes
+    size_emojis:
+      XS: "🟫"  # Brown - Extra Small
+      S: "🟢"   # Green - Small
+      M: "🟡"   # Yellow - Medium
+      L: "🟠"   # Orange - Large
+      XL: "🔴"  # Red - Extra Large
+    
+    # Risk level emojis
+    risk_emojis:
+      low: "🟢"
+      medium: "🟡"
+      high: "🔴"
+    
+    # Include timestamp in comments
+    include_timestamp: true
+    
+    # Footer text for automated comments
+    footer_text: "Automated by MCP Task Prioritization"
+
+  # Logging and tracking
+  logging:
+    # Directory for storing analysis data
+    data_directory: ".project/data"
+    state_directory: ".project/state"
+    
+    # Log files
+    sizing_log: "sizing_log.jsonl"
+    analysis_log: "work_analysis.jsonl"
+    pr_status_log: "pr_status.jsonl"
+    
+    # Retention policy (days)
+    log_retention_days: 30
+    
+    # Enable detailed logging
+    verbose: true
+
+  # Integration settings
+  integration:
+    # MCP tools to use
+    mcp_tools:
+      - get_issue
+      - add_issue_comment
+      - list_issues
+      - list_pull_requests
+      - get_pull_request
+      - get_pull_request_files
+      - create_pending_pull_request_review
+      - add_comment_to_pending_review
+      - submit_pending_pull_request_review
+    
+    # Webhook settings (if using webhooks)
+    webhooks:
+      enabled: false
+      events:
+        - issues.opened
+        - issues.labeled
+        - pull_request.opened
+        - pull_request.ready_for_review
+    
+    # GitHub labels to create/use
+    labels:
+      sizes:
+        - name: "size:XS"
+          color: "8B4513"
+          description: "Extra small task (1-2 hours)"
+        - name: "size:S" 
+          color: "00FF00"
+          description: "Small task (2-4 hours)"
+        - name: "size:M"
+          color: "FFFF00"
+          description: "Medium task (4-8 hours)"
+        - name: "size:L"
+          color: "FFA500"
+          description: "Large task (1-2 days)"
+        - name: "size:XL"
+          color: "FF0000"
+          description: "Extra large task (2-5 days)"
+      
+      priorities:
+        - name: "priority:low"
+          color: "D4EDDA"
+          description: "Low priority"
+        - name: "priority:medium"
+          color: "FFF3CD"
+          description: "Medium priority"
+        - name: "priority:high"
+          color: "F8D7DA"
+          description: "High priority"
+        - name: "priority:urgent"
+          color: "DC3545"
+          description: "Urgent priority"
+
+# Project-specific overrides
+project_overrides:
+  # Rails-specific settings
+  rails_project: true
+  
+  # Additional complexity keywords for Rails
+  rails_keywords:
+    - model
+    - controller
+    - view
+    - route
+    - helper
+    - concern
+    - service
+    - job
+    - mailer
+    - validator
+    - serializer
+    - generator
+    - rake
+    - gem
+    - bundle
+  
+  # File patterns that suggest higher complexity in Rails
+  rails_complex_patterns:
+    - app/models/
+    - config/routes.rb
+    - db/migrate/
+    - Gemfile
+    - config/application.rb
+    - config/environments/
+    - lib/
+  
+  # Testing considerations for Rails
+  rails_testing:
+    test_files_patterns:
+      - test/
+      - spec/
+      - features/
+    
+    test_multiplier: 1.2  # Increase size estimate if no tests mentioned
+
+# Automation rules
+automation:
+  # Auto-size new issues
+  auto_size_issues: true
+  
+  # Auto-update PR status
+  auto_update_pr_status: true
+  
+  # Generate daily/weekly reports
+  reports:
+    daily_summary: false
+    weekly_analysis: true
+    monthly_metrics: true
+  
+  # Notification settings
+  notifications:
+    slack_webhook: null
+    email_reports: false
+    github_notifications: true
+
+# Advanced features
+advanced:
+  # Machine learning for size estimation (future)
+  ml_enabled: false
+  
+  # Historical data analysis
+  historical_analysis: true
+  
+  # Velocity tracking
+  velocity_tracking: true
+  
+  # Burndown charts
+  burndown_enabled: false
+  
+  # Integration with project management tools
+  external_integrations:
+    jira: false
+    trello: false
+    asana: false
+    linear: false
