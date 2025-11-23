@@ -8,8 +8,10 @@
 #   show [branch]
 #   queue
 #
-# Parent relationships are stored via `git config stack.parent.<branch>` so we
-# avoid additional JSON files or jq parsing.
+# Parent relationships are stored via git config using a normalized key so we
+# avoid additional JSON files or jq parsing. New entries are written under the
+# `stackparent.<branch>` namespace, but we remain backward compatible with older
+# `stack.parent.<branch>` keys when reading existing stacks.
 
 set -euo pipefail
 
@@ -57,7 +59,18 @@ lookup_parent() {
   local branch="$1"
   local key_branch="${branch//\//-}"
   key_branch="${key_branch//_/-}"
-  git config --get "$STACK_PARENT_NAMESPACE.$key_branch" 2>/dev/null || echo "develop"
+
+  # Prefer the new namespace (stackparent.<branch>), but fall back to the
+  # legacy stack.parent.<branch> key for existing stacks.
+  local parent
+  parent=$(git config --get "$STACK_PARENT_NAMESPACE.$key_branch" 2>/dev/null || true)
+  if [[ -z "$parent" ]]; then
+    parent=$(git config --get "stack.parent.$key_branch" 2>/dev/null || true)
+  fi
+  if [[ -z "$parent" ]]; then
+    parent="develop"
+  fi
+  echo "$parent"
 }
 
 ensure_branch() {
