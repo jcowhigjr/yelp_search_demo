@@ -24,9 +24,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup GitHub CLI
-        uses: cli/cli-action@v2
-
       - name: Auto-update PRs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,6 +43,6 @@ jobs:
 
           for PR_NUMBER in $PR_NUMBERS; do
             echo "Updating PR #$PR_NUMBER"
-            gh pr update "$PR_NUMBER" --repo "${GITHUB_REPOSITORY:-${{ github.repository }}}" || \
+            gh pr update-branch "$PR_NUMBER" --repo "${GITHUB_REPOSITORY:-${{ github.repository }}}" || \
               echo "Failed to update PR #$PR_NUMBER, continuing with others"
           done
