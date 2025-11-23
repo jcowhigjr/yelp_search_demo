@@ -20,8 +20,8 @@ jobs:
       - name: Get PR number from workflow run
         id: pr
         run: |
-          # Extract PR number from the workflow_run event
-          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          # Extract PR number from the workflow_run event safely using jq
+          PR_NUMBER=$(jq --raw-output '.workflow_run.pull_requests[0].number // ""' "$GITHUB_EVENT_PATH")
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
           echo "Found PR number: $PR_NUMBER"
 
