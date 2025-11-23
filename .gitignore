@@ -39,7 +39,6 @@
 /.byebug_history
 
 LiveReload.crx
-nil
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
@@ -57,7 +56,6 @@ brakeman.ignore
 
 vendor/bundle
 .pumaenv
-nil-*
 
 # enforce ruby version in Gemfile but
 # ignore the local ruby version
@@ -108,12 +106,15 @@ __pycache__/
 
 # Project specific
 .project/
-*.json
-*.jsonl
-*.md
-!.github/prompts/*.md
-*.sh
-!scripts/*.sh
-*.txt
-*.yml
-!.github/workflows/*.yml
+
+# Local agent/editor caches and logs (not for git)
+.claude/
+.cursor/
+.mcp-cache/
+act-logs/
+
+# Local design/prototype artifacts
+Website Design Improvement/
+
+# Local sqlite/WAL scratch files created during experiments
+nil-*
