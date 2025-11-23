@@ -8,12 +8,14 @@
 #   show [branch]
 #   queue
 #
-# Parent relationships are stored via `git config stack.parent.<branch>` so we
-# avoid additional JSON files or jq parsing.
+# Parent relationships are stored via git config using a normalized key so we
+# avoid additional JSON files or jq parsing. New entries are written under the
+# `stackparent.<branch>` namespace, but we remain backward compatible with older
+# `stack.parent.<branch>` keys when reading existing stacks.
 
 set -euo pipefail
 
-STACK_PARENT_NAMESPACE="stack.parent"
+STACK_PARENT_NAMESPACE="stackparent"
 
 usage() {
   cat <<USAGE
@@ -45,12 +47,30 @@ assert_branch_exists() {
 record_parent() {
   local branch="$1"
   local parent="$2"
-  git config "$STACK_PARENT_NAMESPACE.$branch" "$parent"
+  # Git config keys cannot contain '/', and underscores are not allowed in the
+  # variable name portion, so normalize to hyphens while still using the real
+  # branch name everywhere else.
+  local key_branch="${branch//\//-}"
+  key_branch="${key_branch//_/-}"
+  git config "$STACK_PARENT_NAMESPACE.$key_branch" "$parent"
 }
 
 lookup_parent() {
   local branch="$1"
-  git config --get "$STACK_PARENT_NAMESPACE.$branch" 2>/dev/null || echo "develop"
+  local key_branch="${branch//\//-}"
+  key_branch="${key_branch//_/-}"
+
+  # Prefer the new namespace (stackparent.<branch>), but fall back to the
+  # legacy stack.parent.<branch> key for existing stacks.
+  local parent
+  parent=$(git config --get "$STACK_PARENT_NAMESPACE.$key_branch" 2>/dev/null || true)
+  if [[ -z "$parent" ]]; then
+    parent=$(git config --get "stack.parent.$key_branch" 2>/dev/null || true)
+  fi
+  if [[ -z "$parent" ]]; then
+    parent="develop"
+  fi
+  echo "$parent"
 }
 
 ensure_branch() {
@@ -64,6 +84,14 @@ ensure_branch() {
 
 update_parent_from_remote() {
   local parent="$1"
+
+  # In test contexts we may not have an origin remote configured; allow
+  # tests to opt out of network calls with STACKED_PR_SKIP_REMOTE=1.
+  if [[ "${STACKED_PR_SKIP_REMOTE:-0}" == "1" ]]; then
+    ensure_branch "$parent"
+    return
+  fi
+
   git fetch origin "$parent" >/dev/null 2>&1 || true
   ensure_branch "$parent"
   git pull --ff-only origin "$parent"
