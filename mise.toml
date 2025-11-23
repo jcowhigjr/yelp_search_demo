@@ -60,9 +60,12 @@ run = "bin/rails test"
 depends = ["test-prepare"]
 
 [tasks.test-system]
-description = "Run system tests for main application"
-run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' bin/rails test:system"
-depends = ["test-prepare"]
+description = "Run only system tests against an already-prepared test env (matches lefthook env)"
+run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false bin/rails test:system"
+
+[tasks.test-system-strict]
+description = "Run system tests with JS errors treated as failures"
+run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=true bin/rails test:system"
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
@@ -77,6 +80,10 @@ depends = ["test-next-prepare"]
 description = "Run system tests for 'next' environment"
 run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' next rails test:system"
 depends = ["test-next-prepare"]
+
+[tasks.test-scripts]
+description = "Shell-level CLI tests for helper scripts (stacked-pr.sh, etc.)"
+run = "bash test/scripts/stacked_pr_cli_test.sh"
 
 [tasks.test-smoke]
 description = "Fast Rails smoke tests without system/browser suites"
