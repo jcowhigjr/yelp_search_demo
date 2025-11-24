@@ -9,6 +9,14 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 ## 1. Core runtime & workflow rules
 
+- **Agents run routine commands autonomously**
+  - For common operations (e.g., `git status`, `git add`, `git push`, `mise exec -- ./scripts/...`), agents SHOULD:
+    - Run the commands themselves via available tools/CLI.
+    - Avoid asking the user to type or copy/paste simple commands.
+  - The only exceptions are actions that require:
+    - Interactive secrets or credentials the agent cannot access, or
+    - Explicit human sign-off for risky/destructive operations (e.g., deleting data).
+
 - **Always sync first**
   - Before doing any work in this repo, run:
     - `./scripts/git-sync.sh`
@@ -17,7 +25,11 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
-  - This matches CI and Git hooks and avoids environment mismatches.
+  - Prefer named mise tasks over raw commands when they exist, for example:
+    - `mise run test` instead of manually invoking the full Rails test suite command
+    - `mise run test-system` for system tests
+    - `mise run brakeman` for security scans
+  - Treat `WARP.md` and `mise.toml` as the source of truth for the authoritative list of mise tasks used by CI and hooks.
 
 - **Never bypass hooks**
   - Do **not** use `--no-verify` with Git.
