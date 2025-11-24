@@ -25,7 +25,11 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
-  - This matches CI and Git hooks and avoids environment mismatches.
+  - Prefer named mise tasks over raw commands when they exist, for example:
+    - `mise run test` instead of manually invoking the full Rails test suite command
+    - `mise run test-system` for system tests
+    - `mise run brakeman` for security scans
+  - Treat `WARP.md` and `mise.toml` as the source of truth for the authoritative list of mise tasks used by CI and hooks.
 
 - **Never bypass hooks**
   - Do **not** use `--no-verify` with Git.
