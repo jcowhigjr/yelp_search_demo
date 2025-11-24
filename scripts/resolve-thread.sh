@@ -12,10 +12,13 @@ fi
 
 THREAD_ID="$1"
 
-if ! command -v gh >/dev/null 2>&1; then
-  echo "❌ GitHub CLI (gh) is required to resolve review threads." >&2
-  exit 1
-fi
+# Prefer MCP GitHub tools from agents when available; this script is a CLI fallback.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=github-auth-check.sh
+. "${SCRIPT_DIR}/github-auth-check.sh"
+
+ensure_github_auth "human"
 
 RESPONSE=$(gh api graphql -f query="mutation ResolveThread { resolveReviewThread(input: {threadId: \"$THREAD_ID\"}) { thread { id isResolved } } }")
 
