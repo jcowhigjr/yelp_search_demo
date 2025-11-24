@@ -11,103 +11,52 @@ This repository uses `AGENTS.md` at the project root as the **cross-agent config
 - Use `WARP.md` for Warp-specific runtime commands, git workflows, and the PR completion protocol.
 - Consult `docs/AGENTS.md` for deeper policies (empirical verification, review-first loops, Claude integration, etc.).
 
-## 🤖 CRITICAL FOR AI AGENTS
+## 🤖 CRITICAL FOR AI AGENTS (Warp-specific)
 
-**ALWAYS run this FIRST before starting any work:**
-```bash
-./scripts/git-sync.sh
-```
+Most **rules and policies** live in `AGENTS.md` and `docs/AGENTS.md`. This section only adds
+Warp-friendly, runnable commands that some agents might ignore when scanning `AGENTS.md` alone.
 
-This ensures:
-- Your local develop branch is synced with GitHub
-- Old merged branches are cleaned up
-- You're working with the latest code
-- No conflicts from stale local state
+- **Sync and branch creation (see `AGENTS.md` §1 for the policy)**
+  ```bash
+  ./scripts/git-sync.sh
+  lefthook run workflow-new-feature feature/<branch-name>
+  ```
 
-**Then create your feature branch:**
-```bash
-lefthook run workflow-new-feature feature/<branch-name>
-```
+## 🔄 PR COMPLETION PROTOCOL (command cheatsheet)
 
-The sync also runs automatically when creating branches, but run it explicitly at conversation start.
+The full review-first / PR lifecycle rules are defined once in `AGENTS.md` §2 and
+`docs/pr-completion-workflow.md`. Warp keeps only the command-level shortcuts here:
 
-## 🔄 PR COMPLETION PROTOCOL
+- **Review-first loop (Phase 0)**
+  ```bash
+  ./scripts/review-loop.sh
+  # or the lefthook wrapper
+  lefthook run workflow-review-loop
+  ```
 
-**When working on an existing PR, ALWAYS follow this autonomous completion loop:**
+- **Overall PR completion status**
+  ```bash
+  ./scripts/pr-completion-check.sh --auto-merge
+  ```
 
-### Phase 0: Review-First Loop (HIGHEST PRIORITY)
+- **Merge helpers (see repo docs for when to use each)**
+  ```bash
+  # If approvals are pending (will merge when approved)
+  gh pr merge --auto --squash
 
-**GitHub branch protection treats _any_ unresolved review thread (human, Codex, Claude, etc.) as "needs approval" and keeps `mergeStateStatus=BLOCKED` until every thread is resolved.**
+  # If self-approval blocked and changes are uncontroversial
+  gh pr merge --admin --squash
+  ```
 
-**Check for reviews BEFORE any other action:**
-```bash
-./scripts/review-loop.sh
-```
-
-If unresolved reviews exist:
-1. Read ALL review comments
-2. Fix each issue in code
-3. Commit and push (pre-push hooks validate automatically)
-4. Reply to each comment documenting the fix
-5. Resolve each thread via GitHub GraphQL API:
-   ```bash
-   gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "THREAD_ID"}) { thread { id isResolved } } }'
-   ```
-   - Convenience helpers:
-     - `scripts/resolve-thread.sh <THREAD_ID>`
-     - `scripts/resolve-all-threads.sh [--force]`
-6. **LOOP BACK** - Check for reviews again (Step 1)
-
-**Critical**: Never wait for user to say "address feedback" - fix immediately and autonomously.
-
-Codex runs automatically when you open/ready a PR or comment `@codex review`; Claude runs on `@claude` / `@claude-suggest`. Both produce standard review threads and must be resolved exactly like human feedback.
-
-Use `lefthook run workflow-review-loop` at any time for the structured review check (same output as the script above). Pre-push hooks now run this automatically and block pushes while reviews remain.
-
-### Complete PR Workflow
-
-Once all reviews are addressed:
-
-```bash
-# Check overall PR completion status
-./scripts/pr-completion-check.sh --auto-merge
-```
-
-This validates:
-- ✅ Phase 0: All review threads resolved
-- ✅ Phase 1-2: CI checks passing
-- ✅ Phase 3: Approval requirements met
-- ✅ Phase 4: Branch up-to-date, no conflicts
-- ✅ Phase 5: Ready to merge
-
-### Merge Execution
-
-When all phases complete:
-
-```bash
-# If approvals are pending (will merge when approved)
-gh pr merge --auto --squash
-
-# If self-approval blocked and changes are uncontroversial
-gh pr merge --admin --squash
-```
-
-### Key Principles
-
-1. **Review-first always** - Check for reviews before any other PR action
-2. **Fix immediately** - Don't wait for prompts; address feedback autonomously
-3. **Resolve explicitly** - Use GraphQL API to mark threads resolved
-4. **Loop automatically** - Keep checking until no reviews remain
-5. **Push immediately** - Pre-push hooks validate; don't wait for remote CI
-6. **Complete to merge** - Goal is merged PR, not just "ready for review"
-
-### Documentation
-
-- **Full workflow**: [docs/pr-completion-workflow.md](./docs/pr-completion-workflow.md)
-- **Review loop details**: [docs/review-first-autopilot.md](./docs/review-first-autopilot.md)
-- **Helper scripts**: `./scripts/review-loop.sh`, `./scripts/pr-completion-check.sh`
+For behavior, edge cases, and branch-protection details, prefer `AGENTS.md`,
+`docs/AGENTS.md`, and `docs/pr-completion-workflow.md` instead of duplicating
+those explanations here.
 
 ## General Rules
+
+See [Core runtime & workflow rules](./AGENTS.md#1-core-runtime--workflow-rules) for the
+canonical policy. Warp highlights just these reminders:
+
 - Always prefix runtime commands with: mise exec --
 - Never bypass git hooks with --no-verify
 - Prefer lefthook workflow commands to raw git for branch/PR operations
