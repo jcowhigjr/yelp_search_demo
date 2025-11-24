@@ -1,5 +1,11 @@
 # Agents: No-Toil Dependabot Automation (One-Pass)
 
+> This document is a **deep-dive companion** to the root `AGENTS.md` and `WARP.md` files.
+> - `AGENTS.md` defines the cross-agent rules and policies (single source of truth).
+> - `WARP.md` adds Warp-specific command cheatsheets and runtime notes.
+> - This file focuses on detailed workflows, examples, and long-form methodology and
+>   deliberately avoids redefining those core rules.
+
 ## 🎯 Definition of Done - Complete PR Workflow
 
 **IMPORTANT**: Every PR must follow this complete workflow to ensure quality and maintainability.
