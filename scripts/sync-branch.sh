@@ -38,8 +38,10 @@ check_branch_behind() {
     current_branch=$(git branch --show-current)
     log_info "Checking if '$current_branch' is behind 'origin/$base_branch'"
     
-    # Method 1: Try using GitHub CLI API
-    if command -v gh &> /dev/null && [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    # Method 1: Try using GitHub CLI API when available.
+    # Auth checks (GITHUB_TOKEN or gh auth) are centralized in github-auth-check.sh,
+    # which main() sources when gh is present.
+    if command -v gh &> /dev/null; then
         log_info "Using GitHub CLI to check branch status..."
         local gh_status
         
@@ -71,7 +73,7 @@ check_branch_behind() {
             log_info "GitHub CLI check failed, falling back to git commands"
         fi
     else
-        log_info "GitHub CLI not available or no token, using git fallback"
+        log_info "GitHub CLI not available, using git fallback"
     fi
     
     # Method 2: Fallback to git fetch && git status
