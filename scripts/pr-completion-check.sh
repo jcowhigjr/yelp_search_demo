@@ -18,6 +18,14 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=github-auth-check.sh
+. "${SCRIPT_DIR}/github-auth-check.sh"
+
+# NOTE for AI agents:
+# - Prefer GitHub MCP tools for PR status when available.
+# - This script is a portable CLI fallback and summary helper.
+
 # Parse arguments
 OUTPUT_JSON=false
 AUTO_MERGE=false
@@ -37,6 +45,13 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
+
+# Ensure GitHub auth (either GITHUB_TOKEN or gh auth) before talking to GitHub.
+if [[ "$OUTPUT_JSON" == "true" ]]; then
+  ensure_github_auth "json"
+else
+  ensure_github_auth "human"
+fi
 
 # Check if we're on a branch with a PR
 if ! gh pr view &>/dev/null; then
@@ -224,24 +239,6 @@ case "$MERGE_STATE" in
     ;;
 esac
 
-# Queue auto-merge if requested and no blockers
-if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
-  if [[ "$OUTPUT_JSON" == "false" ]]; then
-    echo ""
-    echo "🚀 Queueing GitHub auto-merge (squash)..."
-  fi
-  if gh pr merge --auto --squash "$PR_NUMBER"; then
-    if [[ "$OUTPUT_JSON" == "false" ]]; then
-      echo "   ✅ Auto-merge queued successfully."
-    fi
-  else
-    BLOCKERS+=("Failed to queue auto-merge")
-    if [[ "$OUTPUT_JSON" == "false" ]]; then
-      echo "   Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
-    fi
-  fi
-fi
-
 # Summary (after auto-merge attempt)
 if [[ "$OUTPUT_JSON" == "true" ]]; then
   if [ ${#BLOCKERS[@]} -eq 0 ]; then
@@ -299,24 +296,6 @@ else
     fi
     if [[ "$AUTO_MERGE" == "true" ]]; then
       echo "  • Re-run auto-merge once blockers are cleared"
-    fi
-  fi
-fi
-
-# Queue auto-merge if requested and no blockers
-if [ ${#BLOCKERS[@]} -eq 0 ] && [[ "$AUTO_MERGE" == "true" ]]; then
-  if [[ "$OUTPUT_JSON" == "false" ]]; then
-    echo ""
-    echo "🚀 Queueing GitHub auto-merge (squash)..."
-  fi
-  if gh pr merge --auto --squash "$PR_NUMBER"; then
-    if [[ "$OUTPUT_JSON" == "false" ]]; then
-      echo "   ✅ Auto-merge queued successfully."
-    fi
-  else
-    BLOCKERS+=("Failed to queue auto-merge")
-    if [[ "$OUTPUT_JSON" == "false" ]]; then
-      echo "   ❌ Failed to queue auto-merge; run 'gh pr merge --auto --squash' manually."
     fi
   fi
 fi
