@@ -292,6 +292,8 @@ EOF
 
 # Main script execution
 main() {
+    # Hint for AI agents: prefer MCP GitHub tools for branch/PR state when available;
+    # this script is the portable git/gh fallback for terminals and CI.
     # Check arguments
     if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
         show_usage
