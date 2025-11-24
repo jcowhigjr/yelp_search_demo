@@ -294,6 +294,17 @@ EOF
 main() {
     # Hint for AI agents: prefer MCP GitHub tools for branch/PR state when available;
     # this script is the portable git/gh fallback for terminals and CI.
+
+    # GitHub auth is optional here, but when gh is used we still prefer a clean, explicit
+    # check so scripts behave consistently. This will no-op if GITHUB_TOKEN is set or
+    # gh is already authenticated.
+    if command -v gh &> /dev/null; then
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        # shellcheck source=github-auth-check.sh
+        . "${SCRIPT_DIR}/github-auth-check.sh"
+        ensure_github_auth "human" || true
+    fi
+
     # Check arguments
     if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
         show_usage
