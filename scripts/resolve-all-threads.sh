@@ -10,10 +10,13 @@ if [[ "${1:-}" == "--force" ]]; then
   FORCE=true
 fi
 
-if ! command -v gh >/dev/null 2>&1; then
-  echo "❌ GitHub CLI (gh) is required to resolve review threads." >&2
-  exit 1
-fi
+# Prefer MCP GitHub tools from agents when available; this script is a CLI fallback.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=github-auth-check.sh
+. "${SCRIPT_DIR}/github-auth-check.sh"
+
+ensure_github_auth "human"
 
 if ! gh pr view &>/dev/null; then
   echo "❌ No open PR detected for this branch." >&2
