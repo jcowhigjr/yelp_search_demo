@@ -1,0 +1,17 @@
+name: "Jitter CodeQL config"
+
+# Focus analysis on real application code and explicitly exclude
+# design/prototype areas such as the "Website Design Improvement" work.
+paths:
+  - app/**
+  - config/**
+  - lib/**
+  - bin/**
+
+paths-ignore:
+  # Design / prototype UI work, including remote-only folder
+  - "Website Design Improvement/**"
+  - "docs/website-design-improvement/**"
+  # Tests are covered by runtime CI; keep CodeQL focused on app surface
+  - "test/**"
+  - "spec/**"
