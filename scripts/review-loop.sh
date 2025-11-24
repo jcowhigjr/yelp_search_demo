@@ -11,11 +11,23 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=github-auth-check.sh
+. "${SCRIPT_DIR}/github-auth-check.sh"
+
+# NOTE for AI agents:
+# - Prefer GitHub MCP tools (pull_request_read, etc.) when available.
+# - This script exists as a portable fallback for terminals / CI.
+
 # Parse arguments
 OUTPUT_JSON=false
-if [[ "$1" == "--json" ]]; then
+# Use ${1-} so this script is safe when invoked under `set -u` with no arguments
+if [[ ${1-} == "--json" ]]; then
   OUTPUT_JSON=true
 fi
+
+# Ensure GitHub auth (either GITHUB_TOKEN or gh auth) before talking to GitHub.
+ensure_github_auth "human"
 
 # Check if we're on a branch with a PR
 if ! gh pr view &>/dev/null; then

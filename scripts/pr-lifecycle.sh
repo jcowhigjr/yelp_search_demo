@@ -316,12 +316,14 @@ EOF
 
 # Main script logic
 main() {
-    # Check if GitHub token is set
-    if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-        log_error "GITHUB_TOKEN environment variable is not set"
-        exit 1
-    fi
-    
+    # Authentication / environment checks
+    # Prefer GITHUB_TOKEN in CI, but allow local usage with gh's stored auth.
+    local script_dir
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # shellcheck source=github-auth-check.sh
+    . "${script_dir}/github-auth-check.sh"
+    ensure_github_auth "human"
+
     # Parse command line arguments
     if [[ $# -eq 0 ]]; then
         show_usage
