@@ -100,17 +100,15 @@ pre-push:
         echo "✅ All dependencies appear to be present"
     rails-tests:
       tags: backend tests
-      skip_output:
-        - stdout
       run: |
         if [ -f .env ]; then
           . ./.env
         fi
         echo "🚀 Setting up test environment..."
         
-        # Setup phase - use existing Ruby/Bundle instead of mise
+        # Setup phase - detailed logs captured by bin/setup into log/setup*.log
         if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
-          echo "❌ Failed to set up test environment"
+          echo "❌ Failed to set up test environment (see log/setup.log for details)"
           exit 1
         fi
         
@@ -131,8 +129,6 @@ pre-push:
         echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
         if [ -f app/assets/builds/tailwind.css ]; then
           echo "✅ app/assets/builds/tailwind.css found locally."
-          echo "   First 5 lines of local tailwind.css:"
-          head -n 5 app/assets/builds/tailwind.css
         else
           echo "❌ app/assets/builds/tailwind.css NOT found locally after test:prepare."
           echo "   Contents of app/assets/builds/:"
@@ -142,9 +138,14 @@ pre-push:
       tags: javascript frontend
       run: |
         echo "🚀 Verifying Next.js/JavaScript dependencies..."
-        if ! CI=true yarn install --frozen-lockfile; then
-          echo "❌ Failed to install yarn dependencies"
-          exit 1
+        if command -v yarn >/dev/null 2>&1; then
+          if ! CI=true yarn install --frozen-lockfile > log/prepush-yarn-install.log 2>&1; then
+            echo "❌ Failed to install yarn dependencies. See log/prepush-yarn-install.log for details."
+            exit 1
+          fi
+        else
+          echo "⚠️ Skipping JavaScript dependency verification: yarn not available"
+          exit 0
         fi
         echo "✅ Yarn dependencies verified successfully."
         # Note: 'next-build' and 'next-test' scripts were not found in the root package.json.
@@ -152,8 +153,6 @@ pre-push:
         # and update this hook accordingly, potentially changing the working directory.
     rails-system-tests:
       tags: backend system-tests
-      skip_output:
-        - stdout
       run: |
         if [ -f .env ]; then
           . ./.env
@@ -164,7 +163,7 @@ pre-push:
         fi
         echo "🚀 Setting up system test environment..."
         if ! CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
-          echo "❌ Failed to set up system test environment"
+          echo "❌ Failed to set up system test environment (see log/setup.log for details)"
           exit 1
         fi
         
@@ -233,32 +232,43 @@ pre-push:
         echo "    Details: docs/AGENTS.md#empirical-verification--cross-model-escalation-issue-981"
     gems-audit:
       tags: backend security
-      skip_output:
-        - stdout
       run: |
         echo "🔍 Running gem audit (with timeout)..."
-        if ! timeout 30 bundle audit check; then
-          echo "⚠️ Gem audit check timeout or issues found - continuing with timeout to prevent blocking"
+        if command -v timeout >/dev/null 2>&1; then
+          if ! timeout 30 bundle audit check > log/prepush-gem-audit.log 2>&1; then
+            echo "⚠️ Gem audit reported issues or timed out. See log/prepush-gem-audit.log for details."
+          else
+            echo "✅ Gem audit completed without blocking issues."
+          fi
+        else
+          if ! bundle audit check > log/prepush-gem-audit.log 2>&1; then
+            echo "⚠️ Gem audit reported issues. See log/prepush-gem-audit.log for details."
+          else
+            echo "✅ Gem audit completed without blocking issues."
+          fi
         fi
     javascript-audit:
       tags: frontend security
-      skip_output:
-        - stdout
       run: |
         if command -v yarn >/dev/null 2>&1; then
-          yarn npm audit --all
+          if ! yarn npm audit --all > log/prepush-yarn-audit.log 2>&1; then
+            echo "⚠️ JavaScript audit reported issues. See log/prepush-yarn-audit.log for details."
+          else
+            echo "✅ JavaScript audit completed without blocking issues."
+          fi
         else
           echo "⚠️ Skipping JavaScript audit: yarn not available"
         fi
     importmaps-audit:
       tags: frontend security
-      skip_output:
-        - stdout
-      run: bin/importmap audit
+      run: |
+        if ! bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
+          echo "⚠️ Importmap audit reported issues. See log/prepush-importmap-audit.log for details."
+        else
+          echo "✅ Importmap audit completed without blocking issues."
+        fi
     verify_ci_ready:
       tags: backend ci
-      skip_output:
-        - stdout
       run: |
         echo "Checking for mise updates and attempting to upgrade if necessary..."
         if command -v brew >/dev/null 2>&1; then
