@@ -2,6 +2,7 @@ require_relative "boot"
 
 require "rails/all"
 require_relative "../lib/jitter/railtie"
+require_relative "../lib/jitter/version"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -36,5 +37,8 @@ module Jitter
     # Enable custom configurations
     config.jitter.compression_enabled = true
     config.jitter.locales_enabled = true
+
+    # Application semantic version for error reporting / build identification
+    config.x.app_version = Jitter::VERSION
   end
 end
