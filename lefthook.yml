@@ -5,6 +5,9 @@
 
 shell: bash
 verbose: false
+skip_output:
+  - meta
+  - success
 
 # Pre-commit hooks for branch protection and quality
 pre-commit:
@@ -55,6 +58,8 @@ pre-push:
       tags: meta reviews
     dependency_check:
       tags: validation
+      skip_output:
+        - stdout
       run: |
         #!/bin/bash
         echo "🔍 Checking for missing gem dependencies..."
@@ -95,6 +100,8 @@ pre-push:
         echo "✅ All dependencies appear to be present"
     rails-tests:
       tags: backend tests
+      skip_output:
+        - stdout
       run: |
         if [ -f .env ]; then
           . ./.env
@@ -145,6 +152,8 @@ pre-push:
         # and update this hook accordingly, potentially changing the working directory.
     rails-system-tests:
       tags: backend system-tests
+      skip_output:
+        - stdout
       run: |
         if [ -f .env ]; then
           . ./.env
@@ -224,6 +233,8 @@ pre-push:
         echo "    Details: docs/AGENTS.md#empirical-verification--cross-model-escalation-issue-981"
     gems-audit:
       tags: backend security
+      skip_output:
+        - stdout
       run: |
         echo "🔍 Running gem audit (with timeout)..."
         if ! timeout 30 bundle audit check; then
@@ -231,6 +242,8 @@ pre-push:
         fi
     javascript-audit:
       tags: frontend security
+      skip_output:
+        - stdout
       run: |
         if command -v yarn >/dev/null 2>&1; then
           yarn npm audit --all
@@ -239,9 +252,13 @@ pre-push:
         fi
     importmaps-audit:
       tags: frontend security
+      skip_output:
+        - stdout
       run: bin/importmap audit
     verify_ci_ready:
       tags: backend ci
+      skip_output:
+        - stdout
       run: |
         echo "Checking for mise updates and attempting to upgrade if necessary..."
         if command -v brew >/dev/null 2>&1; then
@@ -258,9 +275,9 @@ pre-push:
         else
           echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
         fi
-        echo "Verifying CI readiness with mise doctor..."
-        if ! mise doctor --quiet; then
-          echo "❌ mise doctor failed. Please check your environment."
+        echo "Verifying CI readiness with mise doctor (logging to .mise_doctor.log)..."
+        if ! mise doctor > .mise_doctor.log 2>&1; then
+          echo "❌ mise doctor failed. See .mise_doctor.log for details."
           exit 1
         fi
         echo "✅ CI environment ready."
