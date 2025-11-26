@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Debug output
+LOG_DIR="log"
+mkdir -p "$LOG_DIR"
+SETUP_LOG="$LOG_DIR/setup.log"
+SETUP_ENV_LOG="$LOG_DIR/setup-environment.log"
+
+# High-level progress only; detailed env goes to log
 echo "=== Starting setup ==="
-echo "PWD: $PWD"
-echo "PATH: $PATH"
+echo "See $SETUP_LOG for detailed environment/setup logs."
+{
+  echo "PWD: $PWD"
+  echo "PATH: $PATH"
+} >>"$SETUP_LOG" 2>&1
 
 function system! {
   echo "▶ $*"
   if ! "$@"; then
     echo "❌ Command failed: $*" 
     echo "Working directory: $PWD"
+    echo "See $SETUP_LOG for full setup log."
     exit 1
   fi
 }
@@ -20,32 +29,24 @@ APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
 
 # Change to the app root directory
 cd "$APP_ROOT" || exit 1
-  # Run setup-environment.sh and capture its output
-  echo "INFO: Running setup-environment.sh..."
-  # Note: We are not using system! here because we need to capture output and proceed.
-  SETUP_ENV_OUTPUT=$($APP_ROOT/bin/setup-environment.sh)
-  SETUP_ENV_EXIT_CODE=$?
 
-  # Log the output for debugging
-  echo "--- setup-environment.sh output ---"
-  echo "$SETUP_ENV_OUTPUT"
-  echo "---------------------------------"
+# Run setup-environment.sh, logging detailed output only to file
+echo "INFO: Running setup-environment.sh..." | tee -a "$SETUP_LOG" >/dev/null
+if ! "$APP_ROOT/bin/setup-environment.sh" >"$SETUP_ENV_LOG" 2>&1; then
+  echo "❌ ERROR: setup-environment.sh failed. See $SETUP_ENV_LOG for details." | tee -a "$SETUP_LOG" >&2
+  exit 1
+fi
 
-  if [ $SETUP_ENV_EXIT_CODE -ne 0 ]; then
-    echo "❌ ERROR: setup-environment.sh failed with exit code $SETUP_ENV_EXIT_CODE."
-    exit $SETUP_ENV_EXIT_CODE
-  fi
+# Extract the MISE executable path from the logged output
+MISE_EXEC_PATH=$(grep "^MISE_EXECUTABLE_PATH:" "$SETUP_ENV_LOG" | cut -d':' -f2-)
 
-  # Extract the MISE executable path from the output
-  MISE_EXEC_PATH=$(echo "$SETUP_ENV_OUTPUT" | grep "^MISE_EXECUTABLE_PATH:" | cut -d':' -f2-)
+if [ -z "$MISE_EXEC_PATH" ] || ! [ -x "$MISE_EXEC_PATH" ]; then
+  echo "❌ ERROR: Could not determine a valid MISE executable path from setup-environment.sh output." | tee -a "$SETUP_LOG" >&2
+  echo "Attempted path: '$MISE_EXEC_PATH'. Ensure setup-environment.sh prints MISE_EXECUTABLE_PATH:<path_to_mise>." | tee -a "$SETUP_LOG" >&2
+  exit 1
+fi
 
-  if [ -z "$MISE_EXEC_PATH" ] || ! [ -x "$MISE_EXEC_PATH" ]; then
-    echo "❌ ERROR: Could not determine a valid MISE executable path from setup-environment.sh output."
-    echo "Attempted path: '$MISE_EXEC_PATH' (extracted from output). Ensure setup-environment.sh prints MISE_EXECUTABLE_PATH:<path_to_mise>"
-    exit 1
-  fi
-  echo "INFO: Using MISE executable: $MISE_EXEC_PATH"
-
+echo "INFO: Using MISE executable: $MISE_EXEC_PATH" | tee -a "$SETUP_LOG" >/dev/null
 
 echo "\n== Setting up Git hooks =="
 # Try lefthook via standalone binary first, then via Bundler; otherwise skip gracefully in CI
