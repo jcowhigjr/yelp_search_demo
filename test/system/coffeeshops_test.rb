@@ -16,7 +16,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_selector 'h1', text: @coffeeshop.name
 
     # About section
-    within('.lg\\:w-1\\/2', text: 'About') do
+    within('[data-testid="about-section"]') do
       assert_link @coffeeshop.address,
                   href:
                     "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"

@@ -4,7 +4,7 @@
   <div class="flex flex-col lg:flex-row lg:space-x-8">
     <!-- Left Column: Image -->
     <div class="lg:w-1/2">
-      <%= image_tag @coffeeshop.image_url, class: 'w-full h-auto rounded-lg shadow-lg' %>
+      <%= image_tag @coffeeshop.image_url, alt: @coffeeshop.name, class: 'w-full h-auto rounded-lg shadow-lg' %>
     </div>
 
     <!-- Right Column: Details -->
@@ -12,7 +12,7 @@
       <h1 class="page-name"><%= @coffeeshop.name %></h1>
 
       <!-- About Section -->
-      <div class="mt-4">
+      <div class="mt-4" data-testid="about-section">
         <h2 class="page-text font-bold text-xl mb-2">About</h2>
         <div class="space-y-4">
           <div class="flex items-center">
@@ -81,11 +81,8 @@
     <h2 class="page-text font-bold text-xl mb-4 text-center">Reviews</h2>
     <div class="space-y-4">
        <% if @coffeeshop.reviews.empty? %>
-          <div class="row center">
-            <span class="page-text red-text"></span>
-            <%= link_to sanitize(url_for(@coffeeshop.yelp_url)), target: :blank do %>
-              <i class="fab fa-yelp yelp_color" style="margin-right: 10px;">Check out yelp for reviews!</i>
-            <% end %>
+          <div class="text-center page-text">
+            <p>No reviews yet. Be the first to write one!</p>
           </div>
         <% else %>
           <% @coffeeshop.reviews.each do |review| %>
