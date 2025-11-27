@@ -25,7 +25,14 @@
           </div>
           <div class="flex items-center">
              <i class="fab fa-yelp yelp_color mr-2"></i>
-            <%= link_to "View on Yelp", @coffeeshop.yelp_url, target: :blank, class: "page-text" %>
+            <% begin %>
+              <% yelp_uri = URI.parse(@coffeeshop.yelp_url) %>
+              <% if yelp_uri.scheme == 'https' && yelp_uri.host == 'www.yelp.com' %>
+                <%= link_to "View on Yelp", @coffeeshop.yelp_url, target: :blank, class: "page-text" %>
+              <% end %>
+            <% rescue URI::InvalidURIError %>
+              <%# Malformed Yelp URL, do not render link %>
+            <% end %>
           </div>
           <div class="flex items-center">
              <i class="material-icons mr-2">star</i>
