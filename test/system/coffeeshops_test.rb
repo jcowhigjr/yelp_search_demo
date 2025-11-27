@@ -1,6 +1,8 @@
 require 'application_system_test_case'
 
 class CoffeeshopsTest < ApplicationSystemTestCase
+  include ActionView::Helpers::NumberHelper
+
   setup do
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
@@ -13,16 +15,15 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
-    # Address and phone links
-    assert_selector :link, text: 'phone'
-    assert_link 'phone', href: "tel:#{@coffeeshop.phone_number}"
-    assert_selector :link, text: 'place'
-    assert_link 'place',
-                href:
-                  "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
-
-    # Yelp link
-    assert_selector :link, href: @coffeeshop.yelp_url
+    # About section
+    within('.lg\\:w-1\\/2', text: 'About') do
+      assert_link @coffeeshop.address,
+                  href:
+                    "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}"
+      assert_link number_to_phone(@coffeeshop.phone_number, area_code: true),
+                  href: "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}"
+      assert_link 'View on Yelp', href: @coffeeshop.yelp_url
+    end
 
     # Rating and reviews section container still present
     assert_selector '.review-container', minimum: 1, wait: 5

@@ -1,65 +1,48 @@
 <% content_for :body_class, 'landing-body' %>
 
-<div class="container page-container">
-  <div class="row center">
-    <h1 class="page-name"><%= @coffeeshop.name %></h1>
-  </div>
-
-  <div class="row">
-    <div class="col s12 l6">
-      <%= image_tag @coffeeshop.image_url, class: 'card-img responsive-img shop-image z-depth-2' %>
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col lg:flex-row lg:space-x-8">
+    <!-- Left Column: Image -->
+    <div class="lg:w-1/2">
+      <%= image_tag @coffeeshop.image_url, class: 'w-full h-auto rounded-lg shadow-lg' %>
     </div>
 
-    <!-- Coffeeshop Info -->
-    <div class="col s12 l6">
-      <div class="shop-info">
-        <div class="row" style="margin-bottom: 20px;">
-          <div class="col s12">
-            <address class="card-action columns-2">
-              <%= link_to "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}",
-                           target: :blank do %>
-                <i class="material-icons">place</i>
-                <a class="truncate"><%= @coffeeshop.address %></a>
-              <% end %>
+    <!-- Right Column: Details -->
+    <div class="lg:w-1/2 mt-8 lg:mt-0">
+      <h1 class="page-name"><%= @coffeeshop.name %></h1>
 
-              <%= link_to "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" do %>
-                <i class="material-icons">phone</i>
-                <a class="truncate"><%= number_to_phone(@coffeeshop.phone_number, area_code: true) %></a>
-              <% end %>
-            </address>
+      <!-- About Section -->
+      <div class="mt-4">
+        <h2 class="page-text font-bold text-xl mb-2">About</h2>
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <i class="material-icons mr-2">place</i>
+            <%= link_to @coffeeshop.address, "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank, class: "page-text truncate" %>
           </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col s12">
-            <span class="page-text">
-              <% if @coffeeshop.user_favorites.size > 0 %>
-                <i class="material-icons">favorite</i>
-                <%= @coffeeshop.user_favorites.size %>
-              <% end %>
-            </span>
+          <div class="flex items-center">
+            <i class="material-icons mr-2">phone</i>
+            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}", class: "page-text truncate" %>
           </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col s12">
-            <span class="page-text">
-              <%= link_to sanitize(url_for(@coffeeshop.yelp_url)), target: :blank do %>
-                <i class="fab fa-yelp yelp_color">View on Yelp</i>
-              <% end %>
-            </span>
+          <div class="flex items-center">
+             <i class="fab fa-yelp yelp_color mr-2"></i>
+            <%= link_to "View on Yelp", @coffeeshop.yelp_url, target: :blank, class: "page-text" %>
           </div>
-        </div>
-
-        <div class="row center" style="margin-bottom: 24px;">
-          <div class="col s12">
+          <div class="flex items-center">
+             <i class="material-icons mr-2">star</i>
             <%= render partial: 'rating', locals: { rating: @coffeeshop.rating } %>
           </div>
+           <div class="flex items-center">
+            <% if @coffeeshop.user_favorites.size > 0 %>
+              <i class="material-icons mr-2">favorite</i>
+              <span class="page-text"><%= pluralize(@coffeeshop.user_favorites.size, "Favorite") %></span>
+            <% end %>
+          </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col s12">
-            <% if !logged_in? %>
+      <!-- Favorites Section -->
+      <div class="mt-8">
+         <% if !logged_in? %>
               <span class="page-text">
                 <%= link_to t('.login-to-add-th'), login_path %>
               </span>
@@ -81,17 +64,15 @@
                 </div>
               <% end %>
             <% end %>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 
   <!-- Reviews Section -->
-  <div class="row" style="margin-top: 40px;">
-    <div class="col s12">
-      <div class="row center">
-        <% if @coffeeshop.reviews.empty? %>
+  <div class="mt-12">
+    <h2 class="page-text font-bold text-xl mb-4 text-center">Reviews</h2>
+    <div class="space-y-4">
+       <% if @coffeeshop.reviews.empty? %>
           <div class="row center">
             <span class="page-text red-text"></span>
             <%= link_to sanitize(url_for(@coffeeshop.yelp_url)), target: :blank do %>
@@ -100,25 +81,22 @@
           </div>
         <% else %>
           <% @coffeeshop.reviews.each do |review| %>
-            <div class="review-container z-depth-1">
+            <div class="review-container shadow-md">
               <%= render partial: 'reviews/show', locals: { review: } %>
             </div>
           <% end %>
         <% end %>
 
-        <% if !logged_in? %>
-          <span class="page-text red-text">
+      <% if !logged_in? %>
+         <span class="page-text red-text">
             <%= link_to t('.log-in'), login_path %>
             <%= t('.to-leave-a-revi') %>
           </span>
-        <% else %>
-          <div class="row center">
-            <div class="review-container z-depth-1">
-              <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: Review.new } %>
-            </div>
-          </div>
-        <% end %>
-      </div>
+      <% else %>
+        <div class="review-container shadow-md">
+          <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: Review.new } %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
