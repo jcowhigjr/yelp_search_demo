@@ -15,6 +15,9 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
+    # Back to Results button
+    assert_selector 'a', text: '← BACK TO RESULTS'
+
     # About section
     within('[data-testid="about-section"]') do
       assert_link @coffeeshop.address,
@@ -24,6 +27,16 @@ class CoffeeshopsTest < ApplicationSystemTestCase
                   href: "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}"
       assert_link 'View on Yelp', href: @coffeeshop.yelp_url
     end
+
+    # CTA Buttons
+    assert_selector 'a', text: 'GET DIRECTIONS'
+    assert_selector 'a', text: 'CALL NOW'
+
+    # Review count with rating
+    assert_text "(#{@coffeeshop.reviews.size} #{'review'.pluralize(@coffeeshop.reviews.size)})"
+
+    # Heart icon accessibility and state
+    assert_selector 'i.material-icons[aria-label="Not favorited"]', text: 'favorite_border'
 
     # Rating and reviews section container still present
     assert_selector '.review-container', minimum: 1, wait: 5
