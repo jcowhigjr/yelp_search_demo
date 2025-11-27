@@ -78,7 +78,7 @@ Before opening or merging a bug-fix PR, follow this safety loop:
 
 This escalation loop is opt-in but strongly recommended for layered issues (CSS specificity vs. Tailwind, production-only config, CI-vs-local mismatches). It acts as the final safety valve before declaring a tricky bug “done.”
 
-> For full GitHub-based Claude review automation (`@claude`, `@claude-suggest`), see the “Claude AI Code Review Integration” section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
+> For full GitHub-based Claude review automation (`@claude-review`), see the "Claude AI Code Review Integration" section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
 
 #### Planning-time Claude CLI review
 
@@ -558,7 +558,7 @@ Claude AI code review is fully integrated and manually verified working in GitHu
 Claude reviews integrate seamlessly with existing PR workflows:
 
 1. **PR Creation** → Claude runs automatically (agent mode)
-2. **Manual Trigger** → `@claude` comment for on-demand reviews  
+2. **Manual Trigger** → `@claude-review` comment for on-demand reviews  
 3. **Review Response** → Detailed feedback posted as PR comment
 4. **Iterative Process** → Request follow-up reviews after fixes
 

@@ -1,4 +1,4 @@
-name: Claude Code Review with Suggestions
+name: Claude Code Review
 
 on:
   workflow_dispatch:
@@ -19,13 +19,18 @@ jobs:
   claude-review-suggestions:
     runs-on: ubuntu-latest
     # Skip for Dependabot PRs (already auto-approved)
-    # Trigger only on @claude-suggest comments for suggestion mode or manual dispatch
+    # Trigger only on @claude-review comments or manual dispatch
+    # Exclude bot accounts to prevent duplicate reviews
     if: |
       (github.event_name == 'workflow_dispatch') ||
       (github.actor != 'dependabot[bot]' && 
+       github.actor != 'claude[bot]' && 
+       github.actor != 'github-actions[bot]' &&
+       !startsWith(github.actor, 'github-actions[') &&
        github.event_name == 'issue_comment' && 
        github.event.issue.pull_request &&
-       contains(github.event.comment.body, '@claude-suggest'))
+       (contains(github.event.comment.body, '@claude-review') || 
+        contains(github.event.comment.body, '/claude-review')))
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
