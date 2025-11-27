@@ -28,7 +28,8 @@
             <% begin %>
               <% yelp_uri = URI.parse(@coffeeshop.yelp_url) %>
               <% if yelp_uri.scheme == 'https' && yelp_uri.host == 'www.yelp.com' %>
-                <%= link_to "View on Yelp", @coffeeshop.yelp_url, target: :blank, class: "page-text" %>
+                <% safe_yelp_url = "https://www.yelp.com" + yelp_uri.path.to_s + (yelp_uri.query ? "?" + yelp_uri.query : "") %>
+                <%= link_to "View on Yelp", safe_yelp_url, target: :blank, class: "page-text" %>
               <% end %>
             <% rescue URI::InvalidURIError %>
               <%# Malformed Yelp URL, do not render link %>
