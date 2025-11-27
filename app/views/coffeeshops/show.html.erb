@@ -3,7 +3,7 @@
 <div class="container mx-auto px-4 py-8">
   <!-- Back to Results Button -->
   <div class="mb-6">
-    <%= link_to "← BACK TO RESULTS", request.referer.present? ? request.referer : static_home_path, class: "inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
+    <%= link_to "← BACK TO RESULTS", "javascript:history.back()", class: "inline-flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
   </div>
   
   <div class="flex flex-col lg:flex-row lg:space-x-8">
@@ -17,9 +17,9 @@
       <div class="flex items-center gap-3">
         <h1 class="page-name"><%= @coffeeshop.name %></h1>
         <% if logged_in? && current_user.favorite?(@coffeeshop) %>
-          <i class="material-icons text-red-500">favorite</i>
+          <i class="material-icons text-red-500" aria-label="Favorited">favorite</i>
         <% else %>
-          <i class="material-icons text-gray-400">favorite_border</i>
+          <i class="material-icons text-gray-400" aria-label="Not favorited">favorite_border</i>
         <% end %>
       </div>
 
@@ -27,19 +27,21 @@
       <div class="mt-4" data-testid="about-section">
         <h2 class="page-text font-bold text-xl mb-2">About</h2>
         <div class="space-y-4">
+          <% google_maps_url = "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}" %>
+          <% phone_url = "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
           <div class="flex items-center">
             <i class="material-icons mr-2">place</i>
-            <%= link_to @coffeeshop.address, "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank, class: "page-text truncate" %>
+            <%= link_to @coffeeshop.address, google_maps_url, target: :blank, class: "page-text truncate" %>
           </div>
           <div class="flex items-center mt-3">
             <i class="material-icons mr-2">phone</i>
-            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}", class: "page-text truncate" %>
+            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), phone_url, class: "page-text truncate" %>
           </div>
           
           <!-- CTA Buttons -->
           <div class="flex flex-col sm:flex-row gap-3 mt-6">
-            <%= link_to "GET DIRECTIONS", "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}", target: :blank, class: "flex-1 text-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
-            <%= link_to "CALL NOW", "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}", class: "flex-1 text-center px-4 py-3 border-2 border-blue-500 text-blue-500 font-medium rounded-lg hover:bg-blue-50 transition-colors" %>
+            <%= link_to "GET DIRECTIONS", google_maps_url, target: :blank, class: "flex-1 text-center px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors" %>
+            <%= link_to "CALL NOW", phone_url, class: "flex-1 text-center px-4 py-3 border-2 border-blue-500 text-blue-500 font-medium rounded-lg hover:bg-blue-50 transition-colors" %>
           </div>
           <div class="flex items-center">
              <i class="fab fa-yelp yelp_color mr-2"></i>

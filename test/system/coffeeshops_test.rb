@@ -35,6 +35,9 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # Review count with rating
     assert_text "(#{@coffeeshop.reviews.size} #{'review'.pluralize(@coffeeshop.reviews.size)})"
 
+    # Heart icon accessibility and state
+    assert_selector 'i.material-icons[aria-label="Not favorited"]', text: 'favorite_border'
+
     # Rating and reviews section container still present
     assert_selector '.review-container', minimum: 1, wait: 5
   end
