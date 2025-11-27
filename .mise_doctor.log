@@ -1,0 +1,93 @@
+version: 2025.11.10 linux-x64 (2025-11-27)
+activated: no
+shims_on_path: yes
+self_update_available: yes
+
+build_info:
+  Target: x86_64-unknown-linux-gnu
+  Features: OPENSSL, RUSTLS_NATIVE_ROOTS, SELF_UPDATE
+  Built: Thu, 27 Nov 2025 14:46:51 +0000
+  Rust Version: rustc 1.91.1 (ed61e7d7e 2025-11-07)
+  Profile: release
+
+shell:
+  /bin/bash
+  GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+  Copyright (C) 2022 Free Software Foundation, Inc.
+  License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+  This is free software; you are free to change and redistribute it.
+  There is NO WARRANTY, to the extent permitted by law.
+
+aqua:
+  baked in registry tools: 2156
+
+dirs:
+  cache: ~/.cache/mise
+  config: ~/.config/mise
+  data: ~/.local/share/mise
+  shims: ~/.local/share/mise/shims
+  state: ~/.local/state/mise
+
+config_files:
+  ~/.config/mise/config.toml
+  /app/mise.toml
+
+ignored_config_files: (none)
+
+backends:
+  aqua
+  asdf
+  cargo
+  core
+  dotnet
+  gem
+  github
+  gitlab
+  go
+  npm
+  pipx
+  spm
+  http
+  ubi
+  vfox
+
+plugins:
+
+toolset:
+  core:ruby@3.3.10
+
+path:
+  ~/.local/share/mise/installs/ruby/3.3.10/bin
+  ~/.local/share/mise/installs/ruby/3.3.10/bin
+  ~/.nvm/versions/node/v22.21.1/bin
+  ~/.pyenv/shims
+  ~/.pyenv/bin
+  ~/.local/bin
+  /go/bin
+  /usr/local/go/bin
+  /usr/share/gradle/bin
+  /usr/share/maven/bin
+  ~/.local/bin
+  ~/.cargo/bin
+  /usr/local/bun/bin
+  /usr/local/sbin
+  /usr/local/bin
+  /usr/sbin
+  /usr/bin
+  /sbin
+  /bin
+  /snap/bin
+
+env_vars:
+  MISE_RUBY_BUILD_OPTS=--disable-install-doc
+
+settings:
+  all_compile           true ~/.config/mise/config.toml
+  experimental          true ~/.config/mise/config.toml
+  legacy_version_file   true ~/.config/mise/config.toml
+  always_keep_download  true /app/mise.toml
+  experimental          true /app/mise.toml
+  legacy_version_file   true /app/mise.toml
+
+No problems found
