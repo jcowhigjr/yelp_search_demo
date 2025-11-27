@@ -127,3 +127,4 @@ monte_carlo_value_scores_*.json
 quick_test_results.json
 test_workflow.txt
 dev.log
+.mise*.log
