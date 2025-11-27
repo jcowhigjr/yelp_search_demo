@@ -41,6 +41,20 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
 
+- **Terminal command safety & escaping**
+  - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
+  - **Never embed complex multi-line content directly in terminal commands** - this causes buffer overruns and hangs
+  - **For commands with complex arguments**: 
+    - Use heredocs (`<<EOF`) or temporary files instead of inline content
+    - Break complex commands into separate, simpler steps
+    - Avoid deeply nested quotes or escape sequences
+  - **Warning signs that indicate escaping issues**:
+    - Commands with multiple levels of nested quotes
+    - Very long single-line command arguments (>1000 characters)
+    - Complex string interpolation with special characters
+    - Multi-line content embedded in single command calls
+  - **If a terminal command hangs**: Cancel immediately and simplify the approach using separate steps or temporary files.
+
 ---
 
 ## 2. Review-first & delayed feedback behavior
