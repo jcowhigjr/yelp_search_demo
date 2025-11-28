@@ -138,3 +138,4 @@ Personal: Keep a tally of the places you've been.
 Community:
 Specialize and white label by search term .. eg) coffee.dorkbob.com
 Or make it local by neighborhood or club. eg) taco-club.dorkbob.com
+# Updated git config to remove nano editor

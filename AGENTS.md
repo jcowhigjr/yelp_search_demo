@@ -22,6 +22,27 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
 
+- **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
+  - **Before any non-trivial changes**, agents MUST:
+    1. **Confirm with user** that there are clear Acceptance Criteria (A/C)
+    2. **Verify there is a linked GitHub issue** for the work
+    3. **Have a clear plan** with each A/C mapped to implementation steps
+    4. **Scope confirmation** - ensure the work is within bounds and not "out of scope"
+  - **Non-trivial changes include**:
+    - Any work that requires a new Pull Request
+    - New system or unit tests
+    - Production environment changes
+    - New features or systems (like FeatureFlags)
+    - Database schema changes
+    - Major refactoring
+  - **Examples of trivial changes** (don't need A/G confirmation):
+    - Simple bug fixes with clear reproduction steps
+    - Documentation updates
+    - Minor styling tweaks
+    - Adding missing tests for existing code
+  - **If no issue exists**: Create one first before starting implementation
+  - **If A/C unclear**: Ask user to define them before proceeding
+
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
