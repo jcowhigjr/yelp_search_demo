@@ -15,6 +15,16 @@
  */
 /* @import "tailwindcss"; */
 
+/* Design tokens from Website Design Improvement prototype */
+@import url('./design-tokens.css');
+@import url('./search-bar.css');
+@import url('./coffeeshop-card.css');
+@import url('./coffeeshop-detail.css');
+@import url('./favorites.css');
+@import url('./navigation.css');
+@import url('./theme.css');
+@import url('./auth.css');
+
 body {
   font-family: 'Nunito', sans-serif;
 }

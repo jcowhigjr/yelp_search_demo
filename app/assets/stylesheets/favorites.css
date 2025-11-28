@@ -1,0 +1,19 @@
+/* Favorites Page styles */
+.favorites-body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.form-link {
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  padding: 8px 16px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.form-link:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  transform: translateY(-1px);
+}
