@@ -12,6 +12,11 @@ class SearchesTest < ApplicationSystemTestCase
     # Check for prototype hero section elements (implemented)
     assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
     assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+    
+    # Check for feature icons from prototype (now implemented)
+    assert_selector 'div[class*="rounded-full"]', text: '☕', wait: 4
+    assert_selector 'div[class*="rounded-full"]', text: '⭐', wait: 4
+    assert_selector 'div[class*="rounded-full"]', text: '❤️', wait: 4
 
     fill_in 'search[query]', with: query
 
@@ -50,8 +55,24 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector 'div[class*="max-w-3xl"]'
     assert_selector 'input[placeholder*="coffee"]'
     
-    # Note: Feature icons (☕️, ⭐, ❤️) are not yet implemented in Rails app
-    # This test can be extended when they are added
+    # Check for feature icons from prototype (now implemented)
+    assert_selector 'div[class*="rounded-full"]', text: '☕', wait: 4
+    assert_selector 'div[class*="rounded-full"]', text: '⭐', wait: 4
+    assert_selector 'div[class*="rounded-full"]', text: '❤️', wait: 4
+    
+    # Check for feature descriptions
+    assert_text 'Search nearby'
+    assert_text 'Read reviews'
+    assert_text 'Save favorites'
+    
+    # Check for proper styling of feature icons
+    feature_icons = all('div[class*="rounded-full"]')
+    assert feature_icons.length >= 3
+    
+    feature_icons.each do |icon|
+      assert_match /w-20 h-20/, icon[:class]
+      assert_match /flex items-center justify-center/, icon[:class]
+    end
   end
 
   test 'An anonymous user can update the query' do
