@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["icon"]
+  static targets = ["icon", "button"]
 
   connect() {
     this.initializeTheme()
@@ -15,6 +15,7 @@ export default class extends Controller {
     html.setAttribute("data-theme", newTheme)
     localStorage.setItem("theme", newTheme)
     this.updateIcon(newTheme)
+    this.updateButtonStyle(newTheme)
   }
 
   initializeTheme() {
@@ -24,11 +25,27 @@ export default class extends Controller {
     
     document.documentElement.setAttribute("data-theme", theme)
     this.updateIcon(theme)
+    this.updateButtonStyle(theme)
   }
 
   updateIcon(theme) {
-    // Icon content would ideally be SVG paths, but for now we can use emoji or simple text
-    // to keep it self-contained, or class toggling if using an icon font.
-    // Implementation detail left to the view that uses this controller.
+    if (this.hasIconTarget) {
+      this.iconTarget.textContent = theme === "dark" ? "light_mode" : "dark_mode"
+    }
+  }
+
+  updateButtonStyle(theme) {
+    if (this.hasButtonTarget) {
+      const button = this.buttonTarget
+      if (theme === "dark") {
+        button.style.backgroundColor = 'var(--color-bg)'
+        button.style.color = 'var(--color-text)'
+        button.style.border = '1px solid var(--color-border)'
+      } else {
+        button.style.backgroundColor = 'var(--color-primary)'
+        button.style.color = 'white'
+        button.style.border = 'none'
+      }
+    }
   }
 }
