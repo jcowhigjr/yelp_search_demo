@@ -125,7 +125,7 @@ class DependabotValidator
     puts "📥 Fetching official Dependabot schema..."
     
     uri = URI(SCHEMA_URL)
-    response = Net::HTTP.get(uri)
+      response = Net::HTTP.get_response(uri)
     
     if response.is_a?(Net::HTTPSuccess)
       @schema = JSON.parse(response.body)
