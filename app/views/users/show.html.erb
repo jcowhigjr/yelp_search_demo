@@ -8,6 +8,7 @@
     <% if !current_user || current_user.user_favorites.empty? %>
       <!-- Empty State -->
       <div class="text-center py-12">
+        <h2 class="page-name mb-6" style="color: var(--color-text);">My Favorites</h2>
         <p class="page-text mb-6" style="color: var(--color-text); opacity: 0.6;">
           <%= t('.you-dont-have-a') %>
         </p>
@@ -16,11 +17,15 @@
                     style: "color: var(--color-primary);" %>
       </div>
     <% else %>
-      <!-- Favorites Grid -->
-      <p class="mb-6" style="color: var(--color-text); opacity: 0.7;">
-        <%= current_user.user_favorites.size %> <%= 'saved location'.pluralize(current_user.user_favorites.size) %>
-      </p>
+      <!-- Favorites Header -->
+      <div class="text-center mb-8">
+        <h2 class="page-name mb-4" style="color: var(--color-text);">My Favorites</h2>
+        <p class="page-text" style="color: var(--color-text); opacity: 0.7;">
+          Your favorite spots: <%= current_user.user_favorites.size %>
+        </p>
+      </div>
       
+      <!-- Favorites Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <% current_user.user_favorites.each do |fav| %>
           <%= render partial: 'coffeeshops/coffeeshop_card', 
