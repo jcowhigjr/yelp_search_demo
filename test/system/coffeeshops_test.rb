@@ -15,8 +15,12 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
-    # Back to Results button
+    # Check for prototype back button styling
     assert_selector 'a', text: '← BACK TO RESULTS'
+    
+    # Check for two-column layout from prototype
+    assert_selector 'div[class*="grid"]', class: /grid-cols-1.*lg:grid-cols-2/, wait: 4
+    assert_selector 'div[class*="aspect-video"]', class: /rounded-lg/, wait: 4
 
     # About section
     within('[data-testid="about-section"]') do

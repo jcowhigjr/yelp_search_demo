@@ -9,6 +9,10 @@ class SearchesTest < ApplicationSystemTestCase
 
     visit new_search_path  # Use the explicit path instead of '/'
 
+    # Check for prototype hero section elements (implemented)
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
+    assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+
     fill_in 'search[query]', with: query
 
     # Use the same navigation pattern that works in the navigation test
@@ -19,6 +23,13 @@ class SearchesTest < ApplicationSystemTestCase
     # Wait for search results to fully load
     wait_for_search_results
 
+    # Check for prototype results page structure
+    assert_selector 'h2', text: /Top Rated Searches for #{query} near you/i, wait: 4
+    assert_selector 'p', text: /\d+ results? found/i, wait: 4
+    
+    # Check for grid layout from prototype
+    assert_selector 'div[class*="grid"]', class: /gap-6/, wait: 4
+
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
     assert_current_path %r{^/coffeeshops/\d{1,9}}
@@ -26,6 +37,21 @@ class SearchesTest < ApplicationSystemTestCase
     # Go back once and ensure we land back on a search page
     go_back
     assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
+  end
+
+  test 'search page displays prototype hero section and features' do
+    visit new_search_path
+
+    # Check for hero section from prototype (implemented)
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
+    assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+    
+    # Check for improved search bar styling (implemented)
+    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector 'input[placeholder*="coffee"]'
+    
+    # Note: Feature icons (☕️, ⭐, ❤️) are not yet implemented in Rails app
+    # This test can be extended when they are added
   end
 
   test 'An anonymous user can update the query' do
