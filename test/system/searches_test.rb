@@ -37,8 +37,6 @@ class SearchesTest < ApplicationSystemTestCase
     assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
   end
 
-<<<<<<< HEAD
-=======
   test 'search page displays prototype hero section and features' do
     visit new_search_path
 
@@ -70,7 +68,6 @@ class SearchesTest < ApplicationSystemTestCase
     end
   end
 
->>>>>>> aa70e3af (Implement feature icons and enhanced empty states)
   test 'An anonymous user can update the query' do
     skip 'Focused on interactive query UX; run locally, skipped in CI for stability' if ENV['CI'] == 'true'
     query = 'yoga'

@@ -66,6 +66,5 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     # Verify the link goes to search page
     click_link 'Start searching for coffee shops'
     assert_current_path new_search_path
->>>>>>> aa70e3af (Implement feature icons and enhanced empty states)
   end
 end
