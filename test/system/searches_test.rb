@@ -13,10 +13,7 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
     assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
     
-    # Check for feature icons from prototype (now implemented)
-    assert_selector 'div[class*="rounded-full"]', text: '☕', wait: 4
-    assert_selector 'div[class*="rounded-full"]', text: '⭐', wait: 4
-    assert_selector 'div[class*="rounded-full"]', text: '❤️', wait: 4
+    # Feature icons are hidden since they are non-functional
 
     fill_in 'search[query]', with: query
 
@@ -48,24 +45,7 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector 'div[class*="max-w-3xl"]'
     assert_selector 'input[placeholder*="coffee"]'
     
-    # Check for feature icons from prototype (now implemented)
-    assert_selector 'div[class*="rounded-full"]', text: '☕', wait: 4
-    assert_selector 'div[class*="rounded-full"]', text: '⭐', wait: 4
-    assert_selector 'div[class*="rounded-full"]', text: '❤️', wait: 4
-    
-    # Check for feature descriptions
-    assert_text 'Search nearby'
-    assert_text 'Read reviews'
-    assert_text 'Save favorites'
-    
-    # Check for proper styling of feature icons
-    feature_icons = all('div[class*="rounded-full"]')
-    assert feature_icons.length >= 3
-    
-    feature_icons.each do |icon|
-      assert_match /w-20 h-20/, icon[:class]
-      assert_match /flex items-center justify-center/, icon[:class]
-    end
+    # Feature icons are hidden since they are non-functional
   end
 
   test 'An anonymous user can update the query' do
@@ -81,6 +61,10 @@ class SearchesTest < ApplicationSystemTestCase
     
     # Wait for the search form to be present and visible
     search_box = find_field('search[query]', wait: 10, visible: true)
+    
+    # Check for improved search bar styling (implemented)
+    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector 'input[placeholder*="coffee"]'
     
     # Fill in the search form
     search_box.fill_in(with: query)
