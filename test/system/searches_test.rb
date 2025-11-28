@@ -42,6 +42,10 @@ class SearchesTest < ApplicationSystemTestCase
     # Wait for the search form to be present and visible
     search_box = find_field('search[query]', wait: 10, visible: true)
     
+    # Check for improved search bar styling (implemented)
+    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector 'input[placeholder*="coffee"]'
+    
     # Fill in the search form
     search_box.fill_in(with: query)
     
