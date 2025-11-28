@@ -26,6 +26,10 @@ class CoffeeshopsTest < ApplicationSystemTestCase
       assert_link number_to_phone(@coffeeshop.phone_number, area_code: true),
                   href: "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}"
       assert_link 'View on Yelp', href: @coffeeshop.yelp_url
+      
+      # Critical: Verify Yelp brand compliance - icon and color must be present
+      # Font Awesome 6 generates SVG elements, not <i> tags
+      assert_selector 'svg.fa-yelp.yelp_color'
     end
 
     # CTA Buttons
@@ -142,5 +146,22 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Verify we can add to favorites again
     assert_selector('input[type="submit"][value="Add To Favorites"]')
+  end
+
+  test 'Yelp brand compliance - icon and color must be maintained' do
+    visit coffeeshop_path(@coffeeshop, locale: nil)
+    
+    # Critical licensing requirement: Yelp icon must be present with brand color
+    # Font Awesome 6 generates SVG elements, not <i> tags
+    assert_selector 'svg.fa-yelp.yelp_color'
+    
+    # Verify the Yelp link is also present and functional
+    assert_link 'View on Yelp', href: @coffeeshop.yelp_url
+    
+    # Verify the yelp_color CSS class is properly applied (should be #ff1a1a red)
+    yelp_icon = find('svg.fa-yelp.yelp_color')
+    computed_style = yelp_icon.evaluate_script("window.getComputedStyle(this).getPropertyValue('color')")
+    assert_includes computed_style, '255, 26, 26', 
+               "Yelp icon must maintain brand red color (#ff1a1a) for licensing compliance"
   end
 end
