@@ -12,7 +12,7 @@ class SearchesTest < ApplicationSystemTestCase
     fill_in 'search[query]', with: query
 
     # Use the same navigation pattern that works in the navigation test
-    click_on 'search'
+    click_on 'Search'
 
     assert_text "Top Rated Searches for #{query} near you", wait: 4
 

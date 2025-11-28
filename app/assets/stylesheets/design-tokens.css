@@ -1,0 +1,17 @@
+@layer base {
+  :root {
+    --color-primary: #4B9CD3;
+    --color-primary-dark: #3A8CC7;
+    --color-button-blue: #1C5B82;
+    --color-bg: #FFFFFF;
+    --color-text: #000000;
+    --color-yelp: #FF1A1A;
+    --color-border: #e5e5e5;
+  }
+
+  [data-theme="dark"] {
+    --color-bg: #18181B;
+    --color-text: #FFFFFF;
+    --color-border: #3f3f46;
+  }
+}
