@@ -18,6 +18,7 @@
 /* Design tokens from Website Design Improvement prototype */
 @import url('./design-tokens.css');
 @import url('./search-bar.css');
+@import url('./coffeeshop-card.css');
 
 body {
   font-family: 'Nunito', sans-serif;

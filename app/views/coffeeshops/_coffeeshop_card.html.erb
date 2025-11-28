@@ -1,0 +1,59 @@
+<div class="coffeeshop-card" id="<%= dom_id(coffeeshop) %>">
+  <div class="card-image">
+    <%= image_tag coffeeshop.large_image_url, 
+                 alt: coffeeshop.name,
+                 class: 'w-full h-full object-cover' %>
+  </div>
+
+  <div class="card-content">
+    <div class="flex items-start justify-between mb-2">
+      <h3 class="card-title">
+        <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), 
+                    data: { turbo: false },
+                    class: 'coffeeshop-link' %>
+      </h3>
+      
+      <% if logged_in? %>
+        <div class="favorite-section">
+          <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
+            <%= render "favorites/button",
+                  item: coffeeshop,
+                  icon: favorite_icon_for(local_assigns[:search_query]),
+                  liked: current_user.favorited?(coffeeshop),
+                  search_query: local_assigns[:search_query] %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card-action">
+    <div class="info-section">
+      <div class="info-item">
+        <i class="material-icons info-icon">place</i>
+        <span>
+          <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
+                      target: :blank,
+                      class: 'map-link' do %>
+            <%= coffeeshop.address %>
+          <% end %>
+        </span>
+      </div>
+      
+      <div class="info-item">
+        <i class="material-icons info-icon">phone</i>
+        <span>
+          <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
+                      class: 'phone-link' do %>
+            <%= number_to_phone(coffeeshop.phone_number, area_code: true) %>
+          <% end %>
+        </span>
+      </div>
+    </div>
+
+    <%= link_to t('coffeeshops.coffeeshop.more-info'), 
+                coffeeshop_path(coffeeshop), 
+                data: { turbo: false },
+                class: 'material-button large w-full' %>
+  </div>
+</div>
