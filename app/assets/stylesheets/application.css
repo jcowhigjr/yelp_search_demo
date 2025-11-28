@@ -23,6 +23,7 @@
 @import url('./favorites.css');
 @import url('./navigation.css');
 @import url('./theme.css');
+@import url('./auth.css');
 
 body {
   font-family: 'Nunito', sans-serif;
