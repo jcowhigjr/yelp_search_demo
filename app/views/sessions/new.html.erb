@@ -1,58 +1,63 @@
-<% content_for :body_class, 'landing-body' %>
+<% content_for :body_class, 'auth-body' %>
 <div class="container mx-auto px-4 py-8">
   <div class="max-w-md mx-auto">
-    <div class="page-container">
-      <h1 class="page-name text-center mb-8">Welcome Back</h1>
+    <div class="auth-container">
+      <h1 class="page-name text-center mb-8">Login</h1>
 
       <%= form_tag sessions_path, class: "space-y-6" do %>
         <% if flash[:error] %>
-          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-center">
+          <div class="alert-error">
             <%= flash[:error] %>
           </div>
         <% end %>
 
         <div>
-          <%= label_tag :email, "Email", class: "block mb-2 page-text", style: "font-size: 16px;" %>
+          <%= label_tag :email, "Email", class: "form-label" %>
           <%= text_field_tag :email, nil,
-              placeholder: 'example@email.com',
+              placeholder: 'your@email.com',
               required: true,
-              class: "w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors bg-[var(--color-bg)] text-[var(--color-text)]" %>
+              class: "material-input" %>
         </div>
 
         <div>
-          <%= label_tag :password, "Password", class: "block mb-2 page-text", style: "font-size: 16px;" %>
+          <%= label_tag :password, "Password", class: "form-label" %>
           <%= password_field_tag :password, nil,
               required: true,
-              class: "w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors bg-[var(--color-bg)] text-[var(--color-text)]" %>
+              class: "material-input",
+              placeholder: "••••••••" %>
         </div>
 
         <div class="mt-8">
-          <%= submit_tag 'Log In', data: { turbo: false }, class: 'btn-large w-full', style: "width: 100%;" %>
+          <%= submit_tag 'Log In', 
+              data: { turbo: false }, 
+              class: 'material-button large w-full' %>
         </div>
       <% end %>
 
-      <div class="mt-8">
-        <div class="relative mb-6">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-300"></div>
-          </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-[var(--color-bg)] text-[var(--color-text)] opacity-70">Or continue with</span>
-          </div>
-        </div>
-
-        <div class="text-center">
-          <%= button_to '/auth/google_oauth2', data: { turbo: false }, class: 'btn-large w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-50', style: "background-color: #fff; color: #333; width: 100%;" do %>
-            <i class="fab fa-google" style="margin-right: 10px; color: #DB4437;"></i> <b>Login With Google</b>
-          <% end %>
-        </div>
+      <div class="mt-6 text-center">
+        <%= link_to "Don't have an account? Sign up", signup_path, class: "form-link" %>
       </div>
 
-      <div class="mt-6 text-center">
-        <p class="page-text" style="font-size: 16px;">
-          Don't have an account?
-          <%= link_to 'Sign Up', signup_path, class: 'form-link', style: "color: var(--color-primary);" %>
-        </p>
+      <div class="mt-8">
+        <div class="divider">
+          <span class="divider-text">Or continue with</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <%= button_to '/auth/google_oauth2', 
+                      data: { turbo: false }, 
+                      class: 'material-button secondary' do %>
+            <i class="fab fa-google" style="color: #DB4437; margin-right: 8px;"></i>
+            Google
+          <% end %>
+          
+          <%= button_to '#', 
+                      disabled: true,
+                      class: 'material-button secondary' do %>
+            <i class="fab fa-facebook" style="color: #1877F2; margin-right: 8px;"></i>
+            Facebook
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

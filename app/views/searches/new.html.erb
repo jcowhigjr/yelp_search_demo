@@ -12,12 +12,51 @@
       COFFEE NEAR YOU!
     </h1>
 
-    <p class="page-text mb-12">
+    <p class="page-text mb-12" style="opacity: 0.8;">
       Find the best coffee shops in your area
     </p>
 
-    <div class="max-w-3xl mx-auto">
+    <div class="max-w-3xl mx-auto mb-8">
       <%= render 'searches/form', locals: { search: @search } if @search %>
+    </div>
+
+    <!-- Feature icons section -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
+      <div class="text-center">
+        <div 
+          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
+          style="background-color: var(--color-primary); opacity: 0.2;"
+        >
+          <span class="text-4xl">☕</span>
+        </div>
+        <p style="color: var(--color-text); opacity: 0.7;">
+          Search nearby
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div 
+          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
+          style="background-color: var(--color-primary); opacity: 0.2;"
+        >
+          <span class="text-4xl">⭐</span>
+        </div>
+        <p style="color: var(--color-text); opacity: 0.7;">
+          Read reviews
+        </p>
+      </div>
+
+      <div class="text-center">
+        <div 
+          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
+          style="background-color: var(--color-primary); opacity: 0.2;"
+        >
+          <span class="text-4xl">❤️</span>
+        </div>
+        <p style="color: var(--color-text); opacity: 0.7;">
+          Save favorites
+        </p>
+      </div>
     </div>
   </div>
 </div>
