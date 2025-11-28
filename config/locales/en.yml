@@ -136,6 +136,7 @@ en:
     reviews:
       leave-a-review: Leave a review
     searches:
+      clear: Clear
       create: Search
       destroy: Search
       edit: Search
@@ -144,6 +145,7 @@ en:
       placeholder: Search for coffee shops...
       results: Top Rated Searches for %{query} near you!
       show: Search
+      submit: Search
       update: Search
     user_sessions:
       create: User Session
