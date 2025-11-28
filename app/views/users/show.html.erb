@@ -6,13 +6,13 @@
     </h1>
 
     <% if !current_user || current_user.user_favorites.empty? %>
-      <!-- Empty State -->
+      <!-- Empty State - matching prototype -->
       <div class="text-center py-12">
         <h2 class="page-name mb-6" style="color: var(--color-text);">My Favorites</h2>
         <p class="page-text mb-6" style="color: var(--color-text); opacity: 0.6;">
-          <%= t('.you-dont-have-a') %>
+          You haven't added any favorites yet
         </p>
-        <%= link_to t('.search-for-a-sh'), new_search_url, 
+        <%= link_to 'Start searching for coffee shops', new_search_url, 
                     class: "form-link",
                     style: "color: var(--color-primary);" %>
       </div>
