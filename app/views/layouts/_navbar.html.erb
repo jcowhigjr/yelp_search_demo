@@ -1,68 +1,86 @@
-<%# https://materializecss.com/navbar.html %>
-<div class="navbar-fixed">
-  <nav class="transparentBG">
-    <div class="nav-wrapper dark:bg-slate-900 dark:text-white">
-      <a href="" data-target="mobile-demo" class="left sidenav-trigger"><i class="material-icons">menu</i></a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <%# https://chimkan.com/rails-7-and-devise-issue-with-sign-out/ %>
+<nav class="shadow-sm" style="background-color: var(--color-bg); border-bottom: 1px solid var(--color-border);">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <%= link_to static_home_url, 
+                  class: "text-2xl hover:opacity-80 transition-opacity",
+                  style: "color: var(--color-primary);" do %>
+        Jitter
+      <% end %>
+
+      <!-- Desktop Navigation -->
+      <ul class="flex items-center gap-6">
         <li>
-          <%= link_to t('.logout'), logout_path,
-                      class: 'language-nav__link',
-                      data: { turbo_method: :delete } %>
+          <%= link_to t('views.searches.new'),
+                      new_search_path,
+                      class: [
+                        'language-nav__link',
+                        (current_page?(new_search_path) ? 'language-nav__link--active' : '')
+                      ].compact.join(' ') %>
         </li>
         <li>
           <%= link_to t('.my-profile'),
                       user_path(current_user),
-                      method: :get,
                       class: [
                         'language-nav__link',
-                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil)
+                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : '')
                       ].compact.join(' ') %>
         </li>
         <li>
-          <%= link_to t('views.searches.new'),
-                      new_search_path,
-                      method: :get,
-                      class: [
-                        'language-nav__link',
-                        (current_page?(new_search_path) ? 'language-nav__link--active' : nil)
-                      ].compact.join(' ') %>
+          <%= link_to t('.logout'),
+                      logout_path,
+                      class: 'language-nav__link',
+                      data: { turbo_method: :delete } %>
         </li>
       </ul>
-    </div>
-  </nav>
-</div>
 
-<div class="sidenav" id="mobile-demo">
-  <ul>
-    <li>
-      <div class="user-view">
-        <h6><i class="tiny material-icons nav-icon">person</i><%= current_user.name %></h6>
-        <span><i class="tiny material-icons nav-icon">email</i><%= current_user.email %></span>
-      </div>
-    </li>
-    <li>
-      <p>
-        <%= link_to logout_path, data: { turbo_method: :delete } do %>
-          <i class="small material-icons">exit_to_app</i><%= t('.logout') %>
+      <!-- Mobile Menu Trigger -->
+      <a href="#" data-target="mobile-demo" class="md:hidden">
+        <i class="material-icons" style="color: var(--color-text);">menu</i>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation -->
+<div class="sidenav" id="mobile-demo" style="background-color: var(--color-bg);">
+  <div class="p-4">
+    <div class="user-view mb-4">
+      <h6 class="flex items-center gap-2" style="color: var(--color-text);">
+        <i class="material-icons" style="font-size: 16px;">person</i>
+        <%= current_user.name %>
+      </h6>
+      <span class="flex items-center gap-2" style="color: var(--color-text); opacity: 0.7;">
+        <i class="material-icons" style="font-size: 16px;">email</i>
+        <%= current_user.email %>
+      </span>
+    </div>
+
+    <ul>
+      <li class="mb-2">
+        <%= link_to logout_path, 
+                    data: { turbo_method: :delete, turbo: false },
+                    class: "flex items-center gap-3 p-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800" do %>
+          <i class="material-icons" style="color: var(--color-text);">exit_to_app</i>
+          <span style="color: var(--color-text);"><%= t('.logout') %></span>
         <% end %>
-      </p>
-    </li>
-    <%# be careful turbo false is here to prevent breaking the slide-nav %>
-    <li>
-      <p>
-        <%= link_to user_path(current_user), data: { turbo: false } do %>
-          <i class="small material-icons">person</i><%= t('.my-profile') %>
+      </li>
+      <li class="mb-2">
+        <%= link_to user_path(current_user), 
+                    data: { turbo: false },
+                    class: "flex items-center gap-3 p-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800" do %>
+          <i class="material-icons" style="color: var(--color-text);">person</i>
+          <span style="color: var(--color-text);"><%= t('.my-profile') %></span>
         <% end %>
-      </p>
-    </li>
-    <%# be careful turbo false is here to prevent breaking the slide-nav %>
-    <li>
-      <p>
-        <%= link_to new_search_path, data: { turbo: false } do %>
-          <i class="small material-icons">search</i><%= t('views.searches.new') %>
+      </li>
+      <li class="mb-2">
+        <%= link_to new_search_path, 
+                    data: { turbo: false },
+                    class: "flex items-center gap-3 p-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800" do %>
+          <i class="material-icons" style="color: var(--color-text);">search</i>
+          <span style="color: var(--color-text);"><%= t('views.searches.new') %></span>
         <% end %>
-      </p>
-    </li>
-  </ul>
+      </li>
+    </ul>
+  </div>
 </div>
