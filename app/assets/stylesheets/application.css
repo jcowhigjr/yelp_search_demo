@@ -20,6 +20,7 @@
 @import url('./search-bar.css');
 @import url('./coffeeshop-card.css');
 @import url('./coffeeshop-detail.css');
+@import url('./favorites.css');
 
 body {
   font-family: 'Nunito', sans-serif;
