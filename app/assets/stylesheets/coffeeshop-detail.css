@@ -1,0 +1,108 @@
+/* Coffee Shop Detail Page styles */
+.coffeeshop-detail-body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Material Button styles for detail page */
+.material-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: var(--color-button-blue);
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.material-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.material-button.small {
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+.material-button.large {
+  font-size: 18px;
+  padding: 16px 32px;
+}
+
+.material-button.secondary {
+  background-color: transparent;
+  color: var(--color-button-blue);
+  border: 2px solid var(--color-button-blue);
+}
+
+.material-button.secondary:hover {
+  background-color: var(--color-button-blue);
+  color: white;
+  opacity: 0.9;
+}
+
+.material-button.flex-1 {
+  flex: 1;
+}
+
+/* Rating stars */
+.star-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.star-icon.filled {
+  color: #FFD700 !important;
+}
+
+.star-icon.half-filled {
+  color: #FFD700 !important;
+}
+
+.star-icon.empty {
+  color: #ccc !important;
+}
+
+/* Review cards */
+.review-card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Links */
+.map-link,
+.phone-link,
+.yelp-link {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.map-link:hover,
+.phone-link:hover,
+.yelp-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Favorite section */
+.favorite-section {
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+/* Aspect ratio for images */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}

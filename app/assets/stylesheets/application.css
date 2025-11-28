@@ -19,6 +19,7 @@
 @import url('./design-tokens.css');
 @import url('./search-bar.css');
 @import url('./coffeeshop-card.css');
+@import url('./coffeeshop-detail.css');
 
 body {
   font-family: 'Nunito', sans-serif;
