@@ -79,7 +79,7 @@
             
             <%= link_to @coffeeshop.address, google_maps_url, 
                        target: :blank, 
-                       class: 'map-link' %>
+                       class: 'map-link truncate' %>
             <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), 
                        phone_url, 
                        class: 'phone-link' %>
