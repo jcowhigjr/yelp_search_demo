@@ -30,17 +30,30 @@ class UsersTest < ApplicationSystemTestCase
   end
 
   test 'sign in and visit user profile' do
-    # before login via session controller
-    visit '/login'
-    fill_in 'email', with: @user.email
-    fill_in 'Password', with: default_password
-    click_link_or_button 'Log In'
-    click_on 'menu' if ENV['CUPRITE'] == 'true'
+  # before login via session controller
+  visit '/login'
+  fill_in 'email', with: @user.email
+  fill_in 'Password', with: default_password
+  click_link_or_button 'Log In'
+  
+  # In the new design, click directly on My Profile in desktop navigation
+  # or open mobile sidenav first if in mobile test environment
+  if ENV['CUPRITE'] == 'true'
+    # Open mobile sidenav
+    sidenav_trigger = find('.sidenav-trigger')
+    sidenav_trigger.trigger("click")
+    # Wait for mobile navigation content to be visible
+    assert_selector '#mobile-demo', visible: true, wait: 5
+    # Click My Profile in mobile navigation using trigger to avoid coordinate issues
+    find('#mobile-demo a', text: 'My Profile').trigger("click")
+  else
+    # Desktop navigation - click directly
     click_on 'My Profile'
-
-    assert_current_path "/users/#{@user.id}"
-    assert_text "Hello, #{@user.name}!"
   end
+
+  assert_current_path "/users/#{@user.id}"
+  assert_text "Hello, #{@user.name}!"
+end
 
 
 # test 'destroying a User' do

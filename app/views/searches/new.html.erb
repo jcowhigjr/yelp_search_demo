@@ -12,11 +12,11 @@
       COFFEE NEAR YOU!
     </h1>
 
-    <p class="page-text mb-12">
+    <p class="page-text mb-12" style="opacity: 0.8;">
       Find the best coffee shops in your area
     </p>
 
-    <!-- Feature icons section - hidden since buttons are not functional -->
+<!-- Feature icons section - hidden since buttons are not functional -->
     <%#= content_tag :div, class: "flex flex-col sm:flex-row gap-4 justify-center items-center mt-12" do %>
       <%#= content_tag :div, class: "text-center" do %>
         <%# <div
@@ -58,5 +58,4 @@
     <div class="max-w-3xl mx-auto">
       <%= render 'searches/form', locals: { search: @search } if @search %>
     </div>
-  </div>
 </div>
