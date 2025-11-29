@@ -134,7 +134,7 @@ jobs:
           steps.claude-1.outcome == 'failure' &&
           steps.claude-2.outcome == 'failure' &&
           steps.claude-3.outcome == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
           RUN_ID: ${{ github.run_id }}
