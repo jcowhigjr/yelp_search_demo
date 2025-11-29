@@ -1,0 +1,7 @@
+Issue #1052
+Agent: backend
+Tool: warp
+Task: Locate the Claude Code Review workflow file (likely in .github/workflows/) and change the trigger phrase from '@claude please review' to '/claude review'. Add a condition to skip workflow execution when the comment author is 'claude' or other bot accounts.
+Prompt file: /var/folders/97/38l84q_149qd6k6jbvb74dkm0000gp/T/tmpgx2ok05v.txt
+
+NOTE: This is a simulated execution (CLI not available)
