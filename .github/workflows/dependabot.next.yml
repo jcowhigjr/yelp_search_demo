@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize, reopened]
   # Also trigger on push to Dependabot branches for better reliability
   push:
-    branches: 
+    branches:
       - 'dependabot/**'
 
 concurrency:
@@ -35,16 +35,18 @@ jobs:
           sudo apt-get install -y -qq libyaml-dev libpq-dev
           
       - name: Update Gemfile.next.lock
+        id: update_lockfile
         env:
+          CI: true
           BUNDLE_GEMFILE: Gemfile.next
           BUNDLE_FROZEN: 'false'
-          CI: true
         run: |
           echo "Updating Gemfile.next.lock..."
-          
           # Use mise to ensure correct Ruby version
           mise exec -- bundle install --update
-          
+
+      - name: Commit and push updated Gemfile.next.lock
+        run: |
           # Check if there are changes
           if [[ -n "$(git status --porcelain Gemfile.next.lock)" ]]; then
             echo "Changes detected in Gemfile.next.lock"
