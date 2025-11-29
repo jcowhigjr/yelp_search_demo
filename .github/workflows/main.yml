@@ -14,16 +14,18 @@ on:
     branches:
       - develop
       - main
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited, labeled, ready_for_review]
   # Removed workflow_run trigger that was preventing CI from running
   # on updated Dependabot PR commits. Risk assessment logic moved inline.
 
 # Add workflow-level permissions to fix permission issues
 permissions:
-  contents: read
+  contents: write
   issues: write
   pull-requests: write
   actions: write
+  checks: write
+  statuses: write
 
 # concurrency:
 #   group: ${{ github.workflow }}-${{ github.ref }}
