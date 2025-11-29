@@ -47,7 +47,7 @@ pre-commit:
         #!/bin/bash
         if git diff --cached --name-only | grep -q "\.github/dependabot\.yml"; then
           echo "🔍 Validating Dependabot configuration..."
-          if ! ruby scripts/validate-dependabot.rb; then
+          if ! ruby scripts/validate-dependabot-v2.rb; then
             echo "❌ Dependabot configuration validation failed"
             echo "   Please fix the issues before committing"
             exit 1

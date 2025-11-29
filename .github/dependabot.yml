@@ -15,9 +15,6 @@ updates:
     open-pull-requests-limit: 2
     allow:
       - dependency-type: direct
-        update-type: "version-update:semver-patch"
-      - dependency-type: direct
-        update-type: "version-update:semver-minor"
     groups:
       gha-minor-patch:
         update-types: ["minor", "patch"]
