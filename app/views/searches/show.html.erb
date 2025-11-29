@@ -1,12 +1,12 @@
-<% content_for :body_class, 'landing-body' %>
-<div class="container page-container">
-    <% if flash[:error] %>
-    <span class="page-text"><%= flash[:error] %></span>
-    <% end %>
-
-    <div class="row center">
-        <%= render 'searches/form' %>
+<% content_for :body_class, 'search-results-body' %>
+<div class="container mx-auto px-4 py-8">
+  <% if flash[:error] %>
+    <div class="text-center mb-6">
+      <span class="page-text" style="color: var(--color-text);">
+        <%= flash[:error] %>
+      </span>
     </div>
+  <% end %>
 
 <%# may replace this with https://codepen.io/sumeshkp18/pen/VGBPYg  %>
 <%# https://pickerwheel.com/embed-tutorial/ %>
@@ -14,13 +14,12 @@
     <%= render partial: 'searches/picker_wheel' %>
 <% end %>
 
-    <% if @search.query %>
-       <div class="search-results ">
-            <%= turbo_stream_from 'searches' %>
-            <%= turbo_frame_tag 'search_form' do %>
-                <%= render partial: 'searches/results', locals: {search: @search} %>
-            <% end %>
-       </div>
-
-    <% end %>
+  <% if @search.query %>
+     <div class="search-results">
+          <%= turbo_stream_from 'searches' %>
+          <%= turbo_frame_tag 'search_form' do %>
+              <%= render partial: 'searches/results', locals: {search: @search} %>
+          <% end %>
+     </div>
+  <% end %>
 </div>

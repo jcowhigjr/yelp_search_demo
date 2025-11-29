@@ -22,6 +22,27 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
 
+- **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
+  - **Before any non-trivial changes**, agents MUST:
+    1. **Confirm with user** that there are clear Acceptance Criteria (A/C)
+    2. **Verify there is a linked GitHub issue** for the work
+    3. **Have a clear plan** with each A/C mapped to implementation steps
+    4. **Scope confirmation** - ensure the work is within bounds and not "out of scope"
+  - **Non-trivial changes include**:
+    - Any work that requires a new Pull Request
+    - New system or unit tests
+    - Production environment changes
+    - New features or systems (like FeatureFlags)
+    - Database schema changes
+    - Major refactoring
+  - **Examples of trivial changes** (don't need A/G confirmation):
+    - Simple bug fixes with clear reproduction steps
+    - Documentation updates
+    - Minor styling tweaks
+    - Adding missing tests for existing code
+  - **If no issue exists**: Create one first before starting implementation
+  - **If A/C unclear**: Ask user to define them before proceeding
+
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
@@ -40,6 +61,20 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - `lefthook run workflow-new-feature feature/<branch-name>`
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
+
+- **Terminal command safety & escaping**
+  - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
+  - **Never embed complex multi-line content directly in terminal commands** - this causes buffer overruns and hangs
+  - **For commands with complex arguments**: 
+    - Use heredocs (`<<EOF`) or temporary files instead of inline content
+    - Break complex commands into separate, simpler steps
+    - Avoid deeply nested quotes or escape sequences
+  - **Warning signs that indicate escaping issues**:
+    - Commands with multiple levels of nested quotes
+    - Very long single-line command arguments (>1000 characters)
+    - Complex string interpolation with special characters
+    - Multi-line content embedded in single command calls
+  - **If a terminal command hangs**: Cancel immediately and simplify the approach using separate steps or temporary files.
 
 ---
 

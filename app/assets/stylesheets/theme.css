@@ -1,0 +1,102 @@
+/* Theme Toggle and Dark Mode styles */
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Theme toggle button enhancements */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 50;
+  padding: 0.75rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px var(--color-shadow);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 20px;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px var(--color-shadow-dark);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] {
+  /* Enhanced shadows for dark mode */
+  .card, .review-card, .coffeeshop-card {
+    box-shadow: 0 4px 16px var(--color-shadow);
+  }
+  
+  /* Better contrast for links in dark mode */
+  .language-nav__link:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+  
+  /* Form adjustments */
+  input, textarea, select {
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+  
+  /* Material icons in dark mode */
+  .material-icons {
+    color: var(--color-text);
+  }
+}
+
+/* Light mode specific adjustments */
+[data-theme="light"] {
+  /* Subtle shadows for light mode */
+  .card, .review-card, .coffeeshop-card {
+    box-shadow: 0 2px 8px var(--color-shadow);
+  }
+}
+
+/* Theme preference detection animation */
+@keyframes themeSwitch {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.theme-switching {
+  animation: themeSwitch 0.3s ease;
+}
+
+/* System preference indicator */
+.system-theme-indicator {
+  opacity: 0.6;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* Focus styles for accessibility */
+.theme-toggle:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: #000000;
+    --color-text: #000000;
+    --color-bg: #ffffff;
+  }
+  
+  [data-theme="dark"] {
+    --color-border: #ffffff;
+    --color-text: #ffffff;
+    --color-bg: #000000;
+  }
+}

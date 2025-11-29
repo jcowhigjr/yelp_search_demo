@@ -1,15 +1,38 @@
+# Dependabot configuration for automated dependency updates
+# Enables safe updates for patch and minor versions without human intervention
+# Documentation: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
 version: 2
 updates:
-  # Ruby (Bundler)
-  - package-ecosystem: "bundler"
-    directory: "/"
+  # GitHub Actions updates
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "weekly"        # reduce churn
+      interval: weekly
+      day: sunday
+      time: "07:15"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 2
+    allow:
+      - dependency-type: direct
+    groups:
+      gha-minor-patch:
+        update-types: ["minor", "patch"]
+    
+  # Ruby/Bundler dependencies
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
       day: "sunday"
       time: "07:00"
       timezone: "America/Los_Angeles"
     open-pull-requests-limit: 5
     rebase-strategy: "auto"
+    allow:
+      - dependency-type: production
+      - dependency-type: development
+    # Group related updates to reduce PR noise
     groups:
       rubocop-suite:
         patterns:
@@ -29,9 +52,13 @@ updates:
           - "yaml-lint"
           - "i18n-tasks"
           - "guard*"
-      test-stack:
+      test-dependencies:
         patterns:
-          - "capybara"
+          - "rspec*"
+          - "capybara*"
+          - "factory_bot*"
+          - "faker"
+          - "shoulda*"
           - "selenium-webdriver"
           - "cuprite"
           - "webmock"
@@ -51,68 +78,3 @@ updates:
         update-types:
           - "patch"
           - "minor"
-
-  # GitHub Actions (optional, quiet weekly)
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "sunday"
-      time: "07:15"
-      timezone: "America/Los_Angeles"
-    open-pull-requests-limit: 2
-    groups:
-      gha-minor-patch:
-        update-types: ["minor", "patch"]
-
-# Dependabot configuration for automated dependency updates
-# Enables safe updates for patch and minor versions without human intervention
-# Documentation: https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-
-version: 2
-updates:
-  # GitHub Actions updates
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-    open-pull-requests-limit: 5
-    allow:
-      - dependency-type: direct
-        update-type: "version-update:semver-patch"
-      - dependency-type: direct
-        update-type: "version-update:semver-minor"
-    
-  # Ruby/Bundler dependencies
-  - package-ecosystem: bundler
-    directory: /
-    schedule:
-      interval: daily
-      time: "09:00"
-      timezone: "UTC"
-    open-pull-requests-limit: 10
-    # Enable safe automated updates for patch and minor versions
-    allow:
-      - dependency-type: production
-      - dependency-type: development
-    # Group related updates to reduce PR noise
-    groups:
-      test-dependencies:
-        patterns:
-          - "rspec*"
-          - "capybara*"
-          - "factory_bot*"
-          - "faker"
-          - "shoulda*"
-      rails-ecosystem:
-        patterns:
-          - "rails*"
-          - "actionpack*"
-          - "activerecord*"
-          - "activesupport*"
-          - "actionview*"
-          - "actionmailer*"
-          - "activejob*"
-          - "actioncable*"
-          - "activestorage*"

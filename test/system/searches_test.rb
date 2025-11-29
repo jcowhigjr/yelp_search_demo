@@ -9,10 +9,16 @@ class SearchesTest < ApplicationSystemTestCase
 
     visit new_search_path  # Use the explicit path instead of '/'
 
+    # Check for prototype hero section elements (implemented)
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
+    assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+    
+    # Feature icons are hidden since they are non-functional
+
     fill_in 'search[query]', with: query
 
     # Use the same navigation pattern that works in the navigation test
-    click_on 'search'
+    click_on 'Search'
 
     assert_text "Top Rated Searches for #{query} near you", wait: 4
 
@@ -28,6 +34,20 @@ class SearchesTest < ApplicationSystemTestCase
     assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
   end
 
+  test 'search page displays prototype hero section and features' do
+    visit new_search_path
+
+    # Check for hero section from prototype (implemented)
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
+    assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+    
+    # Check for improved search bar styling (implemented)
+    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector 'input[placeholder*="coffee"]'
+    
+    # Feature icons are hidden since they are non-functional
+  end
+
   test 'An anonymous user can update the query' do
     skip 'Focused on interactive query UX; run locally, skipped in CI for stability' if ENV['CI'] == 'true'
     query = 'yoga'
@@ -41,6 +61,10 @@ class SearchesTest < ApplicationSystemTestCase
     
     # Wait for the search form to be present and visible
     search_box = find_field('search[query]', wait: 10, visible: true)
+    
+    # Check for improved search bar styling (implemented)
+    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector 'input[placeholder*="coffee"]'
     
     # Fill in the search form
     search_box.fill_in(with: query)

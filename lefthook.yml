@@ -42,6 +42,20 @@ pre-commit:
       skip:
         - merge
         - rebase
+    validate_dependabot_config:
+      run: |
+        #!/bin/bash
+        if git diff --cached --name-only | grep -q "\.github/dependabot\.yml"; then
+          echo "🔍 Validating Dependabot configuration..."
+          if ! ruby scripts/validate-dependabot-v2.rb; then
+            echo "❌ Dependabot configuration validation failed"
+            echo "   Please fix the issues before committing"
+            exit 1
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
 pre-push:
   pre-command: git add . && git stash
   post-command: |

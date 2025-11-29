@@ -1,121 +1,175 @@
-<% content_for :body_class, 'landing-body' %>
+<% content_for :body_class, 'coffeeshop-detail-body' %>
 
-<div class="container page-container">
-  <div class="row center">
-    <h1 class="page-name"><%= @coffeeshop.name %></h1>
-  </div>
-
-  <div class="row">
-    <div class="col s12 l6">
-      <%= image_tag @coffeeshop.image_url, class: 'card-img responsive-img shop-image z-depth-2' %>
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Back to Results Button -->
+    <div class="mb-6">
+      <%= link_to "← BACK TO RESULTS", "javascript:history.back()", 
+                  class: "material-button small secondary" %>
     </div>
-
-    <!-- Coffeeshop Info -->
-    <div class="col s12 l6">
-      <div class="shop-info">
-        <div class="row" style="margin-bottom: 20px;">
-          <div class="col s12">
-            <address class="card-action columns-2">
-              <%= link_to "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}",
-                           target: :blank do %>
-                <i class="material-icons">place</i>
-                <a class="truncate"><%= @coffeeshop.address %></a>
-              <% end %>
-
-              <%= link_to "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" do %>
-                <i class="material-icons">phone</i>
-                <a class="truncate"><%= number_to_phone(@coffeeshop.phone_number, area_code: true) %></a>
-              <% end %>
-            </address>
-          </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left Column: Image -->
+      <div>
+        <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
+          <%= image_tag @coffeeshop.image_url, alt: @coffeeshop.name, 
+                       class: 'w-full h-full object-cover' %>
         </div>
+      </div>
 
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col s12">
-            <span class="page-text">
-              <% if @coffeeshop.user_favorites.size > 0 %>
-                <i class="material-icons">favorite</i>
-                <%= @coffeeshop.user_favorites.size %>
-              <% end %>
-            </span>
-          </div>
-        </div>
-
-        <div class="row" style="margin-bottom: 16px;">
-          <div class="col s12">
-            <span class="page-text">
-              <%= link_to sanitize(url_for(@coffeeshop.yelp_url)), target: :blank do %>
-                <i class="fab fa-yelp yelp_color">View on Yelp</i>
-              <% end %>
-            </span>
-          </div>
-        </div>
-
-        <div class="row center" style="margin-bottom: 24px;">
-          <div class="col s12">
-            <%= render partial: 'rating', locals: { rating: @coffeeshop.rating } %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col s12">
-            <% if !logged_in? %>
-              <span class="page-text">
-                <%= link_to t('.login-to-add-th'), login_path %>
+      <!-- Right Column: Details -->
+      <div>
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h1 class="page-name mb-2" style="color: var(--color-text);">
+              <%= @coffeeshop.name %>
+            </h1>
+            
+            <div class="flex items-center gap-2 mb-2">
+              <div class="flex items-center">
+                <%= render partial: 'reviews/rating_stars', locals: { rating: @coffeeshop.rating } %>
+              </div>
+              <span style="color: var(--color-text); opacity: 0.7;">
+                <%= @coffeeshop.rating %> (<%= @coffeeshop.reviews.size %> <%= 'review'.pluralize(@coffeeshop.reviews.size) %>)
               </span>
-            <% else %>
-              <!-- Add to user favorites -->
-              <%= turbo_frame_tag :user_favorite do %>
-                <div class="row center">
-                  <% if current_user.favorite?(@coffeeshop) %>
-                    <%= form_tag user_favorite_path, method: 'delete' do %>
-                      <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                      <%= submit_tag t('.remove-from-favorites'), class: 'btn-large' %>
-                    <% end %>
-                  <% else %>
-                    <%= form_tag user_favorites_path do %>
-                      <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                      <%= submit_tag t('.add-to-favorites'), class: 'btn-large' %>
-                    <% end %>
-                  <% end %>
+            </div>
+          </div>
+          
+          <% if logged_in? %>
+            <div class="favorite-section">
+              <%= turbo_frame_tag dom_id(@coffeeshop, "favorite") do %>
+                <%= render "favorites/button",
+                      item: @coffeeshop,
+                      icon: favorite_icon_for(nil),
+                      liked: current_user.favorited?(@coffeeshop),
+                      search_query: nil %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="favorite-section">
+              <% if current_user&.favorite?(@coffeeshop) %>
+                <i class="material-icons" aria-label="Favorited">favorite</i>
+              <% else %>
+                <i class="material-icons" aria-label="Not favorited">favorite_border</i>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <% google_maps_url = "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}" %>
+        <% phone_url = "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
+
+        <!-- Primary Action Buttons -->
+        <div class="flex gap-3 mb-6">
+          <%= link_to "GET DIRECTIONS", google_maps_url, 
+                      target: :blank, 
+                      class: "material-button large flex-1" %>
+          <%= link_to "CALL NOW", phone_url, 
+                      class: "material-button large secondary flex-1" %>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mb-6" data-testid="about-section">
+          <h3 class="mb-3" style="color: var(--color-text);">
+            About
+          </h3>
+          <div class="space-y-2">
+            <% google_maps_url = "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}" %>
+            <% phone_url = "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
+            
+            <%= link_to @coffeeshop.address, google_maps_url, 
+                       target: :blank, 
+                       class: 'map-link truncate' %>
+            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), 
+                       phone_url, 
+                       class: 'phone-link' %>
+            
+            <% begin %>
+              <% yelp_uri = URI.parse(@coffeeshop.yelp_url) %>
+              <% if yelp_uri.scheme == 'https' && yelp_uri.host == 'www.yelp.com' %>
+                <% safe_yelp_url = "https://www.yelp.com" + yelp_uri.path.to_s + (yelp_uri.query ? "?" + yelp_uri.query : "") %>
+                <div class="flex items-center">
+                   <i class="fab fa-yelp yelp_color mr-2"></i>
+                   <%= link_to "View on Yelp", safe_yelp_url, target: :blank, class: "page-text" %>
                 </div>
               <% end %>
+            <% rescue URI::InvalidURIError %>
+              <%# Malformed Yelp URL, do not render link %>
+            <% end %>
+            
+            <% if @coffeeshop.user_favorites.size > 0 %>
+              <div class="flex items-center gap-2">
+                <i class="material-icons" style="color: var(--color-primary);">favorite</i>
+                <span style="color: var(--color-text); opacity: 0.8;">
+                  <%= pluralize(@coffeeshop.user_favorites.size, "person") %> favorited this shop
+                </span>
+              </div>
             <% end %>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Reviews Section -->
-  <div class="row" style="margin-top: 40px;">
-    <div class="col s12">
-      <div class="row center">
-        <% if @coffeeshop.reviews.empty? %>
-          <div class="row center">
-            <span class="page-text red-text"></span>
-            <%= link_to sanitize(url_for(@coffeeshop.yelp_url)), target: :blank do %>
-              <i class="fab fa-yelp yelp_color" style="margin-right: 10px;">Check out yelp for reviews!</i>
+        <!-- Favorites Section -->
+        <% if logged_in? %>
+          <div class="mb-6">
+            <%= turbo_frame_tag :user_favorite do %>
+              <div class="text-center">
+                <% if current_user.favorite?(@coffeeshop) %>
+                  <%= form_tag user_favorite_path, method: 'delete' do %>
+                    <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
+                    <%= submit_tag t('.remove-from-favorites'), 
+                                 class: "material-button secondary" %>
+                  <% end %>
+                <% else %>
+                  <%= form_tag user_favorites_path do %>
+                    <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
+                    <%= submit_tag t('.add-to-favorites'), 
+                                 class: "material-button" %>
+                  <% end %>
+                <% end %>
+              </div>
             <% end %>
           </div>
         <% else %>
+          <div class="mb-6">
+            <p style="color: var(--color-text); opacity: 0.8;">
+              <%= link_to t('.login-to-add-th'), login_path %> to add to favorites
+            </p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="mt-12">
+      <h3 class="mb-6" style="color: var(--color-text);">
+        Reviews
+      </h3>
+      
+      <div class="space-y-6">
+        <% if @coffeeshop.reviews.empty? %>
+          <div class="text-center p-6 rounded-lg review-card review-container">
+            <p style="color: var(--color-text); opacity: 0.8;">
+              No reviews yet. Be the first to write one!
+            </p>
+          </div>
+        <% else %>
           <% @coffeeshop.reviews.each do |review| %>
-            <div class="review-container z-depth-1">
-              <%= render partial: 'reviews/show', locals: { review: } %>
+            <div class="p-6 rounded-lg review-card review-container">
+              <%= render partial: 'reviews/show', locals: { review: review } %>
             </div>
           <% end %>
         <% end %>
 
-        <% if !logged_in? %>
-          <span class="page-text red-text">
-            <%= link_to t('.log-in'), login_path %>
-            <%= t('.to-leave-a-revi') %>
-          </span>
+        <!-- Add Review Form -->
+        <% if logged_in? %>
+          <div class="p-6 rounded-lg review-card review-container">
+            <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: Review.new } %>
+          </div>
         <% else %>
-          <div class="row center">
-            <div class="review-container z-depth-1">
-              <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: Review.new } %>
-            </div>
+          <div class="text-center p-6 rounded-lg review-card review-container">
+            <p style="color: var(--color-text); opacity: 0.8;">
+              <%= link_to t('.log-in'), login_path %> <%= t('.to-leave-a-revi') %>
+            </p>
           </div>
         <% end %>
       </div>

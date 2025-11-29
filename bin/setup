@@ -50,12 +50,16 @@ echo "INFO: Using MISE executable: $MISE_EXEC_PATH" | tee -a "$SETUP_LOG" >/dev/
 
 echo "\n== Setting up Git hooks =="
 # Try lefthook via standalone binary first, then via Bundler; otherwise skip gracefully in CI
-if command -v lefthook >/dev/null 2>&1; then
-  system! "$MISE_EXEC_PATH" exec -- lefthook install
-elif "$MISE_EXEC_PATH" exec -- bundle exec lefthook --version >/dev/null 2>&1; then
-  system! "$MISE_EXEC_PATH" exec -- bundle exec lefthook install
+if [ "$CI" != "true" ]; then
+  if command -v lefthook >/dev/null 2>&1; then
+    system! "$MISE_EXEC_PATH" exec -- lefthook install
+  elif "$MISE_EXEC_PATH" exec -- bundle exec lefthook --version >/dev/null 2>&1; then
+    system! "$MISE_EXEC_PATH" exec -- bundle exec lefthook install
+  else
+    echo "⚠️ Lefthook not found; skipping Git hooks installation"
+  fi
 else
-  echo "⚠️ Lefthook not found; skipping Git hooks installation"
+  echo "CI environment detected; skipping Git hooks installation"
 fi
 
   # This script is a way to set up or update your development environment automatically.

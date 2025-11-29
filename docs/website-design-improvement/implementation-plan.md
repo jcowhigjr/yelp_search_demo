@@ -54,7 +54,7 @@ We need a low-tech-debt, incremental plan to port the visual and interaction pat
 * **Tests**
   * Extend `test/controllers/searches_controller_test.rb` `#show` to assert that at least one `.coffeeshop-card` is rendered when results are present.
 
-### Phase 3: Coffeeshop detail page layout alignment (PARTIALLY IMPLEMENTED)
+### Phase 3: Coffeeshop detail page layout alignment (DONE)
 
 * **Context**
   * Use `Website Design Improvement/src/components/pages/DetailPage.tsx` as the visual reference.
