@@ -2,7 +2,7 @@
 
 > Tracked in GitHub: [Issue #1002 – Plan: Integrate Website Design Improvement prototype into Rails UI](https://github.com/jcowhigjr/yelp_search_demo/issues/1002)
 
-This playbook explains **how agents should work this issue in parallel** without stepping on each other, and how to keep PRs small, test-backed, and aligned with the design prototype.
+This playbook explains **how agents should work this issue in parallel** without stepping on each other, and how to keep PRs small, test-backed, and aligned with the design prototype. Planning for Issue #1002 is complete; see [ui-integration-subissues.md](ui-integration-subissues.md) for the sub-issue table (#1033–#1040), branch names, and worktree paths.
 
 ## High-level phases
 
