@@ -23,7 +23,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
       - name: Setup mise environment
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
