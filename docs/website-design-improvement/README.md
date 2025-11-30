@@ -1,6 +1,8 @@
 # Website Design Improvement
 
 > Tracked in GitHub: [Issue #1002 – Plan: Integrate Website Design Improvement prototype into Rails UI](https://github.com/jcowhigjr/yelp_search_demo/issues/1002)
+>
+> Status: planning complete. Implementation is tracked in sub-issues [#1033–#1040](ui-integration-subissues.md) with per-phase branches/worktrees.
 
 ## Purpose
 
