@@ -4,26 +4,59 @@ on:
     workflows: ["Ruby on Rails CI"]
     types:
       - completed
+  # Fallback triggers for direct Dependabot PR events
+  pull_request:
+    types: [opened, synchronize, reopened]
+    if: github.actor == 'dependabot[bot]'
 
 permissions:
   pull-requests: write
   contents: write
+  actions: write
+  checks: write
+  statuses: write
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.actor.login == 'dependabot[bot]'
+    # Handle both workflow_run and direct pull_request triggers
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.actor.login == 'dependabot[bot]') ||
+      (github.event_name == 'pull_request' && github.actor == 'dependabot[bot]')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Get PR number from workflow run
+      - name: Get PR number from workflow run or direct event
         id: pr
         run: |
-          # Extract PR number from the workflow_run event safely using jq
-          PR_NUMBER=$(jq --raw-output '.workflow_run.pull_requests[0].number // ""' "$GITHUB_EVENT_PATH")
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
+            # Extract PR number from the workflow_run event safely using jq
+            PR_NUMBER=$(jq --raw-output '.workflow_run.pull_requests[0].number // ""' "$GITHUB_EVENT_PATH")
+            echo "Found PR number from workflow_run: $PR_NUMBER"
+          else
+            # Direct pull_request event
+            PR_NUMBER="${{ github.event.number }}"
+            echo "Found PR number from pull_request: $PR_NUMBER"
+          fi
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          echo "Found PR number: $PR_NUMBER"
+
+      - name: Update PR with latest develop changes if needed
+        if: steps.pr.outputs.number != ''
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Checking if PR #$PR_NUMBER needs update with develop changes..."
+          
+          # Check if PR is behind develop
+          BEHIND=$(gh pr view "$PR_NUMBER" --json mergeable --jq '.mergeable.status == "behind"')
+          if [ "$BEHIND" = "true" ]; then
+            echo "PR is behind develop, updating..."
+            gh pr merge --auto --squash "$PR_NUMBER" || echo "Auto-merge setup failed, will retry after CI"
+          else
+            echo "PR is up to date or mergeable status unknown"
+          fi
 
       - name: Approve and enable auto-merge for Dependabot PR
         if: steps.pr.outputs.number != ''
