@@ -76,7 +76,7 @@ jobs:
       RAILS_TEST_WORKERS: 3
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache mise tools
         uses: actions/cache@v4
         with:
@@ -151,7 +151,7 @@ jobs:
       RAILS_TEST_WORKERS: 3
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Cache mise tools
         uses: actions/cache@v4
         with:
