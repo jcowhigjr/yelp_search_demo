@@ -35,14 +35,19 @@
   margin: 0;
   line-height: 1.3;
   color: var(--color-text);
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
 }
 
 .coffeeshop-card .card-title a {
   color: var(--color-text);
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .coffeeshop-card .card-title a:hover {
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -100,27 +105,30 @@
 }
 
 .coffeeshop-card .material-button {
-  border: none;
-  border-radius: 10px;
-  padding: 12px 24px;
-  color: white;
+  border: 1px solid var(--color-text);
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
-  background-color: var(--color-button-blue);
+  background-color: transparent;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 .coffeeshop-card .material-button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  background-color: color-mix(in srgb, var(--color-text) 5%, transparent);
+  opacity: 1;
+  border-color: var(--color-primary);
 }
 
 .coffeeshop-card .material-button.large {
-  font-size: 16px;
-  padding: 14px 28px;
+  font-size: 14px;
+  padding: 10px 20px;
 }
 
 .coffeeshop-card .material-button.w-full {
