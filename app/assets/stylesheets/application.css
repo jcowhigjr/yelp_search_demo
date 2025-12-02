@@ -27,10 +27,15 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 body {
   font-family: 'Nunito', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
 }
 .transparentBG {
   background-color: #373737;
@@ -91,16 +96,18 @@ select {
 .favorite-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: transform 0.2s ease;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+  line-height: 1;
 }
 
 .favorite-btn:hover {
-  transform: scale(1.1);
-  background-color: rgba(0, 0, 0, 0.1);
+  opacity: 1;
+  background-color: var(--color-bg-secondary);
 }
 
 .favorite-btn:active {
