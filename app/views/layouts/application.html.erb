@@ -31,6 +31,11 @@
       <i data-theme-target="icon" class="material-icons" style="font-size: 20px;">dark_mode</i>
     </button>
 
+    <!-- Language Selector -->
+    <div style="position: fixed; top: 1rem; right: 5rem; z-index: 50;">
+      <%= render 'layouts/language_selector' %>
+    </div>
+
   <% if logged_in? %>
     <%= render 'layouts/navbar' %>
   <% end %>

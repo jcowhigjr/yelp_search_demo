@@ -1,0 +1,38 @@
+<%# Language Selector Dropdown %>
+<div class="language-selector" data-controller="dropdown">
+  <!-- Toggle Button -->
+  <button
+    data-dropdown-target="button"
+    data-action="click->dropdown#toggle"
+    class="language-selector__button"
+    aria-label="Select language"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <i class="material-icons" style="font-size: 20px;">language</i>
+    <span class="language-selector__current"><%= I18n.locale.to_s.upcase %></span>
+    <i class="material-icons" style="font-size: 20px;">arrow_drop_down</i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    data-dropdown-target="menu"
+    class="language-selector__menu"
+    role="menu"
+    aria-label="Language selection"
+    style="display: none;"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <div class="language-selector__menu-item" role="menuitem">
+        <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                    class: [
+                      'language-selector__link',
+                      ('language-selector__link--active' if locale == I18n.locale)
+                    ].compact.join(' '),
+                    'aria-label': t('layouts.footer.language_name_of_locale', locale:) do %>
+          <%= t('layouts.footer.language_name_of_locale', locale:) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
