@@ -1,0 +1,88 @@
+<!-- 
+  Language Selector CSS Classes - Usage Example
+  
+  This file provides HTML structure examples for the language selector component.
+  The CSS classes are defined in language-selector.css
+-->
+
+<!-- Basic Language Selector Structure -->
+<div class="language-selector">
+  <!-- Toggle Button -->
+  <button 
+    class="language-selector__button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-label="Select language"
+  >
+    <span class="language-selector__button-text">EN</span>
+    <svg class="language-selector__icon" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+    </svg>
+  </button>
+  
+  <!-- Dropdown Menu (hidden by default) -->
+  <div class="language-selector__dropdown" role="menu">
+    <ul class="language-selector__menu">
+      <li class="language-selector__item">
+        <a href="?locale=en" class="language-selector__link language-selector__link--active" role="menuitem">
+          English
+        </a>
+      </li>
+      <li class="language-selector__item">
+        <a href="?locale=es" class="language-selector__link" role="menuitem">
+          Español
+        </a>
+      </li>
+      <li class="language-selector__item">
+        <a href="?locale=fr" class="language-selector__link" role="menuitem">
+          Français
+        </a>
+      </li>
+      <li class="language-selector__item">
+        <a href="?locale=de" class="language-selector__link" role="menuitem">
+          Deutsch
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- 
+  Key CSS Classes:
+  
+  .language-selector - Container for the component
+  .language-selector__button - Main toggle button (min 44x44px on mobile, 48x48px for thumb access)
+  .language-selector__button-text - Text inside the button (uppercase locale code)
+  .language-selector__icon - Dropdown arrow icon (rotates when open)
+  .language-selector__dropdown - Dropdown menu container
+  .language-selector__menu - UL element for menu items
+  .language-selector__item - LI element (min 44px height for tap targets)
+  .language-selector__link - Link element for each language option (full-width tap target)
+  .language-selector__link--active - Modifier for current/active language
+  
+  Accessibility:
+  - Button uses aria-haspopup="true" and aria-expanded to indicate menu state
+  - Menu items have role="menuitem" for screen readers
+  - Minimum 44x44px tap targets for mobile accessibility
+  - Full-width tap targets on narrow viewports
+  - Keyboard navigation support via :focus and :focus-visible states
+  - Safe spacing from viewport edges (env(safe-area-inset-*))
+  
+  Color Variables Used:
+  - var(--color-bg) - Main background color
+  - var(--color-bg-secondary) - Secondary background for hover states
+  - var(--color-bg-tertiary) - Tertiary background for focus states
+  - var(--color-text) - Primary text color
+  - var(--color-border) - Border color
+  - var(--color-border-secondary) - Secondary border color for hover
+  - var(--color-primary) - Primary brand color for active states
+  - var(--color-shadow) - Box shadow color
+  - var(--color-shadow-dark) - Darker shadow for depth
+  
+  Mobile Optimizations:
+  - Button: 48x48px minimum on mobile (increased from 44x44px)
+  - Menu items: 44px minimum height with full-width tap targets
+  - Dropdown: Max-width prevents clipping at viewport edges
+  - Safe area insets: Respects notch and browser chrome
+  - Reduced motion: Respects prefers-reduced-motion preference
+-->
