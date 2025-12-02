@@ -6,25 +6,23 @@
   </div>
 
   <div class="card-content">
-    <div class="flex items-start justify-between mb-2">
-      <h3 class="card-title">
-        <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), 
-                    data: { turbo: false },
-                    class: 'coffeeshop-link' %>
-      </h3>
-      
-      <% if logged_in? %>
-        <div class="favorite-section">
-          <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
-            <%= render "favorites/button",
-                  item: coffeeshop,
-                  icon: favorite_icon_for(local_assigns[:search_query]),
-                  liked: current_user.favorited?(coffeeshop),
-                  search_query: local_assigns[:search_query] %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+    <h3 class="card-title">
+      <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop), 
+                  data: { turbo: false },
+                  class: 'coffeeshop-link' %>
+    </h3>
+    
+    <% if logged_in? %>
+      <div class="favorite-section">
+        <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
+          <%= render "favorites/button",
+                item: coffeeshop,
+                icon: favorite_icon_for(local_assigns[:search_query]),
+                liked: current_user.favorited?(coffeeshop),
+                search_query: local_assigns[:search_query] %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div class="card-action">
