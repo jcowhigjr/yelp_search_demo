@@ -1,0 +1,235 @@
+/* Language Selector - Mobile-friendly dropdown component */
+
+/* Container for the language selector */
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+/* Main toggle button */
+.language-selector__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  /* Mobile-friendly tap target: minimum 44x44px */
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 12px;
+  
+  /* Styling */
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  
+  /* Typography */
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  
+  /* Interaction */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* Remove default button styling */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.language-selector__button:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-border-secondary);
+}
+
+.language-selector__button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.language-selector__button:active {
+  transform: scale(0.98);
+}
+
+/* Button text */
+.language-selector__button-text {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dropdown icon */
+.language-selector__icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.language-selector__button[aria-expanded="true"] .language-selector__icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.language-selector__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  
+  /* Ensure safe spacing from viewport edges on mobile */
+  min-width: 180px;
+  max-width: 280px;
+  
+  /* Styling */
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--color-shadow), 0 2px 6px var(--color-shadow-dark);
+  
+  /* Visibility */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  
+  /* Layering */
+  z-index: 1000;
+  
+  /* Prevent overflow */
+  overflow: hidden;
+}
+
+/* Show dropdown when button is expanded */
+.language-selector__button[aria-expanded="true"] + .language-selector__dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Menu list */
+.language-selector__menu {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+/* Menu items */
+.language-selector__item {
+  /* Mobile-friendly tap target: minimum 44px height */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+/* Menu links */
+.language-selector__link {
+  /* Full-width tap targets */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  
+  /* Typography */
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+  
+  /* Interaction */
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.language-selector__link:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.language-selector__link:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-bg-secondary);
+}
+
+/* Active/current language */
+.language-selector__link--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.language-selector__link--active::before {
+  content: "✓";
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Position selector safely from top-right edge */
+  .language-selector {
+    /* Account for browser chrome and notch areas */
+    margin-right: env(safe-area-inset-right, 0);
+    margin-top: env(safe-area-inset-top, 0);
+  }
+  
+  /* Ensure dropdown doesn't clip at viewport edge */
+  .language-selector__dropdown {
+    right: 0;
+    /* Prevent horizontal overflow */
+    max-width: calc(100vw - 32px);
+  }
+  
+  /* Full-width tap targets on narrow viewports */
+  .language-selector__link {
+    padding: 14px 20px;
+    min-height: 44px;
+  }
+  
+  /* Slightly larger button for thumb access */
+  .language-selector__button {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 12px 14px;
+  }
+}
+
+/* Tablet and larger screens */
+@media (min-width: 769px) {
+  .language-selector__dropdown {
+    /* Slightly smaller on desktop where precision is easier */
+    min-width: 160px;
+  }
+  
+  .language-selector__link {
+    padding: 10px 14px;
+    min-height: 40px;
+  }
+}
+
+/* Ensure visibility during keyboard navigation */
+.language-selector__link:focus-visible {
+  background-color: var(--color-bg-tertiary);
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+/* Animation for smooth dropdown appearance */
+@media (prefers-reduced-motion: no-preference) {
+  .language-selector__dropdown {
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .language-selector__dropdown {
+    transition: none;
+  }
+  
+  .language-selector__icon {
+    transition: none;
+  }
+  
+  .language-selector__button:active {
+    transform: none;
+  }
+}
