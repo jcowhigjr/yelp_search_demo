@@ -77,4 +77,42 @@ class LocalesTest < ApplicationSystemTestCase
 
     assert_selector "input[placeholder='Rechercher des cafés...']"
   end
+
+  test 'language selector interaction switches to French locale' do
+    # Visit homepage and verify initial English locale
+    visit '/'
+    
+    # Verify initial page loads with html[lang="en"]
+    assert_equal 'en', page.find('html')['lang'], "Expected html[lang='en'] on initial load"
+    
+    # Verify English heading is present (New Search page)
+    assert_selector 'h2', text: 'New Search'
+    
+    # Verify English search placeholder
+    assert_selector "input[placeholder='Search for coffee shops...']"
+    
+    # Locate and click the French language selector in footer
+    within 'footer .language-nav' do
+      # Find the French language link by text content
+      french_link = find('a', text: 'Français')
+      # Click and wait for page to reload
+      french_link.click
+    end
+    
+    # Wait for page to finish loading after navigation
+    # Check the URL to confirm we navigated to /fr
+    assert_current_path '/fr'
+    
+    # Verify page updates to html[lang="fr"] after language switch
+    assert_equal 'fr', page.find('html')['lang'], "Expected html[lang='fr'] after clicking French selector"
+    
+    # Verify French search placeholder is displayed
+    assert_selector "input[placeholder='Rechercher des cafés...']", wait: 5
+    
+    # Verify French language link has active class
+    within 'footer .language-nav' do
+      french_link = find('a', text: 'Français')
+      assert french_link[:class].include?('language-nav__link--active'), "Expected French link to have active class"
+    end
+  end
 end
