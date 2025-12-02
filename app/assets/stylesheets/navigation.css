@@ -63,6 +63,156 @@ footer {
   margin-left: 16px;
 }
 
+/* Language Selector Button and Dropdown */
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.language-selector__button {
+  /* Mobile accessibility: minimum 44x44px tap target */
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 16px;
+  
+  /* Visual styling using design tokens */
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  
+  /* Typography */
+  font-size: 14px;
+  font-weight: 500;
+  
+  /* Interactive states */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* Flexbox for icon and text alignment */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-selector__button:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-secondary);
+}
+
+.language-selector__button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.language-selector__button:active {
+  background-color: var(--color-bg-tertiary);
+  transform: scale(0.98);
+}
+
+.language-selector__button--open {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-primary);
+}
+
+/* Dropdown Menu */
+.language-selector__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 200px;
+  
+  /* Visual styling */
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--color-shadow);
+  
+  /* Layout */
+  padding: 4px;
+  margin: 0;
+  list-style: none;
+  
+  /* Hidden by default */
+  display: none;
+  z-index: 1000;
+}
+
+.language-selector__dropdown--open {
+  display: block;
+}
+
+/* Dropdown Items */
+.language-selector__item {
+  /* Mobile accessibility: minimum 44x44px tap target */
+  min-height: 44px;
+  
+  /* Remove default list styling */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.language-selector__link {
+  /* Mobile accessibility: minimum 44x44px tap target */
+  min-height: 44px;
+  padding: 12px 16px;
+  
+  /* Visual styling */
+  color: var(--color-text);
+  background-color: transparent;
+  border-radius: 6px;
+  
+  /* Typography */
+  font-size: 14px;
+  text-decoration: none;
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  
+  /* Interactive states */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.language-selector__link:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.language-selector__link:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-bg-secondary);
+}
+
+.language-selector__link--active {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.language-selector__link--active:hover {
+  background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+/* Icon styling within selector */
+.language-selector__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Separator for dropdown sections */
+.language-selector__separator {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 4px 0;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .language-nav {
@@ -73,5 +223,20 @@ footer {
     flex-direction: column;
     text-align: center;
     gap: 16px;
+  }
+  
+  /* Ensure dropdown is full-width on mobile for easier interaction */
+  .language-selector__dropdown {
+    right: auto;
+    left: 0;
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  /* Slightly larger tap targets on mobile */
+  .language-selector__button,
+  .language-selector__item,
+  .language-selector__link {
+    min-height: 48px;
   }
 }
