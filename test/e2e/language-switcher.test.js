@@ -2,8 +2,17 @@
 /* eslint-disable no-console */
 
 /**
- * Language Switcher Test
- * Tests homepage loading with English locale and language switching to French
+ * Language Switcher Test (GitHub Issue #1096)
+ * 
+ * Tests homepage loading with English locale and language switching to French.
+ * This test verifies that the language selector in the footer correctly updates
+ * the page locale and displays translated content.
+ * 
+ * Acceptance Criteria:
+ * - ✅ Assert html[lang="en"] + English heading on first load
+ * - ✅ Use selector to switch to another locale (Français)
+ * - ✅ Assert html[lang="fr"] + translated content
+ * - ✅ Verify URL contains locale parameter after switch
  * 
  * Requirements:
  * - Verify initial page loads with html[lang="en"]
@@ -12,6 +21,8 @@
  * - Switch to French locale
  * - Verify page updates to html[lang="fr"]
  * - Verify French headings are displayed
+ * 
+ * Related: GitHub Issue #1096, Part of #1092
  */
 
 const puppeteer = require('puppeteer');
@@ -154,6 +165,17 @@ async function runTest() {
       testsPassed++;
     } else {
       console.error(`   ✗ Expected html[lang="fr"], but got html[lang="${frenchLang}"]`);
+      testsFailed++;
+    }
+
+    // Test 5.5: Verify URL contains locale parameter
+    console.log('✅ Test 5.5: Verify URL contains locale parameter');
+    const currentUrl = page.url();
+    if (currentUrl.includes('locale=fr')) {
+      console.log(`   ✓ URL contains locale parameter: ${currentUrl}`);
+      testsPassed++;
+    } else {
+      console.error(`   ✗ URL does not contain locale=fr parameter. Current URL: ${currentUrl}`);
       testsFailed++;
     }
 
