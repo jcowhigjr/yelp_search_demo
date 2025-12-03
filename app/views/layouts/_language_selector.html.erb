@@ -1,0 +1,13 @@
+<!-- Language Selector Toggle Button -->
+<div class="language-selector">
+  <button
+    class="language-selector__toggle"
+    aria-label="Select language"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <i class="material-icons" style="font-size: 20px;">language</i>
+    <span class="language-selector__current-locale"><%= I18n.locale.to_s.upcase %></span>
+    <i class="material-icons" style="font-size: 20px;">arrow_drop_down</i>
+  </button>
+</div>
