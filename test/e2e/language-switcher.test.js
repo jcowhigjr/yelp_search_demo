@@ -109,33 +109,72 @@ async function runTest() {
     // Test 4: Locate and interact with French language selector
     console.log('✅ Test 4: Locate and click French language selector');
     try {
-      // Wait for footer to be present
-      await page.waitForSelector('footer .language-nav', { timeout: TIMEOUT });
+      // Try new language selector first (in top-right near theme toggle)
+      const hasNewSelector = await page.$('.language-selector button[aria-haspopup]');
       
-      // Find the French language link
-      const frenchLinkFound = await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
-        const frenchLink = links.find(link => link.textContent.trim() === 'Français');
-        return !!frenchLink;
-      });
-
-      if (frenchLinkFound) {
-        console.log('   ✓ Found French language selector link');
-        testsPassed++;
-      } else {
-        console.error('   ✗ French language selector link not found');
-        testsFailed++;
-        throw new Error('French link not found');
-      }
-
-      // Click the French link
-      await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
-        const frenchLink = links.find(link => link.textContent.trim() === 'Français');
-        if (frenchLink) {
-          frenchLink.click();
+      if (hasNewSelector) {
+        console.log('   ✓ Found new language selector button in top-right');
+        
+        // Click the language selector button to open dropdown
+        await page.click('.language-selector button[aria-haspopup]');
+        await page.waitForTimeout(300); // Wait for dropdown animation
+        
+        // Find and click French in the dropdown
+        const frenchLinkFound = await page.evaluate(() => {
+          const menu = document.querySelector('.language-selector [role="menu"], .language-selector .language-menu');
+          if (!menu) return false;
+          const links = Array.from(menu.querySelectorAll('a, [role="menuitem"]'));
+          const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+          return !!frenchLink;
+        });
+        
+        if (frenchLinkFound) {
+          console.log('   ✓ Found French option in dropdown');
+          testsPassed++;
+          
+          // Click the French link
+          await page.evaluate(() => {
+            const menu = document.querySelector('.language-selector [role="menu"], .language-selector .language-menu');
+            const links = Array.from(menu.querySelectorAll('a, [role="menuitem"]'));
+            const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+            if (frenchLink) {
+              frenchLink.click();
+            }
+          });
+        } else {
+          console.error('   ✗ French option not found in dropdown');
+          testsFailed++;
+          throw new Error('French option not found in dropdown');
         }
-      });
+      } else {
+        // Fallback to footer language nav (old implementation)
+        console.log('   ℹ️ Falling back to footer language navigation');
+        await page.waitForSelector('footer .language-nav', { timeout: TIMEOUT });
+        
+        const frenchLinkFound = await page.evaluate(() => {
+          const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+          const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+          return !!frenchLink;
+        });
+
+        if (frenchLinkFound) {
+          console.log('   ✓ Found French language link in footer');
+          testsPassed++;
+          
+          // Click the French link
+          await page.evaluate(() => {
+            const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+            const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+            if (frenchLink) {
+              frenchLink.click();
+            }
+          });
+        } else {
+          console.error('   ✗ French language link not found in footer');
+          testsFailed++;
+          throw new Error('French link not found');
+        }
+      }
 
       // Wait for navigation to complete
       await waitForPageLoad(page);
@@ -195,21 +234,38 @@ async function runTest() {
     // Test 8: Verify active language link styling
     console.log('✅ Test 8: Verify active language link has correct styling');
     try {
-      const activeClass = await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
-        const frenchLink = links.find(link => link.textContent.trim() === 'Français');
-        return frenchLink ? frenchLink.className : null;
-      });
-
-      if (activeClass && activeClass.includes('language-nav__link--active')) {
-        console.log(`   ✓ French link has active class: "${activeClass}"`);
-        testsPassed++;
+      // Check for new language selector first
+      const hasNewSelector = await page.$('.language-selector button[aria-haspopup]');
+      
+      if (hasNewSelector) {
+        // For new language selector, verify the button shows current locale
+        const buttonText = await page.$eval('.language-selector button[aria-haspopup]', el => el.textContent.trim());
+        
+        if (buttonText && buttonText.includes('fr')) {
+          console.log(`   ✓ Language selector button shows current locale: "${buttonText}"`);
+          testsPassed++;
+        } else {
+          console.error(`   ✗ Language selector button doesn't show 'fr'. Found: "${buttonText}"`);
+          testsFailed++;
+        }
       } else {
-        console.error(`   ✗ French link missing active class. Found: "${activeClass}"`);
-        testsFailed++;
+        // Fallback to footer language nav
+        const activeClass = await page.evaluate(() => {
+          const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+          const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+          return frenchLink ? frenchLink.className : null;
+        });
+
+        if (activeClass && activeClass.includes('language-nav__link--active')) {
+          console.log(`   ✓ French link has active class: "${activeClass}"`);
+          testsPassed++;
+        } else {
+          console.error(`   ✗ French link missing active class. Found: "${activeClass}"`);
+          testsFailed++;
+        }
       }
     } catch (error) {
-      console.error(`   ✗ Could not verify active class: ${error.message}`);
+      console.error(`   ✗ Could not verify active language indicator: ${error.message}`);
       testsFailed++;
     }
 
