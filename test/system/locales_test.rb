@@ -5,18 +5,23 @@ class LocalesTest < ApplicationSystemTestCase
   test 'the language selector shows all available locales' do
     visit '/'
     
-    # Check if new language selector button exists (future implementation)
-    if has_selector?('button[aria-haspopup]', wait: 0)
+    # Check if new language selector button exists (with aria-haspopup)
+    if has_selector?('button[aria-haspopup="true"]', wait: 0)
       # New language selector: test dropdown functionality
-      find('button[aria-haspopup]').click
+      assert_selector 'button[aria-haspopup="true"]', text: I18n.locale.upcase
       
-      # Verify all language options are present in the dropdown
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'English'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Português'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Français'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Español'
+      # Open the dropdown
+      find('button[aria-haspopup="true"]').click
+      
+      # Verify all language options are present in the dropdown menu
+      within '[role="menu"]' do
+        assert_selector '[role="menuitem"]', text: 'English'
+        assert_selector '[role="menuitem"]', text: 'Português'
+        assert_selector '[role="menuitem"]', text: 'Français'
+        assert_selector '[role="menuitem"]', text: 'Español'
+      end
     else
-      # Current implementation: test footer links
+      # Old implementation: test footer language links
       within 'footer' do
         assert_selector 'a', text: 'English'
         assert_selector 'a', text: 'Português'
