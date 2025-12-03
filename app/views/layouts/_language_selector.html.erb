@@ -1,0 +1,40 @@
+<div class="language-selector fixed top-4 left-4 z-50" data-controller="dropdown">
+  <!-- Toggle Button -->
+  <button
+    data-action="click->dropdown#toggle"
+    data-dropdown-target="button"
+    class="flex items-center gap-1 px-3 py-2 rounded-lg shadow-lg transition-all hover:scale-105 bg-white dark:bg-slate-800"
+    aria-label="<%= t('language_selector.toggle_label') %>"
+    aria-expanded="false"
+    aria-controls="language-dropdown"
+  >
+    <i class="material-icons" style="font-size: 20px;">language</i>
+    <span class="font-medium text-sm uppercase"><%= I18n.locale %></span>
+    <i class="material-icons" style="font-size: 20px;">arrow_drop_down</i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    id="language-dropdown"
+    data-dropdown-target="menu"
+    class="hidden absolute top-full left-0 mt-2 bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden min-w-[160px]"
+    role="menu"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                  class: [
+                    'block px-4 py-3 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700',
+                    ('bg-slate-100 dark:bg-slate-700 font-semibold' if locale == I18n.locale)
+                  ].compact.join(' '),
+                  role: 'menuitem',
+                  'aria-current': (locale == I18n.locale ? 'true' : nil) do %>
+        <span class="flex items-center gap-2">
+          <span class="font-medium text-sm uppercase"><%= locale %></span>
+          <span class="text-xs text-slate-600 dark:text-slate-400">
+            <%= t('.language_name', locale: locale, default: locale.to_s.upcase) %>
+          </span>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
