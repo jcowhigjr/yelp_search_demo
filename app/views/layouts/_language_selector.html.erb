@@ -1,0 +1,41 @@
+<!-- Language Selector Toggle -->
+<div class="language-selector" data-controller="language-selector">
+  <button
+    class="language-selector__button"
+    data-action="click->language-selector#toggle"
+    data-language-selector-target="button"
+    aria-label="<%= t('layouts.language_selector.toggle_language') %>"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <i class="material-icons language-selector__icon">language</i>
+    <span class="language-selector__current"><%= I18n.locale.upcase %></span>
+    <i class="material-icons language-selector__arrow">arrow_drop_down</i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    class="language-selector__menu"
+    data-language-selector-target="menu"
+    role="menu"
+    aria-hidden="true"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <% locale_name = t('layouts.footer.language_name_of_locale', locale: locale) %>
+      <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                  class: [
+                    'language-selector__option',
+                    (locale == I18n.locale ? 'language-selector__option--active' : '')
+                  ].compact.join(' '),
+                  role: 'menuitem',
+                  'aria-label': locale_name,
+                  'data-locale': locale do %>
+        <span class="language-selector__locale-code"><%= locale.upcase %></span>
+        <span class="language-selector__locale-name"><%= locale_name %></span>
+        <% if locale == I18n.locale %>
+          <i class="material-icons language-selector__check">check</i>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
