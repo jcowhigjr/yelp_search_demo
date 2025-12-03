@@ -42,7 +42,9 @@ TEST_BASE_URL=http://localhost:5000 node test/e2e/language-switcher.test.js
 
 ### language-switcher.test.js
 
-This test verifies:
+**GitHub Issue:** [#1096](https://github.com/jcowhigjr/yelp_search_demo/issues/1096)
+
+This test verifies the language switching functionality on the homepage:
 
 1. ✅ Initial page loads with `html[lang="en"]`
 2. ✅ English heading is present ("Save time by sharing your device location")
@@ -50,9 +52,10 @@ This test verifies:
 4. ✅ French language selector link exists in footer
 5. ✅ Language selector can be clicked
 6. ✅ Page updates to `html[lang="fr"]` after switching
-7. ✅ French heading is displayed (different from English)
-8. ✅ French search placeholder is correct ("Rechercher des cafés...")
-9. ✅ Active language link has correct CSS class
+7. ✅ URL contains `locale=fr` parameter after switch
+8. ✅ French heading is displayed (different from English)
+9. ✅ French search placeholder is correct ("Rechercher des cafés...")
+10. ✅ Active language link has correct CSS class
 
 ## Adding New Tests
 
