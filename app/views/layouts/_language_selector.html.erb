@@ -1,0 +1,60 @@
+<!-- Language Selector -->
+<div class="language-selector" data-controller="dropdown">
+  <!-- Toggle Button -->
+  <button
+    data-action="click->dropdown#toggle"
+    data-dropdown-target="button"
+    class="language-selector__button fixed top-4 right-20 z-50 p-3 rounded-full shadow-lg transition-all hover:scale-110 flex items-center gap-2"
+    aria-label="Select language"
+    style="position: fixed; top: 1rem; right: 5rem; z-index: 50; background-color: var(--color-bg); border: 1px solid var(--color-border);"
+  >
+    <i class="material-icons" style="font-size: 20px; color: var(--color-text);">language</i>
+    <span class="language-selector__current" style="color: var(--color-text); font-size: 14px; font-weight: 600;"><%= I18n.locale.to_s.upcase %></span>
+    <i class="material-icons" style="font-size: 20px; color: var(--color-text);">arrow_drop_down</i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    data-dropdown-target="menu"
+    class="language-selector__menu hidden fixed top-20 right-20 z-50 rounded-lg shadow-xl"
+    style="background-color: var(--color-bg); border: 1px solid var(--color-border); min-width: 150px;"
+  >
+    <ul class="language-selector__list">
+      <% I18n.available_locales.each do |locale| %>
+        <li class="language-selector__item">
+          <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                      class: [
+                        'language-selector__link',
+                        ('language-selector__link--active' if locale == I18n.locale)
+                      ].compact.join(' '),
+                      style: "display: block; padding: 12px 16px; color: var(--color-text); text-decoration: none; transition: all 0.2s;",
+                      'aria-label': t('layouts.footer.language_name_of_locale', locale:) do %>
+            <span class="flex items-center justify-between gap-3">
+              <span><%= t('layouts.footer.language_name_of_locale', locale:) %></span>
+              <span class="language-selector__code" style="font-size: 12px; opacity: 0.6; font-weight: 600;"><%= locale.to_s.upcase %></span>
+            </span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<style>
+  .language-selector__link:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  }
+
+  .language-selector__link--active {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .language-selector__menu.hidden {
+    display: none;
+  }
+
+  .language-selector__menu:not(.hidden) {
+    display: block;
+  }
+</style>
