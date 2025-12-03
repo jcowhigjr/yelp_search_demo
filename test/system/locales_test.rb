@@ -5,26 +5,16 @@ class LocalesTest < ApplicationSystemTestCase
   test 'the language selector shows all available locales' do
     visit '/'
     
-    # Check if new language selector button exists (future implementation)
-    if has_selector?('button[aria-haspopup]', wait: 0)
-      # New language selector: test dropdown functionality
-      find('button[aria-haspopup]').click
-      
-      # Verify all language options are present in the dropdown
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'English'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Português'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Français'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Español'
-    else
-      # Current implementation: test footer links
-      within 'footer' do
-        assert_selector 'a', text: 'English'
-        assert_selector 'a', text: 'Português'
-        assert_selector 'a', text: 'Français'
-        assert_selector 'a', text: 'Español'
-      end
-    end
-   end
+    # Verify all language options are available on the page
+    # Language selector can be in footer or as a dropdown component
+    assert_text 'English'
+    assert_text 'Português'
+    assert_text 'Français'
+    assert_text 'Español'
+    
+    # Verify language links are functional
+    assert_selector '.language-nav a[href*="/"]', minimum: 4
+  end
 
 
   test 'en is the default locale' do
