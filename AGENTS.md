@@ -19,8 +19,9 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 - **Always sync first**
   - Before doing any work in this repo, run:
-    - `./scripts/git-sync.sh`
+    - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
+  - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
 
 - **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
   - **Before any non-trivial changes**, agents MUST:
@@ -28,6 +29,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     2. **Verify there is a linked GitHub issue** for the work
     3. **Have a clear plan** with each A/C mapped to implementation steps
     4. **Scope confirmation** - ensure the work is within bounds and not "out of scope"
+    5. **Assess test coverage** - identify existing tests that may be affected and plan test updates
   - **Non-trivial changes include**:
     - Any work that requires a new Pull Request
     - New system or unit tests
@@ -35,6 +37,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - New features or systems (like FeatureFlags)
     - Database schema changes
     - Major refactoring
+    - Changes to AGENTS.md or other core documentation like CONTRIBUTING.md, SECURITY.md, etc.
   - **Examples of trivial changes** (don't need A/G confirmation):
     - Simple bug fixes with clear reproduction steps
     - Documentation updates
@@ -127,7 +130,45 @@ A single iteration of the review-first loop should look like this:
 
 ---
 
-## 3. Empirical verification & cross-model escalation
+## 3. Test coverage and non-brittle system tests
+
+Agents MUST assess test coverage before making changes and maintain system tests in a non-brittle state.
+
+- **Pre-change test assessment**
+  - **Before implementing any change**, agents MUST:
+    1. Identify existing unit tests that may be affected by the change
+    2. Identify existing system tests that may be affected by the change
+    3. Assess whether new tests are needed to cover the change
+    4. Plan test updates alongside implementation changes
+
+- **System test best practices**
+  - **Test rendered behavior, not implementation details**:
+    - Focus on what users see and interact with in the browser
+    - Test DOM elements, user interactions, and accessibility
+    - Avoid testing internal helper methods or implementation specifics
+  - **Maintain separation of concerns**:
+    - System tests should test full-stack behavior through the browser interface
+    - Helper methods should be tested in dedicated unit tests (`test/helpers/`)
+    - Do not include helper modules in system test classes
+  - **Use robust selectors**:
+    - Prefer semantic HTML elements and data attributes over CSS classes
+    - Use `data-testid` attributes for elements that need specific targeting
+    - Avoid brittle selectors that break with minor UI changes
+  - **Test what's implemented, not what's planned**:
+    - Write tests for current functionality, not future features
+    - Use comments or skip tests for functionality not yet implemented
+    - Update tests incrementally as features are added
+
+- **Non-brittle test maintenance**
+  - **Review test failures for brittleness**: When tests fail, assess if the failure reveals a real bug or test brittleness
+  - **Prefer stable assertions**: Use assertions that test behavior rather than exact DOM structure
+  - **Handle timing and async operations**: Use proper waiting strategies for dynamic content
+  - **Mobile and responsive testing**: Ensure tests work across different viewport sizes
+  - **Regular test maintenance**: Update tests when UI changes are intentional, not just to make tests pass
+
+---
+
+## 4. Empirical verification & cross-model escalation
 
 Agents MUST prefer **empirical verification** over reasoning alone.
 
@@ -144,7 +185,7 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 4. Tool-specific notes
+## 5. Tool-specific notes
 
 ### Warp (warp.dev)
 
@@ -168,7 +209,7 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 5. Source-of-truth hierarchy
+## 6. Source-of-truth hierarchy
 
 In case of conflict or ambiguity:
 
