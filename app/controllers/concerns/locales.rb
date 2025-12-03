@@ -9,7 +9,8 @@ module Locales
         else
           I18n.default_locale
         end
-      I18n.with_locale(locale, &)
+      I18n.locale = locale
+      yield if block_given?
     end
 
     def default_url_options(options = {})
