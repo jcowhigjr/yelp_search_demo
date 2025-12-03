@@ -57,6 +57,53 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'language selector links have proper CSS classes' do
+    get static_home_path
+    
+    # All language links should have the base language-nav__link class
+    assert_select 'footer .language-nav a.language-nav__link', count: I18n.available_locales.size
+    
+    # The active locale link should have the active class
+    assert_select 'footer .language-nav a.language-nav__link--active', count: 1
+  end
+
+  test 'active language link is properly marked for each locale' do
+    # Test default locale (English)
+    get static_home_path
+    assert_select 'footer .language-nav a.language-nav__link--active', count: 1
+    assert_select 'footer .language-nav a.language-nav__link--active', text: 'English'
+    
+    # Test each non-default locale explicitly
+    locales_to_test = [
+      { locale: :es, name: 'Español' },
+      { locale: :fr, name: 'Français' },
+      { locale: :'pt-BR', name: 'Português (Brasil)' }
+    ]
+    
+    locales_to_test.each do |locale_info|
+      get static_home_path(locale: locale_info[:locale])
+      
+      # There should be exactly one active link
+      assert_select 'footer .language-nav a.language-nav__link--active', count: 1
+      
+      # The active link should have the correct text
+      assert_select 'footer .language-nav a.language-nav__link--active', text: locale_info[:name]
+    end
+  end
+
+  test 'language selector has proper ARIA labels' do
+    get static_home_path
+    
+    # Language navigation should have proper ARIA label
+    assert_select 'footer nav.language-nav[aria-label]'
+    
+    # Each language link should have an aria-label
+    I18n.available_locales.each do |locale|
+      locale_name = I18n.t('layouts.footer.language_name_of_locale', locale: locale)
+      assert_select "footer .language-nav a[aria-label='#{locale_name}']"
+    end
+  end
+
   test 'en is the default locale' do
     get static_home_path
 
