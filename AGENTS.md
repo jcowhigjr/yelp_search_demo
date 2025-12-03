@@ -37,6 +37,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - New features or systems (like FeatureFlags)
     - Database schema changes
     - Major refactoring
+    - Changes to AGENTS.md or other core documentation like CONTRIBUTING.md, SECURITY.md, etc.
   - **Examples of trivial changes** (don't need A/G confirmation):
     - Simple bug fixes with clear reproduction steps
     - Documentation updates
