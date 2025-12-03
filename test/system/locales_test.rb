@@ -5,24 +5,32 @@ class LocalesTest < ApplicationSystemTestCase
   test 'the language selector shows all available locales' do
     visit '/'
     
-    # Check if new language selector button exists (future implementation)
-    if has_selector?('button[aria-haspopup]', wait: 0)
-      # New language selector: test dropdown functionality
-      find('button[aria-haspopup]').click
-      
-      # Verify all language options are present in the dropdown
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'English'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Português'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Français'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Español'
-    else
-      # Current implementation: test footer links
-      within 'footer' do
-        assert_selector 'a', text: 'English'
-        assert_selector 'a', text: 'Português'
-        assert_selector 'a', text: 'Français'
-        assert_selector 'a', text: 'Español'
-      end
+    # Current implementation: test footer language navigation links
+    within 'footer .language-nav' do
+      assert_selector 'a.language-nav__link', text: 'English'
+      assert_selector 'a.language-nav__link', text: 'Português'
+      assert_selector 'a.language-nav__link', text: 'Français'
+      assert_selector 'a.language-nav__link', text: 'Español'
+    end
+  end
+
+  test 'the language selector highlights the active locale' do
+    visit '/'
+    
+    # Verify English is active by default
+    within 'footer .language-nav' do
+      english_link = find('a.language-nav__link', text: 'English')
+      assert english_link[:class].include?('language-nav__link--active'), 
+             'English link should have active class'
+    end
+    
+    # Switch to French and verify it becomes active
+    visit '/fr'
+    
+    within 'footer .language-nav' do
+      french_link = find('a.language-nav__link', text: 'Français')
+      assert french_link[:class].include?('language-nav__link--active'),
+             'French link should have active class'
     end
    end
 
