@@ -19,8 +19,9 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 - **Always sync first**
   - Before doing any work in this repo, run:
-    - `./scripts/git-sync.sh`
+    - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
+  - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
 
 - **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
   - **Before any non-trivial changes**, agents MUST:
@@ -36,6 +37,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - New features or systems (like FeatureFlags)
     - Database schema changes
     - Major refactoring
+    - Changes to AGENTS.md or other core documentation like CONTRIBUTING.md, SECURITY.md, etc.
   - **Examples of trivial changes** (don't need A/G confirmation):
     - Simple bug fixes with clear reproduction steps
     - Documentation updates
