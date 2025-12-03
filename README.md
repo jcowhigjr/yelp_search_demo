@@ -89,6 +89,13 @@ System and other Rails tests honor the `RAILS_TEST_WORKERS` environment variable
 RAILS_TEST_WORKERS=3 HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
 ```
 
+**E2E Language Tests:** The project includes Puppeteer-based end-to-end tests for language switching functionality. See [`test/e2e/README.md`](test/e2e/README.md) for details.
+
+```bash
+# Run language switcher tests (requires Rails server running)
+yarn test:e2e:language
+```
+
 For more detailed development notes, see [DevNotes.md](DevNotes.md). Additional resources can be found in [Resources.md](Resources.md).
 
 ## Attribution
