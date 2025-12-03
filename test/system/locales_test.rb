@@ -36,24 +36,27 @@ class LocalesTest < ApplicationSystemTestCase
     assert_equal(:en, I18n.locale)
   end
 
-  test 'navigation will update the locale' do
+  test 'navigation will update the locale and html lang attribute' do
     visit '/'
-
     assert_equal(:en, I18n.locale)
+    assert_selector 'html[lang="en"]'
 
     visit '/pt-BR'
-
-    assert_not_equal(:"pt-BR", I18n.locale)
-
-   I18n.with_locale(:"pt-BR") do
-    visit '/'
-
     assert_equal(:"pt-BR", I18n.locale)
-   end
+    assert_selector 'html[lang="pt-BR"]'
 
-    visit '/pt-BR'
+    visit '/es'
+    assert_equal(:es, I18n.locale)
+    assert_selector 'html[lang="es"]'
 
-     assert_equal(:en, I18n.locale)
+    visit '/fr'
+    assert_equal(:fr, I18n.locale)
+    assert_selector 'html[lang="fr"]'
+    
+    # Visiting root should default back to English
+    visit '/'
+    assert_equal(:en, I18n.locale)
+    assert_selector 'html[lang="en"]'
   end
 
   test 'search placeholder is correctly translated' do
@@ -76,5 +79,12 @@ class LocalesTest < ApplicationSystemTestCase
     visit '/fr'
 
     assert_selector "input[placeholder='Rechercher des cafés...']"
+  end
+  
+  test 'invalid locale returns 404' do
+    visit '/xx'
+    
+    # Should show a 404 error page
+    assert_text /not found|404/i
   end
 end

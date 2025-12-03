@@ -22,13 +22,10 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
 
   test 'I18n.locale will depends on the locale of urls' do
     I18n.available_locales.each do |locale|
-      I18n.with_locale(locale) do
-        get static_home_path
+      get static_home_path(locale: (locale == I18n.default_locale ? nil : locale))
 
-        assert_equal I18n.locale.to_s, locale.to_s
-        assert_select 'html[lang="en"]'
-
-      end
+      assert_equal I18n.locale.to_s, locale.to_s
+      assert_select "html[lang='#{locale}']"
     end
   end
 
@@ -67,15 +64,22 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
   end
 
 
-  test 'BUG: the locale is set to the default locale regardless' do
+  test 'locale is correctly set based on URL path' do
     assert_equal(:en, I18n.default_locale)
+    get static_home_path
     assert_equal(:en, I18n.locale)
+    
     get '/pt-BR'
-
-    assert_not_equal(:"pt-BR", I18n.locale)
+    assert_equal(:"pt-BR", I18n.locale)
+    
     get '/en'
-
     assert_equal(:en, I18n.locale)
+    
+    get '/es'
+    assert_equal(:es, I18n.locale)
+    
+    get '/fr'
+    assert_equal(:fr, I18n.locale)
   end
 
   test 'path_help_paths can change locales' do
