@@ -42,17 +42,39 @@ TEST_BASE_URL=http://localhost:5000 node test/e2e/language-switcher.test.js
 
 ### language-switcher.test.js
 
-This test verifies:
+This test verifies the language switching functionality with support for both the old footer links and new compact selector:
 
 1. ✅ Initial page loads with `html[lang="en"]`
 2. ✅ English heading is present ("Save time by sharing your device location")
 3. ✅ English search placeholder is correct ("Search for coffee shops...")
-4. ✅ French language selector link exists in footer
+4. ✅ French language selector exists (footer links or top-right dropdown)
 5. ✅ Language selector can be clicked
 6. ✅ Page updates to `html[lang="fr"]` after switching
-7. ✅ French heading is displayed (different from English)
+7. ✅ French heading is displayed
 8. ✅ French search placeholder is correct ("Rechercher des cafés...")
-9. ✅ Active language link has correct CSS class
+9. ✅ Active language indicator shows current locale
+
+### language-selector-headless.test.js
+
+This test specifically verifies the new compact language selector implementation:
+
+1. ✅ Language selector button exists in top-right near theme toggle
+2. ✅ Button has proper accessibility attributes (aria-haspopup, aria-expanded)
+3. ✅ Button shows current locale code (e.g., "en")
+4. ✅ Dropdown contains all available locales (English, Português, Français, Español)
+5. ✅ Clicking French navigates to /fr route
+6. ✅ HTML lang attribute updates to "fr"
+7. ✅ Button updates to show "fr" after language switch
+8. ✅ Button meets mobile tap target size (≥44x44px)
+9. ✅ Dropdown items have adequate mobile tap targets (≥44px height)
+10. ✅ Dropdown is not clipped by viewport edges on mobile
+
+**Run the new selector test:**
+```bash
+node test/e2e/language-selector-headless.test.js
+# or with custom URL
+TEST_BASE_URL=http://localhost:5000 node test/e2e/language-selector-headless.test.js
+```
 
 ## Adding New Tests
 
