@@ -2,7 +2,11 @@
 
 /* Smooth transitions for theme switching */
 * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Theme toggle button enhancements */
@@ -30,24 +34,28 @@
 }
 
 /* Dark mode specific adjustments */
-[data-theme="dark"] {
+[data-theme='dark'] {
   /* Enhanced shadows for dark mode */
-  .card, .review-card, .coffeeshop-card {
+  .card,
+  .review-card,
+  .coffeeshop-card {
     box-shadow: 0 4px 16px var(--color-shadow);
   }
-  
+
   /* Better contrast for links in dark mode */
   .language-nav__link:hover {
     background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
   }
-  
+
   /* Form adjustments */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     background-color: var(--color-bg-secondary);
     color: var(--color-text);
     border-color: var(--color-border);
   }
-  
+
   /* Material icons in dark mode */
   .material-icons {
     color: var(--color-text);
@@ -55,18 +63,26 @@
 }
 
 /* Light mode specific adjustments */
-[data-theme="light"] {
+[data-theme='light'] {
   /* Subtle shadows for light mode */
-  .card, .review-card, .coffeeshop-card {
+  .card,
+  .review-card,
+  .coffeeshop-card {
     box-shadow: 0 2px 8px var(--color-shadow);
   }
 }
 
 /* Theme preference detection animation */
 @keyframes themeSwitch {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .theme-switching {
@@ -93,8 +109,8 @@
     --color-text: #000000;
     --color-bg: #ffffff;
   }
-  
-  [data-theme="dark"] {
+
+  [data-theme='dark'] {
     --color-border: #ffffff;
     --color-text: #ffffff;
     --color-bg: #000000;

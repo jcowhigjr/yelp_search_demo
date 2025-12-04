@@ -6,71 +6,71 @@
   --color-primary: #2563eb;
   --color-primary-dark: #1d4ed8;
   --color-primary-light: #3b82f6;
-  
+
   /* Background Colors */
   --color-bg: #ffffff;
   --color-bg-secondary: #f8fafc;
   --color-bg-tertiary: #f1f5f9;
-  
+
   /* Text Colors */
   --color-text: #1e293b;
   --color-text-secondary: #64748b;
   --color-text-tertiary: #94a3b8;
-  
+
   /* Border Colors */
   --color-border: #e2e8f0;
   --color-border-secondary: #cbd5e1;
-  
+
   /* Button Colors */
   --color-button-blue: #2563eb;
   --color-button-blue-hover: #1d4ed8;
-  
+
   /* Yelp Brand */
   --color-yelp: #d32323;
-  
+
   /* Status Colors */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
-  
+
   /* Shadow */
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-shadow-dark: rgba(0, 0, 0, 0.2);
 }
 
 /* Dark Mode Colors */
-[data-theme="dark"] {
+[data-theme='dark'] {
   /* Primary Colors */
   --color-primary: #3b82f6;
   --color-primary-dark: #2563eb;
   --color-primary-light: #60a5fa;
-  
+
   /* Background Colors */
   --color-bg: #0f172a;
   --color-bg-secondary: #1e293b;
   --color-bg-tertiary: #334155;
-  
+
   /* Text Colors */
   --color-text: #f1f5f9;
   --color-text-secondary: #cbd5e1;
   --color-text-tertiary: #94a3b8;
-  
+
   /* Border Colors */
   --color-border: #334155;
   --color-border-secondary: #475569;
-  
+
   /* Button Colors */
   --color-button-blue: #3b82f6;
   --color-button-blue-hover: #2563eb;
-  
+
   /* Yelp Brand */
   --color-yelp: #ef4444;
-  
+
   /* Status Colors */
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #f87171;
-  
+
   /* Shadow */
   --color-shadow: rgba(0, 0, 0, 0.3);
   --color-shadow-dark: rgba(0, 0, 0, 0.5);
@@ -78,38 +78,38 @@
 
 /* System Preferences */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme='light']) {
     /* Primary Colors */
     --color-primary: #3b82f6;
     --color-primary-dark: #2563eb;
     --color-primary-light: #60a5fa;
-    
+
     /* Background Colors */
     --color-bg: #0f172a;
     --color-bg-secondary: #1e293b;
     --color-bg-tertiary: #334155;
-    
+
     /* Text Colors */
     --color-text: #f1f5f9;
     --color-text-secondary: #cbd5e1;
     --color-text-tertiary: #94a3b8;
-    
+
     /* Border Colors */
     --color-border: #334155;
     --color-border-secondary: #475569;
-    
+
     /* Button Colors */
     --color-button-blue: #3b82f6;
     --color-button-blue-hover: #2563eb;
-    
+
     /* Yelp Brand */
     --color-yelp: #ef4444;
-    
+
     /* Status Colors */
     --color-success: #22c55e;
     --color-warning: #f59e0b;
     --color-error: #f87171;
-    
+
     /* Shadow */
     --color-shadow: rgba(0, 0, 0, 0.3);
     --color-shadow-dark: rgba(0, 0, 0, 0.5);

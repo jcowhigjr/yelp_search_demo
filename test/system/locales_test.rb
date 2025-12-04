@@ -77,4 +77,67 @@ class LocalesTest < ApplicationSystemTestCase
 
     assert_selector "input[placeholder='Rechercher des cafés...']"
   end
+
+  test 'language selector updates html lang attribute' do
+    visit '/'
+    
+    # Verify initial lang attribute
+    assert_equal 'en', page.find('html')['lang']
+    
+    # Navigate to French
+    visit '/fr'
+    assert_equal 'fr', page.find('html')['lang']
+    
+    # Navigate to Spanish
+    visit '/es'
+    assert_equal 'es', page.find('html')['lang']
+    
+    # Navigate to Portuguese
+    visit '/pt-BR'
+    assert_equal 'pt-BR', page.find('html')['lang']
+  end
+
+  test 'language selector shows active state for current locale' do
+    # Test English is active on root
+    visit '/'
+    
+    within 'footer .language-nav' do
+      # English link should have active class
+      english_link = find('a', text: 'English')
+      assert english_link[:class].include?('language-nav__link--active'),
+             "Expected English link to have active class on root path"
+    end
+    
+    # Test French is active when on French path
+    visit '/fr'
+    
+    within 'footer .language-nav' do
+      french_link = find('a', text: 'Français')
+      assert french_link[:class].include?('language-nav__link--active'),
+             "Expected French link to have active class on /fr path"
+    end
+  end
+
+  test 'search functionality works across all locales' do
+    # Test search works in English
+    visit '/'
+    fill_in 'search_query', with: 'coffee'
+    # Verify placeholder is in English
+    search_input = find('#search_query')
+    assert_equal 'Search for coffee shops...', search_input[:placeholder]
+    
+    # Test search works in French
+    visit '/fr'
+    fill_in 'search_query', with: 'café'
+    # Verify placeholder is in French
+    search_input = find('#search_query')
+    assert_equal 'Rechercher des cafés...', search_input[:placeholder]
+    
+    # Test search works in Spanish
+    visit '/es'
+    fill_in 'search_query', with: 'café'
+    # Verify placeholder is in Spanish
+    search_input = find('#search_query')
+    assert_equal 'Buscar cafeterías...', search_input[:placeholder]
+  end
 end

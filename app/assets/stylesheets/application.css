@@ -254,10 +254,10 @@ nav .fas {
 }
 
 /* Form inputs dark mode support */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
 textarea,
 select {
   color: var(--color-text) !important;
