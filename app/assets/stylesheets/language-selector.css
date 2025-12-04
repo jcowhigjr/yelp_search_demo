@@ -1,0 +1,191 @@
+/* Language Selector Component */
+
+/* Language Selector Button */
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.language-selector__button {
+  /* Minimum 44x44px tap target for mobile accessibility */
+  min-width: 44px;
+  min-height: 44px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  padding: 8px 16px;
+  
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  
+  font-size: 14px;
+  font-weight: 500;
+  
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* Remove default button styles */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.language-selector__button:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border-secondary);
+}
+
+.language-selector__button:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.language-selector__button:active {
+  background-color: var(--color-bg-tertiary);
+}
+
+.language-selector__button[aria-expanded="true"] {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-primary);
+}
+
+/* Language Selector Icon */
+.language-selector__icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.language-selector__button[aria-expanded="true"] .language-selector__icon {
+  transform: rotate(180deg);
+}
+
+/* Language Dropdown Menu */
+.language-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  
+  min-width: 200px;
+  
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  
+  box-shadow: 0 4px 12px var(--color-shadow);
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  
+  z-index: 1000;
+}
+
+.language-menu[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Language Menu Item */
+.language-menu__item {
+  display: block;
+  width: 100%;
+  
+  /* Minimum 44x44px tap target for mobile accessibility */
+  min-height: 44px;
+  
+  padding: 12px 16px;
+  
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 14px;
+  
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  /* Ensure full-width tap area */
+  text-align: left;
+}
+
+.language-menu__item:last-child {
+  border-bottom: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.language-menu__item:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.language-menu__item:only-child {
+  border-radius: 8px;
+}
+
+.language-menu__item:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-primary);
+}
+
+.language-menu__item:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-bg-secondary);
+}
+
+.language-menu__item--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+.language-menu__item--active::after {
+  content: '✓';
+  margin-left: 8px;
+  color: var(--color-primary);
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Full-width dropdown on narrow viewports */
+  .language-menu {
+    left: 0;
+    right: 0;
+    min-width: 100%;
+  }
+  
+  /* Ensure full-width tap areas on narrow viewports */
+  .language-menu__item {
+    width: 100%;
+    padding: 16px;
+    min-height: 48px; /* Slightly larger on mobile */
+  }
+  
+  /* Larger touch target for button on mobile */
+  .language-selector__button {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 12px 20px;
+  }
+}
+
+/* Keyboard navigation highlight */
+.language-menu__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background-color: var(--color-bg-secondary);
+}
+
+/* Ensure proper stacking context */
+.language-selector {
+  z-index: 100;
+}
