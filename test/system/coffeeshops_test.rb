@@ -48,6 +48,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can submit a review' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
@@ -82,6 +83,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can edit and delete their review' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
@@ -120,6 +122,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can favorite and unfavorite a coffeeshop' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'

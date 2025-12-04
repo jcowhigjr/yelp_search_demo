@@ -9,12 +9,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
   test 'logged in user can toggle favorite with contextual icons' do
     # Login
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
     # Search for coffee to see results with contextual icons
     visit '/'
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[type="submit"]').click
 
@@ -72,12 +74,14 @@ class FavoriteToggleTest < ApplicationSystemTestCase
   test 'favorite icon changes based on search term' do
     # Login
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
     # Coffee search - should show ☕️
     visit '/'
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[type="submit"]').click
 
@@ -94,6 +98,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Pizza search - should show 🍕
     visit '/'
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'pizza'
     find('button[type="submit"]').click
 
@@ -112,6 +117,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
   test 'anonymous user does not see favorite buttons' do
     # Don't login, just search
     visit '/'
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[type="submit"]').click
 
