@@ -1,0 +1,41 @@
+<% locales = I18n.available_locales %>
+<div
+  class="language-selector"
+  data-controller="language-selector"
+  data-language-selector-open-value="false"
+>
+  <button
+    type="button"
+    class="language-selector__button"
+    data-language-selector-target="button"
+    data-action="click->language-selector#toggle keydown->language-selector#handleButtonKeydown"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-controls="language-menu"
+  >
+    <i class="material-icons" aria-hidden="true">language</i>
+    <span class="language-selector__label"><%= I18n.locale.to_s.upcase %></span>
+  </button>
+
+  <div
+    id="language-menu"
+    class="language-menu"
+    role="menu"
+    data-language-selector-target="menu"
+    hidden
+  >
+    <% locales.each do |locale| %>
+      <% locale_param = locale == I18n.default_locale ? nil : locale %>
+      <% locale_name = t('layouts.footer.language_name_of_locale', locale: locale) %>
+      <%= link_to locale_name,
+                  url_for(locale: locale_param),
+                  class: [
+                    'language-menu__item',
+                    ('language-menu__item--active' if I18n.locale == locale)
+                  ].compact.join(' '),
+                  role: 'menuitem',
+                  data: { language_selector_target: 'item', action: 'click->language-selector#close' },
+                  'aria-current': (I18n.locale == locale ? 'true' : 'false') %>
+    <% end %>
+  </div>
+</div>

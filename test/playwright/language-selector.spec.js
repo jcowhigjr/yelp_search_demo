@@ -31,8 +31,9 @@ test.describe('Language Selector', () => {
     let htmlLang = await page.locator('html').getAttribute('lang');
     expect(htmlLang).toBe('en');
     
-    // Click French language link in footer
-    await page.locator('footer .language-nav a:has-text("Français")').click();
+    // Open selector and click French option
+    await page.locator('.language-selector__button').click();
+    await page.locator('.language-menu__item:has-text("Français")').click();
     
     // Wait for navigation to complete
     await page.waitForLoadState('networkidle');
@@ -46,15 +47,16 @@ test.describe('Language Selector', () => {
     await expect(searchInput).toHaveAttribute('placeholder', 'Rechercher des cafés...');
     
     // Verify French link has active class
-    const frenchLink = page.locator('footer .language-nav a:has-text("Français")');
-    await expect(frenchLink).toHaveClass(/language-nav__link--active/);
+    const frenchLink = page.locator('.language-menu__item:has-text("Français")');
+    await expect(frenchLink).toHaveClass(/language-menu__item--active/);
   });
 
   test('switching to Spanish updates locale and html lang attribute', async ({ page }) => {
     await page.goto('/');
     
-    // Click Spanish language link in footer
-    await page.locator('footer .language-nav a:has-text("Español")').click();
+    // Click Spanish language option
+    await page.locator('.language-selector__button').click();
+    await page.locator('.language-menu__item:has-text("Español")').click();
     
     // Wait for navigation to complete
     await page.waitForLoadState('networkidle');
@@ -68,15 +70,16 @@ test.describe('Language Selector', () => {
     await expect(searchInput).toHaveAttribute('placeholder', 'Buscar cafeterías...');
     
     // Verify Spanish link has active class
-    const spanishLink = page.locator('footer .language-nav a:has-text("Español")');
-    await expect(spanishLink).toHaveClass(/language-nav__link--active/);
+    const spanishLink = page.locator('.language-menu__item:has-text("Español")');
+    await expect(spanishLink).toHaveClass(/language-menu__item--active/);
   });
 
   test('switching to Portuguese updates locale and html lang attribute', async ({ page }) => {
     await page.goto('/');
     
-    // Click Portuguese language link in footer
-    await page.locator('footer .language-nav a:has-text("Português")').click();
+    // Click Portuguese language option
+    await page.locator('.language-selector__button').click();
+    await page.locator('.language-menu__item:has-text("Português")').click();
     
     // Wait for navigation to complete
     await page.waitForLoadState('networkidle');
@@ -86,18 +89,19 @@ test.describe('Language Selector', () => {
     expect(htmlLang).toBe('pt-BR');
     
     // Verify Portuguese link has active class
-    const portugueseLink = page.locator('footer .language-nav a:has-text("Português")');
-    await expect(portugueseLink).toHaveClass(/language-nav__link--active/);
+    const portugueseLink = page.locator('.language-menu__item:has-text("Português")');
+    await expect(portugueseLink).toHaveClass(/language-menu__item--active/);
   });
 
-  test('all language links are present in footer', async ({ page }) => {
+  test('all language options are present in selector', async ({ page }) => {
     await page.goto('/');
     
-    // Verify all expected language links exist
-    await expect(page.locator('footer .language-nav a:has-text("English")')).toBeVisible();
-    await expect(page.locator('footer .language-nav a:has-text("Español")')).toBeVisible();
-    await expect(page.locator('footer .language-nav a:has-text("Français")')).toBeVisible();
-    await expect(page.locator('footer .language-nav a:has-text("Português")')).toBeVisible();
+    // Verify all expected language options exist in selector
+    await page.locator('.language-selector__button').click();
+    await expect(page.locator('.language-menu__item:has-text("English")')).toBeVisible();
+    await expect(page.locator('.language-menu__item:has-text("Español")')).toBeVisible();
+    await expect(page.locator('.language-menu__item:has-text("Français")')).toBeVisible();
+    await expect(page.locator('.language-menu__item:has-text("Português")')).toBeVisible();
   });
 
   test('direct navigation to locale URL sets correct locale', async ({ page }) => {
@@ -136,13 +140,14 @@ test.describe('Language Selector', () => {
   test('language selector is accessible', async ({ page }) => {
     await page.goto('/');
     
-    // Verify language nav has proper ARIA label
-    const languageNav = page.locator('footer .language-nav');
-    await expect(languageNav).toHaveAttribute('aria-label', 'Language and footer links');
-    
-    // Verify each language link has proper aria-label
-    const englishLink = page.locator('footer .language-nav a:has-text("English")');
-    await expect(englishLink).toHaveAttribute('aria-label', 'English');
+    const selectorButton = page.locator('.language-selector__button');
+    await expect(selectorButton).toHaveAttribute('aria-haspopup', 'true');
+    await expect(selectorButton).toHaveAttribute('aria-expanded', 'false');
+
+    await selectorButton.click();
+    const menu = page.locator('.language-menu');
+    await expect(menu).toHaveAttribute('role', 'menu');
+    await expect(page.locator('.language-menu__item:has-text("English")')).toHaveAttribute('role', 'menuitem');
   });
 });
 
@@ -168,7 +173,8 @@ test.describe('Search Functionality Regression Tests', () => {
     await searchInputEn.fill('coffee');
     
     // Switch to French
-    await page.locator('footer .language-nav a:has-text("Français")').click();
+    await page.locator('.language-selector__button').click();
+    await page.locator('.language-menu__item:has-text("Français")').click();
     await page.waitForLoadState('networkidle');
     
     // Verify search is cleared and functional with French placeholder

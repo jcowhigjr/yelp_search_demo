@@ -4,56 +4,32 @@ class LocalesTest < ApplicationSystemTestCase
 
   test 'the language selector shows all available locales' do
     visit '/'
-    
-    # Check if new language selector button exists (future implementation)
-    if has_selector?('button[aria-haspopup]', wait: 0)
-      # New language selector: test dropdown functionality
-      find('button[aria-haspopup]').click
-      
-      # Verify all language options are present in the dropdown
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'English'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Português'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Français'
-      assert_selector '[role="menu"] a, [role="menuitem"], .language-menu a', text: 'Español'
-    else
-      # Current implementation: test footer links
-      within 'footer' do
-        assert_selector 'a', text: 'English'
-        assert_selector 'a', text: 'Português'
-        assert_selector 'a', text: 'Français'
-        assert_selector 'a', text: 'Español'
-      end
-    end
-   end
+
+    find('.language-selector__button').click
+
+    assert_selector '.language-menu__item', text: 'English'
+    assert_selector '.language-menu__item', text: 'Português (Brasil)'
+    assert_selector '.language-menu__item', text: 'Français'
+    assert_selector '.language-menu__item', text: 'Español'
+  end
 
 
   test 'en is the default locale' do
     visit '/'
 
-    assert_equal(:en, I18n.locale)
-    visit '/en'
-
-    assert_equal(:en, I18n.locale)
+    assert_equal 'en', page.find('html')[:lang]
   end
 
   test 'navigation will update the locale' do
     visit '/'
 
-    assert_equal(:en, I18n.locale)
+    find('.language-selector__button').click
+    click_link 'Français'
+    assert_selector("html[lang='fr']")
 
-    visit '/pt-BR'
-
-    assert_not_equal(:"pt-BR", I18n.locale)
-
-   I18n.with_locale(:"pt-BR") do
-    visit '/'
-
-    assert_equal(:"pt-BR", I18n.locale)
-   end
-
-    visit '/pt-BR'
-
-     assert_equal(:en, I18n.locale)
+    find('.language-selector__button').click
+    click_link 'English'
+    assert_selector("html[lang='en']")
   end
 
   test 'search placeholder is correctly translated' do
@@ -85,37 +61,34 @@ class LocalesTest < ApplicationSystemTestCase
     assert_equal 'en', page.find('html')['lang']
     
     # Navigate to French
-    visit '/fr'
-    assert_equal 'fr', page.find('html')['lang']
+    find('.language-selector__button').click
+    click_link 'Français'
+    assert_selector("html[lang='fr']")
     
     # Navigate to Spanish
-    visit '/es'
-    assert_equal 'es', page.find('html')['lang']
+    find('.language-selector__button').click
+    click_link 'Español'
+    assert_selector("html[lang='es']")
     
     # Navigate to Portuguese
-    visit '/pt-BR'
-    assert_equal 'pt-BR', page.find('html')['lang']
+    find('.language-selector__button').click
+    click_link 'Português (Brasil)'
+    assert_selector("html[lang='pt-BR']")
   end
 
   test 'language selector shows active state for current locale' do
     # Test English is active on root
     visit '/'
     
-    within 'footer .language-nav' do
-      # English link should have active class
-      english_link = find('a', text: 'English')
-      assert english_link[:class].include?('language-nav__link--active'),
-             "Expected English link to have active class on root path"
-    end
+    find('.language-selector__button').click
+    assert_selector '.language-menu__item--active', text: 'English'
+    find('.language-selector__button').click # close the menu
     
     # Test French is active when on French path
     visit '/fr'
     
-    within 'footer .language-nav' do
-      french_link = find('a', text: 'Français')
-      assert french_link[:class].include?('language-nav__link--active'),
-             "Expected French link to have active class on /fr path"
-    end
+    find('.language-selector__button').click
+    assert_selector '.language-menu__item--active', text: 'Français'
   end
 
   test 'search functionality works across all locales' do

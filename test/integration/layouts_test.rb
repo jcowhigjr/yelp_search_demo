@@ -18,11 +18,11 @@ class LayoutsTest < ActionDispatch::IntegrationTest
     assert_select 'h2', 'Nova pesquisa'
   end
 
-  test 'language selector is present in footer' do
+  test 'language selector renders all locales' do
     get static_home_path
 
-    assert_select 'footer .language-nav'
-    assert_select 'footer .language-nav a', minimum: I18n.available_locales.count
+    assert_select '.language-selector'
+    assert_select '.language-menu__item', I18n.available_locales.count
   end
 
   test 'language links have correct hrefs for each locale' do
@@ -32,9 +32,15 @@ class LayoutsTest < ActionDispatch::IntegrationTest
       # Verify links to all locales exist
       I18n.available_locales.each do |link_locale|
         expected_href = link_locale == I18n.default_locale ? '/' : "/#{link_locale}"
-        assert_select "a[href='#{expected_href}']", minimum: 1
+        assert_select ".language-menu__item[href='#{expected_href}']", minimum: 1
       end
     end
+  end
+
+  test 'language selector marks current locale as active' do
+    get static_home_path(locale: 'fr')
+
+    assert_select '.language-menu__item--active', text: /Français/
   end
 
   test 'html lang attribute matches current locale' do

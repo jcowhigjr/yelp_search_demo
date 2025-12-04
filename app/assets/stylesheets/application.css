@@ -24,6 +24,7 @@
 @import url('./navigation.css');
 @import url('./theme.css');
 @import url('./auth.css');
+@import url('./language-selector.css');
 
 html {
   scroll-behavior: smooth;

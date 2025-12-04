@@ -20,16 +20,18 @@
   </head>
   <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>"
         data-controller="theme">
-    <!-- Theme Toggle -->
-    <button
-      data-theme-target="button"
-      data-action="click->theme#toggle"
-      class="fixed top-4 right-4 z-50 p-3 rounded-full shadow-lg transition-all hover:scale-110"
-      aria-label="Toggle theme"
-      style="position: fixed; top: 1rem; right: 1rem; z-index: 50;"
-    >
-      <i data-theme-target="icon" class="material-icons" style="font-size: 20px;">dark_mode</i>
-    </button>
+    <div class="layout-controls">
+      <%= render 'layouts/language_selector' %>
+      <button
+        type="button"
+        data-theme-target="button"
+        data-action="click->theme#toggle"
+        class="theme-toggle"
+        aria-label="Toggle theme"
+      >
+        <i data-theme-target="icon" class="material-icons" style="font-size: 20px;">dark_mode</i>
+      </button>
+    </div>
 
   <% if logged_in? %>
     <%= render 'layouts/navbar' %>
