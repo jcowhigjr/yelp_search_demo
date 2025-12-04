@@ -11,10 +11,39 @@ echo_error() {
   echo "ERROR: $1" >&2
 }
 
+# --- Function to install system dependencies on Debian-based systems ---
+install_system_dependencies() {
+  if [ -f /etc/debian_version ]; then
+    echo_info "Debian-based system detected. Installing required system packages..."
+
+    # Update package list
+    sudo apt-get update -y
+
+    # Install libyaml-dev and libpq-dev
+    sudo apt-get install -y libyaml-dev libpq-dev
+
+    # Install Google Chrome
+    if ! command -v google-chrome-stable &> /dev/null; then
+      echo_info "Google Chrome not found. Installing..."
+      wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+      sudo apt-get update -y
+      sudo apt-get install -y google-chrome-stable
+    else
+      echo_info "Google Chrome is already installed."
+    fi
+  else
+    echo_info "Not a Debian-based system, skipping system package installation."
+  fi
+}
+
 # --- Project Root ---
 # Assuming the script is in project_root/bin/
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 echo_info "Project root: $PROJECT_ROOT"
+
+# --- Install system dependencies ---
+install_system_dependencies
 
 # --- Global Variables ---
 MISE_CMD=""
