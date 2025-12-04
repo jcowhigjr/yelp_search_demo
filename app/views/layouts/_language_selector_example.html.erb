@@ -1,0 +1,56 @@
+<%# Example implementation of the language selector dropdown
+    This partial demonstrates how to use the CSS classes from language-selector.css
+
+    Usage:
+    - Include this in your layout where you want the language selector
+    - Requires JavaScript to toggle aria-expanded and data-open attributes
+    - All CSS classes use design tokens from design-tokens.css%>
+
+<div class="language-selector">
+  <button class="language-selector__button"
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-label="<%= t('.select_language') %>">
+
+    <span><%= t('.current_language', locale: I18n.locale) %></span>
+
+    <%# Chevron icon - rotates when menu is open %>
+    <svg class="language-selector__icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <nav class="language-menu" role="menu" data-open="false">
+    <% I18n.available_locales.each do |locale| %>
+      <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                  class: [
+                    'language-menu__item',
+                    (locale == I18n.locale ? 'language-menu__item--active' : nil),
+                  ].compact.join(' '),
+                  role: 'menuitem',
+                  'aria-label': t('.language_name_of_locale', locale:) do %>
+        <%= t('.language_name_of_locale', locale:) %>
+      <% end %>
+    <% end %>
+  </nav>
+</div>
+
+<%# Example JavaScript for toggling the dropdown (pseudo-code):
+
+    const button = document.querySelector('.language-selector__button');
+    const menu = document.querySelector('.language-menu');
+
+    button.addEventListener('click', () => {
+      const isOpen = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !isOpen);
+      menu.setAttribute('data-open', !isOpen);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.language-selector')) {
+        button.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('data-open', 'false');
+      }
+    });%>
