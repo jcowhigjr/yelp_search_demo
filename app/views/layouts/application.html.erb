@@ -20,6 +20,9 @@
   </head>
   <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>"
         data-controller="theme">
+    <!-- Language Selector -->
+    <%= render 'layouts/language_selector' %>
+
     <!-- Theme Toggle -->
     <button
       data-theme-target="button"
