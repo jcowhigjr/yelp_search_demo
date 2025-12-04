@@ -1,0 +1,33 @@
+<div class="language-selector" data-controller="language-selector">
+  <button
+    id="language-menu-button"
+    type="button"
+    class="language-selector__button"
+    aria-haspopup="true"
+    aria-expanded="false"
+    aria-label="<%= t('layouts.language_selector.toggle_button_label') %>"
+    data-action="click->language-selector#toggle"
+    data-language-selector-target="button"
+  >
+    <%= I18n.locale.to_s.upcase %>
+  </button>
+
+  <div
+    class="language-menu"
+    data-language-selector-target="menu"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="language-menu-button"
+    tabindex="-1"
+  >
+    <% I18n.available_locales.each do |locale| %>
+      <%= link_to t("layouts.footer.language_name_of_locale", locale: locale),
+                  url_for(locale: locale),
+                  class: "language-menu__item",
+                  role: "menuitem",
+                  tabindex: "-1",
+                  "aria-current": (I18n.locale == locale ? "page" : nil),
+                  "data-action": "click->language-selector#select" %>
+    <% end %>
+  </div>
+</div>

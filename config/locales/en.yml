@@ -57,6 +57,8 @@ en:
     application:
       header:
         search_gem_html: Search for Gems
+    language_selector:
+      toggle_button_label: Select a language
     footer:
       coming-soon-sig: 'Coming Soon: Sign up for Early Access'
       early-access: Early Access Preview

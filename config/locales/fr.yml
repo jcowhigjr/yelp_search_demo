@@ -46,6 +46,8 @@ fr:
     application:
       header:
         search_gem_html: Rechercher des Gems
+    language_selector:
+      toggle_button_label: "Sélectionnez une langue"
     footer:
       coming-soon-sig: 'Bientôt : Inscrivez-vous pour l''Accès Anticipé'
       early-access: Aperçu de l'Accès Anticipé

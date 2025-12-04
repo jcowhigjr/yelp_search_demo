@@ -36,6 +36,8 @@ th:
     something_went_wrong: เกิดข้อผิดพลาด โปรดลองอีกครั้งในภายหลัง
     unauthorized: คุณไม่ได้รับอนุญาตให้ดำเนินการนี้
   layouts:
+    language_selector:
+      toggle_button_label: เลือกภาษา
     footer:
       language_name_of_locale: thai
     navbar:

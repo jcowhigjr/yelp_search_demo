@@ -1,0 +1,90 @@
+/* Container for the language selector */
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+/* The button that toggles the language menu */
+.language-selector__button {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  border-radius: 9999px; /* pill shape */
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.language-selector__button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.language-selector__button[aria-expanded="true"] {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+}
+
+
+/* The dropdown menu */
+.language-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  min-width: 10rem;
+  z-index: 50;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.language-menu.is-open {
+  display: block;
+}
+
+
+/* An item in the language menu */
+.language-menu__item {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  min-height: 44px;
+}
+
+.language-menu__item:hover,
+.language-menu__item:focus {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  outline: none;
+}
+
+/* On narrow viewports */
+@media (max-width: 640px) {
+    .language-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        border-radius: 0.5rem 0.5rem 0 0;
+        padding: 1rem 0;
+    }
+    .language-menu__item {
+        text-align: center;
+    }
+}

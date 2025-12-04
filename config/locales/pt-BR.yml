@@ -40,6 +40,8 @@ pt-BR:
     application:
       header:
         search_gem_html: Buscar Gemas
+    language_selector:
+      toggle_button_label: Selecione um idioma
     footer:
       coming-soon-sig: 'Em breve: Inscreva-se para Acesso Antecipado'
       early-access: Visualização do Acesso Antecipado
