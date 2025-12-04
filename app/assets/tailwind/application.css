@@ -1,14 +1,13 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-
 :root {
   /* Theme colors (light mode defaults) */
-  --color-primary: #4B9CD3; /* Carolina Blue */
-  --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */
+  --color-primary: #4b9cd3; /* Carolina Blue */
+  --color-primary-dark: #3a8cc7; /* Dark Carolina Blue */
   --color-bg: #fff;
   --color-text: #000;
 }

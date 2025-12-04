@@ -43,7 +43,8 @@
 
 .material-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
 
 .material-input::placeholder {
@@ -116,20 +117,21 @@
     margin: 1rem;
     padding: 1.5rem;
   }
-  
+
   .grid.grid-cols-2 {
     grid-template-columns: 1fr;
   }
 }
 
 /* Dark Mode Adjustments */
-[data-theme="dark"] {
+[data-theme='dark'] {
   .auth-container {
     box-shadow: 0 4px 20px var(--color-shadow-dark);
   }
-  
+
   .material-input:focus {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 30%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--color-primary) 30%, transparent);
   }
 }
 
