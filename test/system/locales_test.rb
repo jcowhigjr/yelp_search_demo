@@ -65,4 +65,52 @@ class LocalesTest < ApplicationSystemTestCase
 
     assert_selector "input[placeholder='Rechercher des cafés...']"
   end
+
+  test 'language switching via selector updates html lang attribute and content' do
+    # Step 1: Navigate to homepage and verify English is the default locale
+    visit '/'
+    
+    # Assert html[lang="en"] attribute
+    assert_equal 'en', page.find('html')['lang'], "Expected html[lang='en'] on initial page load"
+    
+    # Assert English heading is present (the main heading on homepage)
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!'
+    
+    # Assert English search placeholder
+    assert_selector "input[placeholder='Search for coffee shops...']"
+    
+    # Step 2: Locate and click the French language selector in the footer
+    within 'footer .language-nav' do
+      # Find the French language link by its text content
+      french_link = find('a', text: 'Français')
+      
+      # Verify the link exists before clicking
+      assert_predicate french_link, :present?, 'French language selector link should be present'
+      
+      # Click the French language selector
+      french_link.click
+    end
+    
+    # Step 3: Wait for page navigation and verify French locale is active
+    # Assert html[lang="fr"] attribute after language switch
+    assert_equal 'fr', page.find('html')['lang'], "Expected html[lang='fr'] after clicking French language selector"
+    
+    # Assert French search placeholder is displayed
+    assert_selector "input[placeholder='Rechercher des cafés...']"
+    
+    # Verify the French language link is now marked as active
+    within 'footer .language-nav' do
+      french_link = find('a', text: 'Français')
+
+      assert_includes french_link[:class], 'language-nav__link--active', 
+                      'French language link should have active class after switch'
+    end
+    
+    # NOTE: The h2 heading "Save time by sharing your device location" is currently
+    # hardcoded in English in app/views/static/home.html.erb and not translated.
+    # This test verifies the locale switching mechanism works correctly via:
+    # - html[lang] attribute change
+    # - translated search placeholder
+    # - active language link styling
+  end
 end
