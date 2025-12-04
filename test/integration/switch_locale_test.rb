@@ -43,14 +43,13 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
       I18n.with_locale(locale) do
         get static_home_path
 
-        # Verify default locale link exists (relaxed selector - could be in nav or footer)
+        # Verify language selector links exist with correct hrefs
+        # Default locale (en) uses '/' as href
         assert_select "a[href='/']", minimum: 1
 
-        # Verify non-default locale links exist with correct hrefs
+        # Non-default locales have explicit locale paths
         locales_except_default = I18n.available_locales - [I18n.default_locale]
-
         locales_except_default.each do |l|
-          # Language links should have correct href, regardless of DOM location
           assert_select "a[href='/#{l}']", minimum: 1
         end
       end
