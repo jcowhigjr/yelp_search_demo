@@ -38,6 +38,8 @@ th:
   layouts:
     footer:
       language_name_of_locale: thai
+    language_selector:
+      select_language: เลือกภาษา
     navbar:
       coming-soon-sig: 'เร็วๆ นี้: ลงทะเบียนเพื่อเล่นระหว่างการพัฒนา'
       logout: ออกจากระบบ

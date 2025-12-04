@@ -50,6 +50,8 @@ es:
       coming-soon-sig: 'Próximamente: Regístrese para Acceso Anticipado'
       early-access: Vista Previa de Acceso Anticipado
       language_name_of_locale: Español
+    language_selector:
+      select_language: Seleccionar idioma
     navbar:
       coming-soon-sig: 'Próximamente: Regístrese para obtener acceso anticipado'
       logout: Cerrar sesión

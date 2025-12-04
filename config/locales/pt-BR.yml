@@ -44,6 +44,8 @@ pt-BR:
       coming-soon-sig: 'Em breve: Inscreva-se para Acesso Antecipado'
       early-access: Visualização do Acesso Antecipado
       language_name_of_locale: Português (Brasil)
+    language_selector:
+      select_language: Selecionar idioma
     navbar:
       coming-soon-sig: 'Em breve: inscreva-se para acesso antecipado'
       logout: Sair
