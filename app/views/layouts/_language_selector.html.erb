@@ -1,0 +1,42 @@
+<!-- Language Selector -->
+<div class="fixed top-4 right-20 z-50" style="position: fixed; top: 1rem; right: 5rem; z-index: 50;">
+  <div class="relative inline-block" data-controller="dropdown">
+    <!-- Toggle Button -->
+    <button
+      data-action="click->dropdown#toggle"
+      data-dropdown-target="button"
+      class="p-3 rounded-full shadow-lg transition-all hover:scale-110 flex items-center gap-1"
+      aria-label="<%= t('layouts.language_selector.select_language') %>"
+      aria-expanded="false"
+      aria-haspopup="true">
+      <span class="text-sm font-medium"><%= I18n.locale.to_s.upcase %></span>
+      <i class="material-icons" style="font-size: 20px;">language</i>
+      <i class="material-icons" style="font-size: 20px;">arrow_drop_down</i>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div
+      data-dropdown-target="menu"
+      class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg hidden"
+      style="background: white;">
+      <ul class="py-2" role="menu">
+        <% I18n.available_locales.each do |locale| %>
+          <li role="menuitem">
+            <%= link_to request.params.merge(locale:),
+                        class: [
+                          'block px-4 py-2 text-sm hover:bg-gray-100 transition-colors',
+                          ('bg-gray-50 font-semibold' if locale == I18n.locale),
+                        ].compact.join(' '),
+                        data: { action: 'click->dropdown#close' },
+                        'aria-label': t('layouts.footer.language_name_of_locale', locale:) do %>
+              <%= t('layouts.footer.language_name_of_locale', locale:) %>
+              <% if locale == I18n.locale %>
+                <i class="material-icons text-sm align-middle ml-1">check</i>
+              <% end %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

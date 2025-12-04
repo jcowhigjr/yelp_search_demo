@@ -61,6 +61,8 @@ en:
       coming-soon-sig: 'Coming Soon: Sign up for Early Access'
       early-access: Early Access Preview
       language_name_of_locale: English
+    language_selector:
+      select_language: Select language
     navbar:
       coming-soon-sig: 'Coming Soon: Sign up for Early Access'
       logout: Logout
