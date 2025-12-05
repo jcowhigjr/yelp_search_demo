@@ -48,6 +48,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can submit a review' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
@@ -56,6 +57,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Search for a shop
     visit new_search_path
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
     assert_selector(:field, 'search[query]', with: 'coffee')
@@ -82,6 +84,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can edit and delete their review' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
@@ -120,12 +123,14 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can favorite and unfavorite a coffeeshop' do
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
     # Search for a shop
     visit new_search_path
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
     # Use the first submit button in the search form to avoid ambiguous "search" matches
