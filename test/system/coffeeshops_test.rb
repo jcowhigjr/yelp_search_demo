@@ -57,6 +57,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Search for a shop
     visit new_search_path
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
     assert_selector(:field, 'search[query]', with: 'coffee')
@@ -129,6 +130,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Search for a shop
     visit new_search_path
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
     # Use the first submit button in the search form to avoid ambiguous "search" matches
