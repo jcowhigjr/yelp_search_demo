@@ -1,4 +1,8 @@
 ENV['RAILS_ENV'] ||= 'test'
+ENV['HEADLESS'] ||= 'true'
+ENV['CUPRITE'] ||= 'true'
+ENV['APP_HOST'] ||= 'localhost'
+ENV['CUPRITE_JS_ERRORS'] ||= 'false'
 require 'minitest'
 require 'mocha/minitest'
 require_relative '../config/environment'
@@ -53,7 +57,7 @@ Capybara.javascript_driver = :ferrum_block_fonts
 
 class ActiveSupport::TestCase
   # Run tests in parallel with configurable workers (default: 3) even for small suites
-  parallelize(workers: ENV.fetch("RAILS_TEST_WORKERS", 3).to_i, threshold: 0)
+  parallelize(workers: ENV.fetch('RAILS_TEST_WORKERS', 3).to_i, threshold: 0)
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
