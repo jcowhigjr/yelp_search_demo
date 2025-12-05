@@ -4,10 +4,10 @@ class NavigationTest < ApplicationSystemTestCase
   test 'A user can search and return using the back button' do
     # From the search form
     visit new_search_path
-    fill_in 'search_query', with: 'tacos'
+    fill_in 'search[query]', with: 'tacos'
 
     # Use the first search button to avoid ambiguity
-    first('button[type="submit"]').click
+    find('button[type="submit"]').click
 
     # Wait for results to load and verify we're on the correct page
     wait_for_search_results
