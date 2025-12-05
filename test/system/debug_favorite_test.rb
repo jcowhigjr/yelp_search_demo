@@ -8,6 +8,7 @@ class DebugFavoriteTest < ApplicationSystemTestCase
   test 'debug search results and favorite elements' do
     # Login
     visit '/login'
+    assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
