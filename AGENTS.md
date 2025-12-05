@@ -168,7 +168,280 @@ Agents MUST assess test coverage before making changes and maintain system tests
 
 ---
 
-## 4. Empirical verification & cross-model escalation
+## 4. Rails Cuprite System Tests
+
+System tests using Cuprite provide headless browser verification for visual and interactive changes. This section defines how agents should write, run, and maintain Rails system tests.
+
+### 4.1. Scope
+
+**When to write system tests:**
+- User-facing features that involve browser interactions (clicks, form submissions, navigation)
+- UI components that use Turbo Frames or Turbo Streams for dynamic updates
+- Stimulus controller behaviors that manipulate the DOM or respond to user events
+- Authentication flows (login, logout, OAuth)
+- Features requiring JavaScript execution (geolocation, auto-complete, real-time updates)
+
+**When NOT to write system tests:**
+- Pure backend logic (use unit tests for models, services)
+- API endpoints without UI (use controller/integration tests)
+- Helper methods or view partials in isolation (use unit tests)
+- Database queries or ActiveRecord behavior (use model tests)
+
+**System test focus:**
+- Test user-visible behavior and interactions
+- Verify DOM structure and content as users would see it
+- Test accessibility (ARIA labels, keyboard navigation)
+- Validate responsive behavior across viewport sizes
+- Confirm error states and user feedback messages
+
+### 4.2. Configuration
+
+**Running system tests:**
+```bash
+# Prepare test database
+mise run test-prepare
+
+# Run all system tests (headless)
+HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
+
+# Run specific system test file
+HEADLESS=true CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test test/system/enabled_features_test.rb
+
+# Run with visible browser (for debugging)
+HEADLESS=false CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
+
+# Run with screenshots on failure (automatic in CI)
+CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
+```
+
+**Environment variables:**
+- `HEADLESS=true`: Run Chrome in headless mode (required for CI)
+- `CUPRITE=true`: Use Cuprite driver instead of Selenium
+- `APP_HOST=localhost`: Set host for test server
+- `SHOW_TESTS=1`: Show browser window during test execution
+- `CUPRITE_JS_ERRORS=true`: Fail tests on JavaScript errors
+
+**Test helpers available:**
+- `SystemTestHelpers`: Debugging and screenshot utilities
+- `OAuthTestHelper`: OAuth flow mocking
+- `LoginHelpers::System`: User authentication helpers
+- `SearchTestHelper`: Yelp API stubbing for search features
+- `YelpApiHelper`: HTTP request stubbing for external APIs
+
+### 4.3. Testing Turbo Frames
+
+**Turbo Frame best practices:**
+- Use `data-turbo-frame` attributes for frame identification
+- Test frame navigation without full page reloads
+- Verify frame content updates after user actions
+- Test frame loading states and error handling
+
+**Example pattern:**
+```ruby
+test "turbo frame updates coffee shop details without page reload" do
+  visit coffeeshop_path(@coffeeshop)
+  
+  # Verify initial frame content
+  within "turbo-frame#details" do
+    assert_text @coffeeshop.name
+  end
+  
+  # Trigger frame navigation
+  within "turbo-frame#details" do
+    click_link "Edit Details"
+  end
+  
+  # Verify frame updated, not full page
+  assert_selector "turbo-frame#details form"
+  assert_current_path coffeeshop_path(@coffeeshop) # URL unchanged
+end
+```
+
+**Common Turbo Frame issues:**
+- Missing `turbo-frame` wrapper in response
+- Frame ID mismatch between trigger and target
+- Nested frames without proper `target` attributes
+- Form submissions outside frame scope
+
+### 4.4. Testing Stimulus Controllers
+
+**Stimulus testing approach:**
+- Test user-visible side effects, not controller internals
+- Verify DOM changes after events fire
+- Test data attribute bindings and action connections
+- Validate controller lifecycle (connect, disconnect)
+
+**Example pattern:**
+```ruby
+test "geolocation controller populates location field" do
+  visit searches_path
+  
+  # Stimulus controller should be connected
+  assert_selector "[data-controller='geolocation']"
+  
+  # Trigger action via data-action
+  click_button "Use My Location"
+  
+  # Verify controller updated target
+  assert_selector "input[name='location'][value]"
+  location_value = find("input[name='location']").value
+  assert_not_empty location_value
+end
+```
+
+**Don't test:**
+- Controller class methods directly (use JavaScript unit tests)
+- Internal state or private methods
+- DOM structure details unrelated to behavior
+
+### 4.5. Testing External API Integrations
+
+**Stubbing external HTTP requests:**
+- Use WebMock to stub all external HTTP calls
+- Define stubs in test `setup` or helper modules
+- Match request patterns (URL, method, headers)
+- Return realistic response fixtures
+
+**Example pattern:**
+```ruby
+class CoffeeshopSystemTest < ApplicationSystemTestCase
+  setup do
+    # Stub is already configured via YelpApiHelper in ApplicationSystemTestCase
+    # stub_yelp_api_request is called automatically
+  end
+  
+  test "displays search results from Yelp API" do
+    visit root_path
+    
+    fill_in "Location", with: "San Francisco, CA"
+    click_button "Search"
+    
+    # Verify stubbed response is rendered
+    assert_text "Coffee Shops in San Francisco"
+    assert_selector ".coffeeshop-card", count: 3
+  end
+end
+```
+
+**Verification:**
+- Ensure no real HTTP requests in tests (WebMock will raise error)
+- Verify stub coverage with `WebMock.disable_net_connect!`
+- Test both success and error response scenarios
+- Keep fixtures minimal and focused on test needs
+
+### 4.6. Reliability Rules
+
+**Avoid brittle tests:**
+1. **Use semantic selectors:**
+   - Prefer: `find("[data-testid='submit-button']")`
+   - Avoid: `find(".mt-4.bg-blue-500.rounded")`
+
+2. **Wait for async operations:**
+   - Use Capybara's automatic waiting: `assert_text`, `assert_selector`
+   - Avoid: `sleep` or manual timeouts
+   - For complex timing: `using_wait_time(10) { ... }`
+
+3. **Test user-visible behavior:**
+   - Assert what users see: text, buttons, form fields
+   - Avoid: testing CSS classes, element counts (unless meaningful)
+
+4. **Handle race conditions:**
+   - Wait for page load: `assert_current_path`
+   - Wait for Turbo: `assert_no_selector(".turbo-progress-bar")`
+   - Wait for content: `assert_text "Expected Content"`
+
+5. **Isolate test data:**
+   - Use fixtures or factory methods in `setup`
+   - Clean up in `teardown` if needed
+   - Avoid shared state between tests
+
+6. **Mobile viewport testing:**
+   - Default screen size: 375x667 (mobile)
+   - Test responsive behaviors explicitly
+   - Use `page.driver.resize` for viewport changes
+
+**Debugging failures:**
+```ruby
+# In test file, add temporary debugging
+save_screenshot # Saves to tmp/screenshots/
+save_and_open_screenshot # Opens in browser
+
+# Or use SystemTestHelpers methods
+debug_page_state # Prints URL, title, HTML snippet
+```
+
+### 4.7. Standard System Test Template
+
+**File location:** `test/system/<feature>_test.rb`
+
+**Template:**
+```ruby
+require "application_system_test_case"
+
+class FeatureNameTest < ApplicationSystemTestCase
+  setup do
+    # Create test data
+    @user = users(:one) # or User.create!(...)
+    @resource = resources(:one)
+    
+    # Stub external APIs if needed
+    # (YelpApiHelper is already included and stubbed)
+  end
+  
+  test "user can complete primary workflow" do
+    # 1. Setup: Navigate and authenticate if needed
+    visit root_path
+    # login_as(@user) # if authentication required
+    
+    # 2. Act: Perform user actions
+    fill_in "Search", with: "coffee"
+    click_button "Submit"
+    
+    # 3. Assert: Verify expected outcomes
+    assert_text "Results for coffee"
+    assert_selector "[data-testid='result-item']", count: 3
+    assert_current_path search_results_path
+  end
+  
+  test "handles error states gracefully" do
+    # Test sad path
+    visit feature_path
+    click_button "Submit" # without filling required field
+    
+    assert_text "can't be blank"
+    assert_selector "input.error"
+  end
+  
+  test "works with JavaScript interactions" do
+    visit feature_path
+    
+    # Trigger Stimulus action
+    click_button "Toggle Details"
+    
+    # Verify DOM update
+    assert_selector "[data-testid='details'].expanded"
+    assert_text "Additional Information"
+  end
+end
+```
+
+**Key components:**
+1. **setup block:** Prepare fixtures, stubs, test data
+2. **Descriptive test names:** "user can..." or "handles... gracefully"
+3. **AAA pattern:** Arrange (setup), Act (user actions), Assert (outcomes)
+4. **One assertion per logical outcome:** Test one behavior per test method
+5. **Coverage:** Happy path, error states, edge cases, JavaScript interactions
+
+**Before committing:**
+- Run full system test suite: `mise run test-system`
+- Verify tests pass in headless mode: `HEADLESS=true ...`
+- Check for brittleness: Do tests break with minor CSS changes?
+- Ensure no sleep statements or arbitrary timeouts
+- Validate external APIs are stubbed (no real HTTP calls)
+
+---
+
+## 5. Empirical verification & cross-model escalation
 
 Agents MUST prefer **empirical verification** over reasoning alone.
 
@@ -185,7 +458,7 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 5. Tool-specific notes
+## 6. Tool-specific notes
 
 ### Warp (warp.dev)
 
@@ -209,7 +482,7 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 6. Source-of-truth hierarchy
+## 7. Source-of-truth hierarchy
 
 In case of conflict or ambiguity:
 
