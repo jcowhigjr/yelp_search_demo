@@ -52,8 +52,8 @@ end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.20'
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+# JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -124,6 +124,7 @@ end
 group :development, :ci do
   # Ensure Lefthook is available in CI for installing Git hooks
   gem 'lefthook', require: false
+  gem 'faraday', '~> 2.14.0', require: false
 end
 
 group :test do
@@ -149,7 +150,3 @@ gem 'tailwindcss-rails', '~> 4.4'
 gem 'flipper'
 
 gem 'dotenv'
-
-group :development, :ci do
-  gem 'faraday', '~> 2.14.0', require: false
-end
