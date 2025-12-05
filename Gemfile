@@ -53,7 +53,8 @@ end
 gem 'bcrypt', '~> 3.1.20'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+# Removed deprecated Windows platforms (mingw, mswin, x64_mingw) - focusing on macOS ARM and Ubuntu only
+gem 'tzinfo-data', platforms: %i[jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
