@@ -1,10 +1,11 @@
-ENV['RAILS_ENV'] ||= 'test'
-
-# Set default environment variables for system tests
-ENV['HEADLESS'] ||= 'true'
-ENV['CUPRITE'] ||= 'true'
-ENV['APP_HOST'] ||= 'localhost'
-ENV['CUPRITE_JS_ERRORS'] ||= 'false'
+# Set default environment variables for test runs
+{
+  'RAILS_ENV' => 'test',
+  'HEADLESS' => 'true',
+  'CUPRITE' => 'true',
+  'APP_HOST' => 'localhost',
+  'CUPRITE_JS_ERRORS' => 'false',
+}.each { |key, value| ENV[key] ||= value }
 
 require 'minitest'
 require 'mocha/minitest'
