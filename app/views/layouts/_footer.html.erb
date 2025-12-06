@@ -2,27 +2,13 @@
   <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
       <!-- Copyright -->
-      <p class="footer-text">
-        © <%= Time.current.year %> Jitter
-      </p>
-      
+      <p class="footer-text">© <%= Time.current.year %> Jitter</p>
+
       <!-- Footer Links -->
       <ul class="flex items-center gap-6">
-        <li>
-          <%= link_to "About", 
-                      static_home_url,
-                      class: "footer-link" %>
-        </li>
-        <li>
-          <%= link_to "Contact", 
-                      static_home_url,
-                      class: "footer-link" %>
-        </li>
-        <li>
-          <%= link_to "Privacy", 
-                      static_home_url,
-                      class: "footer-link" %>
-        </li>
+        <li><%= link_to "About", static_home_url, class: "footer-link" %></li>
+        <li><%= link_to "Contact", static_home_url, class: "footer-link" %></li>
+        <li><%= link_to "Privacy", static_home_url, class: "footer-link" %></li>
       </ul>
     </div>
   </div>
