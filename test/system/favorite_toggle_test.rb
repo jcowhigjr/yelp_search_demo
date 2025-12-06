@@ -2,6 +2,7 @@ require 'application_system_test_case'
 
 class FavoriteToggleTest < ApplicationSystemTestCase
   setup do
+    stub_yelp_api_request("coffee")
     @user = users(:one)
     @coffeeshop = coffeeshops(:one)
   end
@@ -97,6 +98,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     end
 
     # Pizza search - should show 🍕
+    stub_yelp_api_request("pizza")
     visit '/'
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'pizza'
