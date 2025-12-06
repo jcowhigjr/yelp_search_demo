@@ -1,6 +1,10 @@
 require 'application_system_test_case'
 
 class NavigationTest < ApplicationSystemTestCase
+  setup do
+    stub_yelp_api_request
+  end
+
   test 'A user can search and return using the back button' do
     # From the search form
     visit new_search_path

@@ -4,6 +4,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
   include ActionView::Helpers::NumberHelper
 
   setup do
+    stub_yelp_api_request
     @user = users(:two)
     @coffeeshop = coffeeshops(:two)
     @review = reviews(:two)
