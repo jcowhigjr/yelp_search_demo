@@ -11,9 +11,14 @@
     "lint:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx,css,scss,json}'",
     "visual:verify": "node scripts/visual-verification.js",
     "test:e2e:language": "node test/e2e/language-switcher.test.js",
-    "test:e2e:language:headed": "TEST_HEADLESS=false node test/e2e/language-switcher.test.js"
+    "test:e2e:language:headed": "TEST_HEADLESS=false node test/e2e/language-switcher.test.js",
+    "test:playwright": "playwright test",
+    "test:playwright:headed": "playwright test --headed",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:integration": "playwright test test/e2e/language-selector-integration.spec.js"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/forms": "^0.5.10",
     "puppeteer": "^24.30.0",
     "tailwindcss": "^4.1.7"
