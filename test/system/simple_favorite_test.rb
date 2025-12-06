@@ -1,6 +1,10 @@
 require 'application_system_test_case'
 
 class SimpleFavoriteTest < ApplicationSystemTestCase
+  setup do
+    stub_yelp_api_request("coffee")
+  end
+
   test 'can click favorite button and see it on profile favorites' do
     user = users(:one)
     
