@@ -15,8 +15,8 @@
           <%= link_to t('views.searches.new'),
                       new_search_path,
                       class: [
-                        'language-nav__link',
-                        (current_page?(new_search_path) ? 'language-nav__link--active' : '')
+                        'nav-link',
+                        (current_page?(new_search_path) ? 'nav-link--active' : '')
                       ].compact.join(' ') %>
         </li>
         <li>
@@ -24,13 +24,57 @@
                       user_path(current_user),
                       method: :get,
                       class: [
-                        'language-nav__link',
-                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil)
+                        'nav-link',
+                        (current_page?(user_path(current_user)) ? 'nav-link--active' : nil)
                       ].compact.join(' ') %>
         </li>
+        
+        <!-- Language Selector Dropdown -->
+        <li>
+          <div class="language-selector-dropdown" data-controller="language-selector">
+            <button type="button" 
+                    class="nav-link dropdown-toggle" 
+                    data-action="click->language-selector#toggle"
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+              <i class="material-icons left" style="font-size: 16px;">language</i>
+              <%= t('.language') %>
+              <i class="material-icons right" style="font-size: 12px;">arrow_drop_down</i>
+            </button>
+            
+            <div class="dropdown-menu" data-language-selector-target="menu" hidden>
+              <% I18n.available_locales.each do |locale| %>
+                <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                            class: [
+                              'dropdown-item',
+                              ('dropdown-item--active' if locale == I18n.locale)
+                            ].compact.join(' '),
+                            "aria-label": t('.language_name_of_locale', locale:) do %>
+                  <%= t('.language_name_of_locale', locale:) %>
+                  <% if locale == I18n.locale %>
+                    <i class="material-icons right" style="font-size: 12px;">check</i>
+                  <% end %>
+                <% end %>
+              <% end %>
+              
+              <% if Flipper[:early_access_preview].enabled? %>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-item--cta">
+                  <%= t('.early-access') %>
+                </div>
+              <% else %>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-item--cta">
+                  <%= t('.coming-soon') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </li>
+        
         <li>
           <%= link_to t('.logout'), logout_path,
-                      class: 'language-nav__link',
+                      class: 'nav-link',
                       data: { turbo_method: :delete } %>
         </li>
       </ul>
