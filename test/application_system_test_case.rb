@@ -20,11 +20,14 @@ EvilSystems.initial_setup
 # origin  https://github.com/ParamagicDev/evil_systems
 # APP_HOST=127.0.0.1 SHOW_TESTS=1 CUPRITE=true bin/rails test:system fixed it
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  setup do
+    ENV['YELP_API_KEY'] = 'test-key'
+    stub_yelp_api_request
+  end
 
-  # setup do
-  #   # Precompile assets before running the tests
-  #   system 'bin/rails tailwindcss:build'
-  # end
+  teardown do
+    ENV.delete('YELP_API_KEY')
+  end
 
   # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
@@ -104,10 +107,4 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # end
   # Include YelpApiHelper for API stubbing
   include YelpApiHelper
-  
-  # Mock out the Yelp API in tests
-  setup do
-    # Stub Yelp API requests for any search term and location
-    stub_yelp_api_request
-  end
 end
