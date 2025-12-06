@@ -4,10 +4,6 @@ class SearchesTest < ApplicationSystemTestCase
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
 
-  setup do
-    stub_yelp_api_request
-  end
-
   test 'An anonymous user at the static home can search by query and view results' do
     query = 'yoga'
 
