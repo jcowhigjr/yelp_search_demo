@@ -1,26 +1,32 @@
 <div class="form-group">
-  <%= form_for @search, html: { class: "w-full search-bar-container", data: { turbo: false } } do |f| %>
-    <div class="search-bar">
-      <i class="material-icons search-icon" aria-hidden="true">search</i>
+  <%= form_for @search, html: { class: "w-full", data: { turbo: false } } do |f| %>
+    <div class="flex w-full items-center gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-2 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-800/80">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
 
-      <%= f.search_field :query,
-                         placeholder: t('views.searches.placeholder'),
-                         required: true,
-                         class: "search-input" %>
+        <%= f.search_field :query,
+                           placeholder: t('views.searches.placeholder'),
+                           required: true,
+                           class: "peer w-full rounded-xl border border-transparent bg-transparent py-3 pr-12 pl-10 text-base text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-1 dark:text-white dark:placeholder:text-slate-500 dark:focus:ring-offset-0" %>
 
-      <%= link_to new_search_path,
-                  method: :get,
-                  class: "clear-button",
-                  data: { turbo_frame: dom_id(@search) },
-                  aria: { label: t('views.searches.clear', default: 'Clear') } do %>
-        <i class="material-icons">clear</i>
-      <% end %>
+        <%= link_to new_search_path,
+                    method: :get,
+                    class: "group absolute right-2.5 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)] dark:text-slate-500 dark:hover:bg-slate-700",
+                    data: { turbo_frame: dom_id(@search) },
+                    aria: { label: t('views.searches.clear', default: 'Clear') } do %>
+          <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+        <% end %>
+      </div>
 
-      <button type="button" class="search-button" data-action="geolocation#geolocate">
-        <i class="material-icons">my_location</i>
+      <button type="button"
+              class="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              data-action="geolocation#geolocate"
+              aria-label="<%= t('views.searches.use_location', default: 'Use my location') %>">
+        <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
       </button>
 
-      <%= f.button :submit, class: "search-button" do %>
+      <%= f.button :submit,
+                   class: "h-12 rounded-full bg-primary bg-primary-hover px-6 text-sm font-semibold text-white shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-primary)]" do %>
         <%= t('views.searches.submit', default: 'Search').strip %>
       <% end %>
     </div>
