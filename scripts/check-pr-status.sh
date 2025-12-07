@@ -98,10 +98,44 @@ fi
 
 echo ""
 
+# Check for preview deployment
+echo ""
+echo "🚀 Preview Deployment:"
+DEPLOYMENT_URL=$(gh api graphql -f query="
+query {
+  repository(owner: \"jcowhigjr\", name: \"yelp_search_demo\") {
+    pullRequest(number: $PR_NUMBER) {
+      commits(last: 1) {
+        nodes {
+          commit {
+            deployments(first: 5) {
+              nodes {
+                environment
+                latestStatus {
+                  environmentUrl
+                  state
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}" 2>/dev/null | jq -r '.data.repository.pullRequest.commits.nodes[0].commit.deployments.nodes[]? | select(.latestStatus.state == "SUCCESS") | .latestStatus.environmentUrl' | head -1)
+
+if [ -n "$DEPLOYMENT_URL" ]; then
+  echo "   ✅ Preview app deployed: $DEPLOYMENT_URL"
+  echo "   💡 Use browser_preview tool to inspect UI changes"
+else
+  echo "   ⏳ No preview deployment yet (may take 5-10 minutes)"
+fi
+
 # Summary
 ALL_CHECKS_PASSED=$(echo "$PR_DATA" | jq -r '.statusCheckRollup[]? | .conclusion' | grep -v "SUCCESS" | wc -l | tr -d ' ')
 HAS_CHANGES_REQUESTED=$(echo "$PR_DATA" | jq -r '.reviews[]? | .state' | grep -q "CHANGES_REQUESTED" && echo "yes" || echo "no")
 
+echo ""
 if [ "$ALL_CHECKS_PASSED" = "0" ] && [ "$HAS_CHANGES_REQUESTED" = "no" ] && [ -n "$STATUS_CHECKS" ]; then
   echo "✅ PR looks good! All checks passed, no changes requested."
   echo "   Ready for merge when approved."
