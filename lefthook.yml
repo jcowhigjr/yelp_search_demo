@@ -190,6 +190,13 @@ pre-push:
         #!/bin/bash
         set -euo pipefail
         
+        # Skip system tests if SKIP_SYSTEM_TESTS=1 (useful for network outages)
+        if [ "${SKIP_SYSTEM_TESTS:-0}" = "1" ]; then
+          echo "⚠️  Skipping system tests (SKIP_SYSTEM_TESTS=1)"
+          echo "   Set SKIP_SYSTEM_TESTS=1 to bypass during network issues"
+          exit 0
+        fi
+        
         # Timeout for entire system test suite: 3 minutes
         SYSTEM_TEST_TIMEOUT=180
         
