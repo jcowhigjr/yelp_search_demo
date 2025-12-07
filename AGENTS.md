@@ -71,6 +71,26 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **No bypass**: Never use `--no-verify` to skip this check
   - **If hook triggers**: Resolve all conflicts before attempting to commit again
 
+- **Commit size validation (automated)**
+  - **Pre-commit hook**: Checks for oversized commits and common screwup patterns
+  - **Hard limits (blocks commit):**
+    - Max 30 files per commit
+    - Max 1000 lines changed per commit
+  - **Warnings (allows commit):**
+    - 15+ files: Consider splitting
+    - 500+ lines: Ensure single logical change
+    - Lock files + 20+ other files: Possible dependency update mixed with feature work
+    - Debug code patterns: `console.log`, `debugger`, `binding.pry`, `byebug`, `puts "DEBUG"`
+  - **Why this matters:**
+    - Large commits are hard to review
+    - Multiple unrelated changes indicate scope creep
+    - Generated files accidentally committed
+    - Debug code left in production code
+  - **If triggered:**
+    - Use `git reset HEAD <file>` to unstage files
+    - Use `git add -p` for selective staging
+    - Break into multiple focused commits
+
 - **Pre-push merge conflict detection**
   - **CRITICAL**: Before pushing or creating a PR, check for merge conflicts with the target branch
   - **Required workflow before push:**
