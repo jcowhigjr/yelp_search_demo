@@ -79,6 +79,41 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - Multi-line content embedded in single command calls
   - **If a terminal command hangs**: Cancel immediately and simplify the approach using separate steps or temporary files.
 
+- **Command hang prevention**
+  - **Before running any command, verify:**
+    1. Command doesn't require interactive input (check for `--non-interactive`, `--batch`, `--yes` flags)
+    2. Command has reasonable timeout protection (use `timeout 30s command ...`)
+    3. Arguments are simple (no multi-line, no complex quoting)
+    4. Command produces output (use `--verbose` if available to confirm it's running)
+  - **High-risk commands that often hang:**
+    - Commands that read from stdin without explicit input
+    - Commands with missing required arguments
+    - Commands that spawn interactive editors or prompts
+    - Commands with malformed YAML/JSON in arguments
+  - **If a command hangs:**
+    1. Cancel immediately (Ctrl+C) - don't wait to see if it completes
+    2. Check command documentation for non-interactive flags
+    3. Test command with `--help` first to verify syntax
+    4. Use temp files for complex inputs instead of inline arguments
+    5. Add explicit timeout wrapper: `timeout 30s command ...`
+  - **Safe command patterns:**
+    ```bash
+    # Good - with timeout and verbose output
+    timeout 30s mise exec -- bin/rails db:migrate --verbose
+    
+    # Good - non-interactive flag
+    command --non-interactive --batch
+    
+    # Good - explicit input via file
+    command < input.txt
+    
+    # Bad - may wait for stdin
+    command | grep something
+    
+    # Bad - complex inline argument
+    command --value "$(cat large_file.txt)"
+    ```
+
 ---
 
 ## 5. Internationalization (i18n) and Translation Management
