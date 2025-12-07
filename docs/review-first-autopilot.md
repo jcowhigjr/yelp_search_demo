@@ -196,14 +196,19 @@ Create a commit that clearly documents what was fixed.
 ```bash
 # Commit with reference to the review
 git add workflow-new-feature.sh
-git commit -m "Fix review feedback: checkout develop after sync
+
+# ✅ CORRECT: Use temp file for multiline commit message
+cat > /tmp/commit.txt << 'EOF'
+Fix review feedback: checkout develop after sync
 
 Addresses review comment from @chatgpt-codex-connector:
 After git-sync.sh runs, it returns to the original branch.
 Now explicitly checking out develop before creating new branch
 to ensure branches are always based on latest develop.
 
-Fixes comment: https://github.com/owner/repo/pull/952#discussion_r2467547306"
+Fixes comment: https://github.com/owner/repo/pull/952#discussion_r2467547306
+EOF
+git commit -F /tmp/commit.txt
 ```
 
 ### Step 5: Push (Triggers Pre-Push Hooks)

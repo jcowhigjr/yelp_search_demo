@@ -104,6 +104,70 @@ For deep policy and methodology, see `docs/AGENTS.md`.
       4. **Continue with PR** if re-run passes and failure is unrelated to changes
     - **Never use multiline strings in CLI arguments** - always write to temp file first
     - This prevents PTY host hangs in Windsurf/terminal tools
+  - **CRITICAL: Temp file pattern for all CLI tools:**
+    - **Problem**: Multiline strings in CLI arguments cause PTY host hangs
+    - **Solution**: Always write content to temp file, pass file path
+    - **Examples for common tools:**
+      ```bash
+      # ✅ CORRECT - GitHub CLI (supports --body-file)
+      cat > /tmp/issue.md << 'EOF'
+      ## Issue Title
+      - Description line 1
+      - Description line 2
+      EOF
+      gh issue create --title "Title" --body-file /tmp/issue.md --label bug
+      gh pr create --title "Title" --body-file /tmp/pr.md
+      gh pr comment 123 --body-file /tmp/comment.md
+      
+      # ✅ CORRECT - Git commit (use -F for file)
+      cat > /tmp/commit.txt << 'EOF'
+      Commit title
+      
+      Longer description
+      with multiple lines
+      EOF
+      git commit -F /tmp/commit.txt
+      
+      # ✅ CORRECT - curl (use @filename or --data-binary)
+      cat > /tmp/payload.json << 'EOF'
+      {
+        "key": "value",
+        "nested": {
+          "data": "here"
+        }
+      }
+      EOF
+      curl -X POST -H "Content-Type: application/json" --data @/tmp/payload.json https://api.example.com
+      
+      # ✅ CORRECT - Any CLI without file support (use stdin redirect)
+      cat > /tmp/input.txt << 'EOF'
+      Multiline
+      content
+      here
+      EOF
+      some-command < /tmp/input.txt
+      
+      # ❌ WRONG - Will hang PTY
+      gh issue create --title "Title" --body "Line 1
+      Line 2
+      Line 3"
+      
+      # ❌ WRONG - Will hang PTY
+      git commit -m "Title
+      
+      Description
+      More lines"
+      
+      # ❌ WRONG - Will hang PTY
+      curl -d "multiline
+      json
+      here"
+      ```
+    - **When to use temp files:**
+      - ANY content with newlines
+      - ANY content > 100 characters
+      - ANY content with special characters that need escaping
+      - When in doubt, use temp file
   - **What @claude verifies** (when requested):
     - PR description references correct issue
     - All acceptance criteria addressed
