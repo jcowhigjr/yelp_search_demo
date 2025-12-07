@@ -175,6 +175,86 @@ pre-push:
       exit 1
     fi
   commands:
+    check_ui_testing_evidence:
+      tags: ui testing validation
+      run: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        echo "🎨 Checking for UI changes and testing evidence..."
+        
+        # Get the base branch (develop or main)
+        base_branch="develop"
+        if ! git rev-parse --verify origin/$base_branch >/dev/null 2>&1; then
+          base_branch="main"
+        fi
+        
+        # Get list of commits being pushed
+        commits=$(git rev-list origin/$base_branch..HEAD 2>/dev/null || git rev-list HEAD)
+        
+        if [ -z "$commits" ]; then
+          echo "✅ No new commits to push"
+          exit 0
+        fi
+        
+        # Keywords that indicate manual testing was done
+        testing_keywords="puppeteer|screenshot|manual.test|tested.locally|browser.preview|mcp2_puppeteer|visual.verification|ui.tested"
+        
+        # Track if we found any UI changes without testing
+        found_untested_ui=0
+        untested_commits=""
+        
+        # Check each commit individually
+        while IFS= read -r commit; do
+          # Get files changed in this commit
+          commit_files=$(git diff-tree --no-commit-id --name-only -r "$commit" 2>/dev/null || true)
+          
+          # Check if this commit touches UI files
+          ui_files=$(echo "$commit_files" | grep -E 'app/(views|assets|javascript)|app/helpers.*\.rb' || true)
+          
+          if [ -n "$ui_files" ]; then
+            # This commit has UI changes - check for testing evidence
+            commit_msg=$(git log -1 --pretty=%B "$commit")
+            commit_short=$(git log -1 --pretty=%h "$commit")
+            commit_subject=$(git log -1 --pretty=%s "$commit")
+            
+            # Check if documentation-only
+            if echo "$ui_files" | grep -qvE '\.md$'; then
+              # Real UI changes - need testing evidence
+              if ! echo "$commit_msg" | grep -qiE "$testing_keywords"; then
+                found_untested_ui=1
+                untested_commits="${untested_commits}  - ${commit_short}: ${commit_subject}\n"
+              fi
+            fi
+          fi
+        done <<< "$commits"
+        
+        if [ $found_untested_ui -eq 1 ]; then
+          echo "❌ ERROR: UI changes detected without testing evidence!"
+          echo ""
+          echo "The following commits modify UI files but lack testing keywords:"
+          echo -e "$untested_commits"
+          echo ""
+          echo "📋 Required: Evidence of manual testing in EACH commit message"
+          echo ""
+          echo "Before pushing UI changes, you MUST:"
+          echo "  1. Start local server: mise exec -- bin/rails server -p 3000 &"
+          echo "  2. Test with puppeteer: mcp2_puppeteer_navigate('http://localhost:3000')"
+          echo "  3. Take screenshots: mcp2_puppeteer_screenshot()"
+          echo "  4. Test interactions: mcp2_puppeteer_click('.your-selector')"
+          echo "  5. Run system tests: mise exec -- bin/rails test:system"
+          echo ""
+          echo "Include testing keywords in commit messages:"
+          echo "  - 'puppeteer', 'screenshot', 'manual test', 'tested locally'"
+          echo "  - 'browser preview', 'visual verification', 'UI tested'"
+          echo ""
+          echo "📖 See: AGENTS.md - Complete UI Testing Checklist"
+          echo ""
+          echo "💡 To fix: Amend commits with testing evidence or squash into tested commits"
+          exit 1
+        fi
+        
+        echo "✅ All UI changes have testing evidence"
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
       tags: meta reviews
