@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Color tokens matching Rails app */
+  :root {
+    --color-primary: #4B9CD3;
+    --color-primary-dark: #3A8CC7;
+    --color-button-blue: #1C5B82;
+    --color-bg: #FFFFFF;
+    --color-text: #000000;
+    --color-yelp: #FF1A1A;
+    --color-border: #e5e5e5;
+  }
+
+  [data-theme="dark"] {
+    --color-bg: #0F2942;
+    --color-text: #FFFFFF;
+    --color-border: #1C5B82;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-[var(--color-bg)] text-[var(--color-text)] antialiased;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  /* Typography matching Rails */
+  .page-name {
+    font-size: 60px;
+    line-height: 1.2;
+  }
+
+  .page-text {
+    font-size: 30px;
+    line-height: 1.4;
+  }
+
+  .form-link {
+    font-size: 20px;
+  }
+
+  h1 {
+    font-size: 60px;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 48px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 30px;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Navigation styles */
+  .language-nav__link {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .language-nav__link:hover,
+  .language-nav__link:focus {
+    text-decoration: underline;
+  }
+  
+  .language-nav__link--active {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 640px) {
+    body {
+      font-size: 16px;
+    }
+
+    h1, .page-name {
+      font-size: 32px;
+    }
+
+    h2 {
+      font-size: 28px;
+    }
+
+    h3 {
+      font-size: 24px;
+    }
+  }
+
+  /* Prevent zooming on input focus on iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent text selection during touch */
+  button {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+}
