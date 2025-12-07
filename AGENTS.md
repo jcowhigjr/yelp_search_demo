@@ -66,9 +66,22 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     2. **Self-verify alignment** - review your changes against issue A/C
     3. **If complex**: Comment `@claude` to request review
     4. **Continue working** - @claude reviews asynchronously (runs on PR open/update)
-    5. **Check back later** - @claude posts review as PR comment
-    6. **Address feedback** - if @claude finds issues, fix and push
+    5. **Auto-check after 5 minutes** - run `./scripts/check-pr-status.sh` to see CI and review results
+    6. **Address feedback** - if @claude or CI finds issues, fix and push
     7. **Auto re-review** - @claude automatically reviews new pushes
+  - **Automated status checking:**
+    - After pushing, agents should automatically check PR status after 5 minutes
+    - Use: `./scripts/check-pr-status.sh [pr_number]` or auto-detect from current branch
+    - Script shows:
+      - CI check status (✅ passed, ❌ failed, ⏳ pending)
+      - @claude review status and summary
+      - Human review status
+      - Overall PR readiness
+    - **Timing guidance:**
+      - CI checks: typically start within 1-2 minutes, complete in 3-5 minutes
+      - @claude review: typically completes within 3-5 minutes
+      - Check at 5 minutes to catch most results
+      - If still pending, check again at 10 minutes
   - **What @claude verifies** (when requested):
     - PR description references correct issue
     - All acceptance criteria addressed
