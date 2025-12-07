@@ -82,6 +82,54 @@ For deep policy and methodology, see `docs/AGENTS.md`.
       - @claude review: typically completes within 3-5 minutes
       - Check at 5 minutes to catch most results
       - If still pending, check again at 10 minutes
+  - **Inspecting preview deployments:**
+    - After pushing a PR, a preview app is automatically deployed to Heroku
+    - **Always inspect the preview app** to verify UI changes work correctly
+    - **How to find and open the preview app:**
+      ```bash
+      # Get the deployment URL using GitHub GraphQL API
+      gh api graphql -f query='
+      query($owner: String!, $repo: String!, $pr: Int!) {
+        repository(owner: $owner, name: $repo) {
+          pullRequest(number: $pr) {
+            commits(last: 1) {
+              nodes {
+                commit {
+                  deployments(first: 5) {
+                    nodes {
+                      environment
+                      latestStatus {
+                        environmentUrl
+                        state
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }' -f owner=jcowhigjr -f repo=yelp_search_demo -F pr=<PR_NUMBER> | \
+      jq -r '.data.repository.pullRequest.commits.nodes[0].commit.deployments.nodes[] | 
+             select(.latestStatus.state == "SUCCESS") | 
+             .latestStatus.environmentUrl'
+      
+      # Example output: https://dorkbob-feature-navbar--kxwwcv.herokuapp.com/
+      
+      # Open in browser preview tool (remove trailing slash)
+      # Use browser_preview tool with the URL
+      ```
+    - **When to inspect preview apps:**
+      - Any UI/UX changes (navbar, forms, styling, etc.)
+      - New features with user-facing components
+      - Language/i18n changes
+      - Responsive design updates
+    - **What to verify:**
+      - Feature works as expected in browser
+      - No console errors
+      - Mobile responsive behavior
+      - Accessibility (keyboard navigation, screen readers)
+      - Cross-browser compatibility if critical
   - **Handling flaky test failures:**
     - If a single system test fails but seems unrelated to your changes:
       1. **Create an issue** to track the failure (use temp file for body):
