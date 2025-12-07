@@ -42,6 +42,114 @@ pre-commit:
       skip:
         - merge
         - rebase
+    check_merge_conflicts:
+      run: |
+        #!/bin/bash
+        echo "🔍 Checking for unresolved merge conflict markers..."
+        if git diff --cached | grep -E '^[+](<<<<<<<|=======|>>>>>>>)'; then
+          echo "❌ ERROR: Merge conflict markers detected in staged files!"
+          echo ""
+          echo "Files with conflict markers:"
+          git diff --cached --name-only | while read file; do
+            if git diff --cached "$file" | grep -qE '^[+](<<<<<<<|=======|>>>>>>>)'; then
+              echo "  - $file"
+            fi
+          done
+          echo ""
+          echo "Please resolve all merge conflicts before committing."
+          echo "Look for lines containing: <<<<<<<, =======, or >>>>>>>"
+          exit 1
+        fi
+        echo "✅ No merge conflict markers found"
+    check_commit_size:
+      run: |
+        #!/bin/bash
+        # Skip on merge commits
+        if git rev-parse -q --verify MERGE_HEAD >/dev/null; then
+          exit 0
+        fi
+        
+        echo "🔍 Checking commit size..."
+        
+        # Count staged files
+        staged_count=$(git diff --cached --name-only | wc -l | tr -d ' ')
+        
+        # Count total lines changed (additions + deletions)
+        lines_changed=$(git diff --cached --numstat | awk '{sum+=$1+$2} END {print sum}')
+        
+        # Thresholds
+        MAX_FILES=30
+        MAX_LINES=1000
+        WARN_FILES=15
+        WARN_LINES=500
+        
+        has_error=0
+        has_warning=0
+        
+        # Check for errors (hard limits)
+        if [ "$staged_count" -gt "$MAX_FILES" ]; then
+          echo "❌ ERROR: Too many files in one commit: $staged_count files (max: $MAX_FILES)"
+          echo "   This likely indicates:"
+          echo "   - Accidental inclusion of generated files"
+          echo "   - Multiple unrelated changes bundled together"
+          echo "   - Missing .gitignore entries"
+          has_error=1
+        fi
+        
+        if [ "$lines_changed" -gt "$MAX_LINES" ]; then
+          echo "❌ ERROR: Too many lines changed: $lines_changed lines (max: $MAX_LINES)"
+          echo "   Consider breaking this into smaller, focused commits"
+          echo "   Each commit should represent one logical change"
+          has_error=1
+        fi
+        
+        # Check for warnings (soft limits)
+        if [ "$staged_count" -gt "$WARN_FILES" ] && [ "$has_error" -eq 0 ]; then
+          echo "⚠️  WARNING: Large commit detected: $staged_count files"
+          echo "   Consider if this should be split into multiple commits"
+          has_warning=1
+        fi
+        
+        if [ "$lines_changed" -gt "$WARN_LINES" ] && [ "$has_error" -eq 0 ]; then
+          echo "⚠️  WARNING: Large change detected: $lines_changed lines"
+          echo "   Ensure this represents a single logical change"
+          has_warning=1
+        fi
+        
+        # Check for common screwup patterns
+        if git diff --cached --name-only | grep -q "package-lock.json\|yarn.lock\|Gemfile.lock"; then
+          lock_files=$(git diff --cached --name-only | grep "package-lock.json\|yarn.lock\|Gemfile.lock" | wc -l | tr -d ' ')
+          other_files=$((staged_count - lock_files))
+          
+          if [ "$other_files" -gt 20 ]; then
+            echo "⚠️  WARNING: Lock file changes combined with many other files ($other_files files)"
+            echo "   This might indicate dependency updates mixed with feature work"
+          fi
+        fi
+        
+        # Check for debug code patterns
+        if git diff --cached | grep -qE '^\+.*(console\.log|debugger|binding\.pry|byebug|puts "DEBUG)'; then
+          echo "⚠️  WARNING: Possible debug code detected"
+          echo "   Found: console.log, debugger, binding.pry, byebug, or DEBUG output"
+          echo "   Review staged changes to ensure no debug code is committed"
+          has_warning=1
+        fi
+        
+        if [ "$has_error" -eq 1 ]; then
+          echo ""
+          echo "💡 Tips:"
+          echo "   - Use 'git reset HEAD <file>' to unstage files"
+          echo "   - Use 'git add -p' for selective staging"
+          echo "   - Break large changes into focused commits"
+          exit 1
+        fi
+        
+        if [ "$has_warning" -eq 0 ]; then
+          echo "✅ Commit size looks reasonable ($staged_count files, $lines_changed lines)"
+        fi
+      skip:
+        - merge
+        - rebase
     validate_dependabot_config:
       run: |
         #!/bin/bash
@@ -166,30 +274,41 @@ pre-push:
         # If these are required, ensure they are defined in the correct package.json
         # and update this hook accordingly, potentially changing the working directory.
     rails-system-tests:
-      tags: backend system-tests
+      tags: test system
       run: |
-        if [ -f .env ]; then
-          . ./.env
-        fi
-        if ./scripts/should-run-system-tests.sh; then
-          echo "⏭️  Skipping system tests (safe changes only)"
+        #!/bin/bash
+        set -euo pipefail
+        
+        # Skip system tests if SKIP_SYSTEM_TESTS=1 (useful for network outages)
+        if [ "${SKIP_SYSTEM_TESTS:-0}" = "1" ]; then
+          echo "⚠️  Skipping system tests (SKIP_SYSTEM_TESTS=1)"
+          echo "   Set SKIP_SYSTEM_TESTS=1 to bypass during network issues"
           exit 0
         fi
+        
+        # Timeout for entire system test suite: 3 minutes
+        SYSTEM_TEST_TIMEOUT=180
+        
+        echo "🧪 Changed files may affect system behavior"
+        echo "   Running full system test suite (timeout: ${SYSTEM_TEST_TIMEOUT}s)"
+        
         echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
-          echo "❌ Failed to set up system test environment (see log/setup.log for details)"
+        if ! timeout 60s ./bin/setup 2>&1 | tee log/setup.log; then
+          echo "❌ Failed to set up system test environment (timeout or error)"
           exit 1
         fi
         
         echo "🔧 Preparing system test database..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
-          echo "❌ Failed to prepare system test database"
+        if ! timeout 30s CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+          echo "❌ Failed to prepare system test database (timeout or error)"
           exit 1
         fi
         
         echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false mise exec -- bin/rails test:system --quiet; then
-          echo "❌ System tests failed"
+        if ! timeout ${SYSTEM_TEST_TIMEOUT}s CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false mise exec -- bin/rails test:system --quiet; then
+          echo "❌ System tests failed or timed out"
+          echo "   Individual test timeout should be < 60s"
+          echo "   Full suite timeout: ${SYSTEM_TEST_TIMEOUT}s"
           exit 1
         fi
         
