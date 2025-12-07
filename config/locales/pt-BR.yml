@@ -46,6 +46,9 @@ pt-BR:
       language_name_of_locale: Português (Brasil)
     navbar:
       coming-soon-sig: 'Em breve: inscreva-se para acesso antecipado'
+      early-access: Visualização do Acesso Antecipado
+      language: Idioma
+      language_name_of_locale: Português (Brasil)
       logout: Sair
       my-profile: Meu perfil
   log-in: Entrar
