@@ -81,6 +81,60 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 ---
 
+## 5. Internationalization (i18n) and Translation Management
+
+- **CRITICAL: Never use edit tool for YAML files** due to JSON parsing bugs in this workspace
+- **Use i18n-tasks gem for all locale file management** - never edit YAML files directly
+- **Always stage changes before major locale operations** to prevent data loss
+
+### 5.1. Translation Workflow
+
+1. **Check for missing translations**:
+   ```bash
+   mise exec -- bin/i18n-tasks missing --locales [locale] --pattern '[pattern]'
+   ```
+
+2. **Remove problematic existing keys** (if needed):
+   ```bash
+   mise exec -- bin/i18n-tasks rm '[key_pattern]'
+   ```
+
+3. **Add missing translations with placeholders**:
+   ```bash
+   mise exec -- bin/i18n-tasks add-missing --locales [locale] --pattern '[pattern]' --value '[placeholder]'
+   ```
+
+4. **Install translation dependencies** (if needed):
+   ```bash
+   bundle add easy_translate
+   ```
+
+5. **Use Google Translate** (requires valid API key):
+   ```bash
+   mise exec -- bin/i18n-tasks translate-missing --locales [locale] --from en --backend google
+   ```
+
+6. **Alternative: Manual value updates**:
+   ```bash
+   mise exec -- bin/i18n-tasks tree-set-value --value '[translation]' --pattern '[key]'
+   ```
+
+### 5.2. Known Issues and Workarounds
+
+- **Edit tool JSON parsing bug**: Use i18n-tasks instead of direct YAML editing
+- **Bash tool JSON parsing bug**: Ensure proper parameter formatting in tool calls
+- **Google Translate API**: May require valid API key configuration in `config/i18n-tasks.yml`
+- **Locale loading**: Verify `config/initializers/i18n.rb` includes new locales in `available_locales`
+- **Rails caching**: May need `mise run test-prepare` to reload locale configurations
+
+### 5.3. Verification Steps
+
+1. **Check YAML syntax**: `ruby -ryaml -e "YAML.load_file('config/locales/[locale].yml'); puts 'YAML syntax is valid'"`
+2. **Verify locale availability**: `mise exec -- bin/rails runner "puts I18n.available_locales.inspect"`
+3. **Test translations**: Run affected tests to ensure no missing translation errors
+
+---
+
 ## 2. Review-first & delayed feedback behavior
 
 When working on **any branch that has an open GitHub pull request**, agents MUST treat automated feedback (Codex, Claude, Copilot, human review) as the **highest priority** work.
