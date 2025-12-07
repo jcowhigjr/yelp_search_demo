@@ -46,6 +46,29 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **If no issue exists**: Create one first before starting implementation
   - **If A/C unclear**: Ask user to define them before proceeding
 
+- **CRITICAL: PR-Issue Alignment Verification**
+  - **After creating or updating a PR**, agents MUST:
+    1. **Request @claude review** by commenting `@claude` on the PR
+    2. **Wait for @claude to verify** that the PR changes match the linked issue's acceptance criteria
+    3. **Review @claude's feedback** and address any misalignments
+    4. **Fix the PR** based on @claude's findings before requesting human review
+  - **Why this matters:**
+    - Prevents scope creep and unrelated changes
+    - Ensures PR actually solves the stated problem
+    - Catches missing acceptance criteria early
+    - Validates that all A/C are addressed
+  - **@claude will check:**
+    - PR description references correct issue
+    - All acceptance criteria from issue are addressed
+    - No unrelated changes included
+    - Tests cover the acceptance criteria
+    - Documentation updated if needed
+  - **If @claude finds issues:**
+    - Make the requested changes
+    - Commit and push updates
+    - @claude will automatically re-review on push
+    - Repeat until @claude confirms alignment
+
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
