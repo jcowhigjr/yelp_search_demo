@@ -30,6 +30,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     3. **Have a clear plan** with each A/C mapped to implementation steps
     4. **Scope confirmation** - ensure the work is within bounds and not "out of scope"
     5. **Assess test coverage** - identify existing tests that may be affected and plan test updates
+    6. **For UI changes**: Plan to verify feature visibility IMMEDIATELY after first push (see UI Feature Verification below)
   - **Non-trivial changes include**:
     - Any work that requires a new Pull Request
     - New system or unit tests
@@ -131,6 +132,45 @@ For deep policy and methodology, see `docs/AGENTS.md`.
       - Mobile responsive behavior
       - Accessibility (keyboard navigation, screen readers)
       - Cross-browser compatibility if critical
+  - **CRITICAL: UI Feature Verification (Shift-Left Testing)**
+    - **Problem**: UI features can be completely invisible due to auth checks, conditional rendering, or routing issues
+    - **Solution**: IMMEDIATELY verify feature visibility after FIRST push, before continuing work
+    - **Required workflow for UI changes:**
+      1. **Push initial implementation** (even if incomplete)
+      2. **Wait 3 minutes** for deployment
+      3. **Get deployment URL** using GraphQL query above
+      4. **Use puppeteer tools** to verify feature is visible:
+         ```javascript
+         // Navigate to preview app
+         mcp2_puppeteer_navigate(url)
+         
+         // Take screenshot
+         mcp2_puppeteer_screenshot()
+         
+         // Check for feature presence
+         mcp2_puppeteer_evaluate(() => {
+           const feature = document.querySelector('[data-controller="your-feature"]');
+           return { found: !!feature, visible: feature?.offsetParent !== null };
+         })
+         ```
+      5. **If feature NOT visible**: Stop and fix immediately before adding more code
+      6. **If feature visible**: Continue with remaining work
+    - **Why this matters:**
+      - Catches auth/routing issues immediately (not after multiple commits)
+      - Prevents wasted work building on invisible features
+      - Enables fast iteration (fix → verify → continue)
+      - Unit tests pass but feature invisible = critical gap
+    - **Examples of issues caught by early verification:**
+      - Feature behind `logged_in?` check (navbar language selector)
+      - Wrong route/path configuration
+      - CSS `display: none` or `hidden` attribute
+      - Feature flag disabled
+      - Conditional rendering with wrong logic
+    - **When to use this:**
+      - ANY new UI component (buttons, forms, modals, navbars, etc.)
+      - Changes to existing UI visibility
+      - New routes or pages
+      - Features with authentication requirements
   - **Handling flaky test failures:**
     - If a single system test fails but seems unrelated to your changes:
       1. **Create an issue** to track the failure (use temp file for body):
