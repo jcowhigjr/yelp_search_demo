@@ -66,16 +66,11 @@ th:
     navbar:
       coming-soon: เร็วๆ นี้
       coming-soon-sig: 'เร็วๆ นี้: ลงทะเบียนเพื่อเล่นระหว่างการพัฒนา'
-      early-access: เร็วๆ นี้
-      language: เร็วๆ นี้
-      language_name_of_locale: เร็วๆ นี้
-      logout: ออกจากระบบ
-      my-profile: ประวัติของฉัน
-  log-in: เข้าสู่ระบบ
-  login-to-add-th: เข้าสู่ระบบเพื่อเพิ่มร้านนี้ในรายการโปรดของคุณ!
-  more-info: ข้อมูลเพิ่มเติม
-  password-must-b: รหัสผ่าน (ต้องมีอย่างน้อย 6 ตัวอักษร)
-  phone: โทรศัพท์
+      early-access: Early-access
+      language: Language
+      language_name_of_locale: Language name of locale
+      logout: Logout
+      my-profile: My Profile
   place: สถานที่
   please-give-a-b: Please-give-a-b
   rating: ":เรตติ้ง"
