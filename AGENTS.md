@@ -65,6 +65,12 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
 
+- **Merge conflict prevention (automated)**
+  - **Pre-commit hook**: Automatically detects merge conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) in staged files
+  - **Blocks commits** with unresolved conflicts - commit will fail with clear error message
+  - **No bypass**: Never use `--no-verify` to skip this check
+  - **If hook triggers**: Resolve all conflicts before attempting to commit again
+
 - **Pre-push merge conflict detection**
   - **CRITICAL**: Before pushing or creating a PR, check for merge conflicts with the target branch
   - **Required workflow before push:**
@@ -72,8 +78,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     2. Check for conflicts: `git merge-base --is-ancestor HEAD origin/develop || git merge --no-commit --no-ff origin/develop`
     3. If merge conflicts detected:
        - Resolve conflicts immediately using i18n-tasks for YAML files
-       - Test after resolution: `mise run test`
-       - Commit the merge resolution
+       - Commit the merge resolution (pre-commit hook will verify no markers remain)
        - Then push
     4. If no conflicts: proceed with push
   - **Why this matters:**
