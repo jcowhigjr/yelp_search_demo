@@ -52,10 +52,7 @@ es:
       language_name_of_locale: Español
     navbar:
       coming-soon-sig: 'Próximamente: Regístrese para obtener acceso anticipado'
-<<<<<<< Updated upstream
-=======
       coming-soon: Próximamente
->>>>>>> Stashed changes
       early-access: Vista Previa de Acceso Anticipado
       language: Idioma
       language_name_of_locale: Español
