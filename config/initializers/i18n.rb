@@ -17,7 +17,3 @@ I18n.available_locales = [:en, :es, :fr, :'pt-BR', :th]
 #   end
 #   end
 
-# Force Thai locale to load
-Rails.application.config.after_initialize do
-  I18n.available_locales = I18n.available_locales + [:th] unless I18n.available_locales.include?(:th)
-end
