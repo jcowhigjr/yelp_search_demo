@@ -115,6 +115,13 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **If a terminal command hangs**: Cancel immediately and simplify the approach using separate steps or temporary files.
 
 - **Command hang prevention**
+  - **Timeout strategy (enforced in hooks):**
+    - Individual system test: 30s max (Cuprite timeout)
+    - Full system test suite: 3 minutes max (180s)
+    - Setup scripts: 60s max
+    - Database operations: 30s max
+    - Network requests in tests: 10s max (configure in test helpers)
+    - Pre-push hook total: 5 minutes max (enforced by timeout wrappers)
   - **Before running any command, verify:**
     1. Command doesn't require interactive input (check for `--non-interactive`, `--batch`, `--yes` flags)
     2. Command has reasonable timeout protection (use `timeout 30s command ...`)
