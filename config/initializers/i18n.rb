@@ -8,12 +8,8 @@ I18n.load_path += Rails.root.glob("config/locales/**/*.{rb,yml}")
 I18n.available_locales = [:en, :es, :fr, :'pt-BR', :th]
 
 # Raise errors for missing translations in development and test
-# if Rails.env.local?
-#   I18n.exception_handler = lambda do |exception, locale, key, _options|
-#     # Only raise errors for non-Thai locales during testing
-#     if exception.is_a?(I18n::MissingTranslation) && locale != :th
-#       raise "Missing translation: #{key}"
-#     end
-#   end
-#   end
-
+if Rails.env.local?
+  I18n.exception_handler = lambda do |exception, _locale, key, _options|
+    raise "Missing translation: #{key}" if exception.is_a?(I18n::MissingTranslation)
+  end
+end
