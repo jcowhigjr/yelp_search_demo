@@ -39,8 +39,11 @@ th:
     footer:
       language_name_of_locale: thai
     navbar:
+      coming-soon: เร็วๆ นี้
       coming-soon-sig: 'เร็วๆ นี้: ลงทะเบียนเพื่อเล่นระหว่างการพัฒนา'
       early-access: การดูตัวอย่างก่อนใคร่
+      language: ภาษา
+      language_name_of_locale: ไทย
       logout: ออกจากระบบ
       my-profile: ประวัติของฉัน
   log-in: เข้าสู่ระบบ
