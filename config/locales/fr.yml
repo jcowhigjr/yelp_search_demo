@@ -51,7 +51,12 @@ fr:
       early-access: Aperçu de l'Accès Anticipé
       language_name_of_locale: Français
     navbar:
+<<<<<<< Updated upstream
       coming-soon-sig: 'Prochainement : inscrivez-vous pour un accès anticipé'
+=======
+      coming-soon-sig: 'Prochainement : inscrivez-vous pour un accès anticipé'
+      coming-soon: Bientôt
+>>>>>>> Stashed changes
       early-access: Aperçu de l'Accès Anticipé
       language: Langue
       language_name_of_locale: Français
