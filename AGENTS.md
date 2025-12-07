@@ -82,6 +82,28 @@ For deep policy and methodology, see `docs/AGENTS.md`.
       - @claude review: typically completes within 3-5 minutes
       - Check at 5 minutes to catch most results
       - If still pending, check again at 10 minutes
+  - **Handling flaky test failures:**
+    - If a single system test fails but seems unrelated to your changes:
+      1. **Create an issue** to track the failure (use temp file for body):
+         ```bash
+         # Write issue body to temp file
+         cat > /tmp/issue.md << 'EOF'
+         ## Test Failure in PR #<number>
+         - Failed test: <test name>
+         - Job link: <url>
+         - Possible flaky test or environmental issue
+         EOF
+         gh issue create --title "Investigate test failure" --body-file /tmp/issue.md --label bug
+         ```
+      2. **Re-run the specific failed job** to verify if flaky:
+         ```bash
+         # Get the failed job ID from check-pr-status.sh output
+         gh run rerun <run-id> --job <job-id>
+         ```
+      3. **Document in issue** if test passes on re-run (confirms flaky)
+      4. **Continue with PR** if re-run passes and failure is unrelated to changes
+    - **Never use multiline strings in CLI arguments** - always write to temp file first
+    - This prevents PTY host hangs in Windsurf/terminal tools
   - **What @claude verifies** (when requested):
     - PR description references correct issue
     - All acceptance criteria addressed
