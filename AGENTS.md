@@ -83,7 +83,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
       - Check at 5 minutes to catch most results
       - If still pending, check again at 10 minutes
   - **Inspecting preview deployments:**
-    - After pushing a PR, a preview app is automatically deployed to Heroku
+    - After pushing a PR, a preview app is automatically deployed to Heroku (takes ~3 minutes)
     - **Always inspect the preview app** to verify UI changes work correctly
     - **How to find and open the preview app:**
       ```bash

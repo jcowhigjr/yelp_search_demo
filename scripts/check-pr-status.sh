@@ -128,7 +128,7 @@ if [ -n "$DEPLOYMENT_URL" ]; then
   echo "   ✅ Preview app deployed: $DEPLOYMENT_URL"
   echo "   💡 Use browser_preview tool to inspect UI changes"
 else
-  echo "   ⏳ No preview deployment yet (may take 5-10 minutes)"
+  echo "   ⏳ No preview deployment yet (takes ~3 minutes from push)"
 fi
 
 # Summary
