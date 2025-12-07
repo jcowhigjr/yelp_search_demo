@@ -189,38 +189,53 @@ pre-push:
           base_branch="main"
         fi
         
-        # Detect UI-related file changes
-        ui_files=$(git diff origin/$base_branch...HEAD --name-only 2>/dev/null | grep -E 'app/(views|assets|javascript)|app/helpers.*\.rb' || true)
+        # Get list of commits being pushed
+        commits=$(git rev-list origin/$base_branch..HEAD 2>/dev/null || git rev-list HEAD)
         
-        if [ -z "$ui_files" ]; then
-          echo "✅ No UI changes detected - skipping UI testing validation"
+        if [ -z "$commits" ]; then
+          echo "✅ No new commits to push"
           exit 0
         fi
-        
-        echo "📝 UI changes detected in:"
-        echo "$ui_files" | head -5
-        if [ $(echo "$ui_files" | wc -l) -gt 5 ]; then
-          echo "   ... and $(( $(echo "$ui_files" | wc -l) - 5 )) more files"
-        fi
-        echo ""
-        
-        # Check commit messages for testing evidence
-        commit_messages=$(git log origin/$base_branch...HEAD --pretty=%B)
         
         # Keywords that indicate manual testing was done
         testing_keywords="puppeteer|screenshot|manual.test|tested.locally|browser.preview|mcp2_puppeteer|visual.verification|ui.tested"
         
-        if echo "$commit_messages" | grep -qiE "$testing_keywords"; then
-          echo "✅ Testing evidence found in commit messages"
-          echo "   Keywords matched: $(echo "$commit_messages" | grep -ioE "$testing_keywords" | sort -u | tr '\n' ', ' | sed 's/,$//')"
-          exit 0
-        fi
+        # Track if we found any UI changes without testing
+        found_untested_ui=0
+        untested_commits=""
         
-        # If no testing evidence, check if this is a documentation-only change
-        if echo "$ui_files" | grep -qvE '\.md$'; then
+        # Check each commit individually
+        while IFS= read -r commit; do
+          # Get files changed in this commit
+          commit_files=$(git diff-tree --no-commit-id --name-only -r "$commit" 2>/dev/null || true)
+          
+          # Check if this commit touches UI files
+          ui_files=$(echo "$commit_files" | grep -E 'app/(views|assets|javascript)|app/helpers.*\.rb' || true)
+          
+          if [ -n "$ui_files" ]; then
+            # This commit has UI changes - check for testing evidence
+            commit_msg=$(git log -1 --pretty=%B "$commit")
+            commit_short=$(git log -1 --pretty=%h "$commit")
+            commit_subject=$(git log -1 --pretty=%s "$commit")
+            
+            # Check if documentation-only
+            if echo "$ui_files" | grep -qvE '\.md$'; then
+              # Real UI changes - need testing evidence
+              if ! echo "$commit_msg" | grep -qiE "$testing_keywords"; then
+                found_untested_ui=1
+                untested_commits="${untested_commits}  - ${commit_short}: ${commit_subject}\n"
+              fi
+            fi
+          fi
+        done <<< "$commits"
+        
+        if [ $found_untested_ui -eq 1 ]; then
           echo "❌ ERROR: UI changes detected without testing evidence!"
           echo ""
-          echo "📋 Required: Evidence of manual testing in commit messages"
+          echo "The following commits modify UI files but lack testing keywords:"
+          echo -e "$untested_commits"
+          echo ""
+          echo "📋 Required: Evidence of manual testing in EACH commit message"
           echo ""
           echo "Before pushing UI changes, you MUST:"
           echo "  1. Start local server: mise exec -- bin/rails server -p 3000 &"
@@ -235,11 +250,11 @@ pre-push:
           echo ""
           echo "📖 See: AGENTS.md - Complete UI Testing Checklist"
           echo ""
-          echo "💡 To bypass (NOT RECOMMENDED): Add testing evidence to your commit message"
+          echo "💡 To fix: Amend commits with testing evidence or squash into tested commits"
           exit 1
         fi
         
-        echo "✅ Documentation-only changes - skipping UI testing validation"
+        echo "✅ All UI changes have testing evidence"
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
       tags: meta reviews
