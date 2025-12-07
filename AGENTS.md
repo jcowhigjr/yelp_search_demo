@@ -65,6 +65,36 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
 
+- **Pre-push merge conflict detection**
+  - **CRITICAL**: Before pushing or creating a PR, check for merge conflicts with the target branch
+  - **Required workflow before push:**
+    1. Fetch latest changes: `git fetch origin`
+    2. Check for conflicts: `git merge-base --is-ancestor HEAD origin/develop || git merge --no-commit --no-ff origin/develop`
+    3. If merge conflicts detected:
+       - Resolve conflicts immediately using i18n-tasks for YAML files
+       - Test after resolution: `mise run test`
+       - Commit the merge resolution
+       - Then push
+    4. If no conflicts: proceed with push
+  - **Why this matters:**
+    - GitHub will flag merge conflicts on PR creation/update
+    - Conflicts block PR merging and require immediate attention
+    - Proactive detection saves time and prevents broken PRs
+    - Allows agent to fix conflicts autonomously before push
+  - **Automated check pattern:**
+    ```bash
+    # Check if current branch can merge cleanly into develop
+    git fetch origin develop
+    if ! git merge-tree $(git merge-base HEAD origin/develop) HEAD origin/develop | grep -q "^<<<<<"; then
+      echo "✅ No merge conflicts detected"
+      git push
+    else
+      echo "❌ Merge conflicts detected - resolving before push"
+      git merge origin/develop
+      # Resolve conflicts, test, commit, then push
+    fi
+    ```
+
 - **Terminal command safety & escaping**
   - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
   - **Never embed complex multi-line content directly in terminal commands** - this causes buffer overruns and hangs
