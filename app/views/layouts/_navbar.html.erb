@@ -15,24 +15,72 @@
           <%= link_to t('views.searches.new'),
                       new_search_path,
                       class: [
-                        'language-nav__link',
-                        (current_page?(new_search_path) ? 'language-nav__link--active' : '')
+                        'nav-link',
+                        (current_page?(new_search_path) ? 'nav-link--active' : '')
                       ].compact.join(' ') %>
         </li>
+        <% if logged_in? %>
+          <li>
+            <%= link_to t('.my-profile'),
+                        user_path(current_user),
+                        method: :get,
+                        class: [
+                          'nav-link',
+                          (current_page?(user_path(current_user)) ? 'nav-link--active' : nil)
+                        ].compact.join(' ') %>
+          </li>
+        <% end %>
+        
+        <!-- Language Selector Dropdown -->
         <li>
-          <%= link_to t('.my-profile'),
-                      user_path(current_user),
-                      method: :get,
-                      class: [
-                        'language-nav__link',
-                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil)
-                      ].compact.join(' ') %>
+          <div class="language-selector-dropdown" data-controller="language-selector">
+            <button type="button" 
+                    class="nav-link dropdown-toggle" 
+                    data-action="click->language-selector#toggle"
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+              <i class="material-icons left" style="font-size: 16px;">language</i>
+              <%= t('.language') %>
+              <i class="material-icons right" style="font-size: 12px;">arrow_drop_down</i>
+            </button>
+            
+            <div class="dropdown-menu" data-language-selector-target="menu" hidden>
+              <% I18n.available_locales.each do |locale| %>
+                <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                            class: [
+                              'dropdown-item',
+                              ('dropdown-item--active' if locale == I18n.locale)
+                            ].compact.join(' '),
+                            "aria-label": t('.language_name_of_locale', locale:) do %>
+                  <%= t('.language_name_of_locale', locale:) %>
+                  <% if locale == I18n.locale %>
+                    <i class="material-icons right" style="font-size: 12px;">check</i>
+                  <% end %>
+                <% end %>
+              <% end %>
+              
+              <% if Flipper[:early_access_preview].enabled? %>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-item--cta">
+                  <%= t('.early-access') %>
+                </div>
+              <% else %>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item dropdown-item--cta">
+                  <%= t('.coming-soon') %>
+                </div>
+              <% end %>
+            </div>
+          </div>
         </li>
-        <li>
-          <%= link_to t('.logout'), logout_path,
-                      class: 'language-nav__link',
-                      data: { turbo_method: :delete } %>
-        </li>
+        
+        <% if logged_in? %>
+          <li>
+            <%= link_to t('.logout'), logout_path,
+                        class: 'nav-link',
+                        data: { turbo_method: :delete } %>
+          </li>
+        <% end %>
       </ul>
 
       <!-- Mobile Menu Trigger -->
@@ -46,33 +94,35 @@
 <!-- Mobile Navigation -->
 <div class="sidenav" id="mobile-demo" style="background-color: var(--color-bg);">
   <ul>
-    <li>
-      <div class="user-view">
-        <h6 class="flex items-center gap-2" style="color: var(--color-text);">
-          <i class="material-icons" style="font-size: 16px;">person</i>
-          <%= current_user.name %>
-        </h6>
-        <span class="flex items-center gap-2" style="color: var(--color-text); opacity: 0.7;">
-          <i class="material-icons" style="font-size: 16px;">email</i>
-          <%= current_user.email %>
-        </span>
-      </div>
-    </li>
-    <li>
-      <p>
-        <%= link_to logout_path, data: { turbo_method: :delete } do %>
-          <i class="material-icons">exit_to_app</i><%= t('.logout') %>
-        <% end %>
-      </p>
-    </li>
-    <%# be careful turbo false is here to prevent breaking the slide-nav %>
-    <li>
-      <p>
-        <%= link_to user_path(current_user), data: { turbo: false } do %>
-          <i class="material-icons">person</i><%= t('.my-profile') %>
-        <% end %>
-      </p>
-    </li>
+    <% if logged_in? %>
+      <li>
+        <div class="user-view">
+          <h6 class="flex items-center gap-2" style="color: var(--color-text);">
+            <i class="material-icons" style="font-size: 16px;">person</i>
+            <%= current_user.name %>
+          </h6>
+          <span class="flex items-center gap-2" style="color: var(--color-text); opacity: 0.7;">
+            <i class="material-icons" style="font-size: 16px;">email</i>
+            <%= current_user.email %>
+          </span>
+        </div>
+      </li>
+      <li>
+        <p>
+          <%= link_to logout_path, data: { turbo_method: :delete } do %>
+            <i class="material-icons">exit_to_app</i><%= t('.logout') %>
+          <% end %>
+        </p>
+      </li>
+      <%# be careful turbo false is here to prevent breaking the slide-nav %>
+      <li>
+        <p>
+          <%= link_to user_path(current_user), data: { turbo: false } do %>
+            <i class="material-icons">person</i><%= t('.my-profile') %>
+          <% end %>
+        </p>
+      </li>
+    <% end %>
     <%# be careful turbo false is here to prevent breaking the slide-nav %>
     <li>
       <p>
