@@ -155,6 +155,93 @@ For deep policy and methodology, see `docs/AGENTS.md`.
          ```
       5. **If feature NOT visible**: Stop and fix immediately before adding more code
       6. **If feature visible**: Continue with remaining work
+  - **CRITICAL: Complete UI Testing Checklist (Before Opening PR)**
+    - **MUST complete ALL steps before opening PR with UI changes**
+    - **Local Testing (Required First):**
+      ```bash
+      # 1. Start local Rails server
+      mise exec -- bin/rails server -p 3000 &
+      
+      # 2. Wait for server to be ready
+      sleep 5 && curl -s http://localhost:3000 > /dev/null && echo "Server ready"
+      
+      # 3. Use puppeteer to test feature
+      # Navigate to page
+      mcp2_puppeteer_navigate("http://localhost:3000")
+      
+      # 4. Take screenshot to verify feature visible
+      mcp2_puppeteer_screenshot(name="feature-initial", width=1280, height=800)
+      
+      # 5. Inspect DOM to verify feature presence
+      mcp2_puppeteer_evaluate(() => {
+        const feature = document.querySelector('[data-controller="your-feature"]');
+        const button = document.querySelector('.your-button-class');
+        return {
+          featureFound: !!feature,
+          featureVisible: feature?.offsetParent !== null,
+          buttonFound: !!button,
+          buttonText: button?.textContent.trim()
+        };
+      })
+      
+      # 6. Test interactions (clicks, form fills, etc.)
+      mcp2_puppeteer_click(".your-button-class")
+      mcp2_puppeteer_screenshot(name="after-interaction", width=1280, height=800)
+      
+      # 7. Check for JavaScript errors
+      mcp2_puppeteer_evaluate(() => {
+        // Returns any console errors
+        return { errors: window.jsErrors || [] };
+      })
+      
+      # 8. Stop server when done
+      lsof -ti:3000 | xargs kill -9
+      ```
+    - **Run Related Tests (Required):**
+      ```bash
+      # 1. Run controller tests for affected controllers
+      mise exec -- bin/rails test test/controllers/your_controller_test.rb
+      
+      # 2. Run view/helper tests if applicable
+      mise exec -- bin/rails test test/helpers/your_helper_test.rb
+      
+      # 3. Run system tests related to the feature
+      mise exec -- bin/rails test:system test/system/your_feature_test.rb
+      
+      # 4. Run ALL system tests to catch layout conflicts
+      mise exec -- bin/rails test:system
+      ```
+    - **Preview Deployment Testing (After Push):**
+      ```bash
+      # 1. Get preview deployment URL
+      gh api graphql -f query='...' | jq -r '...'
+      
+      # 2. Test on preview deployment (same puppeteer steps as local)
+      mcp2_puppeteer_navigate("https://your-preview-url.herokuapp.com")
+      mcp2_puppeteer_screenshot()
+      # ... repeat interaction tests
+      ```
+    - **What to Verify:**
+      - ✅ Feature visible in screenshot
+      - ✅ Feature present in DOM (not hidden by CSS or auth checks)
+      - ✅ Interactive elements clickable (no overlapping elements)
+      - ✅ Stimulus/JavaScript controllers working (dropdowns open, forms submit, etc.)
+      - ✅ No console errors
+      - ✅ Mobile responsive (test at 375px width)
+      - ✅ All related tests passing
+      - ✅ No layout conflicts with existing UI (theme buttons, navbars, etc.)
+    - **Common Issues to Check:**
+      - Navbar/header overlapping other elements (z-index issues)
+      - Dropdowns not opening (Stimulus controller not connected)
+      - Feature behind auth check (logged_in? wrapper)
+      - CSS `display: none` or `hidden` attribute
+      - Wrong selector in tests (element not found)
+      - Layout shifts breaking existing tests
+    - **When Tests Fail:**
+      - Fix immediately before opening PR
+      - Don't push broken tests with "TODO: fix later"
+      - If system test fails due to layout conflict, fix the layout
+      - If Stimulus controller doesn't work, debug before pushing
     - **Why this matters:**
       - Catches auth/routing issues immediately (not after multiple commits)
       - Prevents wasted work building on invisible features
