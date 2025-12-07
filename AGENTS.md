@@ -47,27 +47,45 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **If A/C unclear**: Ask user to define them before proceeding
 
 - **CRITICAL: PR-Issue Alignment Verification**
-  - **After creating or updating a PR**, agents MUST:
-    1. **Request @claude review** by commenting `@claude` on the PR
-    2. **Wait for @claude to verify** that the PR changes match the linked issue's acceptance criteria
-    3. **Review @claude's feedback** and address any misalignments
-    4. **Fix the PR** based on @claude's findings before requesting human review
-  - **Why this matters:**
-    - Prevents scope creep and unrelated changes
-    - Ensures PR actually solves the stated problem
-    - Catches missing acceptance criteria early
-    - Validates that all A/C are addressed
-  - **@claude will check:**
+  - **When to request @claude review** (use judgment - @claude review is expensive):
+    - **ALWAYS request for:**
+      - Multiple acceptance criteria (2+)
+      - Complex changes (10+ files or 300+ lines)
+      - Cross-cutting concerns (affects multiple systems)
+      - New features or major refactoring
+      - Changes to AGENTS.md or core documentation
+      - When uncertain about scope alignment
+    - **SKIP @claude review for:**
+      - Single A/C with simple implementation
+      - Small PRs (< 5 files, < 100 lines)
+      - First push on straightforward issues
+      - Documentation-only changes
+      - Obvious bug fixes with clear reproduction
+  - **Async workflow** (don't block on @claude):
+    1. **Create PR** with clear description linking to issue
+    2. **Self-verify alignment** - review your changes against issue A/C
+    3. **If complex**: Comment `@claude` to request review
+    4. **Continue working** - @claude reviews asynchronously (runs on PR open/update)
+    5. **Check back later** - @claude posts review as PR comment
+    6. **Address feedback** - if @claude finds issues, fix and push
+    7. **Auto re-review** - @claude automatically reviews new pushes
+  - **What @claude verifies** (when requested):
     - PR description references correct issue
-    - All acceptance criteria from issue are addressed
+    - All acceptance criteria addressed
     - No unrelated changes included
     - Tests cover the acceptance criteria
     - Documentation updated if needed
-  - **If @claude finds issues:**
-    - Make the requested changes
-    - Commit and push updates
-    - @claude will automatically re-review on push
-    - Repeat until @claude confirms alignment
+  - **Why this matters:**
+    - Prevents scope creep on complex PRs
+    - Catches missing A/C before human review
+    - Validates completeness on multi-faceted changes
+    - Saves human reviewer time
+  - **Agent self-check before requesting @claude:**
+    - Does PR description clearly link to issue?
+    - Are all A/C from issue addressed?
+    - Are there any unrelated changes?
+    - Do tests cover the changes?
+    - Is this complex enough to warrant @claude review?
 
 - **Use the mise toolchain**
   - Prefix all runtime commands with:
