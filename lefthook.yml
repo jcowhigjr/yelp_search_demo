@@ -175,6 +175,71 @@ pre-push:
       exit 1
     fi
   commands:
+    check_ui_testing_evidence:
+      tags: ui testing validation
+      run: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        echo "🎨 Checking for UI changes and testing evidence..."
+        
+        # Get the base branch (develop or main)
+        base_branch="develop"
+        if ! git rev-parse --verify origin/$base_branch >/dev/null 2>&1; then
+          base_branch="main"
+        fi
+        
+        # Detect UI-related file changes
+        ui_files=$(git diff origin/$base_branch...HEAD --name-only 2>/dev/null | grep -E 'app/(views|assets|javascript)|app/helpers.*\.rb' || true)
+        
+        if [ -z "$ui_files" ]; then
+          echo "✅ No UI changes detected - skipping UI testing validation"
+          exit 0
+        fi
+        
+        echo "📝 UI changes detected in:"
+        echo "$ui_files" | head -5
+        if [ $(echo "$ui_files" | wc -l) -gt 5 ]; then
+          echo "   ... and $(( $(echo "$ui_files" | wc -l) - 5 )) more files"
+        fi
+        echo ""
+        
+        # Check commit messages for testing evidence
+        commit_messages=$(git log origin/$base_branch...HEAD --pretty=%B)
+        
+        # Keywords that indicate manual testing was done
+        testing_keywords="puppeteer|screenshot|manual.test|tested.locally|browser.preview|mcp2_puppeteer|visual.verification|ui.tested"
+        
+        if echo "$commit_messages" | grep -qiE "$testing_keywords"; then
+          echo "✅ Testing evidence found in commit messages"
+          echo "   Keywords matched: $(echo "$commit_messages" | grep -ioE "$testing_keywords" | sort -u | tr '\n' ', ' | sed 's/,$//')"
+          exit 0
+        fi
+        
+        # If no testing evidence, check if this is a documentation-only change
+        if echo "$ui_files" | grep -qvE '\.md$'; then
+          echo "❌ ERROR: UI changes detected without testing evidence!"
+          echo ""
+          echo "📋 Required: Evidence of manual testing in commit messages"
+          echo ""
+          echo "Before pushing UI changes, you MUST:"
+          echo "  1. Start local server: mise exec -- bin/rails server -p 3000 &"
+          echo "  2. Test with puppeteer: mcp2_puppeteer_navigate('http://localhost:3000')"
+          echo "  3. Take screenshots: mcp2_puppeteer_screenshot()"
+          echo "  4. Test interactions: mcp2_puppeteer_click('.your-selector')"
+          echo "  5. Run system tests: mise exec -- bin/rails test:system"
+          echo ""
+          echo "Include testing keywords in commit messages:"
+          echo "  - 'puppeteer', 'screenshot', 'manual test', 'tested locally'"
+          echo "  - 'browser preview', 'visual verification', 'UI tested'"
+          echo ""
+          echo "📖 See: AGENTS.md - Complete UI Testing Checklist"
+          echo ""
+          echo "💡 To bypass (NOT RECOMMENDED): Add testing evidence to your commit message"
+          exit 1
+        fi
+        
+        echo "✅ Documentation-only changes - skipping UI testing validation"
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
       tags: meta reviews
