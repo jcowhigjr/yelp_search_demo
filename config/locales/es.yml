@@ -41,6 +41,7 @@ es:
     not_implemented: Esta función aún no está implementada
     something_went_wrong: Algo salió mal, inténtalo de nuevo más tarde
     unauthorized: No está autorizado para realizar esta acción.
+    validation_failed: Por favor corrija los siguientes errores
   hello: "¡Hola Mundo!"
   layouts:
     application:

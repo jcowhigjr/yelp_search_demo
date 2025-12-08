@@ -41,6 +41,7 @@ fr:
     not_implemented: Cette fonctionnalité n'est pas encore implémentée
     something_went_wrong: Quelque chose c'est mal passé. Merci d'essayer plus tard
     unauthorized: Vous n'êtes pas autorisé à effectuer cette action
+    validation_failed: Veuillez corriger les erreurs suivantes
   hello: Bonjour le Monde !
   layouts:
     application:

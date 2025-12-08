@@ -52,6 +52,7 @@ en:
     not_implemented: This feature is not implemented yet
     something_went_wrong: Something went wrong
     unauthorized: You are not authorized to perform this action
+    validation_failed: Please correct the following errors
   hello: Hello World
   layouts:
     application:

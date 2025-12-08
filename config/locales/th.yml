@@ -35,6 +35,7 @@ th:
     not_implemented: ฟีเจอร์นี้ยังไม่ได้ใช้งาน
     something_went_wrong: เกิดข้อผิดพลาด โปรดลองอีกครั้งในภายหลัง
     unauthorized: คุณไม่ได้รับอนุญาตให้ดำเนินการนี้
+    validation_failed: โปรดแก้ไขข้อผิดพลาดต่อไปนี้
   layouts:
     footer:
       language_name_of_locale: thai

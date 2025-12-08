@@ -35,6 +35,7 @@ pt-BR:
     not_implemented: Este recurso ainda não foi implementado
     something_went_wrong: Algo deu errado, tente novamente mais tarde
     unauthorized: Você não está autorizado a realizar esta ação
+    validation_failed: Por favor, corrija os seguintes erros
   hello: Olá Mundo!
   layouts:
     application:

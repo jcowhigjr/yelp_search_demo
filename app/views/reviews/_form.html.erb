@@ -1,6 +1,24 @@
 <div class="row center">
     <%= form_with(model: [@coffeeshop, review], id: "#{dom_id(review)}_form" ) do |f| %>
         <%= f.hidden_field :user_id, value: current_user.id %>
+
+        <% if review.errors.any? %>
+          <div class="row center">
+            <div class="card-panel red lighten-4">
+              <h6 class="red-text text-darken-4"><%= t('error.validation_failed') %></h6>
+              <ul class="red-text text-darken-4" style="text-align: left;">
+                <% review.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% elsif flash[:review_error] %>
+          <div class="row center">
+            <span class="red-text"><%= flash[:review_error] %></span>
+          </div>
+        <% end %>
+
         <%= f.label t('.rating') %>
         <%= f.select(:rating,
                      options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
