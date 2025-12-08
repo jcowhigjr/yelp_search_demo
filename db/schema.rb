@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_08_225052) do
   create_table "coffeeshops", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
@@ -22,6 +22,15 @@ ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
     t.datetime "updated_at", null: false
     t.string "yelp_url"
     t.index ["search_id"], name: "index_coffeeshops_on_search_id"
+  end
+
+  create_table "restaurants", force: :cascade do |t|
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "phone_number"
+    t.float "rating"
+    t.datetime "updated_at", null: false
   end
 
   create_table "reviews", force: :cascade do |t|
