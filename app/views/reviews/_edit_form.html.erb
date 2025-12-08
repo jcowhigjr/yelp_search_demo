@@ -5,6 +5,16 @@
   <br><br>
   <div class="row center">
     <%= form_with(model: [review.user, review], method: :patch) do |f| %>
+      <% if review.errors.any? %>
+        <div class="error-messages" style="background-color: #ffebee; border: 1px solid #ef5350; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
+          <h4 style="color: #c62828; margin: 0 0 8px 0; font-size: 16px;">Please fix the following errors:</h4>
+          <ul style="color: #c62828; margin: 0; padding-left: 20px;">
+            <% review.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
       <%= f.hidden_field :user_id, value: current_user.id %>
       <%= f.label :rating %>
       <%= f.select(:rating,

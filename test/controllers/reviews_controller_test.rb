@@ -69,7 +69,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
             },
           }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
     assert_equal I18n.t('error.something_went_wrong'), flash[:review_error]
     assert_includes @response.body, 'Edit your review for'
   end
@@ -86,10 +86,10 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
           },
           headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
     assert_equal 'text/vnd.turbo-stream.html', @response.media_type
 
-    assert_turbo_stream action: :replace, target: @review, status: :unprocessable_entity do |fragment|
+    assert_turbo_stream action: :replace, target: @review, status: :unprocessable_content do |fragment|
       assert_select fragment, "turbo-frame##{ActionView::RecordIdentifier.dom_id(@review)}" do
         assert_select 'form'
         assert_select '*', text: /Edit your review for/
@@ -103,5 +103,25 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to coffeeshop_path(@coffeeshop)
+  end
+
+  test 'should show validation errors for invalid rating on create' do
+    login_as(@user)
+    @user.stubs(:favorite?).returns(false)
+    
+    assert_no_difference('Review.count') do
+      post coffeeshop_reviews_path(@coffeeshop, locale: nil),
+           params: {
+             review: {
+               user_id: @user.id,
+               rating: 10,
+               content: 'Great place!',
+             },
+           }
+    end
+
+    assert_response :unprocessable_content
+    assert_includes @response.body, 'Please fix the following errors:'
+    assert_includes @response.body, 'Rating is not included in the list'
   end
 end

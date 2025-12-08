@@ -4,15 +4,15 @@
   <div class="max-w-4xl mx-auto">
     <!-- Back to Results Button -->
     <div class="mb-6">
-      <%= link_to "← BACK TO RESULTS", "javascript:history.back()", 
-                  class: "material-button small secondary" %>
+      <%= link_to '← BACK TO RESULTS', 'javascript:history.back()',
+                  class: 'material-button small secondary' %>
     </div>
-    
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Left Column: Image -->
       <div>
         <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
-          <%= image_tag @coffeeshop.image_url, alt: @coffeeshop.name, 
+          <%= image_tag @coffeeshop.image_url, alt: @coffeeshop.name,
                        class: 'w-full h-full object-cover' %>
         </div>
       </div>
@@ -24,7 +24,7 @@
             <h1 class="page-name mb-2" style="color: var(--color-text);">
               <%= @coffeeshop.name %>
             </h1>
-            
+
             <div class="flex items-center gap-2 mb-2">
               <div class="flex items-center">
                 <%= render partial: 'reviews/rating_stars', locals: { rating: @coffeeshop.rating } %>
@@ -34,15 +34,15 @@
               </span>
             </div>
           </div>
-          
+
           <% if logged_in? %>
             <div class="favorite-section">
-              <%= turbo_frame_tag dom_id(@coffeeshop, "favorite") do %>
-                <%= render "favorites/button",
-                      item: @coffeeshop,
-                      icon: favorite_icon_for(nil),
-                      liked: current_user.favorited?(@coffeeshop),
-                      search_query: nil %>
+              <%= turbo_frame_tag dom_id(@coffeeshop, 'favorite') do %>
+                <%= render 'favorites/button',
+                           item: @coffeeshop,
+                           icon: favorite_icon_for(nil),
+                           liked: current_user.favorited?(@coffeeshop),
+                           search_query: nil %>
               <% end %>
             </div>
           <% else %>
@@ -61,11 +61,11 @@
 
         <!-- Primary Action Buttons -->
         <div class="flex gap-3 mb-6">
-          <%= link_to "GET DIRECTIONS", google_maps_url, 
-                      target: :blank, 
-                      class: "material-button large flex-1" %>
-          <%= link_to "CALL NOW", phone_url, 
-                      class: "material-button large secondary flex-1" %>
+          <%= link_to 'GET DIRECTIONS', google_maps_url,
+                      target: :blank,
+                      class: 'material-button large flex-1' %>
+          <%= link_to 'CALL NOW', phone_url,
+                      class: 'material-button large secondary flex-1' %>
         </div>
 
         <!-- Additional Info -->
@@ -76,32 +76,32 @@
           <div class="space-y-2">
             <% google_maps_url = "https://www.google.com/maps/search/?api=1&query=#{@coffeeshop.google_address_slug}" %>
             <% phone_url = "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}" %>
-            
-            <%= link_to @coffeeshop.address, google_maps_url, 
-                       target: :blank, 
-                       class: 'map-link truncate' %>
-            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true), 
-                       phone_url, 
-                       class: 'phone-link' %>
-            
+
+            <%= link_to @coffeeshop.address, google_maps_url,
+                        target: :blank,
+                        class: 'map-link truncate' %>
+            <%= link_to number_to_phone(@coffeeshop.phone_number, area_code: true),
+                        phone_url,
+                        class: 'phone-link' %>
+
             <% begin %>
               <% yelp_uri = URI.parse(@coffeeshop.yelp_url) %>
               <% if yelp_uri.scheme == 'https' && yelp_uri.host == 'www.yelp.com' %>
-                <% safe_yelp_url = "https://www.yelp.com" + yelp_uri.path.to_s + (yelp_uri.query ? "?" + yelp_uri.query : "") %>
+                <% safe_yelp_url = "https://www.yelp.com#{yelp_uri.path}#{"?#{yelp_uri.query}" if yelp_uri.query}" %>
                 <div class="flex items-center">
                    <i class="fab fa-yelp yelp_color mr-2"></i>
-                   <%= link_to "View on Yelp", safe_yelp_url, target: :blank, class: "page-text" %>
+                   <%= link_to 'View on Yelp', safe_yelp_url, target: :blank, class: 'page-text' %>
                 </div>
               <% end %>
             <% rescue URI::InvalidURIError %>
               <%# Malformed Yelp URL, do not render link %>
             <% end %>
-            
+
             <% if @coffeeshop.user_favorites.size > 0 %>
               <div class="flex items-center gap-2">
                 <i class="material-icons" style="color: var(--color-primary);">favorite</i>
                 <span style="color: var(--color-text); opacity: 0.8;">
-                  <%= pluralize(@coffeeshop.user_favorites.size, "person") %> favorited this shop
+                  <%= pluralize(@coffeeshop.user_favorites.size, 'person') %> favorited this shop
                 </span>
               </div>
             <% end %>
@@ -116,14 +116,14 @@
                 <% if current_user.favorite?(@coffeeshop) %>
                   <%= form_tag user_favorite_path, method: 'delete' do %>
                     <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                    <%= submit_tag t('.remove-from-favorites'), 
-                                 class: "material-button secondary" %>
+                    <%= submit_tag t('.remove-from-favorites'),
+                                   class: 'material-button secondary' %>
                   <% end %>
                 <% else %>
                   <%= form_tag user_favorites_path do %>
                     <%= hidden_field_tag :coffeeshop_id, @coffeeshop.id %>
-                    <%= submit_tag t('.add-to-favorites'), 
-                                 class: "material-button" %>
+                    <%= submit_tag t('.add-to-favorites'),
+                                   class: 'material-button' %>
                   <% end %>
                 <% end %>
               </div>
@@ -144,18 +144,19 @@
       <h3 class="mb-6" style="color: var(--color-text);">
         Reviews
       </h3>
-      
+
       <div class="space-y-6">
-        <% if @coffeeshop.reviews.empty? %>
+        <% saved_reviews = @coffeeshop.reviews.select(&:persisted?) %>
+        <% if saved_reviews.empty? %>
           <div class="text-center p-6 rounded-lg review-card review-container">
             <p style="color: var(--color-text); opacity: 0.8;">
               No reviews yet. Be the first to write one!
             </p>
           </div>
         <% else %>
-          <% @coffeeshop.reviews.each do |review| %>
+          <% saved_reviews.each do |review| %>
             <div class="p-6 rounded-lg review-card review-container">
-              <%= render partial: 'reviews/show', locals: { review: review } %>
+              <%= render partial: 'reviews/show', locals: { review: } %>
             </div>
           <% end %>
         <% end %>
@@ -163,7 +164,7 @@
         <!-- Add Review Form -->
         <% if logged_in? %>
           <div class="p-6 rounded-lg review-card review-container">
-            <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: Review.new } %>
+            <%= render partial: 'reviews/form', locals: { coffeeshop: @coffeeshop, review: @review || Review.new } %>
           </div>
         <% else %>
           <div class="text-center p-6 rounded-lg review-card review-container">
