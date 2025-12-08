@@ -70,8 +70,8 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
           }
 
     assert_response :unprocessable_entity
-    assert_equal I18n.t('error.something_went_wrong'), flash[:review_error]
     assert_includes @response.body, 'Edit your review for'
+    assert_includes @response.body, I18n.t('error.validation_failed')
   end
 
   test 'returns turbo stream with form on failure for turbo clients' do
