@@ -1,6 +1,10 @@
 class Review < ApplicationRecord
   validates :content, :rating, presence: true
-  validates :rating, inclusion: { in: 1..5 }
+  validates :rating,
+            numericality: {
+              greater_than_or_equal_to: 1,
+              less_than_or_equal_to: 5,
+            }
   belongs_to :user
   belongs_to :coffeeshop
   scope :order_reviews,
