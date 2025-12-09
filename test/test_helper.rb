@@ -10,6 +10,9 @@ ENV['CUPRITE_JS_ERRORS'] = ENV.fetch('CUPRITE_JS_ERRORS', 'false')
 require 'minitest'
 require 'mocha/minitest'
 require_relative '../config/environment'
+require 'securerandom'
+require 'socket'
+require 'tmpdir'
 
 # require "minitest/autorun"
 require 'rails/test_help'
@@ -60,8 +63,28 @@ Capybara.javascript_driver = :ferrum_block_fonts
 # end
 
 class ActiveSupport::TestCase
-  # Run tests in parallel with configurable workers (default: 3) even for small suites
-  parallelize(workers: ENV.fetch("RAILS_TEST_WORKERS", 3).to_i, threshold: 0)
+  def self.process_parallelization_available?
+    socket_path = File.join(Dir.tmpdir, "rails-parallel-#{Process.pid}-#{SecureRandom.hex(4)}")
+    UNIXServer.new(socket_path).close
+    File.delete(socket_path)
+    true
+  rescue Errno::EACCES, Errno::EPERM => e
+    warn "[test] Falling back to thread-based test runs because #{e.class}: #{e.message}"
+    false
+  ensure
+    File.delete(socket_path) if defined?(socket_path) && File.exist?(socket_path)
+  end
+
+  process_workers = ENV.fetch("RAILS_TEST_WORKERS", 3).to_i
+  thread_workers = ENV.fetch("RAILS_TEST_THREAD_WORKERS", 1).to_i
+
+  # Prefer process-based parallelization when the environment allows DRb sockets; otherwise
+  # fallback to thread-based, single-worker execution to avoid cross-test stubbing conflicts.
+  if process_parallelization_available?
+    parallelize(workers: process_workers, threshold: 0)
+  else
+    parallelize(workers: thread_workers, threshold: 0, with: :threads)
+  end
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
