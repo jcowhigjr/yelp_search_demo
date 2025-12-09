@@ -4,12 +4,9 @@ class SearchesTest < ApplicationSystemTestCase
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
 
-  setup do
-    stub_yelp_api_request
-  end
-
   test 'An anonymous user at the static home can search by query and view results' do
     query = 'yoga'
+    stub_yelp_api_request(query)
 
     visit new_search_path  # Use the explicit path instead of '/'
 
@@ -56,6 +53,7 @@ class SearchesTest < ApplicationSystemTestCase
     skip 'Focused on interactive query UX; run locally, skipped in CI for stability' if ENV['CI'] == 'true'
     query = 'yoga'
     query2 = 'coffee'
+    stub_yelp_api_request(query)
     
     # Visit the home page and wait for it to load
     visit '/'
@@ -88,6 +86,7 @@ class SearchesTest < ApplicationSystemTestCase
     
     # Update the search query - wait for the search form and use a fresh field
     assert_selector 'form[action="/searches"]', wait: 10
+    stub_yelp_api_request(query2)
     search_box = find(:fillable_field, 'search[query]', wait: 10)
     search_box.fill_in(with: query2)
 
