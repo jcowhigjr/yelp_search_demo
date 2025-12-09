@@ -77,4 +77,18 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'tacos', @search.reload.query
   end
 
+  test '#update handles API errors by redirecting with a flash message' do
+    post searches_path, params: { search: { query: 'yoga', latitude: 0, longitude: 0 } }
+    @search = Search.last
+
+    error_message = 'error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable.'
+
+    Coffeeshop.stubs(:get_search_results).returns(error_message)
+
+    patch search_url(@search.id), params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
+
+    assert_redirected_to static_home_url
+    assert_equal error_message, flash[:error]
+  end
+
 end
