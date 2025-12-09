@@ -1,7 +1,9 @@
 require 'application_system_test_case'
 
 class MobileUserJourneyTest < ApplicationSystemTestCase
-  driven_by :cuprite, screen_size: [375, 667], options: {
+  MOBILE_BREAKPOINT = :large_phone
+
+  driven_by :cuprite, screen_size: SystemTestHelpers.mobile_screen_size(MOBILE_BREAKPOINT), options: {
     browser_options: {
       'no-sandbox': true,
       'disable-web-security': true,
@@ -11,7 +13,7 @@ class MobileUserJourneyTest < ApplicationSystemTestCase
       'use-fake-device-for-media-stream': true,
       'use-fake-ui-for-media-stream': true,
       'disable-gpu': true,
-      'window-size': '375,667',
+      'window-size': SystemTestHelpers.mobile_window_size(MOBILE_BREAKPOINT),
       geolocation: true,
     },
   } do |driver_option|

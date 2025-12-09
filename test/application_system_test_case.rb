@@ -20,6 +20,8 @@ EvilSystems.initial_setup
 # origin  https://github.com/ParamagicDev/evil_systems
 # APP_HOST=127.0.0.1 SHOW_TESTS=1 CUPRITE=true bin/rails test:system fixed it
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  DEFAULT_MOBILE_BREAKPOINT = :small_phone
+
   setup do
     ENV['YELP_API_KEY'] = 'test-key'
     stub_yelp_api_request
@@ -33,7 +35,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include EvilSystems::Helpers
   include OAuthTestHelper
   include LoginHelpers::System
-  
+
   # Require search test helper
   require_relative 'support/search_test_helper'
   include SearchTestHelper
@@ -64,30 +66,30 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # end
     end
   else
-  driven_by :cuprite,
-            screen_size: [375, 667],
-            options: {
-              # # Enable debugging capabilities
-              inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
-              # # Allow running Chrome in a headful mode by setting HEADLESS env
-              # # var to a falsey value
-              headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
-              js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
-              timeout: 30,  # Reduced from 60s - individual operations should complete faster
-              process_timeout: 30,  # Reduced from 60s
-              browser_options: {
-                'no-sandbox': true,
-                'disable-web-security': true,
-                'auto-open-devtools-for-tabs': false,
-                'disable-popup-blocking': true,
-                'disable-notifications': true,
-                'use-fake-device-for-media-stream': true,
-                'use-fake-ui-for-media-stream': true,
-                'disable-gpu': true,
-                'window-size': '1920,1080',
-                geolocation: true,
-              },
-            } do |driver_option|
+    driven_by :cuprite,
+              screen_size: SystemTestHelpers.mobile_screen_size(DEFAULT_MOBILE_BREAKPOINT),
+              options: {
+                # # Enable debugging capabilities
+                inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+                # # Allow running Chrome in a headful mode by setting HEADLESS env
+                # # var to a falsey value
+                headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+                js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
+                timeout: 30,  # Reduced from 60s - individual operations should complete faster
+                process_timeout: 30,  # Reduced from 60s
+                browser_options: {
+                  'no-sandbox': true,
+                  'disable-web-security': true,
+                  'auto-open-devtools-for-tabs': false,
+                  'disable-popup-blocking': true,
+                  'disable-notifications': true,
+                  'use-fake-device-for-media-stream': true,
+                  'use-fake-ui-for-media-stream': true,
+                  'disable-gpu': true,
+                  'window-size': SystemTestHelpers.mobile_window_size(DEFAULT_MOBILE_BREAKPOINT),
+                  geolocation: true,
+                },
+              } do |driver_option|
 
       # # TODO: # Mock geolocation
       # driver_option.browser.command('Browser.grantPermissions',
