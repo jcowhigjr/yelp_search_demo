@@ -1,11 +1,8 @@
 require 'application_system_test_case'
 
 class NavigationTest < ApplicationSystemTestCase
-  setup do
-    stub_yelp_api_request
-  end
-
   test 'A user can search and return using the back button' do
+    stub_yelp_api_request('tacos')
     # From the search form
     visit new_search_path
     fill_in 'search[query]', with: 'tacos'
@@ -22,14 +19,17 @@ class NavigationTest < ApplicationSystemTestCase
 
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
+
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # Go back to search results and verify (either show or new)
     go_back
+
     assert_current_path(%r{^/searches/(new|#{search_id})$}, wait: 10)
 
     # Go back to search form and verify
     go_back
+
     assert_current_path new_search_path
   end
 
