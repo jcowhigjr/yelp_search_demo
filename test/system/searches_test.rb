@@ -4,12 +4,9 @@ class SearchesTest < ApplicationSystemTestCase
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
 
-  setup do
-    stub_yelp_api_request
-  end
-
   test 'An anonymous user at the static home can search by query and view results' do
     query = 'yoga'
+    stub_yelp_api_request(query)
 
     visit new_search_path  # Use the explicit path instead of '/'
 
@@ -31,14 +28,17 @@ class SearchesTest < ApplicationSystemTestCase
 
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
+
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # Go back once and ensure we land back on a search page
     go_back
+
     assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
   end
 
   test 'search page displays prototype hero section and features' do
+    stub_yelp_api_request('coffee')
     visit new_search_path
 
     # Check for hero section from prototype (implemented)
@@ -56,6 +56,7 @@ class SearchesTest < ApplicationSystemTestCase
     skip 'Focused on interactive query UX; run locally, skipped in CI for stability' if ENV['CI'] == 'true'
     query = 'yoga'
     query2 = 'coffee'
+    stub_yelp_api_request(query)
     
     # Visit the home page and wait for it to load
     visit '/'
