@@ -37,8 +37,10 @@ class SearchesController < ApplicationController
     @search = Search.find(params[:id])
     @search.coffeeshops = []
     @search.update!(search_params)
-    if Coffeeshop.get_search_results(@search) == 'error'
-      flash[:error] = t('something_went_wrong')
+
+    search_result = Coffeeshop.get_search_results(@search)
+    if search_result.is_a?(String) && search_result.start_with?('error')
+      flash[:error] = search_result.include?('not configured') ? search_result : t('something_went_wrong')
       redirect_to static_home_url
     else
       @search.save

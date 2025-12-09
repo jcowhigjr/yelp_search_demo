@@ -107,4 +107,23 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(COMMON_SEARCH_SELECTORS, wait: 5)
   end
 
+  test 'search update gracefully surfaces API errors' do
+    visit new_search_path
+
+    fill_in 'search[query]', with: 'coffee'
+    click_on 'Search'
+
+    wait_for_search_results
+
+    error_message = 'error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/v3/manage_app'
+
+    Coffeeshop.stubs(:get_search_results).returns(error_message)
+
+    fill_in 'search[query]', with: 'espresso'
+    click_on 'Search'
+
+    assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 5
+    assert_selector '.page-text.red-text', text: error_message, wait: 5
+  end
+
 end
