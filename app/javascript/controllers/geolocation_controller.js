@@ -94,9 +94,18 @@ export default class extends Controller {
 
   storeLocation(latitude, longitude) {
     try {
+      // Sanitize and validate coordinates before storing
+      const sanitizedLat = parseFloat(latitude);
+      const sanitizedLng = parseFloat(longitude);
+      
+      if (isNaN(sanitizedLat) || isNaN(sanitizedLng)) {
+        console.warn('Invalid coordinates, not storing');
+        return;
+      }
+      
       localStorage.setItem('userLocation', JSON.stringify({
-        latitude,
-        longitude,
+        latitude: sanitizedLat,
+        longitude: sanitizedLng,
         timestamp: Date.now()
       }));
     } catch (e) {
@@ -109,7 +118,23 @@ export default class extends Controller {
       const stored = localStorage.getItem('userLocation');
       if (!stored) return null;
 
+      // Validate JSON structure before parsing
+      if (!stored.startsWith('{') || !stored.endsWith('}')) {
+        console.warn('Invalid stored location format');
+        return null;
+      }
+
       const location = JSON.parse(stored);
+      
+      // Validate the parsed object structure
+      if (!location || 
+          typeof location.latitude !== 'number' || 
+          typeof location.longitude !== 'number' || 
+          typeof location.timestamp !== 'number') {
+        console.warn('Invalid stored location data structure');
+        return null;
+      }
+      
       // Use stored location if less than 1 hour old
       if (Date.now() - location.timestamp < 3600000) {
         return location;
@@ -121,22 +146,31 @@ export default class extends Controller {
   }
 
   showLoading() {
-    // You could add a loading state to the button here
     const button = this.element.querySelector('button[data-action*="geolocate"]');
     if (button) {
       button.disabled = true;
-      button.innerHTML = '<i class="material-icons">hourglass_empty</i>';
+      // Use safe DOM manipulation instead of innerHTML
+      button.innerHTML = ''; // Clear existing content
+      const icon = document.createElement('i');
+      icon.className = 'material-icons';
+      icon.textContent = 'hourglass_empty';
+      button.appendChild(icon);
     }
   }
 
   showError(message) {
-    // Remove any existing error messages
-    this.clearMessages();
+    // Sanitize error message to prevent XSS
+    const sanitizedMessage = message.toString()
+      .replace(/[<>]/g, '') // Remove potential HTML tags
+      .replace(/javascript:/gi, '') // Remove javascript: protocols
+      .replace(/on\w+=/gi, ''); // Remove event handlers
 
-    // Create error message element
+    this.clearMessages();
+    
+    // Create error div with safe content
     const errorDiv = document.createElement('div');
     errorDiv.className = 'geolocation-error text-red-500 text-sm mt-1';
-    errorDiv.textContent = message;
+    errorDiv.textContent = sanitizedMessage; // Use textContent instead of innerHTML
 
     // Insert after the geolocation div
     this.element.parentNode.insertBefore(errorDiv, this.element.nextSibling);
@@ -163,7 +197,12 @@ export default class extends Controller {
     const button = this.element.querySelector('button[data-action*="geolocate"]');
     if (button) {
       button.disabled = false;
-      button.innerHTML = '<i class="material-icons">my_location</i>';
+      // Use safe DOM manipulation instead of innerHTML
+      button.innerHTML = ''; // Clear existing content
+      const icon = document.createElement('i');
+      icon.className = 'material-icons';
+      icon.textContent = 'my_location';
+      button.appendChild(icon);
     }
   }
 }
