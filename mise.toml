@@ -6,10 +6,14 @@
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
 [tools]
+# Ruby 3.4.4 is the known-good version for the current Gemfile.lock and CI images.
 ruby = "3.4.4"
 # lefthook is installed via Homebrew
 # Node.js and yarn are NOT included here to prevent CI compilation issues
 # They should be managed separately for local development if needed
+
+[plugins]
+ruby = "https://github.com/asdf-vm/asdf-ruby.git"
 
 [env]
 SYSTEMD_PAGER = "cat"

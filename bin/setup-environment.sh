@@ -32,6 +32,19 @@ maybe_self_update_mise() {
   fi
 }
 
+# Ensure the Ruby plugin uses the correct asdf-ruby source.
+ensure_ruby_plugin() {
+  local plugin_source="https://github.com/asdf-vm/asdf-ruby.git"
+  echo_info "Ensuring Ruby plugin is installed from ${plugin_source}..."
+
+  if "$MISE_CMD" plugins install --force ruby "$plugin_source"; then
+    echo_info "Ruby plugin installed or refreshed from ${plugin_source}."
+  else
+    echo_error "Failed to install Ruby plugin from ${plugin_source}."
+    exit 1
+  fi
+}
+
 # --- Project Root ---
 # Assuming the script is in project_root/bin/
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
@@ -158,6 +171,9 @@ if ! "$MISE_CMD" trust --yes "$PROJECT_ROOT/mise.toml" 2>/dev/null; then
     exit 1
   fi
 fi
+
+# Ensure the correct Ruby plugin is available before installing tools
+ensure_ruby_plugin
 
 # Install project tools as defined in mise.toml
 echo_info "Installing project tools with mise (from $PROJECT_ROOT/mise.toml)..."
