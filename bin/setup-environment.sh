@@ -47,24 +47,39 @@ find_or_install_mise() {
   # 3. If still not found, attempt to install it
   if [[ -z "$MISE_CMD" ]]; then
     echo_info "mise not found. Attempting to install via official script..."
-    if curl -fsSL https://mise.run | sh; then
-      MISE_CMD="$HOME/.local/bin/mise"
-      if [ ! -x "$MISE_CMD" ]; then
-        echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
-        exit 1
-      fi
-      echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
-      echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
-      # Attempt self-update for freshly installed mise
-      echo_info "Attempting initial self-update for mise..."
-      if ! "$MISE_CMD" self-update; then
-        echo_info "mise self-update failed or was not necessary after initial install. Continuing."
-      else
-        echo_info "mise self-updated successfully."
-      fi
+
+    INSTALL_OK=0
+
+    # Primary install attempt with retries (GitHub outages have caused flakes)
+    if curl -fsSL --retry 3 --retry-delay 2 https://mise.run | sh; then
+      INSTALL_OK=1
     else
-      echo_error "Failed to install mise using the official script."
+      echo_error "Primary install via https://mise.run failed. Trying fallback installer from GitHub..."
+      # Fallback to the raw GitHub installer (separate CDN path from mise.run)
+      if curl -fsSL --retry 3 --retry-delay 2 https://raw.githubusercontent.com/jdx/mise/main/install.sh | sh; then
+        INSTALL_OK=1
+      fi
+    fi
+
+    if [[ "$INSTALL_OK" -ne 1 ]]; then
+      echo_error "Failed to install mise using the official or fallback installer."
       exit 1
+    fi
+
+    MISE_CMD="$HOME/.local/bin/mise"
+    if [ ! -x "$MISE_CMD" ]; then
+      echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
+      exit 1
+    fi
+
+    echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
+    echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
+    # Attempt self-update for freshly installed mise
+    echo_info "Attempting initial self-update for mise..."
+    if ! "$MISE_CMD" self-update; then
+      echo_info "mise self-update failed or was not necessary after initial install. Continuing."
+    else
+      echo_info "mise self-updated successfully."
     fi
   fi
 
