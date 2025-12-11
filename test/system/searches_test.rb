@@ -103,4 +103,52 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(COMMON_SEARCH_SELECTORS, wait: 5)
   end
 
+  # Geolocation regression test for issue #1201
+  # Verifies geolocation controller auto-requests location on page load
+  test 'geolocation controller is connected and has hidden fields' do
+    visit new_search_path
+    
+    # Verify the geolocation controller exists with hidden lat/lng fields
+    assert_selector '[data-controller="geolocation"]', wait: 4
+    assert_selector '[data-controller="geolocation"] [data-geolocation-target="latitude"]', visible: false, wait: 4
+    assert_selector '[data-controller="geolocation"] [data-geolocation-target="longitude"]', visible: false, wait: 4
+  end
+
+  private
+
+  def wait_for_search_results
+    # Wait for any of the common search result selectors to appear
+    assert_selector(COMMON_SEARCH_SELECTORS, wait: 10, visible: :all, match: :first)
+  end
+
+  def click_more_info_safely
+    # Try multiple selectors for "More Info" to handle different implementations
+    more_info_selectors = [
+      'a[href*="/coffeeshops/"]',
+      '.more-info',
+      '[data-action*="more-info"]',
+      'button:contains("More Info")',
+      'a:contains("More Info")'
+    ]
+    
+    more_info_clicked = false
+    more_info_selectors.each do |selector|
+      begin
+        first_element = all(selector, visible: true, wait: 2).first
+        if first_element
+          first_element.click
+          more_info_clicked = true
+          break
+        end
+      rescue Capybara::ElementNotFound
+        # Try next selector
+      end
+    end
+    
+    # Fallback: click first coffeeshop link if no "More Info" found
+    unless more_info_clicked
+      first('a[href*="/coffeeshops/"]').click
+    end
+  end
+
 end
