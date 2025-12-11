@@ -11,6 +11,27 @@ echo_error() {
   echo "ERROR: $1" >&2
 }
 
+# Determine whether mise is managed by Homebrew (skip self-update in that case)
+is_brew_managed_mise() {
+  local path="$1"
+  [[ "$path" == "/usr/local/bin/mise" || "$path" == "/opt/homebrew/bin/mise" ]]
+}
+
+# Run mise self-update when it is not managed by Homebrew
+maybe_self_update_mise() {
+  if is_brew_managed_mise "$MISE_CMD"; then
+    echo_info "Skipping mise self-update because Homebrew should manage updates."
+    return
+  fi
+
+  echo_info "Attempting mise self-update to refresh tool definitions..."
+  if ! "$MISE_CMD" self-update; then
+    echo_info "mise self-update failed or was not necessary. Continuing."
+  else
+    echo_info "mise self-update completed successfully."
+  fi
+}
+
 # --- Project Root ---
 # Assuming the script is in project_root/bin/
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
@@ -74,13 +95,6 @@ find_or_install_mise() {
 
     echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
     echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
-    # Attempt self-update for freshly installed mise
-    echo_info "Attempting initial self-update for mise..."
-    if ! "$MISE_CMD" self-update; then
-      echo_info "mise self-update failed or was not necessary after initial install. Continuing."
-    else
-      echo_info "mise self-updated successfully."
-    fi
   fi
 
   # Ensure MISE_CMD is set
@@ -88,19 +102,13 @@ find_or_install_mise() {
     echo_error "MISE_CMD could not be determined. mise is not installed or not found."
     exit 1
   fi
-
-  # Self-update if not managed by a known package manager path (basic check)
-  # Avoid self-update if it looks like a Homebrew path, as Homebrew should manage updates.
-  if [[ "$MISE_CMD" == "$HOME/.local/bin/mise" ]]; then
-    echo_info "Attempting mise self-update (if installed directly)..."
-    if ! "$MISE_CMD" self-update; then
-      echo_info "mise self-update (direct install) failed or was not necessary. Continuing."
-    fi
-  fi
 }
 
 # --- Main Script Execution ---
 find_or_install_mise
+
+# Ensure mise has the latest definitions before installing project tools
+maybe_self_update_mise
 
 echo_info "Using mise executable: $MISE_CMD"
 
