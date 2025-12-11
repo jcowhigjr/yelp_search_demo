@@ -475,7 +475,7 @@ pre-push:
     importmaps-audit:
       tags: frontend security
       run: |
-        if ! bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
+        if ! mise exec -- bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
           echo "⚠️ Importmap audit reported issues. See log/prepush-importmap-audit.log for details."
         else
           echo "✅ Importmap audit completed without blocking issues."
