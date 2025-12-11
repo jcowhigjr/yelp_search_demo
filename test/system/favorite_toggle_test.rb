@@ -2,7 +2,6 @@ require 'application_system_test_case'
 
 class FavoriteToggleTest < ApplicationSystemTestCase
   setup do
-    stub_yelp_api_request("coffee")
     @user = users(:one)
     @coffeeshop = coffeeshops(:one)
   end

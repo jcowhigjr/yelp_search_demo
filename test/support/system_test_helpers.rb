@@ -2,11 +2,6 @@
 
 # SystemTestHelpers provides utilities for cleaner system test debugging
 module SystemTestHelpers
-  def wait_for_turbo(timeout = nil)
-    return unless page.driver.is_a?(Capybara::Cuprite::Driver)
-
-    assert_selector(".turbo-progress-bar", visible: false, wait: timeout)
-  end
   # Print debug information only when explicitly requested via ENV variable
   def debug_output(message)
     puts message if ENV['SYSTEM_TEST_DEBUG'] == 'true'
