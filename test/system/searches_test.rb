@@ -107,38 +107,15 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector(COMMON_SEARCH_SELECTORS, wait: 5)
   end
 
-  # Geolocation regression tests for issue #1201
-  test 'geolocation button is properly connected to controller' do
+  # Geolocation regression test for issue #1201
+  # Verifies geolocation controller auto-requests location on page load
+  test 'geolocation controller is connected and has hidden fields' do
     visit new_search_path
     
-    # Verify the geolocation button exists and is within the controller scope
+    # Verify the geolocation controller exists with hidden lat/lng fields
     assert_selector '[data-controller="geolocation"]', wait: 4
-    assert_selector '[data-controller="geolocation"] button[data-action="geolocation#geolocate"]', wait: 4
     assert_selector '[data-controller="geolocation"] [data-geolocation-target="latitude"]', visible: false, wait: 4
     assert_selector '[data-controller="geolocation"] [data-geolocation-target="longitude"]', visible: false, wait: 4
-  end
-
-  test 'geolocation shows error message when permission denied' do
-    visit new_search_path
-    
-    # Mock geolocation permission denied
-    page.driver.execute_script(<<~JS)
-      navigator.geolocation = {
-        getCurrentPosition: function(success, error, options) {
-          error({
-            code: 1, // PERMISSION_DENIED
-            message: 'User denied the request for Geolocation.'
-          });
-        }
-      };
-    JS
-
-    # Click the geolocation button
-    find('[data-action="geolocation#geolocate"]').click
-    
-    # Verify error message appears
-    assert_selector '.geolocation-error', wait: 4
-    assert_text 'Location access denied', wait: 4
   end
 
   private

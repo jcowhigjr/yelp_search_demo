@@ -16,18 +16,14 @@
         <i class="material-icons">clear</i>
       <% end %>
 
-      <div data-controller="geolocation">
-        <button type="button" class="search-button" data-action="geolocation#geolocate">
-          <i class="material-icons">my_location</i>
-        </button>
-
-        <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
-        <%= f.hidden_field :longitude,  "data-geolocation-target": 'longitude' %>
-      </div>
-
       <%= f.button :submit, class: "search-button" do %>
         <%= t('views.searches.submit', default: 'Search').strip %>
       <% end %>
+    </div>
+
+    <div data-controller="geolocation">
+      <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
+      <%= f.hidden_field :longitude,  "data-geolocation-target": 'longitude' %>
     </div>
   <% end %>
 </div>
