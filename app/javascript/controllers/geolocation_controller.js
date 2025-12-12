@@ -4,7 +4,11 @@ export default class extends Controller {
   static targets = ['latitude', 'longitude'];
 
   connect() {
-    this.geolocate();
+    console.log('Geolocation controller connected');
+    // Add delay to ensure DOM is ready on mobile
+    setTimeout(() => {
+      this.geolocate();
+    }, 100);
   }
 
   geolocate() {
@@ -13,6 +17,7 @@ export default class extends Controller {
       return;
     }
 
+    console.log('Requesting geolocation...');
     navigator.geolocation.getCurrentPosition(
       this.success.bind(this),
       this.error.bind(this)
@@ -20,6 +25,7 @@ export default class extends Controller {
   }
 
   success(position) {
+    console.log('Geolocation success:', position);
     this.latitudeTarget.value = position.coords.latitude.toFixed(2);
     this.longitudeTarget.value = position.coords.longitude.toFixed(2);
   }
