@@ -127,7 +127,7 @@ jobs:
         run: |
           mise run test-next-system -- --verbose
       - name: Upload failed system test images (next)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure' # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
@@ -211,7 +211,7 @@ jobs:
         run: |
           mise run test-system -- --verbose
       - name: Upload failed system test images
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
