@@ -5,7 +5,7 @@ class SearchesTest < ApplicationSystemTestCase
     'div[role="main"], main, [data-controller~="search"]'.freeze
 
   setup do
-    stub_yelp_api_request
+    stub_yelp_api_request('yoga')
   end
 
   test 'An anonymous user at the static home can search by query and view results' do
@@ -56,7 +56,9 @@ class SearchesTest < ApplicationSystemTestCase
     skip 'Focused on interactive query UX; run locally, skipped in CI for stability' if ENV['CI'] == 'true'
     query = 'yoga'
     query2 = 'coffee'
-    
+
+    stub_yelp_api_request(query)
+
     # Visit the home page and wait for it to load
     visit '/'
     
@@ -90,6 +92,8 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector 'form[action="/searches"]', wait: 10
     search_box = find(:fillable_field, 'search[query]', wait: 10)
     search_box.fill_in(with: query2)
+
+    stub_yelp_api_request(query2)
 
     # Verify the search query was updated
     assert_selector(:fillable_field, 'search[query]', with: query2, wait: 5)
