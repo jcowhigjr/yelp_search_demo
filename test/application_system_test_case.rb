@@ -22,7 +22,7 @@ EvilSystems.initial_setup
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   setup do
     ENV['YELP_API_KEY'] = 'test-key'
-    stub_yelp_api_request
+    stub_yelp_api_request('coffee')
   end
 
   teardown do
