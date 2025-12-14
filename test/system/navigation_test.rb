@@ -2,7 +2,7 @@ require 'application_system_test_case'
 
 class NavigationTest < ApplicationSystemTestCase
   setup do
-    stub_yelp_api_request
+    stub_yelp_api_request('tacos')
   end
 
   test 'A user can search and return using the back button' do
