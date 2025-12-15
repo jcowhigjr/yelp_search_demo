@@ -36,7 +36,10 @@ permissions:
 jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
-    if: github.actor == 'dependabot[bot]'
+    # Run for Dependabot PRs even when the triggering actor is a merge bot or human
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') ||
+      startsWith(github.head_ref || github.ref_name, 'dependabot/')
     runs-on: ubuntu-latest
     outputs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
@@ -55,11 +58,15 @@ jobs:
           # Same logic as in risk assessment workflow
           UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
           DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
-          SKIP_SYSTEM_TESTS="false"
+          # Default to skipping system tests unless this is a major bump
+          SKIP_SYSTEM_TESTS="true"
           RISK_LEVEL="medium"
-          
-          if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]] && [[ "$DEPENDENCY_TYPE" == "development" || "$DEPENDENCY_TYPE" == "test" ]]; then
-            SKIP_SYSTEM_TESTS="true"
+
+          if [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
+            SKIP_SYSTEM_TESTS="false"
+            RISK_LEVEL="high"
+          else
+            # Patch/minor/security updates rely on the faster unit suites
             RISK_LEVEL="low"
           fi
           
