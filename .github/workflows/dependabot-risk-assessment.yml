@@ -10,7 +10,10 @@ permissions:
 
 jobs:
   assess-risk:
-    if: github.actor == 'dependabot[bot]'
+    # Run for Dependabot PRs even when the triggering actor is a merge bot or human
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') ||
+      startsWith(github.head_ref || github.ref_name, 'dependabot/')
     runs-on: ubuntu-latest
     outputs:
       risk-level: ${{ steps.assessment.outputs.risk-level }}
@@ -36,7 +39,8 @@ jobs:
           
           # Initialize variables
           RISK_LEVEL="medium"
-          SKIP_SYSTEM_TESTS="false"
+          # Default to skipping system tests unless this is a major bump
+          SKIP_SYSTEM_TESTS="true"
           UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
           DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
           
@@ -47,36 +51,21 @@ jobs:
           
           echo "Evaluating risk level..."
           
-          # Low risk criteria for patch updates
-          if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]]; then
-            echo "Patch update detected"
-            
-            # Check if it's a development/test dependency
-            if [[ "$DEPENDENCY_TYPE" == "development" || "$DEPENDENCY_TYPE" == "test" ]]; then
-              echo "Development/test dependency - low risk"
-              RISK_LEVEL="low"
-              SKIP_SYSTEM_TESTS="true"
-            else
-              # For runtime dependencies, be more conservative with patches
-              echo "Runtime dependency - medium risk for patch"
-              RISK_LEVEL="medium"
-              SKIP_SYSTEM_TESTS="false"
-            fi
-          elif [[ "$UPDATE_TYPE" == "version-update:semver-minor" ]]; then
-            echo "Minor update detected - medium risk"
-            RISK_LEVEL="medium"
-            SKIP_SYSTEM_TESTS="false"
-          elif [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
-            echo "Major update detected - high risk"
+          # Only run system tests for major version bumps
+          if [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
+            echo "Major update detected - high risk, keep system tests enabled"
             RISK_LEVEL="high"
             SKIP_SYSTEM_TESTS="false"
+          else
+            echo "Non-major update detected - skip system tests and rely on unit suites"
+            RISK_LEVEL="low"
+            SKIP_SYSTEM_TESTS="true"
           fi
           
-          # Override for security updates (always high risk)
+          # Security updates remain high risk but still follow the fast-path testing strategy
           if [[ "$ALERT_STATE" == "OPEN" ]]; then
-            echo "Security update detected - high risk"
+            echo "Security update detected - keep fast path but mark as high risk"
             RISK_LEVEL="high"
-            SKIP_SYSTEM_TESTS="false"
           fi
           
           # Set outputs

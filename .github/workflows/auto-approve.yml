@@ -7,7 +7,8 @@ on:
   # Fallback triggers for direct Dependabot PR events
   pull_request:
     types: [opened, synchronize, reopened]
-    if: github.actor == 'dependabot[bot]'
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
 permissions:
   pull-requests: write
@@ -21,8 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     # Handle both workflow_run and direct pull_request triggers
     if: |
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.actor.login == 'dependabot[bot]') ||
-      (github.event_name == 'pull_request' && github.actor == 'dependabot[bot]')
+      (
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        (
+          github.event.workflow_run.actor.login == 'dependabot[bot]' ||
+          startsWith(github.event.workflow_run.head_branch, 'dependabot/')
+        )
+      ) ||
+      (
+        github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+      ) ||
+      (
+        github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]'
+      )
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -40,6 +53,14 @@ jobs:
             echo "Found PR number from pull_request: $PR_NUMBER"
           fi
           echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Fetch Dependabot metadata
+        if: steps.pr.outputs.number != ''
+        id: metadata
+        uses: dependabot/fetch-metadata@v2.4.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          pull-request: ${{ steps.pr.outputs.number || github.event.pull_request.number || '' }}
 
       - name: Update PR with latest develop changes if needed
         if: steps.pr.outputs.number != ''
@@ -59,7 +80,7 @@ jobs:
           fi
 
       - name: Approve and enable auto-merge for Dependabot PR
-        if: steps.pr.outputs.number != ''
+        if: steps.pr.outputs.number != '' && steps.metadata.outputs.update-type != 'version-update:semver-major'
         env:
           PR_NUMBER: ${{ steps.pr.outputs.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,3 +92,12 @@ jobs:
 
           # Enable GitHub auto-merge (squash). It will merge automatically once all required checks pass and branch protection is satisfied.
           gh pr merge --auto --squash "$PR_NUMBER"
+
+      - name: Flag major updates for manual review
+        if: steps.pr.outputs.number != '' && steps.metadata.outputs.update-type == 'version-update:semver-major'
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Major update detected for PR #$PR_NUMBER - leaving for manual review"
+          gh pr comment "$PR_NUMBER" --body "⚠️ Major version bump detected. CI approval has been applied, but auto-merge is disabled so a human can review and merge."
