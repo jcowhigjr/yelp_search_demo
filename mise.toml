@@ -5,6 +5,9 @@
 # please remove flaky backends and tools from here
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
+[plugins]
+ruby = "core"
+
 [tools]
 # Ruby 3.4.4 is the known-good version for the current Gemfile.lock and CI images.
 ruby = "3.4.4"
@@ -32,6 +35,7 @@ experimental = true
 legacy_version_file = true # Changed as per PR 3 Option A
 # Enable faster installation via precompiled binaries
 always_keep_download = true
+trusted_config_paths = ["."]
 
 [tasks.setup]
 description = "Run development setup script"
