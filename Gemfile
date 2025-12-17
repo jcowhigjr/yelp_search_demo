@@ -150,5 +150,3 @@ gem 'dotenv'
 group :development, :ci do
   gem 'faraday', '~> 2.14.0', require: false
 end
-
-gem "easy_translate", "~> 0.5.1"
