@@ -573,7 +573,6 @@ DEPENDENCIES
   sqlite3 (~> 2.8)
   tailwindcss-rails (~> 4.4)
   turbo-rails (~> 2.0)
-  tzinfo-data
   web-console
   webmock
   yaml-lint

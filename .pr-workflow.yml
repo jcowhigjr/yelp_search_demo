@@ -1,20 +1,41 @@
-# Prefix all commands with `mise exec --`
+# PR Workflow Configuration
+# This file configures the automated PR workflow for this repository
+
+# Base branch to merge PRs into
 baseBranch: main
+
+# How to merge PRs: merge, squash, or rebase
 mergeMethod: squash
+
+# How often to poll for PR status updates (seconds)
 pollInterval: 300
+
+# Review model to use: local-gpt, gpt-4, claude, gemini, or disabled
 reviewModel: local-gpt
+
+# Whether to auto-approve PRs that meet all criteria
 autoApprove: false
+
+# Required status checks before merging
 requiredChecks:
   - ci/tests
   - security/scan
+
+# Maximum number of review attempts
 maxReviewAttempts: 3
+
+# Review timeout in seconds
 reviewTimeout: 1800
+
+# Paths to ignore during review
 ignorePaths:
   - node_modules/**
   - vendor/**
   - "*.lock"
   - "*.log"
   - dist/**
+
+# Notification settings
 notifications:
   slackWebhook: "https://hooks.slack.com/services/..."
   emailRecipients:
@@ -22,8 +43,18 @@ notifications:
   notifyOnApproval: true
   notifyOnMerge: true
   notifyOnFailure: true
+
+# Minimum number of approvals required
 minApprovals: 1
+
+# Allow PR author to approve their own PR
 allowSelfApproval: false
+
+# Require review from code owners
 requireReviewFromCodeowners: true
+
+# Allow PRs from forks
 allowForkPRs: true
+
+# Require signed commits
 requireSignedCommits: false
