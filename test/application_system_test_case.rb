@@ -2,6 +2,36 @@ require 'test_helper'
 require 'capybara'
 require 'capybara/cuprite'
 
+Capybara.register_driver :cuprite_mobile do |app|
+  driver = Capybara::Cuprite::Driver.new(
+    app,
+    screen_size: [375, 667],
+    options: {
+      inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+      headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
+      js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
+      timeout: 60,
+      process_timeout: 60,
+      browser_options: {
+        'no-sandbox': true,
+        'disable-web-security': true,
+        'auto-open-devtools-for-tabs': false,
+        'disable-popup-blocking': true,
+        'disable-notifications': true,
+        'use-fake-device-for-media-stream': true,
+        'use-fake-ui-for-media-stream': true,
+        'disable-gpu': true,
+        'window-size': '375,667',
+        geolocation: true
+      }
+    }
+  )
+
+  driver.browser.command('Browser.grantPermissions', origin: "http://127.0.0.1:*", permissions: ['geolocation'])
+  driver.browser.command('Emulation.setGeolocationOverride', latitude: 40.7128, longitude: -74.0060, accuracy: 1)
+  driver
+end
+
 
 # evil systems speeds up the tests but repeats the rebuilds.. need to look into it
 require 'evil_systems'
@@ -28,6 +58,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   teardown do
     ENV.delete('YELP_API_KEY')
   end
+
+  # setup do
+  #   # Precompile assets before running the tests
+  #   system 'bin/rails tailwindcss:build'
+  # end
 
   # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
@@ -107,4 +142,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # end
   # Include YelpApiHelper for API stubbing
   include YelpApiHelper
+
+  # Mock out the Yelp API in tests
+  setup do
+    # Stub Yelp API requests for any search term and location
+    stub_yelp_api_request
+  end
 end
