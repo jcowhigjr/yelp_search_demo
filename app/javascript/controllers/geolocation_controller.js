@@ -4,33 +4,35 @@ export default class extends Controller {
   static targets = ['latitude', 'longitude'];
 
   connect() {
-    console.log('Geolocation controller connected');
-    // Add delay to ensure DOM is ready on mobile
-    setTimeout(() => {
-      this.geolocate();
-    }, 100);
   }
 
   geolocate() {
     if (!navigator.geolocation) {
-      console.warn('Geolocation is not supported in this browser.');
-      return;
+      this.latitudeTarget.textContent =
+        'Geolocation is not supported in this browser.';
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        this.success.bind(this),
+        this.error.bind(this)
+      );
     }
-
-    console.log('Requesting geolocation...');
-    navigator.geolocation.getCurrentPosition(
-      this.success.bind(this),
-      this.error.bind(this)
-    );
   }
 
   success(position) {
-    console.log('Geolocation success:', position);
-    this.latitudeTarget.value = position.coords.latitude.toFixed(2);
-    this.longitudeTarget.value = position.coords.longitude.toFixed(2);
+    let latitude = 36.91;
+    let longitude = -79.99;
+
+    this.latitudeTarget.value = `${position.coords.latitude.toFixed(2)}`;
+    this.longitudeTarget.value = `${position.coords.longitude.toFixed(2)}`;
+
+    // let latitude = 36.91;
+    // let longitude = -79.99;
+
+    return [latitude, longitude];
   }
 
   error(error) {
-    console.warn('Geolocation error:', error.message);
+    console.log(error);
+    this.latitudeTarget.textContent = 'check the console log for error'; // error.message
   }
 }

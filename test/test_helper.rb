@@ -1,11 +1,10 @@
 ENV['RAILS_ENV'] ||= 'test'
 
 # Set default environment variables for system tests
-# These ensure system tests work consistently without manual setup
-ENV['HEADLESS'] = ENV.fetch('HEADLESS', 'true')
-ENV['CUPRITE'] = ENV.fetch('CUPRITE', 'true')
-ENV['APP_HOST'] = ENV.fetch('APP_HOST', 'localhost')
-ENV['CUPRITE_JS_ERRORS'] = ENV.fetch('CUPRITE_JS_ERRORS', 'false')
+ENV['HEADLESS'] ||= 'true'
+ENV['CUPRITE'] ||= 'true'
+ENV['APP_HOST'] ||= 'localhost'
+ENV['CUPRITE_JS_ERRORS'] ||= 'false'
 
 require 'minitest'
 require 'mocha/minitest'

@@ -16,6 +16,10 @@
         <i class="material-icons">clear</i>
       <% end %>
 
+      <button type="button" class="search-button" data-action="geolocation#geolocate">
+        <i class="material-icons">my_location</i>
+      </button>
+
       <%= f.button :submit, class: "search-button" do %>
         <%= t('views.searches.submit', default: 'Search').strip %>
       <% end %>

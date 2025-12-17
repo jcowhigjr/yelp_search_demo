@@ -5,12 +5,44 @@
       <p class="footer-text">
         © <%= Time.current.year %> Jitter
       </p>
-      <nav aria-label="Footer links">
-        <ul class="flex items-center gap-6">
-          <li><%= link_to 'About', static_home_url, class: 'footer-link' %></li>
-          <li><%= link_to 'Contact', static_home_url, class: 'footer-link' %></li>
-          <li><%= link_to 'Privacy', static_home_url, class: 'footer-link' %></li>
-        </ul>
+
+      <!-- Footer Links -->
+      <ul class="flex items-center gap-6">
+        <li>
+          <%= link_to "About",
+                      static_home_url,
+                      class: "language-nav__link" %>
+        </li>
+        <li>
+          <%= link_to "Contact",
+                      static_home_url,
+                      class: "language-nav__link" %>
+        </li>
+        <li>
+          <%= link_to "Privacy",
+                      static_home_url,
+                      class: "language-nav__link" %>
+        </li>
+      </ul>
+
+      <!-- Language Navigation -->
+      <nav class="language-nav" aria-label="Language and footer links">
+        <% I18n.available_locales.each_with_index do |locale, index| %>
+          <span class="language-nav__item">
+            <%= link_to request.params.merge(locale: resolve_locale(locale)),
+                        class: [
+                          'language-nav__link',
+                          ("language-nav__link--active" if locale == I18n.locale)
+                        ].compact.join(" "),
+                        "aria-label": t('.language_name_of_locale', locale:) do %>
+              <%= t('.language_name_of_locale', locale:) %>
+            <% end %>
+          </span>
+          <% if index < I18n.available_locales.size - 1 %>
+            <span class="language-nav__separator" aria-hidden="true">|</span>
+          <% end %>
+        <% end %>
+        <span class="language-nav__cta"><%= Flipper[:early_access_preview].enabled? ? t('.early-access') : t('.coming-soon-sig') %></span>
       </nav>
     </div>
   </div>
