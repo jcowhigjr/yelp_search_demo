@@ -26,7 +26,7 @@ class MobileUserJourneyTest < ApplicationSystemTestCase
   test 'a mobile user can share their location, search for tacos, and get directions' do
     visit '/'
 
-    # Geolocation is now auto-requested on page load, no button click needed
+    click_on 'my_location'
     fill_in 'search[query]', with: 'tacos'
     click_on 'Search'
 
