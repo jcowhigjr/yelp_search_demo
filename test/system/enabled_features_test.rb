@@ -20,8 +20,6 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
   # enable the feature manually in .env.test.local
   # FLIPPER_EARLY_ACCESS_PREVIEW=true
   test 'I should see Early Access Preview' do
-    skip "Early Access Preview text removed from footer in Phase 1 - will be tested in Phase 2 when navbar selector is implemented"
-    
     Flipper.enable(:early_access_preview)
     visit '/'
 
@@ -29,8 +27,6 @@ class EnabledFeaturesTest < ApplicationSystemTestCase
   end
 
   test 'I should not see Early Access Preview' do
-    skip "Coming Soon text removed from footer in Phase 1 - will be tested in Phase 2 when navbar selector is implemented"
-    
     Flipper.disable(:early_access_preview)
     visit '/'
 

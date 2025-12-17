@@ -39,8 +39,6 @@ class SwitchLocaleTest < ActionDispatch::IntegrationTest
   end
 
   test 'Links to all available locales will show' do
-    skip "Language links removed from footer in Phase 1 - will be tested in Phase 2 when navbar selector is implemented"
-    
     [:en, :"pt-BR"].each do |locale|
       I18n.with_locale(locale) do
         get static_home_path
