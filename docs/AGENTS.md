@@ -47,7 +47,7 @@ When creating any PR, the workflow should:
 - [ ] Latest changes pulled from remote
 - [ ] Feature branch deleted locally
 - [ ] Ready for next feature (clean working tree)
-- [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed with Puppeteer/Windsurf screenshot
+- [ ] UI work: Tailwind build verified via `scripts/verify-tailwind-build.sh` (or lefthook `tailwind-build-check`) and dark-mode cards visually confirmed via `mise exec -- yarn visual:verify` or system tests
 
 ### Empirical Verification & Cross-Model Escalation (Issue #981)
 
@@ -132,16 +132,17 @@ You can either write these prompts by hand or let `scripts/generate-cross-model-
 
 For any non-trivial visual/UI change (layout, CSS, DOM structure, or interactions), agents MUST follow this policy:
 
-- Treat the change as **not verified** until it has been empirically checked in a browser.
-- Prefer a headless browser runner over memory or inference:
-  - If a Puppeteer MCP tool is available, use it to run relevant headless tests and capture screenshots/diffs.
-  - Otherwise, if Playwright is configured for the project, run the configured Playwright test command to exercise affected views.
+- Treat the change as **not verified** until it has been empirically checked using headless browser tools.
+- Use the project's visual verification workflow (DO NOT require manual web browsing):
+  - Run `mise exec -- yarn visual:verify --urls "/route1,/route2"` to capture deterministic screenshots
+  - Alternatively, run Rails system tests: `mise run test-system` (Cuprite-based headless browser tests)
+  - Review generated screenshots in `tmp/visual-verification/` or system test artifacts
 - Run a targeted or full headless test suite that covers the changed surface.
 - Summarize results explicitly in the agent output:
   - If tests pass: state that headless browser tests passed and no unexpected visual diffs were detected.
   - If tests fail or baselines differ: list failing specs and point to screenshot/diff artifacts.
 - Never silently update screenshot baselines. If new baselines are needed, explain why and ask the user to confirm updating them.
-- Do not declare visual work “done” unless:
+- Do not declare visual work "done" unless:
   - Headless browser verification has run, and
   - Either tests pass or the user explicitly accepts the visual diffs.
 - For pull requests, any issues, review comments, or automated feedback related to headless visual verification **must be addressed**, and the corresponding PR threads/remarks must be marked **resolved** in GitHub before considering the PR complete.

@@ -11,9 +11,10 @@ Scope
 
 You MUST:
 - Treat any non-trivial visual/UI change (layout, CSS, DOM structure, or interactions) as **not verified** until headless browser tests have run.
-- Prefer a headless browser runner over assumptions:
-  - If a Puppeteer MCP tool is available, use it to run relevant headless tests and capture screenshots/diffs.
-  - Otherwise, if Playwright is configured, run the configured Playwright test command for the project.
+- Use the project's automated verification workflow (DO NOT require manual web browsing):
+  - Primary: Run `mise exec -- yarn visual:verify --urls "/route1,/route2"` to capture screenshots in `tmp/visual-verification/`
+  - Alternative: Run Rails system tests with `mise run test-system` (Cuprite-based headless browser tests)
+  - Review generated artifacts automatically in the output
 - Run a targeted or full headless test suite that covers the changed surface.
 - Summarize results explicitly in your output:
   - On success: state that headless browser tests passed and no unexpected visual diffs were detected.
@@ -29,6 +30,7 @@ You SHOULD:
 - Prefer targeted runs based on changed files/paths when the project conventions support it.
 - Use the same commands/flags locally that CI uses for headless tests, when known.
 - Capture before/after behavior when helpful, via screenshots or visual diffs.
+- Always prefix commands with `mise exec --` to ensure consistent environment matching CI/hooks.
 
 If headless browser verification is unavailable or fails to run:
 - Say explicitly that empirical headless verification could not be completed.

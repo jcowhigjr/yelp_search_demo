@@ -167,7 +167,7 @@ canonical policy. Warp highlights just these reminders:
 - scripts/README.md: details for sync-branch.sh and pr-lifecycle.sh
 
 Notes
-- For non-trivial visual/UI changes, prefer headless browser verification (Puppeteer MCP or Playwright) per Issue #982, and/or the Rails Cuprite system test prompt under `.github/prompts/`.
+- For non-trivial visual/UI changes, use the automated verification workflow: `mise exec -- yarn visual:verify --urls "/route1,/route2"` or `mise run test-system` (DO NOT require manual web browsing). See Issue #982 and `.github/prompts/headless-visual-verification.prompt.md`.
 - Secrets: never commit or echo secrets. If a command requires credentials, ensure they are sourced into environment variables by the user prior to execution.
 - Network/API: Tests stub external calls (WebMock); run real API calls only in development with proper environment.
 

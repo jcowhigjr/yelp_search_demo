@@ -10,7 +10,7 @@ Use the application at https://dorkbob.herokuapp.com
 - [`docs/agent-coder-workflow.md`](docs/agent-coder-workflow.md) - **Required reading for AI agents**
 - Use `lefthook run workflow-status` and `lefthook run workflow-new-feature <branch>` instead of direct git operations
 - Before pushing, regenerate the production Tailwind bundle with `scripts/verify-tailwind-build.sh` (or let the `tailwind-build-check` pre-push step run) to confirm dark-mode utilities exist in `app/assets/builds/tailwind.css`.
-- When touching UI styles, run `bin/dev` and validate the rendered page with the built-in Puppeteer tooling (or Windsurf browser preview). Capture a quick search result screenshot to confirm dark cards look correct in dark mode.
+- When touching UI styles, use the automated visual verification workflow: `mise exec -- yarn visual:verify --urls "/,/search?query=coffee"` or run system tests via `mise run test-system`. Do NOT require manual web browsing.
 
 ### Visual verification workflow
 
