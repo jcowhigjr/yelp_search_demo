@@ -1,0 +1,106 @@
+name: "AI Solve (high-signal, small-scope)"
+description: "Strict issue form for github-orchestrator ai-solve runs (only high-probability changes)."
+title: "[ai-solve] "
+labels:
+  - "ai-solve"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form only for small, deterministic changes with a very high chance of success.
+
+        If the fix is ambiguous, requires secrets, requires exploratory debugging, or needs broad refactors: do **not** label as `ai-solve`.
+
+  - type: checkboxes
+    id: suitability
+    attributes:
+      label: Suitability gate (required)
+      options:
+        - label: The fix is small and deterministic (<= ~2 files, <= ~50 LOC).
+          required: true
+        - label: The exact file path(s) to change are known.
+          required: true
+        - label: The expected final state is unambiguous (pass/fail criteria).
+          required: true
+        - label: No secrets/credentials are required to reproduce or validate.
+          required: true
+        - label: This is not a refactor; it is a targeted fix.
+          required: true
+
+  - type: input
+    id: failing_run_url
+    attributes:
+      label: Link to failing CI run (or job)
+      description: Paste the URL to the failing GitHub Actions run (or specific job).
+      placeholder: "https://github.com/<org>/<repo>/actions/runs/<id>"
+    validations:
+      required: true
+
+  - type: input
+    id: failing_job_name
+    attributes:
+      label: Failing workflow / job name
+      description: The exact workflow name and job name as shown in GitHub Actions.
+      placeholder: "Workflow: <name> | Job: <name>"
+    validations:
+      required: true
+
+  - type: textarea
+    id: change_request
+    attributes:
+      label: Change request (exact instructions)
+      description: Specify exactly what to change. Include exact file paths.
+      placeholder: |
+        Example:
+        - Delete: .github/workflows/<workflow_file>.yml
+        - Do not change any other workflows
+        - If documentation references this workflow, update those references only
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Must be objective and verifiable.
+      placeholder: |
+        - The failing workflow/job no longer runs (workflow file deleted).
+        - CI is green on PR (or at minimum the previously failing job is removed).
+        - No unrelated files are changed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation_plan
+    attributes:
+      label: Validation plan (how to prove it worked)
+      description: Provide the exact command(s) or CI signal used to validate. If CI-only, say so explicitly.
+      placeholder: |
+        Example:
+        - CI-only: verify GitHub Actions no longer shows the workflow/job.
+        - Optional: run `mise exec -- <command>` (if quick and deterministic).
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints (required)
+      options:
+        - label: Keep changes minimal and tightly scoped to the request.
+          required: true
+        - label: Do not add new dependencies.
+          required: true
+        - label: Do not change formatting unrelated to the fix.
+          required: true
+        - label: Do not modify CI configuration beyond what is explicitly requested.
+          required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / context (optional)
+      description: Any additional context that helps, without expanding scope.
+      placeholder: "E.g. why the workflow is safe to delete, what replaced it, rollout constraints, etc."
+    validations:
+      required: false
