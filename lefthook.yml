@@ -301,26 +301,75 @@ pre-push:
         fi
         echo "Verifying CI readiness with mise doctor (logging to .mise_doctor.log)..."
         if ! mise doctor > .mise_doctor.log 2>&1; then
-          echo "❌ mise doctor failed. See .mise_doctor.log for details."
-          exit 1
+          if grep -q "mise is not activated" .mise_doctor.log; then
+            echo "⚠️ mise doctor reported 'mise is not activated'."
+            echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
+          else
+            echo "❌ mise doctor failed. See .mise_doctor.log for details."
+            exit 1
+          fi
         fi
         echo "✅ CI environment ready."
     rubocop:
       tags: backend style
       glob: '*.rb'
-      run: bundle exec rubocop --parallel --force-exclusion {staged_files}
+      run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          diff_base="HEAD@{upstream}"
+        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
+          diff_base="$(git merge-base HEAD origin/develop)"
+        else
+          diff_base="HEAD^"
+        fi
+
+        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.rb') )
+        if [ ${#files[@]} -eq 0 ]; then
+          echo "✅ No Ruby files changed; skipping rubocop"
+          exit 0
+        fi
+
+        bundle exec rubocop --parallel --force-exclusion "${files[@]}"
       stage_fixed: true
     erb_lint:
       tags: backend style
       glob: '*.erb'
-      run: bundle exec erblint --lint-all --format compact {staged_files}
+      run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          diff_base="HEAD@{upstream}"
+        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
+          diff_base="$(git merge-base HEAD origin/develop)"
+        else
+          diff_base="HEAD^"
+        fi
+
+        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.erb') )
+        if [ ${#files[@]} -eq 0 ]; then
+          echo "✅ No ERB files changed; skipping erb_lint"
+          exit 0
+        fi
+
+        bundle exec erblint --lint-all --format compact "${files[@]}"
       stage_fixed: true
     prettier:
       tags: frontend style
       glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
       run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          diff_base="HEAD@{upstream}"
+        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
+          diff_base="$(git merge-base HEAD origin/develop)"
+        else
+          diff_base="HEAD^"
+        fi
+
+        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' '*.css' '*.scss' '*.md') )
+        if [ ${#files[@]} -eq 0 ]; then
+          echo "✅ No Prettier-managed files changed; skipping prettier"
+          exit 0
+        fi
+
         if command -v yarn >/dev/null 2>&1; then
-          yarn prettier --write {staged_files}
+          yarn prettier --write "${files[@]}"
         else
           echo "⚠️ Skipping prettier: yarn not available"
         fi
@@ -329,12 +378,43 @@ pre-push:
       tags: backend style
       exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
       glob: '*.yml'
-      run: bundle exec yaml-lint {staged_files}
+      run: |
+        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
+          diff_base="HEAD@{upstream}"
+        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
+          diff_base="$(git merge-base HEAD origin/develop)"
+        else
+          diff_base="HEAD^"
+        fi
+
+        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.yml') )
+        if [ ${#files[@]} -eq 0 ]; then
+          echo "✅ No YAML files changed; skipping yaml-lint"
+          exit 0
+        fi
+
+        bundle exec yaml-lint "${files[@]}"
       stage_fixed: true
     # rails-tests are run in pre-push instead of pre-commit for better performance
     # and to avoid breaking the commit flow with potentially long-running tests
     verify_environment:
-      run: bin/container-healthcheck.sh && { echo "✓ Environment valid"; exit 0; } || { echo "✗ Environment invalid - run bin/setup-environment.sh"; exit 1; }
+      run: |
+        set +e
+        output=$(bin/container-healthcheck.sh 2>&1)
+        status=$?
+        set -e
+        if [ $status -eq 0 ]; then
+          echo "✓ Environment valid"
+          exit 0
+        fi
+        if echo "$output" | grep -q "mise is not activated"; then
+          echo "⚠️ container-healthcheck reported 'mise is not activated'."
+          echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
+          exit 0
+        fi
+        echo "$output"
+        echo "✗ Environment invalid - run bin/setup-environment.sh"
+        exit 1
       tags: validation
       skip:
         - merge
