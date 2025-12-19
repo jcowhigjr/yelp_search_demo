@@ -1,0 +1,14 @@
+name: Merge Queue
+"on":
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: No-op
+        run: echo "merge-queue workflow placeholder"
