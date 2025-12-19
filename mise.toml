@@ -9,7 +9,7 @@
 ruby = "core"
 
 [tools]
-ruby = "3.3.10"
+ruby = "3.3.9"
 # lefthook is installed via Homebrew
 # Node.js and yarn are NOT included here to prevent CI compilation issues
 # They should be managed separately for local development if needed
