@@ -84,14 +84,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v6
-      - name: Cache mise tools
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/share/mise/installs # Default mise install path
-          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-mise-
-
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
@@ -164,14 +156,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v6
-      - name: Cache mise tools
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/share/mise/installs # Default mise install path
-          key: ${{ runner.os }}-mise-${{ hashFiles('**/mise.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-mise-
-
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
