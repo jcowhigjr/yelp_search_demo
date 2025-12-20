@@ -5,11 +5,11 @@
 # please remove flaky backends and tools from here
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
-[plugins]
-ruby = "core"
+# Ruby is a core builtin plugin in mise - no external plugin needed
+# Fixed GitHub Actions failure by removing invalid [plugins] section
 
 [tools]
-ruby = "3.3.9"
+ruby = "3.3.10"
 # lefthook is installed via Homebrew
 # Node.js and yarn are NOT included here to prevent CI compilation issues
 # They should be managed separately for local development if needed
