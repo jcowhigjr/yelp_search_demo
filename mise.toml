@@ -5,8 +5,8 @@
 # please remove flaky backends and tools from here
 # ALWAYS USE MISE TO MANAGE THIS FILE (ie mise list, mise install, mise remove)
 
-[plugins]
-ruby = "core"
+# Ruby is a core builtin plugin in mise - no external plugin needed
+# Fixed GitHub Actions failure by removing invalid [plugins] section
 
 [tools]
 # Ruby 3.4.4 is the known-good version for the current Gemfile.lock and CI images.
