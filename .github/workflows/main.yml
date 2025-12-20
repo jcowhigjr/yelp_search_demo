@@ -96,6 +96,11 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
+      - name: Clear mise cache and configuration
+        run: |
+          rm -rf ~/.local/share/mise
+          rm -rf ~/.config/mise
+          echo "Cleared mise cache and configuration"
       - name: Setup Environment via mise
         env:
           SETUP_SKIP_NODE: "true"
@@ -171,6 +176,11 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
+      - name: Clear mise cache and configuration
+        run: |
+          rm -rf ~/.local/share/mise
+          rm -rf ~/.config/mise
+          echo "Cleared mise cache and configuration"
       - name: Setup Environment via mise
         env:
           SETUP_SKIP_NODE: "true"
