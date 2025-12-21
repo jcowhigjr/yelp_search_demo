@@ -1,3 +1,4 @@
+---
 # This workflow uses actions that are not certified by GitHub.  They are
 # provided by a third-party and are governed by separate terms of service,
 # privacy policy, and support documentation.
@@ -36,15 +37,13 @@ permissions:
 jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
-    # Run for Dependabot PRs even when the triggering actor is a merge bot or human
-    if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]') ||
-      startsWith(github.head_ref || github.ref_name, 'dependabot/')
+    # Run for all PRs, but handle non-Dependabot PRs differently
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     outputs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
       risk-level: ${{ steps.assessment.outputs.risk-level }}
-      is-dependabot: 'true'
+      is-dependabot: ${{ steps.assessment.outputs.is-dependabot }}
     steps:
       - name: Get Dependabot metadata
         id: metadata
@@ -55,23 +54,31 @@ jobs:
       - name: Assess risk
         id: assessment
         run: |
-          # Same logic as in risk assessment workflow
-          UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
-          DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
-          # Default to skipping system tests unless this is a major bump
-          SKIP_SYSTEM_TESTS="true"
-          RISK_LEVEL="medium"
-
-          if [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
-            SKIP_SYSTEM_TESTS="false"
-            RISK_LEVEL="high"
+          # Check if this is a Dependabot PR
+          if [[ "${{ github.event.pull_request.user.login }}" == "dependabot[bot]" ]] || [[ "${{ github.event.pull_request.head.ref }}" =~ ^dependabot/ ]]; then
+            # Get Dependabot metadata
+            UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
+            DEPENDENCY_TYPE="${{ steps.metadata.outputs.dependency-type }}"
+            # Default to skipping system tests unless this is a major bump
+            SKIP_SYSTEM_TESTS="true"
+            RISK_LEVEL="medium"
+            IS_DEPENDABOT="true"
+            
+            if [[ "$UPDATE_TYPE" == "version-update:semver-major" ]]; then
+              SKIP_SYSTEM_TESTS="false"
+              RISK_LEVEL="high"
+            fi
           else
-            # Patch/minor/security updates rely on the faster unit suites
-            RISK_LEVEL="low"
+            # Non-Dependabot PRs - always run system tests
+            SKIP_SYSTEM_TESTS="false"
+            RISK_LEVEL="medium"
+            IS_DEPENDABOT="false"
           fi
           
           echo "skip-system-tests=$SKIP_SYSTEM_TESTS" >> $GITHUB_OUTPUT
           echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
+          echo "is-dependabot=$IS_DEPENDABOT" >> $GITHUB_OUTPUT
+
   test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
