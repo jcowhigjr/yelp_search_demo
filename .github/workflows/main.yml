@@ -97,6 +97,9 @@ jobs:
         env:
           SETUP_SKIP_NODE: "true"
         run: |
+          # Install mise ruby plugin explicitly to fix CI issue
+          curl https://mise.run | sh
+          ~/.local/bin/mise plugins install ruby
           bash bin/setup-environment.sh
           # Add mise to PATH for subsequent steps
           echo "$HOME/.local/bin" >> $GITHUB_PATH
@@ -169,6 +172,9 @@ jobs:
         env:
           SETUP_SKIP_NODE: "true"
         run: |
+          # Install mise ruby plugin explicitly to fix CI issue
+          curl https://mise.run | sh
+          ~/.local/bin/mise plugins install ruby
           bash bin/setup-environment.sh
           # Add mise to PATH for subsequent steps
           echo "$HOME/.local/bin" >> $GITHUB_PATH
