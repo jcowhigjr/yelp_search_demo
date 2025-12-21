@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 # Get the Ruby version from mise.toml
 ARG RUBY_VERSION=$(grep -E '^ruby\s*=' mise.toml | cut -d'"' -f2)
 FROM ruby:${RUBY_VERSION:-3.3.10}
+=======
+FROM ruby:3.3.10
+>>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.10)
 
 # Install base packages
 RUN apt-get update -qq && apt-get install -y \
