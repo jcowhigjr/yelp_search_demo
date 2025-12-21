@@ -79,7 +79,7 @@ jobs:
           echo "is-dependabot=$IS_DEPENDABOT" >> $GITHUB_OUTPUT  test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped') !cancelled() if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped') (github.event_name == .push. || needs.get-risk-assessment.result == .success. || needs.get-risk-assessment.result == .skipped.)
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     env:
@@ -151,7 +151,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped') !cancelled() if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped') (github.event_name == .push. || needs.get-risk-assessment.result == .success. || needs.get-risk-assessment.result == .skipped.)
+    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     env:
