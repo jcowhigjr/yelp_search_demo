@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Get the Ruby version from mise.toml
 ARG RUBY_VERSION=$(grep -E '^ruby\s*=' mise.toml | cut -d'"' -f2)
 FROM ruby:${RUBY_VERSION:-3.3.10}
@@ -34,3 +35,10 @@ EXPOSE 3000
 
 # Start the Rails server
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+=======
+# Get the Ruby version from mise.toml
+ARG RUBY_VERSION=$(grep -E '^ruby\s*=' mise.toml | cut -d'"' -f2)
+FROM ruby:${RUBY_VERSION:-3.3.10}
+
+# ... rest of your existing Dockerfile content
+>>>>>>> 3f079d14 (chore: ensure consistent Ruby version across all files)
