@@ -1,40 +1,44 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+# Get the Ruby version from mise.toml
+ARG RUBY_VERSION=$(grep -E '^ruby\s*=' mise.toml | cut -d'"' -f2)
+FROM ruby:${RUBY_VERSION:-3.3.10}
+=======
 FROM ruby:3.3.10
+>>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.10)
 
 # Install base packages
 RUN apt-get update -qq && apt-get install -y \
-    nodejs \
-    postgresql-client \
-    yarn \
-    git \
-    vim \
-    curl \
     build-essential \
     libpq-dev \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN useradd -m -s /bin/bash vscode
-
 # Set working directory
-WORKDIR /workspace
+WORKDIR /app
 
 # Copy Gemfile and Gemfile.lock
-COPY Gemfile* ./
+COPY Gemfile Gemfile.lock ./
 
-# Install gems
-RUN bundle config set --local path 'vendor/bundle' && \
-    bundle install
+# Install Ruby gems
+RUN bundle install --jobs 4 --retry 3
 
 # Copy the rest of the application
 COPY . .
 
-# Change ownership to vscode user
-RUN chown -R vscode:vscode /workspace
+# Precompile assets (if needed)
+RUN bundle exec rails assets:precompile 2>/dev/null || bundle exec rails assets:precompile || true
 
-USER vscode
-
-# Expose port 3000 to the Docker host
+# Expose port
 EXPOSE 3000
 
 # Start the Rails server
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+=======
+# Get the Ruby version from mise.toml
+ARG RUBY_VERSION=$(grep -E '^ruby\s*=' mise.toml | cut -d'"' -f2)
+FROM ruby:${RUBY_VERSION:-3.3.10}
+
+# ... rest of your existing Dockerfile content
+>>>>>>> 3f079d14 (chore: ensure consistent Ruby version across all files)
