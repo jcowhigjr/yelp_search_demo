@@ -150,3 +150,6 @@ gem 'dotenv'
 group :development, :ci do
   gem 'faraday', '~> 2.14.0', require: false
 end
+
+# Ruby version (must match mise.toml)
+ruby '3.3.10'
