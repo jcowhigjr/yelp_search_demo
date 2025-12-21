@@ -81,7 +81,64 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 
 ---
 
-## 2. Review-first & delayed feedback behavior
+## 2. Branch Protection and Merge Requirements
+
+### Branch Protection Rules (as of Dec 2025)
+
+The `develop` branch has the following protection rules:
+
+1. **Required Status Checks**:
+   - `test` check must pass
+   - Strict status checks are enabled (must be up to date before merging)
+
+2. **Pull Request Requirements**:
+   - At least one approval required
+   - Dismiss stale PR approvals when new commits are pushed
+   - Code owner approval required when applicable
+   - All conversations must be resolved before merging
+
+3. **History Requirements**:
+   - Linear history required (no merge commits)
+   - No force pushes allowed
+   - No branch deletion allowed
+
+4. **Admin Enforcement**:
+   - Branch protections apply to administrators
+   - No bypassing of branch protections
+
+### Common Merge Issues and Solutions
+
+1. **"Required status check is pending"**:
+   - Ensure all required checks have completed successfully
+   - The `test` check must complete successfully
+   - Check the Actions tab for any failed workflows
+
+2. **"Merging is blocked"**:
+   - Ensure all required reviews are completed
+   - Make sure all conversations are resolved
+   - Check for any merge conflicts that need to be resolved
+
+3. **"Merge commits are not allowed"**:
+   - Use "Squash and merge" or "Rebase and merge" instead of "Create a merge commit"
+   - Ensure linear history is maintained
+
+### Troubleshooting
+
+If you encounter merge issues:
+
+1. Check the PR's "Checks" tab for failed statuses
+2. Review the "Conversation" tab for unresolved discussions
+3. Ensure your branch is up to date with the target branch
+4. If needed, rebase your branch and force push:
+   ```bash
+   git fetch origin
+   git rebase origin/develop
+   git push --force-with-lease
+   ```
+
+---
+
+## 3. Review-first & delayed feedback behavior
 
 When working on **any branch that has an open GitHub pull request**, agents MUST treat automated feedback (Codex, Claude, Copilot, human review) as the **highest priority** work.
 
