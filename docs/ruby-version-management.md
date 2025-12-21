@@ -115,7 +115,7 @@ mise run brakeman
 
 ### Patch Version Updates
 
-Patch version updates (e.g., 3.3.9 → 3.3.10) typically do not require changes to other files, but always check:
+Patch version updates (e.g., 3.3.10 → 3.3.11 or 3.4.4 → 3.4.8) typically do not require changes to other files, but always check:
 
 1. Run `rg` to find any hardcoded references
 2. Review the search results
