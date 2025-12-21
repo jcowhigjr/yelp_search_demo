@@ -132,7 +132,7 @@ canonical policy. Warp highlights just these reminders:
 
 3) Repo conventions and workflows
 - Tooling via mise (mise.toml)
-  - Ruby 3.4.4 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
+  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
   - Always execute with mise exec -- to match CI and hooks environment
 - Git enforcement via lefthook (lefthook.yml, .lefthook.yml)
   - Protects main/develop from direct commits
