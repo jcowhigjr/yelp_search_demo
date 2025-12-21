@@ -23,12 +23,6 @@ pre-commit:
           exit 1
         fi
       skip:
-
-    validate-mise-toml:
-      glob: "mise.toml"
-      run: bash scripts/validate-mise-toml.sh
-      tags: validation
-      skip:
         - merge
         - rebase
     check_branch_sync:
