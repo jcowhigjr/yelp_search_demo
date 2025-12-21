@@ -1,4 +1,4 @@
-FROM ruby:3.3
+FROM ruby:3.3.10
 
 # Install base packages
 RUN apt-get update -qq && apt-get install -y \
