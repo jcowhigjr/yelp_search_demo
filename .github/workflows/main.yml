@@ -47,6 +47,7 @@ jobs:
     steps:
       - name: Get Dependabot metadata
         id: metadata
+        if: github.event.pull_request.user.login == 'dependabot[bot]'
         uses: dependabot/fetch-metadata@v2.4.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
