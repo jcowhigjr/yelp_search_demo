@@ -51,9 +51,11 @@ pre-commit:
     validate_dependabot_config:
       run: |
         #!/bin/bash
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if git diff --cached --name-only | grep -q "\.github/dependabot\.yml"; then
           echo "🔍 Validating Dependabot configuration..."
-          if ! ruby scripts/validate-dependabot-v2.rb; then
+          if ! "${MISE_EXEC[@]}" ruby scripts/validate-dependabot-v2.rb; then
             echo "❌ Dependabot configuration validation failed"
             echo "   Please fix the issues before committing"
             exit 1
@@ -121,25 +123,27 @@ pre-push:
     rails-tests:
       tags: backend tests
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if [ -f .env ]; then
           . ./.env
         fi
         echo "🚀 Setting up test environment..."
         
         # Setup phase - detailed logs captured by bin/setup into log/setup*.log
-        if ! CI=true RAILS_ENV=test bin/setup --skip-server; then
+        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/setup --skip-server; then
           echo "❌ Failed to set up test environment (see log/setup.log for details)"
           exit 1
         fi
         
         echo "🔧 Preparing test database..."
-        if ! CI=true RAILS_ENV=test bin/rails test:prepare --trace; then
+        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test:prepare --trace; then
           echo "❌ Failed to prepare test database"
           exit 1
         fi
         
         echo "🧪 Running Rails tests..."
-        if ! CI=true RAILS_ENV=test bin/rails test --quiet; then
+        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test --quiet; then
           echo "❌ Rails tests failed"
           exit 1
         fi
@@ -157,9 +161,11 @@ pre-push:
     test-next:
       tags: javascript frontend
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         echo "🚀 Verifying Next.js/JavaScript dependencies..."
-        if command -v yarn >/dev/null 2>&1; then
-          if ! CI=true yarn install --frozen-lockfile > log/prepush-yarn-install.log 2>&1; then
+        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
+          if ! CI=true "${MISE_EXEC[@]}" yarn install --frozen-lockfile > log/prepush-yarn-install.log 2>&1; then
             echo "❌ Failed to install yarn dependencies. See log/prepush-yarn-install.log for details."
             exit 1
           fi
@@ -174,6 +180,8 @@ pre-push:
     rails-system-tests:
       tags: backend system-tests
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if [ -f .env ]; then
           . ./.env
         fi
@@ -182,19 +190,19 @@ pre-push:
           exit 0
         fi
         echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/setup --skip-server; then
+        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/setup --skip-server; then
           echo "❌ Failed to set up system test environment (see log/setup.log for details)"
           exit 1
         fi
         
         echo "🔧 Preparing system test database..."
-        if ! CI=true RAILS_ENV=test mise exec -- bin/rails test:prepare --trace; then
+        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test:prepare --trace; then
           echo "❌ Failed to prepare system test database"
           exit 1
         fi
         
         echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false mise exec -- bin/rails test:system --quiet; then
+        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false "${MISE_EXEC[@]}" bin/rails test:system --quiet; then
           echo "❌ System tests failed"
           exit 1
         fi
@@ -202,7 +210,10 @@ pre-push:
         echo "✅ All system tests passed"
     tailwind-build-check:
       tags: frontend build
-      run: scripts/verify-tailwind-build.sh
+      run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
+        "${MISE_EXEC[@]}" scripts/verify-tailwind-build.sh
     cross-model-reminder:
       tags: meta
       run: |
@@ -253,15 +264,17 @@ pre-push:
     gems-audit:
       tags: backend security
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         echo "🔍 Running gem audit (with timeout)..."
         if command -v timeout >/dev/null 2>&1; then
-          if ! timeout 30 bundle audit check > log/prepush-gem-audit.log 2>&1; then
+          if ! timeout 30 "${MISE_EXEC[@]}" bundle audit check > log/prepush-gem-audit.log 2>&1; then
             echo "⚠️ Gem audit reported issues or timed out. See log/prepush-gem-audit.log for details."
           else
             echo "✅ Gem audit completed without blocking issues."
           fi
         else
-          if ! bundle audit check > log/prepush-gem-audit.log 2>&1; then
+          if ! "${MISE_EXEC[@]}" bundle audit check > log/prepush-gem-audit.log 2>&1; then
             echo "⚠️ Gem audit reported issues. See log/prepush-gem-audit.log for details."
           else
             echo "✅ Gem audit completed without blocking issues."
@@ -270,8 +283,10 @@ pre-push:
     javascript-audit:
       tags: frontend security
       run: |
-        if command -v yarn >/dev/null 2>&1; then
-          if ! yarn npm audit --all > log/prepush-yarn-audit.log 2>&1; then
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
+        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
+          if ! "${MISE_EXEC[@]}" yarn npm audit --all > log/prepush-yarn-audit.log 2>&1; then
             echo "⚠️ JavaScript audit reported issues. See log/prepush-yarn-audit.log for details."
           else
             echo "✅ JavaScript audit completed without blocking issues."
@@ -282,7 +297,9 @@ pre-push:
     importmaps-audit:
       tags: frontend security
       run: |
-        if ! bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
+        if ! "${MISE_EXEC[@]}" bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
           echo "⚠️ Importmap audit reported issues. See log/prepush-importmap-audit.log for details."
         else
           echo "✅ Importmap audit completed without blocking issues."
@@ -290,6 +307,8 @@ pre-push:
     verify_ci_ready:
       tags: backend ci
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_CMD=(mise --cd "$REPO_ROOT")
         echo "Checking for mise updates and attempting to upgrade if necessary..."
         if command -v brew >/dev/null 2>&1; then
           if brew outdated | grep -q "mise"; then
@@ -306,10 +325,16 @@ pre-push:
           echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
         fi
         echo "Verifying CI readiness with mise doctor (logging to .mise_doctor.log)..."
-        if ! mise doctor > .mise_doctor.log 2>&1; then
-          if grep -q "mise is not activated" .mise_doctor.log; then
+        if ! "${MISE_CMD[@]}" doctor > "$REPO_ROOT/.mise_doctor.log" 2>&1; then
+          if grep -q "mise is not activated" "$REPO_ROOT/.mise_doctor.log"; then
             echo "⚠️ mise doctor reported 'mise is not activated'."
             echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
+          elif grep -q "plugin core is not installed" "$REPO_ROOT/.mise_doctor.log"; then
+            echo "⚠️ mise doctor reported 'plugin core is not installed'."
+            echo "   Continuing because Ruby is a core plugin and hooks use mise exec --."
+          elif grep -q "plugin ruby overrides a core plugin" "$REPO_ROOT/.mise_doctor.log"; then
+            echo "⚠️ mise doctor reported 'plugin ruby overrides a core plugin'."
+            echo "   Continuing because Ruby is a core plugin."
           else
             echo "❌ mise doctor failed. See .mise_doctor.log for details."
             exit 1
@@ -320,6 +345,8 @@ pre-push:
       tags: backend style
       glob: '*.rb'
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           diff_base="HEAD@{upstream}"
         elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
@@ -333,13 +360,15 @@ pre-push:
           echo "✅ No Ruby files changed; skipping rubocop"
           exit 0
         fi
-
-        bundle exec rubocop --parallel --force-exclusion "${files[@]}"
+        
+        "${MISE_EXEC[@]}" bundle exec rubocop --parallel --force-exclusion "${files[@]}"
       stage_fixed: true
     erb_lint:
       tags: backend style
       glob: '*.erb'
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           diff_base="HEAD@{upstream}"
         elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
@@ -353,13 +382,15 @@ pre-push:
           echo "✅ No ERB files changed; skipping erb_lint"
           exit 0
         fi
-
-        bundle exec erblint --lint-all --format compact "${files[@]}"
+        
+        "${MISE_EXEC[@]}" bundle exec erblint --lint-all --format compact "${files[@]}"
       stage_fixed: true
     prettier:
       tags: frontend style
       glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           diff_base="HEAD@{upstream}"
         elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
@@ -373,9 +404,9 @@ pre-push:
           echo "✅ No Prettier-managed files changed; skipping prettier"
           exit 0
         fi
-
-        if command -v yarn >/dev/null 2>&1; then
-          yarn prettier --write "${files[@]}"
+        
+        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
+          "${MISE_EXEC[@]}" yarn prettier --write "${files[@]}"
         else
           echo "⚠️ Skipping prettier: yarn not available"
         fi
@@ -385,6 +416,8 @@ pre-push:
       exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
       glob: '*.yml'
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
           diff_base="HEAD@{upstream}"
         elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
@@ -398,15 +431,17 @@ pre-push:
           echo "✅ No YAML files changed; skipping yaml-lint"
           exit 0
         fi
-
-        bundle exec yaml-lint "${files[@]}"
+        
+        "${MISE_EXEC[@]}" bundle exec yaml-lint "${files[@]}"
       stage_fixed: true
     # rails-tests are run in pre-push instead of pre-commit for better performance
     # and to avoid breaking the commit flow with potentially long-running tests
     verify_environment:
       run: |
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
         set +e
-        output=$(bin/container-healthcheck.sh 2>&1)
+        output=$("${MISE_EXEC[@]}" bin/container-healthcheck.sh 2>&1)
         status=$?
         set -e
         if [ $status -eq 0 ]; then
@@ -416,6 +451,16 @@ pre-push:
         if echo "$output" | grep -q "mise is not activated"; then
           echo "⚠️ container-healthcheck reported 'mise is not activated'."
           echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
+          exit 0
+        fi
+        if echo "$output" | grep -q "plugin core is not installed"; then
+          echo "⚠️ container-healthcheck reported 'plugin core is not installed'."
+          echo "   Continuing because Ruby is a core plugin and hooks use mise exec --."
+          exit 0
+        fi
+        if echo "$output" | grep -q "plugin ruby overrides a core plugin"; then
+          echo "⚠️ container-healthcheck reported 'plugin ruby overrides a core plugin'."
+          echo "   Continuing because Ruby is a core plugin."
           exit 0
         fi
         echo "$output"
