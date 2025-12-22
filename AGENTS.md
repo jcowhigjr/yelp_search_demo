@@ -26,6 +26,8 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - NEVER use sed for multi-line YAML edits - use Python YAML parser instead
   - If validation fails, reset to known good state and reapply changes carefully
 
+- **Always sync first**
+
   - Before doing any work in this repo, run:
     - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
