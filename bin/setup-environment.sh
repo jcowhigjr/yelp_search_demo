@@ -47,25 +47,34 @@ find_or_install_mise() {
   # 3. If still not found, attempt to install it
   if [[ -z "$MISE_CMD" ]]; then
     echo_info "mise not found. Attempting to install via official script..."
-    if curl -fsSL https://mise.run | sh; then
-      MISE_CMD="$HOME/.local/bin/mise"
-      if [ ! -x "$MISE_CMD" ]; then
-        echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
-        exit 1
-      fi
-      echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
-      echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
-      # Attempt self-update for freshly installed mise
-      echo_info "Attempting initial self-update for mise..."
-      if ! "$MISE_CMD" self-update; then
-        echo_info "mise self-update failed or was not necessary after initial install. Continuing."
+    # Retry up to 3 times with exponential backoff
+    for i in {1..3}; do
+      if curl --retry 3 --retry-delay 5 --max-time 30 -fsSL https://mise.run | sh; then
+        MISE_CMD="$HOME/.local/bin/mise"
+        if [ ! -x "$MISE_CMD" ]; then
+          echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
+          exit 1
+        fi
+        echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
+        echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
+        # Attempt self-update for freshly installed mise
+        echo_info "Attempting initial self-update for mise..."
+        if ! "$MISE_CMD" self-update; then
+          echo_info "mise self-update failed or was not necessary after initial install. Continuing."
+        else
+          echo_info "mise self-updated successfully."
+        fi
+        break
       else
-        echo_info "mise self-updated successfully."
+        echo_error "Failed to install mise using the official script (attempt $i/3)."
+        if [ $i -eq 3 ]; then
+          echo_error "Failed to install mise using the official script after 3 attempts."
+          exit 1
+        fi
+        echo_info "Retrying in $((i * 5)) seconds..."
+        sleep $((i * 5))
       fi
-    else
-      echo_error "Failed to install mise using the official script."
-      exit 1
-    fi
+    done
   fi
 
   # Ensure MISE_CMD is set
