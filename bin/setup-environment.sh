@@ -73,13 +73,34 @@ find_or_install_mise() {
           MISE_VERSION="v2025.12.12"
           echo_info "Installing mise $MISE_VERSION from GitHub releases..."
           ARCH="linux-x64"
-          curl -L "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -o /tmp/mise.tar.gz
-          tar -xzf /tmp/mise.tar.gz -C /tmp/
-          mkdir -p "$HOME/.local/bin"
-          cp "/tmp/mise-$MISE_VERSION-$ARCH/mise" "$HOME/.local/bin/mise"
-          chmod +x "$HOME/.local/bin/mise"
-          MISE_CMD="$HOME/.local/bin/mise"
-          echo_info "mise installed successfully from GitHub releases to $MISE_CMD ($($MISE_CMD --version))"
+          # Add retry logic for curl download
+          for retry in {1..3}; do
+            if curl --retry 3 --retry-delay 5 --max-time 60 -L "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -o /tmp/mise.tar.gz; then
+              # Verify the download is a valid gzip file
+              if file /tmp/mise.tar.gz | grep -q "gzip"; then
+                tar -xzf /tmp/mise.tar.gz -C /tmp/
+                mkdir -p "$HOME/.local/bin"
+                cp "/tmp/mise-$MISE_VERSION-$ARCH/mise" "$HOME/.local/bin/mise"
+                chmod +x "$HOME/.local/bin/mise"
+                MISE_CMD="$HOME/.local/bin/mise"
+                echo_info "mise installed successfully from GitHub releases to $MISE_CMD ($($MISE_CMD --version))"
+                break
+              else
+                echo_error "Downloaded file is not a valid gzip archive (attempt $retry/3)"
+                rm -f /tmp/mise.tar.gz
+                if [ $retry -eq 3 ]; then
+                  echo_error "Failed to download valid mise archive after 3 attempts"
+                  exit 1
+                fi
+              fi
+            else
+              echo_error "Failed to download mise archive (attempt $retry/3)"
+              if [ $retry -eq 3 ]; then
+                echo_error "Failed to download mise archive after 3 attempts"
+                exit 1
+              fi
+            fi
+          done
         fi
         echo_info "Retrying in $((i * 5)) seconds..."
         sleep $((i * 5))
