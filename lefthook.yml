@@ -1,629 +1,269 @@
-# EXAMPLE USAGE
-# Refer for explanation to following link:
-# https://evilmartians.github.io/lefthook/configuration/no_tty.html
-# SOME COMMANDS RELY ON THE MISE SHIMS BEING ON PATH
-
-shell: bash
-verbose: false
-skip_output:
-  - meta
-  - success
-
-# Pre-commit hooks for branch protection and quality
 pre-commit:
   commands:
     protect_main_branches:
-      run: |
-        #!/bin/bash
-        branch=$(git branch --show-current)
-        if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
-          echo "❌ Direct commits to $branch are not allowed!"
-          echo "   Use: lefthook run workflow-new-feature <branch-name>"
-          echo "   Example: lefthook run workflow-new-feature fix/issue-123"
-          exit 1
-        fi
-      skip:
-
+      run: "#!/bin/bash\nbranch=$(git branch --show-current)\nif [ \"$branch\" = \"\
+        main\" ] || [ \"$branch\" = \"develop\" ]; then\n  echo \"\u274C Direct commits\
+        \ to $branch are not allowed!\"\n  echo \"   Use: lefthook run workflow-new-feature\
+        \ <branch-name>\"\n  echo \"   Example: lefthook run workflow-new-feature\
+        \ fix/issue-123\"\n  exit 1\nfi\n"
     validate-mise-toml:
-      glob: "mise.toml"
+      glob: mise.toml
       run: bash scripts/validate-mise-toml.sh
       tags: validation
       skip:
-        - merge
-        - rebase
+      - merge
+      - rebase
     check_branch_sync:
-      run: |
-        #!/bin/bash
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          local_sha=$(git rev-parse HEAD)
-          remote_sha=$(git rev-parse HEAD@{upstream})
-          if [ "$local_sha" != "$remote_sha" ]; then
-            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
-            if [ $behind_count -gt 0 ]; then
-              echo "⚠️  Warning: Your branch is $behind_count commits behind remote"
-              echo "   Consider running 'git pull' before committing"
-            fi
-          fi
-        fi
+      run: "#!/bin/bash\nif git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1;\
+        \ then\n  local_sha=$(git rev-parse HEAD)\n  remote_sha=$(git rev-parse HEAD@{upstream})\n\
+        \  if [ \"$local_sha\" != \"$remote_sha\" ]; then\n    behind_count=$(git\
+        \ rev-list --count HEAD..HEAD@{upstream})\n    if [ $behind_count -gt 0 ];\
+        \ then\n      echo \"\u26A0\uFE0F  Warning: Your branch is $behind_count commits\
+        \ behind remote\"\n      echo \"   Consider running 'git pull' before committing\"\
+        \n    fi\n  fi\nfi\n"
       skip:
-        - merge
-        - rebase
+      - merge
+      - rebase
     validate_dependabot_config:
-      run: |
-        #!/bin/bash
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if git diff --cached --name-only | grep -q "\.github/dependabot\.yml"; then
-          echo "🔍 Validating Dependabot configuration..."
-          if ! "${MISE_EXEC[@]}" ruby scripts/validate-dependabot-v2.rb; then
-            echo "❌ Dependabot configuration validation failed"
-            echo "   Please fix the issues before committing"
-            exit 1
-          fi
-        fi
+      run: "#!/bin/bash\nREPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise\
+        \ --cd \"$REPO_ROOT\" exec --)\nif git diff --cached --name-only | grep -q\
+        \ \"\\.github/dependabot\\.yml\"; then\n  echo \"\U0001F50D Validating Dependabot\
+        \ configuration...\"\n  if ! \"${MISE_EXEC[@]}\" ruby scripts/validate-dependabot-v2.rb;\
+        \ then\n    echo \"\u274C Dependabot configuration validation failed\"\n \
+        \   echo \"   Please fix the issues before committing\"\n    exit 1\n  fi\n\
+        fi\n"
       skip:
-        - merge
-        - rebase
+      - merge
+      - rebase
 pre-push:
-  pre-command: git add . && git stash
-  post-command: |
-    #!/bin/bash
-    if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-      echo "❌ Error: New files were generated during the pre-push hook:"
-      git ls-files --others --exclude-standard
-      echo "Please commit these files before pushing."
-      exit 1
-    fi
   commands:
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
       tags: meta reviews
     dependency_check:
       tags: validation
-      skip_output:
-        - stdout
-      run: |
-        #!/bin/bash
-        echo "🔍 Checking for missing gem dependencies..."
-        
-        # Check if any require statements don't have corresponding gems
-        missing_deps=""
-        
-        # Find all require statements in committed files
-        for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(rb|erb)$'); do
-          if [ -f "$file" ]; then
-            # Look for require statements (excluding require_relative)
-            requires=$(grep -n "require ['\"]" "$file" | grep -v "require_relative" | sed "s/.*require ['\"]//" | sed "s/['\"].*//")
-            for req in $requires; do
-              gem_name=$(echo "$req" | cut -d'/' -f1)
-              # Skip standard library requires and Rails core
-              case "$gem_name" in
-                date|json|uri|net|open-uri|digest|base64|securerandom|logger|pathname|fileutils|tmpdir|yaml|csv|stringio|ostruct|set|forwardable|delegate|benchmark|timeout|pp|pstore|dbm|etc|fcntl|fiddle|io|nkf|openssl|psych|pty|racc|rbconfig|readline|ripper|socket|syslog|thread|time|zlib|english|irb|mkmf|optparse|prime|profiler|rake|rdoc|rss|rubygems|shellwords|singleton|test|un|weakref|webrick|win32ole|xmlrpc)
-                  continue
-                  ;;
-                rails*|active_*|action_*)
-                  continue
-                  ;;
-              esac
-              if ! grep -q "gem ['\"]$gem_name['\"]" Gemfile; then
-                missing_deps="$missing_deps$gem_name (required in $file)\n"
-              fi
-            done
-          fi
-        done
-        
-        if [ -n "$missing_deps" ]; then
-          echo "❌ Missing gem dependencies detected:"
-          echo "$missing_deps"
-          echo "   Please add these gems to your Gemfile"
-          exit 1
-        fi
-        
-        echo "✅ All dependencies appear to be present"
+      run: "#!/bin/bash\necho \"\U0001F50D Checking for missing gem dependencies...\"\
+        \n\n# Check if any require statements don't have corresponding gems\nmissing_deps=\"\
+        \"\n\n# Find all require statements in committed files\nfor file in $(git\
+        \ diff --cached --name-only --diff-filter=ACM | grep -E '\\.(rb|erb)$'); do\n\
+        \  if [ -f \"$file\" ]; then\n    # Look for require statements (excluding\
+        \ require_relative)\n    requires=$(grep -n \"require ['\\\"]\" \"$file\"\
+        \ | grep -v \"require_relative\" | sed \"s/.*require ['\\\"]//\" | sed \"\
+        s/['\\\"].*//\")\n    for req in $requires; do\n      gem_name=$(echo \"$req\"\
+        \ | cut -d'/' -f1)\n      # Skip standard library requires and Rails core\n\
+        \      case \"$gem_name\" in\n        date|json|uri|net|open-uri|digest|base64|securerandom|logger|pathname|fileutils|tmpdir|yaml|csv|stringio|ostruct|set|forwardable|delegate|benchmark|timeout|pp|pstore|dbm|etc|fcntl|fiddle|io|nkf|openssl|psych|pty|racc|rbconfig|readline|ripper|socket|syslog|thread|time|zlib|english|irb|mkmf|optparse|prime|profiler|rake|rdoc|rss|rubygems|shellwords|singleton|test|un|weakref|webrick|win32ole|xmlrpc)\n\
+        \          continue\n          ;;\n        rails*|active_*|action_*)\n   \
+        \       continue\n          ;;\n      esac\n      if ! grep -q \"gem ['\\\"\
+        ]$gem_name['\\\"]\" Gemfile; then\n        missing_deps=\"$missing_deps$gem_name\
+        \ (required in $file)\\n\"\n      fi\n    done\n  fi\ndone\n\nif [ -n \"$missing_deps\"\
+        \ ]; then\n  echo \"\u274C Missing gem dependencies detected:\"\n  echo \"\
+        $missing_deps\"\n  echo \"   Please add these gems to your Gemfile\"\n  exit\
+        \ 1\nfi\n\necho \"\u2705 All dependencies appear to be present\"\n"
     rails-tests:
       tags: backend tests
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if [ -f .env ]; then
-          . ./.env
-        fi
-        echo "🚀 Setting up test environment..."
-        
-        # Setup phase - detailed logs captured by bin/setup into log/setup*.log
-        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true "${MISE_EXEC[@]}" bin/setup --skip-server; then
-          echo "❌ Failed to set up test environment (see log/setup.log for details)"
-          exit 1
-        fi
-        
-        echo "🔧 Preparing test database..."
-        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test:prepare --trace; then
-          echo "❌ Failed to prepare test database"
-          exit 1
-        fi
-        
-        echo "🧪 Running Rails tests..."
-        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test --quiet; then
-          echo "❌ Rails tests failed"
-          exit 1
-        fi
-        
-        echo "✅ Rails tests completed successfully."
-        
-        echo "🔍 Verifying tailwind.css existence locally after test:prepare..."
-        if [ -f app/assets/builds/tailwind.css ]; then
-          echo "✅ app/assets/builds/tailwind.css found locally."
-        else
-          echo "❌ app/assets/builds/tailwind.css NOT found locally after test:prepare."
-          echo "   Contents of app/assets/builds/:"
-          ls -la app/assets/builds/ || echo "app/assets/builds/ directory does not exist"
-        fi
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif [ -f .env ]; then\n  . ./.env\nfi\necho \"\U0001F680\
+        \ Setting up test environment...\"\n\n# Setup phase - detailed logs captured\
+        \ by bin/setup into log/setup*.log\nif ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true\
+        \ \"${MISE_EXEC[@]}\" bin/setup --skip-server; then\n  echo \"\u274C Failed\
+        \ to set up test environment (see log/setup.log for details)\"\n  exit 1\n\
+        fi\n\necho \"\U0001F527 Preparing test database...\"\nif ! CI=true RAILS_ENV=test\
+        \ \"${MISE_EXEC[@]}\" bin/rails test:prepare --trace; then\n  echo \"\u274C\
+        \ Failed to prepare test database\"\n  exit 1\nfi\n\necho \"\U0001F9EA Running\
+        \ Rails tests...\"\nif ! CI=true RAILS_ENV=test \"${MISE_EXEC[@]}\" bin/rails\
+        \ test --quiet; then\n  echo \"\u274C Rails tests failed\"\n  exit 1\nfi\n\
+        \necho \"\u2705 Rails tests completed successfully.\"\n\necho \"\U0001F50D\
+        \ Verifying tailwind.css existence locally after test:prepare...\"\nif [ -f\
+        \ app/assets/builds/tailwind.css ]; then\n  echo \"\u2705 app/assets/builds/tailwind.css\
+        \ found locally.\"\nelse\n  echo \"\u274C app/assets/builds/tailwind.css NOT\
+        \ found locally after test:prepare.\"\n  echo \"   Contents of app/assets/builds/:\"\
+        \n  ls -la app/assets/builds/ || echo \"app/assets/builds/ directory does\
+        \ not exist\"\nfi\n"
     test-next:
       tags: javascript frontend
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        echo "🚀 Verifying Next.js/JavaScript dependencies..."
-        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
-          if ! CI=true "${MISE_EXEC[@]}" yarn install --frozen-lockfile > log/prepush-yarn-install.log 2>&1; then
-            echo "❌ Failed to install yarn dependencies. See log/prepush-yarn-install.log for details."
-            exit 1
-          fi
-        else
-          echo "⚠️ Skipping JavaScript dependency verification: yarn not available"
-          exit 0
-        fi
-        echo "✅ Yarn dependencies verified successfully."
-        # Note: 'next-build' and 'next-test' scripts were not found in the root package.json.
-        # If these are required, ensure they are defined in the correct package.json
-        # and update this hook accordingly, potentially changing the working directory.
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\necho \"\U0001F680 Verifying Next.js/JavaScript dependencies...\"\
+        \nif \"${MISE_EXEC[@]}\" yarn --version >/dev/null 2>&1; then\n  if ! CI=true\
+        \ \"${MISE_EXEC[@]}\" yarn install --frozen-lockfile > log/prepush-yarn-install.log\
+        \ 2>&1; then\n    echo \"\u274C Failed to install yarn dependencies. See log/prepush-yarn-install.log\
+        \ for details.\"\n    exit 1\n  fi\nelse\n  echo \"\u26A0\uFE0F Skipping JavaScript\
+        \ dependency verification: yarn not available\"\n  exit 0\nfi\necho \"\u2705\
+        \ Yarn dependencies verified successfully.\"\n# Note: 'next-build' and 'next-test'\
+        \ scripts were not found in the root package.json.\n# If these are required,\
+        \ ensure they are defined in the correct package.json\n# and update this hook\
+        \ accordingly, potentially changing the working directory.\n"
     rails-system-tests:
       tags: backend system-tests
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if [ -f .env ]; then
-          . ./.env
-        fi
-        if ./scripts/should-run-system-tests.sh; then
-          echo "⏭️  Skipping system tests (safe changes only)"
-          exit 0
-        fi
-        echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true "${MISE_EXEC[@]}" bin/setup --skip-server; then
-          echo "❌ Failed to set up system test environment (see log/setup.log for details)"
-          exit 1
-        fi
-        
-        echo "🔧 Preparing system test database..."
-        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/rails test:prepare --trace; then
-          echo "❌ Failed to prepare system test database"
-          exit 1
-        fi
-        
-        echo "🧪 Running system tests..."
-        if ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false "${MISE_EXEC[@]}" bin/rails test:system --quiet; then
-          echo "❌ System tests failed"
-          exit 1
-        fi
-        
-        echo "✅ All system tests passed"
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif [ -f .env ]; then\n  . ./.env\nfi\nif ./scripts/should-run-system-tests.sh;\
+        \ then\n  echo \"\u23ED\uFE0F  Skipping system tests (safe changes only)\"\
+        \n  exit 0\nfi\necho \"\U0001F680 Setting up system test environment...\"\n\
+        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true \"${MISE_EXEC[@]}\" bin/setup\
+        \ --skip-server; then\n  echo \"\u274C Failed to set up system test environment\
+        \ (see log/setup.log for details)\"\n  exit 1\nfi\n\necho \"\U0001F527 Preparing\
+        \ system test database...\"\nif ! CI=true RAILS_ENV=test \"${MISE_EXEC[@]}\"\
+        \ bin/rails test:prepare --trace; then\n  echo \"\u274C Failed to prepare\
+        \ system test database\"\n  exit 1\nfi\n\necho \"\U0001F9EA Running system\
+        \ tests...\"\nif ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost'\
+        \ CUPRITE_JS_ERRORS=false \"${MISE_EXEC[@]}\" bin/rails test:system --quiet;\
+        \ then\n  echo \"\u274C System tests failed\"\n  exit 1\nfi\n\necho \"\u2705\
+        \ All system tests passed\"\n"
     tailwind-build-check:
       tags: frontend build
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
+      run: 'REPO_ROOT="$(git rev-parse --show-toplevel)"
+
         MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
+
         "${MISE_EXEC[@]}" scripts/verify-tailwind-build.sh
+
+        '
     cross-model-reminder:
       tags: meta
-      run: |
-        #!/bin/bash
-        set -euo pipefail
-
-        # If nothing is staged, do nothing
-        if git diff --cached --quiet; then
-          exit 0
-        fi
-
-        staged_files=$(git diff --cached --name-only)
-        if [ -z "$staged_files" ]; then
-          exit 0
-        fi
-
-        surfaces=()
-        while IFS= read -r file; do
-          case "$file" in
-            app/assets/*|app/views/*)
-              [[ " ${surfaces[*]} " =~ " ui " ]] || surfaces+=("ui")
-              ;;
-            app/controllers/*|app/helpers/*|app/serializers/*)
-              [[ " ${surfaces[*]} " =~ " api " ]] || surfaces+=("api")
-              ;;
-            app/jobs/*|app/workers/*|app/services/*|app/mailers/*)
-              [[ " ${surfaces[*]} " =~ " job " ]] || surfaces+=("job")
-              ;;
-          esac
-        done <<<"$staged_files"
-
-        if [ ${#surfaces[@]} -eq 0 ]; then
-          exit 0
-        fi
-
-        branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
-        echo "🔁 Cross-model review reminder (branch: $branch)"
-        echo "    Staged files touch: ${surfaces[*]} surfaces"
-        echo "    If today's fix was hard to verify, run:"
-        echo "      scripts/generate-cross-model-prompt.sh <issue-url-or-number> ${surfaces[0]}"
-        echo "      claude --model opus --message \"\$(scripts/generate-cross-model-prompt.sh <issue-url-or-number> ${surfaces[0]})\""
-        if [[ " ${surfaces[*]} " =~ " ui " ]]; then
-          echo "    For CSS/Tailwind/ERB-heavy visual fixes, you can also run:"
-          echo "      scripts/ai-css-review.sh <issue-url-or-number>"
-          echo "      claude --model opus --message \"\$(scripts/ai-css-review.sh <issue-url-or-number>)\""
-        fi
-        echo "    Details: docs/AGENTS.md#empirical-verification--cross-model-escalation-issue-981"
+      run: "#!/bin/bash\nset -euo pipefail\n\n# If nothing is staged, do nothing\n\
+        if git diff --cached --quiet; then\n  exit 0\nfi\n\nstaged_files=$(git diff\
+        \ --cached --name-only)\nif [ -z \"$staged_files\" ]; then\n  exit 0\nfi\n\
+        \nsurfaces=()\nwhile IFS= read -r file; do\n  case \"$file\" in\n    app/assets/*|app/views/*)\n\
+        \      [[ \" ${surfaces[*]} \" =~ \" ui \" ]] || surfaces+=(\"ui\")\n    \
+        \  ;;\n    app/controllers/*|app/helpers/*|app/serializers/*)\n      [[ \"\
+        \ ${surfaces[*]} \" =~ \" api \" ]] || surfaces+=(\"api\")\n      ;;\n   \
+        \ app/jobs/*|app/workers/*|app/services/*|app/mailers/*)\n      [[ \" ${surfaces[*]}\
+        \ \" =~ \" job \" ]] || surfaces+=(\"job\")\n      ;;\n  esac\ndone <<<\"\
+        $staged_files\"\n\nif [ ${#surfaces[@]} -eq 0 ]; then\n  exit 0\nfi\n\nbranch=$(git\
+        \ rev-parse --abbrev-ref HEAD 2>/dev/null || echo \"unknown\")\necho \"\U0001F501\
+        \ Cross-model review reminder (branch: $branch)\"\necho \"    Staged files\
+        \ touch: ${surfaces[*]} surfaces\"\necho \"    If today's fix was hard to\
+        \ verify, run:\"\necho \"      scripts/generate-cross-model-prompt.sh <issue-url-or-number>\
+        \ ${surfaces[0]}\"\necho \"      claude --model opus --message \\\"\\$(scripts/generate-cross-model-prompt.sh\
+        \ <issue-url-or-number> ${surfaces[0]})\\\"\"\nif [[ \" ${surfaces[*]} \"\
+        \ =~ \" ui \" ]]; then\n  echo \"    For CSS/Tailwind/ERB-heavy visual fixes,\
+        \ you can also run:\"\n  echo \"      scripts/ai-css-review.sh <issue-url-or-number>\"\
+        \n  echo \"      claude --model opus --message \\\"\\$(scripts/ai-css-review.sh\
+        \ <issue-url-or-number>)\\\"\"\nfi\necho \"    Details: docs/AGENTS.md#empirical-verification--cross-model-escalation-issue-981\"\
+        \n"
     gems-audit:
       tags: backend security
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        echo "🔍 Running gem audit (with timeout)..."
-        if command -v timeout >/dev/null 2>&1; then
-          if ! timeout 30 "${MISE_EXEC[@]}" bundle audit check > log/prepush-gem-audit.log 2>&1; then
-            echo "⚠️ Gem audit reported issues or timed out. See log/prepush-gem-audit.log for details."
-          else
-            echo "✅ Gem audit completed without blocking issues."
-          fi
-        else
-          if ! "${MISE_EXEC[@]}" bundle audit check > log/prepush-gem-audit.log 2>&1; then
-            echo "⚠️ Gem audit reported issues. See log/prepush-gem-audit.log for details."
-          else
-            echo "✅ Gem audit completed without blocking issues."
-          fi
-        fi
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\necho \"\U0001F50D Running gem audit (with timeout)...\"\
+        \nif command -v timeout >/dev/null 2>&1; then\n  if ! timeout 30 \"${MISE_EXEC[@]}\"\
+        \ bundle audit check > log/prepush-gem-audit.log 2>&1; then\n    echo \"\u26A0\
+        \uFE0F Gem audit reported issues or timed out. See log/prepush-gem-audit.log\
+        \ for details.\"\n  else\n    echo \"\u2705 Gem audit completed without blocking\
+        \ issues.\"\n  fi\nelse\n  if ! \"${MISE_EXEC[@]}\" bundle audit check > log/prepush-gem-audit.log\
+        \ 2>&1; then\n    echo \"\u26A0\uFE0F Gem audit reported issues. See log/prepush-gem-audit.log\
+        \ for details.\"\n  else\n    echo \"\u2705 Gem audit completed without blocking\
+        \ issues.\"\n  fi\nfi\n"
     javascript-audit:
       tags: frontend security
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
-          if ! "${MISE_EXEC[@]}" yarn npm audit --all > log/prepush-yarn-audit.log 2>&1; then
-            echo "⚠️ JavaScript audit reported issues. See log/prepush-yarn-audit.log for details."
-          else
-            echo "✅ JavaScript audit completed without blocking issues."
-          fi
-        else
-          echo "⚠️ Skipping JavaScript audit: yarn not available"
-        fi
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif \"${MISE_EXEC[@]}\" yarn --version >/dev/null 2>&1;\
+        \ then\n  if ! \"${MISE_EXEC[@]}\" yarn npm audit --all > log/prepush-yarn-audit.log\
+        \ 2>&1; then\n    echo \"\u26A0\uFE0F JavaScript audit reported issues. See\
+        \ log/prepush-yarn-audit.log for details.\"\n  else\n    echo \"\u2705 JavaScript\
+        \ audit completed without blocking issues.\"\n  fi\nelse\n  echo \"\u26A0\uFE0F\
+        \ Skipping JavaScript audit: yarn not available\"\nfi\n"
     importmaps-audit:
       tags: frontend security
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if ! "${MISE_EXEC[@]}" bin/importmap audit > log/prepush-importmap-audit.log 2>&1; then
-          echo "⚠️ Importmap audit reported issues. See log/prepush-importmap-audit.log for details."
-        else
-          echo "✅ Importmap audit completed without blocking issues."
-        fi
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif ! \"${MISE_EXEC[@]}\" bin/importmap audit > log/prepush-importmap-audit.log\
+        \ 2>&1; then\n  echo \"\u26A0\uFE0F Importmap audit reported issues. See log/prepush-importmap-audit.log\
+        \ for details.\"\nelse\n  echo \"\u2705 Importmap audit completed without\
+        \ blocking issues.\"\nfi\n"
     verify_ci_ready:
       tags: backend ci
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_CMD=(mise --cd "$REPO_ROOT")
-        echo "Checking for mise updates and attempting to upgrade if necessary..."
-        if command -v brew >/dev/null 2>&1; then
-          if brew outdated | grep -q "mise"; then
-            echo "Mise is outdated, attempting to upgrade via Homebrew..."
-            if ! (brew update && brew upgrade mise); then
-              echo "❌ Failed to upgrade mise. Please upgrade it manually."
-              exit 1
-            fi
-            echo "✅ Mise upgraded successfully."
-          else
-            echo "ℹ️ Mise is up to date."
-          fi
-        else
-          echo "⚠️ Skipping mise upgrade: Homebrew (brew) not available"
-        fi
-        echo "Verifying CI readiness with mise doctor (logging to .mise_doctor.log)..."
-        if ! "${MISE_CMD[@]}" doctor > "$REPO_ROOT/.mise_doctor.log" 2>&1; then
-          if grep -q "mise is not activated" "$REPO_ROOT/.mise_doctor.log"; then
-            echo "⚠️ mise doctor reported 'mise is not activated'."
-            echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
-          elif grep -q "plugin core is not installed" "$REPO_ROOT/.mise_doctor.log"; then
-            echo "⚠️ mise doctor reported 'plugin core is not installed'."
-            echo "   Continuing because Ruby is a core plugin and hooks use mise exec --."
-          elif grep -q "plugin ruby overrides a core plugin" "$REPO_ROOT/.mise_doctor.log"; then
-            echo "⚠️ mise doctor reported 'plugin ruby overrides a core plugin'."
-            echo "   Continuing because Ruby is a core plugin."
-          else
-            echo "❌ mise doctor failed. See .mise_doctor.log for details."
-            exit 1
-          fi
-        fi
-        echo "✅ CI environment ready."
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_CMD=(mise --cd \"\
+        $REPO_ROOT\")\necho \"Checking for mise updates and attempting to upgrade\
+        \ if necessary...\"\nif command -v brew >/dev/null 2>&1; then\n  if brew outdated\
+        \ | grep -q \"mise\"; then\n    echo \"Mise is outdated, attempting to upgrade\
+        \ via Homebrew...\"\n    if ! (brew update && brew upgrade mise); then\n \
+        \     echo \"\u274C Failed to upgrade mise. Please upgrade it manually.\"\n\
+        \      exit 1\n    fi\n    echo \"\u2705 Mise upgraded successfully.\"\n \
+        \ else\n    echo \"\u2139\uFE0F Mise is up to date.\"\n  fi\nelse\n  echo\
+        \ \"\u26A0\uFE0F Skipping mise upgrade: Homebrew (brew) not available\"\n\
+        fi\necho \"Verifying CI readiness with mise doctor (logging to .mise_doctor.log)...\"\
+        \nif ! \"${MISE_CMD[@]}\" doctor > \"$REPO_ROOT/.mise_doctor.log\" 2>&1; then\n\
+        \  if grep -q \"mise is not activated\" \"$REPO_ROOT/.mise_doctor.log\"; then\n\
+        \    echo \"\u26A0\uFE0F mise doctor reported 'mise is not activated'.\"\n\
+        \    echo \"   Continuing because hooks rely on 'mise exec --' for tool execution.\"\
+        \n  elif grep -q \"plugin core is not installed\" \"$REPO_ROOT/.mise_doctor.log\"\
+        ; then\n    echo \"\u26A0\uFE0F mise doctor reported 'plugin core is not installed'.\"\
+        \n    echo \"   Continuing because Ruby is a core plugin and hooks use mise\
+        \ exec --.\"\n  elif grep -q \"plugin ruby overrides a core plugin\" \"$REPO_ROOT/.mise_doctor.log\"\
+        ; then\n    echo \"\u26A0\uFE0F mise doctor reported 'plugin ruby overrides\
+        \ a core plugin'.\"\n    echo \"   Continuing because Ruby is a core plugin.\"\
+        \n  else\n    echo \"\u274C mise doctor failed. See .mise_doctor.log for details.\"\
+        \n    exit 1\n  fi\nfi\necho \"\u2705 CI environment ready.\"\n"
     rubocop:
       tags: backend style
       glob: '*.rb'
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          diff_base="HEAD@{upstream}"
-        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
-          diff_base="$(git merge-base HEAD origin/develop)"
-        else
-          diff_base="HEAD^"
-        fi
-
-        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.rb') )
-        if [ ${#files[@]} -eq 0 ]; then
-          echo "✅ No Ruby files changed; skipping rubocop"
-          exit 0
-        fi
-        
-        "${MISE_EXEC[@]}" bundle exec rubocop --parallel --force-exclusion "${files[@]}"
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
+        \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
+        \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
+        \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
+        \ --name-only \"${diff_base}..HEAD\" -- '*.rb') )\nif [ ${#files[@]} -eq 0\
+        \ ]; then\n  echo \"\u2705 No Ruby files changed; skipping rubocop\"\n  exit\
+        \ 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec rubocop --parallel --force-exclusion\
+        \ \"${files[@]}\"\n"
       stage_fixed: true
     erb_lint:
       tags: backend style
       glob: '*.erb'
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          diff_base="HEAD@{upstream}"
-        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
-          diff_base="$(git merge-base HEAD origin/develop)"
-        else
-          diff_base="HEAD^"
-        fi
-
-        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.erb') )
-        if [ ${#files[@]} -eq 0 ]; then
-          echo "✅ No ERB files changed; skipping erb_lint"
-          exit 0
-        fi
-        
-        "${MISE_EXEC[@]}" bundle exec erblint --lint-all --format compact "${files[@]}"
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
+        \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
+        \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
+        \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
+        \ --name-only \"${diff_base}..HEAD\" -- '*.erb') )\nif [ ${#files[@]} -eq\
+        \ 0 ]; then\n  echo \"\u2705 No ERB files changed; skipping erb_lint\"\n \
+        \ exit 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec erblint --lint-all --format\
+        \ compact \"${files[@]}\"\n"
       stage_fixed: true
     prettier:
       tags: frontend style
       glob: '*.{js,jsx,ts,tsx,json,css,scss,md}'
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          diff_base="HEAD@{upstream}"
-        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
-          diff_base="$(git merge-base HEAD origin/develop)"
-        else
-          diff_base="HEAD^"
-        fi
-
-        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json' '*.css' '*.scss' '*.md') )
-        if [ ${#files[@]} -eq 0 ]; then
-          echo "✅ No Prettier-managed files changed; skipping prettier"
-          exit 0
-        fi
-        
-        if "${MISE_EXEC[@]}" yarn --version >/dev/null 2>&1; then
-          "${MISE_EXEC[@]}" yarn prettier --write "${files[@]}"
-        else
-          echo "⚠️ Skipping prettier: yarn not available"
-        fi
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
+        \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
+        \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
+        \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
+        \ --name-only \"${diff_base}..HEAD\" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.json'\
+        \ '*.css' '*.scss' '*.md') )\nif [ ${#files[@]} -eq 0 ]; then\n  echo \"\u2705\
+        \ No Prettier-managed files changed; skipping prettier\"\n  exit 0\nfi\n\n\
+        if \"${MISE_EXEC[@]}\" yarn --version >/dev/null 2>&1; then\n  \"${MISE_EXEC[@]}\"\
+        \ yarn prettier --write \"${files[@]}\"\nelse\n  echo \"\u26A0\uFE0F Skipping\
+        \ prettier: yarn not available\"\nfi\n"
       stage_fixed: true
     yaml-lint:
       tags: backend style
-      exclude: "rebase-merge-only develop" # allow rebase-merge-only develop to be invalid YAML
+      exclude: rebase-merge-only develop
       glob: '*.yml'
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          diff_base="HEAD@{upstream}"
-        elif git rev-parse --verify origin/develop >/dev/null 2>&1; then
-          diff_base="$(git merge-base HEAD origin/develop)"
-        else
-          diff_base="HEAD^"
-        fi
-
-        files=( $(git diff --name-only "${diff_base}..HEAD" -- '*.yml') )
-        if [ ${#files[@]} -eq 0 ]; then
-          echo "✅ No YAML files changed; skipping yaml-lint"
-          exit 0
-        fi
-        
-        "${MISE_EXEC[@]}" bundle exec yaml-lint "${files[@]}"
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
+        \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
+        \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
+        \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
+        \ --name-only \"${diff_base}..HEAD\" -- '*.yml') )\nif [ ${#files[@]} -eq\
+        \ 0 ]; then\n  echo \"\u2705 No YAML files changed; skipping yaml-lint\"\n\
+        \  exit 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec yaml-lint \"${files[@]}\"\
+        \n"
       stage_fixed: true
-    # rails-tests are run in pre-push instead of pre-commit for better performance
-    # and to avoid breaking the commit flow with potentially long-running tests
     verify_environment:
-      run: |
-        REPO_ROOT="$(git rev-parse --show-toplevel)"
-        MISE_EXEC=(mise --cd "$REPO_ROOT" exec --)
-        set +e
-        output=$("${MISE_EXEC[@]}" bin/container-healthcheck.sh 2>&1)
-        status=$?
-        set -e
-        if [ $status -eq 0 ]; then
-          echo "✓ Environment valid"
-          exit 0
-        fi
-        if echo "$output" | grep -q "mise is not activated"; then
-          echo "⚠️ container-healthcheck reported 'mise is not activated'."
-          echo "   Continuing because hooks rely on 'mise exec --' for tool execution."
-          exit 0
-        fi
-        if echo "$output" | grep -q "plugin core is not installed"; then
-          echo "⚠️ container-healthcheck reported 'plugin core is not installed'."
-          echo "   Continuing because Ruby is a core plugin and hooks use mise exec --."
-          exit 0
-        fi
-        if echo "$output" | grep -q "plugin ruby overrides a core plugin"; then
-          echo "⚠️ container-healthcheck reported 'plugin ruby overrides a core plugin'."
-          echo "   Continuing because Ruby is a core plugin."
-          exit 0
-        fi
-        echo "$output"
-        echo "✗ Environment invalid - run bin/setup-environment.sh"
-        exit 1
+      run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
+        $REPO_ROOT\" exec --)\nset +e\noutput=$(\"${MISE_EXEC[@]}\" bin/container-healthcheck.sh\
+        \ 2>&1)\nstatus=$?\nset -e\nif [ $status -eq 0 ]; then\n  echo \"\u2713 Environment\
+        \ valid\"\n  exit 0\nfi\nif echo \"$output\" | grep -q \"mise is not activated\"\
+        ; then\n  echo \"\u26A0\uFE0F container-healthcheck reported 'mise is not\
+        \ activated'.\"\n  echo \"   Continuing because hooks rely on 'mise exec --'\
+        \ for tool execution.\"\n  exit 0\nfi\nif echo \"$output\" | grep -q \"plugin\
+        \ core is not installed\"; then\n  echo \"\u26A0\uFE0F container-healthcheck\
+        \ reported 'plugin core is not installed'.\"\n  echo \"   Continuing because\
+        \ Ruby is a core plugin and hooks use mise exec --.\"\n  exit 0\nfi\nif echo\
+        \ \"$output\" | grep -q \"plugin ruby overrides a core plugin\"; then\n  echo\
+        \ \"\u26A0\uFE0F container-healthcheck reported 'plugin ruby overrides a core\
+        \ plugin'.\"\n  echo \"   Continuing because Ruby is a core plugin.\"\n  exit\
+        \ 0\nfi\necho \"$output\"\necho \"\u2717 Environment invalid - run bin/setup-environment.sh\"\
+        \nexit 1\n"
       tags: validation
       skip:
-        - merge
-        - rebase
-
-fixer:
-  parallel: true
-  commands:
-    ruby-fixer:
-      glob: '**/*.rb'
-      run: bundle exec rubocop --autocorrect-all  --force-exclusion {all_files}
-      stage_fixed: true
-    js-fixer:
-      glob: 'app/javascript/**/*.{js,ts,jsx,tsx}'
-      run: |
-        if command -v yarn >/dev/null 2>&1; then
-          yarn prettier --write {all_files}
-        else
-          echo "⚠️ Skipping JS fixer: yarn not available"
-        fi
-      stage_fixed: true
-    ruby-prettier:
-      glob: 'app/**/*.rb'
-      run: bundle exec rbprettier --write {files}
-      stage_fixed: true
-    erb_lint:
-      glob: 'app/views/**/*.erb'
-      run: bundle exec erb_lint --autocorrect {all_files}
-      stage_fixed: true
-    yaml-lint:
-      tags: lint
-      glob: "*.{yml,yaml}"
-      run: yamllint {all_files}
-      stage_fixed: true
-    brakeman:
-      run: bundle exec brakeman --no-pager
-    yarn-audit:
-      tags: frontend security
-      run: |
-        if command -v yarn >/dev/null 2>&1; then
-          yarn npm audit
-        else
-          echo "⚠️ Skipping yarn audit: yarn not available"
-        fi
-    gems-audit:
-      tags: backend security
-      run: |
-        echo "🔍 Running gem audit (with timeout)..."
-        if ! timeout 30 bundle audit check; then
-          echo "⚠️ Gem audit check timeout or issues found - continuing with timeout to prevent blocking"
-        fi
-    i18n-tasks:
-      run: bundle exec i18n-tasks health || bundle exec i18n-tasks normalize
-      stage_fixed: true
-    yarn-lint:
-      tags: frontend updates
-      glob: '{app/javascript/**/*.{js,ts,jsx,tsx},**/*.{css,scss,sass,md,json}}'
-      run: |
-        if command -v yarn >/dev/null 2>&1; then
-          yarn prettier --write {all_files}
-        else
-          echo "⚠️ Skipping yarn lint: yarn not available"
-        fi
-      stage_fixed: true
-    importmaps-audit:
-      tags: frontend security
-      run: bin/importmap outdated
-# scripts:
-#     "hello.js":
-#       runner: node
-#     "any.go":
-#       runner: go run
-#     "any.py":
-#       runner: python
-#     "any.rb":
-#       runner: ruby
-#     "any.sh":
-#       runner: bash
-
-# Workflow commands for agent coders and developers
-workflow-status:
-  piped: true
-  commands:
-    check_status:
-      run: |
-        #!/bin/bash
-        echo "🔍 Git Workflow Status Check"
-        echo "=========================="
-        
-        # Check current branch
-        current_branch=$(git branch --show-current)
-        echo "📍 Current branch: $current_branch"
-        
-        # Check if on protected branch
-        if [ "$current_branch" = "main" ] || [ "$current_branch" = "develop" ]; then
-          echo "⚠️  WARNING: You are on a protected branch ($current_branch)"
-          echo "   Use 'lefthook run workflow-new-feature <branch-name>' to create a feature branch"
-        fi
-        
-        # Check git status
-        echo ""
-        echo "📝 Git Status:"
-        git status --porcelain
-        
-        # Check if behind remote
-        echo ""
-        echo "🔄 Remote sync status:"
-        if git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1; then
-          local_sha=$(git rev-parse HEAD)
-          remote_sha=$(git rev-parse HEAD@{upstream})
-          if [ "$local_sha" != "$remote_sha" ]; then
-            behind_count=$(git rev-list --count HEAD..HEAD@{upstream})
-            ahead_count=$(git rev-list --count HEAD@{upstream}..HEAD)
-            if [ $behind_count -gt 0 ]; then
-              echo "⚠️  Your branch is $behind_count commits behind remote"
-              echo "   Run 'git pull' to sync with remote"
-            fi
-            if [ $ahead_count -gt 0 ]; then
-              echo "📤 Your branch is $ahead_count commits ahead of remote"
-            fi
-          else
-            echo "✅ Branch is up to date with remote"
-          fi
-        else
-          echo "ℹ️  No upstream tracking branch set"
-        fi
-
-workflow-new-feature:
-  commands:
-    create_branch:
-      run: bash ./workflow-new-feature.sh {0}
-
-workflow-stack-create:
-  commands:
-    create_branch:
-      run: bash ./scripts/stacked-pr.sh create {0}
-
-workflow-stack-sync:
-  commands:
-    sync_branch:
-      run: |
-        if [ -z "{0}" ]; then
-          bash ./scripts/stacked-pr.sh sync
-        else
-          bash ./scripts/stacked-pr.sh sync {0}
-        fi
-
-workflow-stack-show:
-  commands:
-    show_branch:
-      run: |
-        if [ -z "{0}" ]; then
-          bash ./scripts/stacked-pr.sh show
-        else
-          bash ./scripts/stacked-pr.sh show {0}
-        fi
-
-workflow-queue-pr:
-  commands:
-    queue_branch:
-      run: bash ./scripts/stacked-pr.sh queue
+      - merge
+      - rebase
