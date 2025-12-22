@@ -473,7 +473,6 @@ pre-push:
 
 fixer:
   verbose: false
-  pty: false
   parallel: true
   commands:
     ruby-fixer:
