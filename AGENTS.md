@@ -18,7 +18,13 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - Interactive secrets or credentials the agent cannot access, or
     - Explicit human sign-off for risky/destructive operations (e.g., deleting data).
 
-- **Always sync first**
+- **Always validate before committing config changes**
+
+  - Before committing any changes to configuration files (especially lefthook.yml, mise.toml, etc.), run validation commands:
+    - `mise exec -- lefthook validate` for lefthook.yml
+    - `mise exec -- ruby scripts/validate-mise-toml.sh` for mise.toml
+  - NEVER use sed for multi-line YAML edits - use Python YAML parser instead
+  - If validation fails, reset to known good state and reapply changes carefully
 
   - Before doing any work in this repo, run:
     - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
