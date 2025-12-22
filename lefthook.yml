@@ -36,6 +36,7 @@ pre-commit:
       - merge
       - rebase
 pre-push:
+  parallel: false  # Prevent race conditions in bin/setup during test hooks
   commands:
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
