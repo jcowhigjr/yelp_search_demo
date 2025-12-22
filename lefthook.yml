@@ -131,7 +131,7 @@ pre-push:
         echo "🚀 Setting up test environment..."
         
         # Setup phase - detailed logs captured by bin/setup into log/setup*.log
-        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/setup --skip-server; then
+        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true "${MISE_EXEC[@]}" bin/setup --skip-server; then
           echo "❌ Failed to set up test environment (see log/setup.log for details)"
           exit 1
         fi
@@ -190,7 +190,7 @@ pre-push:
           exit 0
         fi
         echo "🚀 Setting up system test environment..."
-        if ! CI=true RAILS_ENV=test "${MISE_EXEC[@]}" bin/setup --skip-server; then
+        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true "${MISE_EXEC[@]}" bin/setup --skip-server; then
           echo "❌ Failed to set up system test environment (see log/setup.log for details)"
           exit 1
         fi
