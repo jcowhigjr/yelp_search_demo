@@ -10,6 +10,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 ## 1. Core runtime & workflow rules
 
 - **Agents run routine commands autonomously**
+
   - For common operations (e.g., `git status`, `git add`, `git push`, `mise exec -- ./scripts/...`), agents SHOULD:
     - Run the commands themselves via available tools/CLI.
     - Avoid asking the user to type or copy/paste simple commands.
@@ -18,6 +19,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - Explicit human sign-off for risky/destructive operations (e.g., deleting data).
 
 - **Always sync first**
+
   - Before doing any work in this repo, run:
     - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
@@ -25,6 +27,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
 
 - **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
+
   - **Before any non-trivial changes**, agents MUST:
     1. **Confirm with user** that there are clear Acceptance Criteria (A/C)
     2. **Verify there is a linked GitHub issue** for the work
@@ -48,6 +51,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **If A/C unclear**: Ask user to define them before proceeding
 
 - **Use the mise toolchain**
+
   - Prefix all runtime commands with:
     - `mise exec -- <command>`
   - Prefer named mise tasks over raw commands when they exist, for example:
@@ -58,10 +62,12 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - When running Git commands that trigger hooks, use `mise exec -- git ...` so non-interactive hooks inherit the pinned toolchain.
 
 - **Never bypass hooks**
+
   - Do **not** use `--no-verify` with Git.
   - Respect lefthook workflows and scripts; they enforce tests, audits, and PR review loops.
 
 - **Prefer lefthook workflows for Git operations**
+
   - Example: create a new feature branch using:
     - `lefthook run workflow-new-feature feature/<branch-name>`
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
@@ -70,7 +76,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 - **Terminal command safety & escaping**
   - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
   - **Never embed complex multi-line content directly in terminal commands** - this causes buffer overruns and hangs
-  - **For commands with complex arguments**: 
+  - **For commands with complex arguments**:
     - Use heredocs (`<<EOF`) or temporary files instead of inline content
     - Break complex commands into separate, simpler steps
     - Avoid deeply nested quotes or escape sequences
@@ -90,16 +96,19 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 The `develop` branch has the following protection rules:
 
 1. **Required Status Checks**:
+
    - `test` check must pass
    - Strict status checks are enabled (must be up to date before merging)
 
 2. **Pull Request Requirements**:
+
    - At least one approval required
    - Dismiss stale PR approvals when new commits are pushed
    - Code owner approval required when applicable
    - All conversations must be resolved before merging
 
 3. **History Requirements**:
+
    - Linear history required (no merge commits)
    - No force pushes allowed
    - No branch deletion allowed
@@ -111,11 +120,13 @@ The `develop` branch has the following protection rules:
 ### Common Merge Issues and Solutions
 
 1. **"Required status check is pending"**:
+
    - Ensure all required checks have completed successfully
    - The `test` check must complete successfully
    - Check the Actions tab for any failed workflows
 
 2. **"Merging is blocked"**:
+
    - Ensure all required reviews are completed
    - Make sure all conversations are resolved
    - Check for any merge conflicts that need to be resolved
@@ -194,6 +205,7 @@ A single iteration of the review-first loop should look like this:
 Agents MUST assess test coverage before making changes and maintain system tests in a non-brittle state.
 
 - **Pre-change test assessment**
+
   - **Before implementing any change**, agents MUST:
     1. Identify existing unit tests that may be affected by the change
     2. Identify existing system tests that may be affected by the change
@@ -201,6 +213,7 @@ Agents MUST assess test coverage before making changes and maintain system tests
     4. Plan test updates alongside implementation changes
 
 - **System test best practices**
+
   - **Test rendered behavior, not implementation details**:
     - Focus on what users see and interact with in the browser
     - Test DOM elements, user interactions, and accessibility
@@ -234,6 +247,7 @@ System tests using Cuprite provide headless browser verification for visual and 
 ### 4.1. Scope
 
 **When to write system tests:**
+
 - User-facing features that involve browser interactions (clicks, form submissions, navigation)
 - UI components that use Turbo Frames or Turbo Streams for dynamic updates
 - Stimulus controller behaviors that manipulate the DOM or respond to user events
@@ -241,12 +255,14 @@ System tests using Cuprite provide headless browser verification for visual and 
 - Features requiring JavaScript execution (geolocation, auto-complete, real-time updates)
 
 **When NOT to write system tests:**
+
 - Pure backend logic (use unit tests for models, services)
 - API endpoints without UI (use controller/integration tests)
 - Helper methods or view partials in isolation (use unit tests)
 - Database queries or ActiveRecord behavior (use model tests)
 
 **System test focus:**
+
 - Test user-visible behavior and interactions
 - Verify DOM structure and content as users would see it
 - Test accessibility (ARIA labels, keyboard navigation)
@@ -256,6 +272,7 @@ System tests using Cuprite provide headless browser verification for visual and 
 ### 4.2. Configuration
 
 **Running system tests:**
+
 ```bash
 # Prepare test database
 mise run test-prepare
@@ -274,6 +291,7 @@ CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
 ```
 
 **Environment variables:**
+
 - `HEADLESS=true`: Run Chrome in headless mode (required for CI)
 - `CUPRITE=true`: Use Cuprite driver instead of Selenium
 - `APP_HOST=localhost`: Set host for test server
@@ -281,6 +299,7 @@ CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
 - `CUPRITE_JS_ERRORS=true`: Fail tests on JavaScript errors
 
 **Test helpers available:**
+
 - `SystemTestHelpers`: Debugging and screenshot utilities
 - `OAuthTestHelper`: OAuth flow mocking
 - `LoginHelpers::System`: User authentication helpers
@@ -290,26 +309,28 @@ CUPRITE=true APP_HOST=localhost mise exec -- bin/rails test:system
 ### 4.3. Testing Turbo Frames
 
 **Turbo Frame best practices:**
+
 - Use `data-turbo-frame` attributes for frame identification
 - Test frame navigation without full page reloads
 - Verify frame content updates after user actions
 - Test frame loading states and error handling
 
 **Example pattern:**
+
 ```ruby
 test "turbo frame updates coffee shop details without page reload" do
   visit coffeeshop_path(@coffeeshop)
-  
+
   # Verify initial frame content
   within "turbo-frame#details" do
     assert_text @coffeeshop.name
   end
-  
+
   # Trigger frame navigation
   within "turbo-frame#details" do
     click_link "Edit Details"
   end
-  
+
   # Verify frame updated, not full page
   assert_selector "turbo-frame#details form"
   assert_current_path coffeeshop_path(@coffeeshop) # URL unchanged
@@ -317,6 +338,7 @@ end
 ```
 
 **Common Turbo Frame issues:**
+
 - Missing `turbo-frame` wrapper in response
 - Frame ID mismatch between trigger and target
 - Nested frames without proper `target` attributes
@@ -325,22 +347,24 @@ end
 ### 4.4. Testing Stimulus Controllers
 
 **Stimulus testing approach:**
+
 - Test user-visible side effects, not controller internals
 - Verify DOM changes after events fire
 - Test data attribute bindings and action connections
 - Validate controller lifecycle (connect, disconnect)
 
 **Example pattern:**
+
 ```ruby
 test "geolocation controller populates location field" do
   visit searches_path
-  
+
   # Stimulus controller should be connected
   assert_selector "[data-controller='geolocation']"
-  
+
   # Trigger action via data-action
   click_button "Use My Location"
-  
+
   # Verify controller updated target
   assert_selector "input[name='location'][value]"
   location_value = find("input[name='location']").value
@@ -349,6 +373,7 @@ end
 ```
 
 **Don't test:**
+
 - Controller class methods directly (use JavaScript unit tests)
 - Internal state or private methods
 - DOM structure details unrelated to behavior
@@ -356,25 +381,27 @@ end
 ### 4.5. Testing External API Integrations
 
 **Stubbing external HTTP requests:**
+
 - Use WebMock to stub all external HTTP calls
 - Define stubs in test `setup` or helper modules
 - Match request patterns (URL, method, headers)
 - Return realistic response fixtures
 
 **Example pattern:**
+
 ```ruby
 class CoffeeshopSystemTest < ApplicationSystemTestCase
   setup do
     # Stub is already configured via YelpApiHelper in ApplicationSystemTestCase
     # stub_yelp_api_request is called automatically
   end
-  
+
   test "displays search results from Yelp API" do
     visit root_path
-    
+
     fill_in "Location", with: "San Francisco, CA"
     click_button "Search"
-    
+
     # Verify stubbed response is rendered
     assert_text "Coffee Shops in San Francisco"
     assert_selector ".coffeeshop-card", count: 3
@@ -383,6 +410,7 @@ end
 ```
 
 **Verification:**
+
 - Ensure no real HTTP requests in tests (WebMock will raise error)
 - Verify stub coverage with `WebMock.disable_net_connect!`
 - Test both success and error response scenarios
@@ -391,25 +419,31 @@ end
 ### 4.6. Reliability Rules
 
 **Avoid brittle tests:**
+
 1. **Use semantic selectors:**
+
    - Prefer: `find("[data-testid='submit-button']")`
    - Avoid: `find(".mt-4.bg-blue-500.rounded")`
 
 2. **Wait for async operations:**
+
    - Use Capybara's automatic waiting: `assert_text`, `assert_selector`
    - Avoid: `sleep` or manual timeouts
    - For complex timing: `using_wait_time(10) { ... }`
 
 3. **Test user-visible behavior:**
+
    - Assert what users see: text, buttons, form fields
    - Avoid: testing CSS classes, element counts (unless meaningful)
 
 4. **Handle race conditions:**
+
    - Wait for page load: `assert_current_path`
    - Wait for Turbo: `assert_no_selector(".turbo-progress-bar")`
    - Wait for content: `assert_text "Expected Content"`
 
 5. **Isolate test data:**
+
    - Use fixtures or factory methods in `setup`
    - Clean up in `teardown` if needed
    - Avoid shared state between tests
@@ -420,6 +454,7 @@ end
    - Use `page.driver.resize` for viewport changes
 
 **Debugging failures:**
+
 ```ruby
 # In test file, add temporary debugging
 save_screenshot # Saves to tmp/screenshots/
@@ -434,6 +469,7 @@ debug_page_state # Prints URL, title, HTML snippet
 **File location:** `test/system/<feature>_test.rb`
 
 **Template:**
+
 ```ruby
 require "application_system_test_case"
 
@@ -442,41 +478,41 @@ class FeatureNameTest < ApplicationSystemTestCase
     # Create test data
     @user = users(:one) # or User.create!(...)
     @resource = resources(:one)
-    
+
     # Stub external APIs if needed
     # (YelpApiHelper is already included and stubbed)
   end
-  
+
   test "user can complete primary workflow" do
     # 1. Setup: Navigate and authenticate if needed
     visit root_path
     # login_as(@user) # if authentication required
-    
+
     # 2. Act: Perform user actions
     fill_in "Search", with: "coffee"
     click_button "Submit"
-    
+
     # 3. Assert: Verify expected outcomes
     assert_text "Results for coffee"
     assert_selector "[data-testid='result-item']", count: 3
     assert_current_path search_results_path
   end
-  
+
   test "handles error states gracefully" do
     # Test sad path
     visit feature_path
     click_button "Submit" # without filling required field
-    
+
     assert_text "can't be blank"
     assert_selector "input.error"
   end
-  
+
   test "works with JavaScript interactions" do
     visit feature_path
-    
+
     # Trigger Stimulus action
     click_button "Toggle Details"
-    
+
     # Verify DOM update
     assert_selector "[data-testid='details'].expanded"
     assert_text "Additional Information"
@@ -485,6 +521,7 @@ end
 ```
 
 **Key components:**
+
 1. **setup block:** Prepare fixtures, stubs, test data
 2. **Descriptive test names:** "user can..." or "handles... gracefully"
 3. **AAA pattern:** Arrange (setup), Act (user actions), Assert (outcomes)
@@ -492,6 +529,7 @@ end
 5. **Coverage:** Happy path, error states, edge cases, JavaScript interactions
 
 **Before committing:**
+
 - Run full system test suite: `mise run test-system`
 - Verify tests pass in headless mode: `HEADLESS=true ...`
 - Check for brittleness: Do tests break with minor CSS changes?
@@ -550,5 +588,6 @@ In case of conflict or ambiguity:
 3. **Deep policy & methodology:** `docs/AGENTS.md`.
 
 Agents should resolve discrepancies by:
+
 - Favoring more recent, explicit guidance.
 - Avoiding changes that would violate the review-first protocol or empirical verification requirements.
