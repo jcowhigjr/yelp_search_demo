@@ -47,25 +47,65 @@ find_or_install_mise() {
   # 3. If still not found, attempt to install it
   if [[ -z "$MISE_CMD" ]]; then
     echo_info "mise not found. Attempting to install via official script..."
-    if curl -fsSL https://mise.run | sh; then
-      MISE_CMD="$HOME/.local/bin/mise"
-      if [ ! -x "$MISE_CMD" ]; then
-        echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
-        exit 1
-      fi
-      echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
-      echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
-      # Attempt self-update for freshly installed mise
-      echo_info "Attempting initial self-update for mise..."
-      if ! "$MISE_CMD" self-update; then
-        echo_info "mise self-update failed or was not necessary after initial install. Continuing."
+    # Retry up to 3 times with exponential backoff
+    for i in {1..3}; do
+      if curl --retry 3 --retry-delay 5 --max-time 30 -fsSL https://mise.run | sh; then
+        MISE_CMD="$HOME/.local/bin/mise"
+        if [ ! -x "$MISE_CMD" ]; then
+          echo_error "mise installation script ran, but $MISE_CMD is not executable or not found at the expected path."
+          exit 1
+        fi
+        echo_info "mise installed successfully to $MISE_CMD ($($MISE_CMD --version))"
+        echo_info "Please re-source your shell profile or open a new terminal, then re-run setup."
+        # Attempt self-update for freshly installed mise
+        echo_info "Attempting initial self-update for mise..."
+        if ! "$MISE_CMD" self-update; then
+          echo_info "mise self-update failed or was not necessary after initial install. Continuing."
+        else
+          echo_info "mise self-updated successfully."
+        fi
+        break
       else
-        echo_info "mise self-updated successfully."
+        echo_error "Failed to install mise using the official script (attempt $i/3)."
+        if [ $i -eq 3 ]; then
+          echo_info "Attempting fallback installation via GitHub releases..."
+          # Try installing directly from GitHub releases with a known version
+          MISE_VERSION="v2025.12.12"
+          echo_info "Installing mise $MISE_VERSION from GitHub releases..."
+          ARCH="linux-x64"
+          # Add retry logic for curl download
+          for retry in {1..3}; do
+            if curl --retry 3 --retry-delay 5 --max-time 60 -L "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -o /tmp/mise.tar.gz; then
+              # Verify the download is a valid gzip file
+              if file /tmp/mise.tar.gz | grep -q "gzip"; then
+                tar -xzf /tmp/mise.tar.gz -C /tmp/
+                mkdir -p "$HOME/.local/bin"
+                cp "/tmp/mise-$MISE_VERSION-$ARCH/mise" "$HOME/.local/bin/mise"
+                chmod +x "$HOME/.local/bin/mise"
+                MISE_CMD="$HOME/.local/bin/mise"
+                echo_info "mise installed successfully from GitHub releases to $MISE_CMD ($($MISE_CMD --version))"
+                break
+              else
+                echo_error "Downloaded file is not a valid gzip archive (attempt $retry/3)"
+                rm -f /tmp/mise.tar.gz
+                if [ $retry -eq 3 ]; then
+                  echo_error "Failed to download valid mise archive after 3 attempts"
+                  exit 1
+                fi
+              fi
+            else
+              echo_error "Failed to download mise archive (attempt $retry/3)"
+              if [ $retry -eq 3 ]; then
+                echo_error "Failed to download mise archive after 3 attempts"
+                exit 1
+              fi
+            fi
+          done
+        fi
+        echo_info "Retrying in $((i * 5)) seconds..."
+        sleep $((i * 5))
       fi
-    else
-      echo_error "Failed to install mise using the official script."
-      exit 1
-    fi
+    done
   fi
 
   # Ensure MISE_CMD is set
