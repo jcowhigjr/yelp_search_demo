@@ -42,7 +42,7 @@ jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
     # Run for all PRs, but handle non-Dependabot PRs differently
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     outputs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
