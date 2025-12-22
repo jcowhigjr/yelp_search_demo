@@ -68,8 +68,23 @@ find_or_install_mise() {
       else
         echo_error "Failed to install mise using the official script (attempt $i/3)."
         if [ $i -eq 3 ]; then
-          echo_error "Failed to install mise using the official script after 3 attempts."
-          exit 1
+          echo_info "Attempting fallback installation via GitHub releases..."
+          # Try installing directly from GitHub releases
+          MISE_VERSION=$(curl -s https://api.github.com/repos/jdx/mise/releases/latest | grep '"tag_name"' | cut -d '"' -f 4)
+          if [ -n "$MISE_VERSION" ]; then
+            echo_info "Installing mise $MISE_VERSION from GitHub releases..."
+            ARCH="linux-x64"
+            wget -q "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -O /tmp/mise.tar.gz
+            tar -xzf /tmp/mise.tar.gz -C /tmp/
+            mkdir -p "$HOME/.local/bin"
+            cp "/tmp/mise-$MISE_VERSION-$ARCH/mise" "$HOME/.local/bin/mise"
+            chmod +x "$HOME/.local/bin/mise"
+            MISE_CMD="$HOME/.local/bin/mise"
+            echo_info "mise installed successfully from GitHub releases to $MISE_CMD ($($MISE_CMD --version))"
+          else
+            echo_error "Failed to install mise using the official script after 3 attempts and fallback failed."
+            exit 1
+          fi
         fi
         echo_info "Retrying in $((i * 5)) seconds..."
         sleep $((i * 5))
