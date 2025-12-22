@@ -18,8 +18,12 @@ on:
       - develop
       - main
     types: [opened, synchronize, reopened, edited, labeled, ready_for_review]
-  # Removed workflow_run trigger that was preventing CI from running
-  # on updated Dependabot PR commits. Risk assessment logic moved inline.
+  pull_request_target:
+    branches:
+      - develop
+      - main
+    types: [opened, synchronize, reopened, edited, labeled, ready_for_review]
+  workflow_dispatch:
 
 # Add workflow-level permissions to fix permission issues
 permissions:
@@ -38,7 +42,7 @@ jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
     # Run for all PRs, but handle non-Dependabot PRs differently
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     outputs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
@@ -92,6 +96,9 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
@@ -164,6 +171,9 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
