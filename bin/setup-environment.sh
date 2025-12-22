@@ -163,8 +163,12 @@ if [ "${SETUP_SKIP_NODE:-false}" = "true" ]; then
   echo_info "Installing Ruby only (Node.js ecosystem files temporarily hidden)."
   
   # Install only Ruby to avoid Node.js compilation
-  if ! "$MISE_CMD" install ruby; then
-    INSTALL_FAILED=1
+  if ! "$MISE_CMD" exec -- ruby --version &>/dev/null; then
+    if ! "$MISE_CMD" install ruby; then
+      INSTALL_FAILED=1
+    fi
+  else
+    echo_info "Ruby is already installed and working"
   fi
   
   # Restore the Node.js ecosystem files
