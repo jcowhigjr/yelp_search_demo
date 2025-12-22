@@ -472,7 +472,6 @@ pre-push:
         - rebase
 
 fixer:
-  verbose: false
   parallel: true
   commands:
     ruby-fixer:
