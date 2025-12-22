@@ -42,8 +42,11 @@ jobs:
           echo "PRs to update: ${PRS[*]}"
           for PR in "${PRS[@]}"; do
             echo "Updating branch on PR #${PR}"
-            # Fetch the current head SHA for concurrency control
-            HEAD_SHA=$(gh pr view "$PR" --json headRefOid --jq .headRefOid)
+            # Fetch the current head SHA and branch name for concurrency control
+            PR_DATA=$(gh pr view "$PR" --json headRefOid,headRefName --jq '{sha: .headRefOid, branch: .headRefName}')
+            HEAD_SHA=$(echo "$PR_DATA" | jq -r '.sha')
+            HEAD_BRANCH=$(echo "$PR_DATA" | jq -r '.branch')
+
             # Conditionally include expected_head_sha only if non-empty
             if [[ -n "$HEAD_SHA" ]]; then
               gh api \
@@ -55,5 +58,16 @@ jobs:
                 -X PUT \
                 "repos/${{ github.repository }}/pulls/${PR}/update-branch" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
             fi
+
+            # Wait a moment for the async update to complete
+            echo "Waiting for branch update to complete..."
+            sleep 5
+
+            # Explicitly trigger CI workflow for this PR
+            echo "Triggering CI workflow for PR #${PR} (branch: ${HEAD_BRANCH})"
+            gh workflow run main.yml \
+              --ref "${HEAD_BRANCH}" \
+              --field triggered_by="auto-update-prs" \
+              --field pr_number="${PR}" || echo "Failed to trigger workflow for PR #${PR}. May not have workflow_dispatch enabled."
           done
           echo "Done."

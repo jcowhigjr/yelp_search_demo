@@ -22,6 +22,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
   - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
+  - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
 
 - **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
   - **Before any non-trivial changes**, agents MUST:
@@ -54,6 +55,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
     - `mise run test-system` for system tests
     - `mise run brakeman` for security scans
   - Treat `WARP.md` and `mise.toml` as the source of truth for the authoritative list of mise tasks used by CI and hooks.
+  - When running Git commands that trigger hooks, use `mise exec -- git ...` so non-interactive hooks inherit the pinned toolchain.
 
 - **Never bypass hooks**
   - Do **not** use `--no-verify` with Git.
