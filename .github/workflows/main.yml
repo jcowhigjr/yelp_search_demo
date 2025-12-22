@@ -24,6 +24,10 @@ on:
       - main
     types: [opened, synchronize, reopened, edited, labeled, ready_for_review]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Auto-update PRs", "Automated PR Management"]
+    types:
+      - completed
 
 # Add workflow-level permissions to fix permission issues
 permissions:
@@ -42,7 +46,7 @@ jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
     # Run for all PRs, but handle non-Dependabot PRs differently
-    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run'
     runs-on: ubuntu-latest
     outputs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
