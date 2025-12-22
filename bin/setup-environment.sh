@@ -74,7 +74,7 @@ find_or_install_mise() {
           if [ -n "$MISE_VERSION" ]; then
             echo_info "Installing mise $MISE_VERSION from GitHub releases..."
             ARCH="linux-x64"
-            wget -q "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -O /tmp/mise.tar.gz
+            curl -L "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$ARCH.tar.gz" -o /tmp/mise.tar.gz
             tar -xzf /tmp/mise.tar.gz -C /tmp/
             mkdir -p "$HOME/.local/bin"
             cp "/tmp/mise-$MISE_VERSION-$ARCH/mise" "$HOME/.local/bin/mise"
