@@ -10,9 +10,10 @@
 
 [tools]
 ruby = "3.3.10"
+bun = "1.1.38"  # For local development only (not used in CI/CD)
 # lefthook is installed via Homebrew
 # Node.js and yarn are NOT included here to prevent CI compilation issues
-# They should be managed separately for local development if needed
+# Bun replaces Yarn for faster local package management
 
 [env]
 SYSTEMD_PAGER = "cat"
