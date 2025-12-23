@@ -148,9 +148,13 @@ The `develop` branch has the following protection rules:
 If you encounter merge issues:
 
 1. Check the PR's "Checks" tab for failed statuses
+
 2. Review the "Conversation" tab for unresolved discussions
+
 3. Ensure your branch is up to date with the target branch
+
 4. If needed, rebase your branch and force push:
+
    ```bash
    git fetch origin
    git rebase origin/develop
@@ -182,8 +186,8 @@ For this repository specifically:
 - Run the review loop script before any other PR-branch work:
 
   ```bash
-  ./scripts/review-loop.sh
-  ```
+./scripts/review-loop.sh
+```
 
 - Treat unresolved review threads (Codex, Claude, Copilot, human) as blocking:
   - Read ALL review comments.
@@ -563,7 +567,77 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 6. Tool-specific notes
+## 6. JavaScript Minimization Policy
+
+**Principle**: Eliminate JavaScript from CI/CD pipelines and prefer Ruby-native tooling.
+
+### 6.1 CI/CD JavaScript Elimination
+
+**Agents MUST NOT:**
+
+- Add Node.js setup steps to GitHub Actions workflows
+- Include yarn/npm install commands in CI/CD
+- Use JavaScript-based linting or formatting in hooks
+- Require JavaScript dependencies for Rails asset compilation
+
+**Agents MUST:**
+
+- Use Propshaft for asset serving (Rails default)
+- Use importmap-rails for JavaScript dependency management
+- Use tailwindcss-rails gem for CSS compilation
+- Prefer Ruby gems over npm packages for tooling
+
+### 6.2 Local Development JavaScript
+
+**JavaScript tools allowed ONLY for local development:**
+
+- Bun for package management (faster than Yarn)
+- ESLint/Prettier for code formatting
+- Puppeteer for E2E testing
+- Tailwind CSS compilation (via Ruby gem preferred)
+
+**Local setup only:**
+
+- JavaScript dependencies belong in mise.toml for local development
+- Never include JavaScript setup in CI/CD workflows
+- Use conditional logic: `if [[ "$CI" != "true" ]]; then ...`
+
+### 6.3 Asset Management Strategy
+
+**Use Rails-native stack:**
+
+- **Propshaft**: Asset serving and fingerprinting
+- **Importmap**: JavaScript dependency management (no bundler needed)
+- **Tailwind CSS**: Via tailwindcss-rails gem
+- **Hotwire**: Interactive features without heavy JS frameworks
+
+**Avoid:**
+
+- webpack, vite, or other JavaScript bundlers
+- Node.js build steps in CI/CD
+- npm scripts for asset compilation
+- JavaScript-based CSS preprocessors
+
+### 6.4 Migration Guidelines
+
+**When migrating from JavaScript to Ruby-native tools:**
+
+1. Remove Node.js from GitHub Actions first
+2. Update lefthook hooks to use Ruby tools
+3. Replace JavaScript linting with RuboCop/Ruby-based tools
+4. Use Propshaft instead of webpack for assets
+5. Test CI/CD pipeline after each removal
+
+**Acceptance Criteria:**
+
+- CI/CD builds without Node.js installation
+- All tests pass without JavaScript tooling
+- Build times reduced by 50%+
+- Docker images smaller and simpler
+
+---
+
+## 7. Tool-specific notes
 
 ### Warp (warp.dev)
 

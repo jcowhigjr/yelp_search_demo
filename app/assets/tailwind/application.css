@@ -1,33 +1,31 @@
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @import "tailwindcss";
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/* Dark mode variant for v3 compatibility */
+@layer base {
+  :root {
+    /* Theme colors (light mode defaults) */
+    --color-primary: #4B9CD3; /* Carolina Blue */
+    --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */
+    --color-bg: #fff;
+    --color-text: #000;
+  }
 
-
-:root {
-  /* Theme colors (light mode defaults) */
-  --color-primary: #4B9CD3; /* Carolina Blue */
-  --color-primary-dark: #3A8CC7; /* Dark Carolina Blue */
-  --color-bg: #fff;
-  --color-text: #000;
-}
-
-/* Dark mode overrides using data-theme attribute */
-[data-theme='dark'] {
-  --color-primary: #223556; /* Deeper blue for dark mode */
-  --color-primary-dark: #16243a;
-  --color-bg: #18181b;
-  --color-text: #fff;
-}
-
-/* System preference support (fallback if JS hasn't run yet or data-theme missing) */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
+  /* Dark mode overrides using data-theme attribute */
+  [data-theme='dark'] {
     --color-primary: #223556; /* Deeper blue for dark mode */
     --color-primary-dark: #16243a;
     --color-bg: #18181b;
     --color-text: #fff;
+  }
+
+  /* System preference support (fallback if JS hasn't run yet or data-theme missing) */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --color-primary: #223556; /* Deeper blue for dark mode */
+      --color-primary-dark: #16243a;
+      --color-bg: #18181b;
+      --color-text: #fff;
+    }
   }
 }
 
