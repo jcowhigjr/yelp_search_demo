@@ -212,7 +212,33 @@ jobs:
         run: |
           # test prepare required for tailwind css file required in application erb
           mise run test-prepare
-          mise run test
+          mise run test 2>&1 | tee test_output.log
+      - name: Validate tests actually ran
+        run: |
+          # Extract test count from output (format: "N runs, M assertions")
+          TEST_OUTPUT=$(cat test_output.log)
+          if echo "$TEST_OUTPUT" | grep -q "0 runs, 0 assertions"; then
+            echo "❌ CRITICAL: Test suite reported 0 runs, 0 assertions"
+            echo "This indicates the test framework failed to load or execute tests"
+            echo "See issue #1337 for context on this validation"
+            echo ""
+            echo "Test output:"
+            cat test_output.log
+            exit 1
+          elif ! echo "$TEST_OUTPUT" | grep -qE "[0-9]+ runs, [0-9]+ assertions"; then
+            echo "⚠️  WARNING: Could not parse test output format"
+            echo "Expected format: 'N runs, M assertions'"
+            echo "This validation may need updating if test output format changed"
+            echo ""
+            echo "Test output:"
+            cat test_output.log
+            exit 1
+          else
+            # Extract the actual numbers to display
+            TEST_COUNT=$(echo "$TEST_OUTPUT" | grep -oE "[0-9]+ runs" | head -1 | grep -oE "[0-9]+")
+            ASSERTION_COUNT=$(echo "$TEST_OUTPUT" | grep -oE "[0-9]+ assertions" | head -1 | grep -oE "[0-9]+")
+            echo "✅ Tests executed successfully: $TEST_COUNT runs, $ASSERTION_COUNT assertions"
+          fi
       - name: system-tests
         id: system-test
         continue-on-error: true # make the step always success and set status later
