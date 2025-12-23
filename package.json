@@ -1,6 +1,6 @@
 {
   "name": "jitter",
-  "packageManager": "yarn@4.9.1",
+  "packageManager": "bun@1.1.38",
   "dependencies": {
     "eslint": "^9.18.0",
     "lint": "^1.1.2",
@@ -14,7 +14,6 @@
     "test:e2e:language:headed": "TEST_HEADLESS=false node test/e2e/language-switcher.test.js"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10",
     "puppeteer": "^24.30.0",
     "tailwindcss": "^4.1.7"
   }
