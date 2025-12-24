@@ -16,4 +16,8 @@ class AppVersionConfigTest < ActiveSupport::TestCase
     version_file_content = File.read(version_file_path).strip
     assert_equal Jitter::VERSION, version_file_content, 'Jitter::VERSION should match VERSION file content'
   end
+
+  def test_app_version_matches_patch_version
+    assert_equal '0.2.29', Rails.configuration.x.app_version
+  end
 end
