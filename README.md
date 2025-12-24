@@ -79,6 +79,7 @@ This project uses `mise` to manage and run common development tasks. You can lis
 *   `mise run setup`: Re-run the initial development setup process.
 *   `mise run test`: Run all unit and integration tests.
 *   `mise run test-system`: Run system tests (e.g., browser-based tests).
+*   `scripts/ci-test-all.sh`: Run CI-style tests (no args = `test:all`, or pass test paths).
 *   `mise run lint`: Run all configured linters (e.g., RuboCop for Ruby, Prettier for JavaScript).
 *   `mise run fix`: Attempt to automatically fix issues found by linters.
 *   `mise run brakeman`: Run the Brakeman security scanner.
