@@ -3,9 +3,9 @@
   <nav class="transparentBG" style="background-color: var(--color-bg); border-bottom: 1px solid var(--color-border);">
     <div class="nav-wrapper">
       <!-- Logo -->
-      <%= link_to static_home_url, 
-                  class: "brand-logo",
-                  style: "color: var(--color-primary);" do %>
+      <%= link_to static_home_url,
+                  class: 'brand-logo',
+                  style: 'color: var(--color-primary);' do %>
         Jitter
       <% end %>
 
@@ -16,7 +16,7 @@
                       new_search_path,
                       class: [
                         'language-nav__link',
-                        (current_page?(new_search_path) ? 'language-nav__link--active' : '')
+                        (current_page?(new_search_path) ? 'language-nav__link--active' : ''),
                       ].compact.join(' ') %>
         </li>
         <li>
@@ -25,7 +25,7 @@
                       method: :get,
                       class: [
                         'language-nav__link',
-                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil)
+                        (current_page?(user_path(current_user)) ? 'language-nav__link--active' : nil),
                       ].compact.join(' ') %>
         </li>
         <li>

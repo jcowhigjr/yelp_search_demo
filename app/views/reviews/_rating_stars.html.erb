@@ -1,7 +1,7 @@
 <div class="flex items-center">
   <% full_stars = rating.floor %>
   <% has_half_star = (rating - full_stars) >= 0.5 %>
-  
+
   <% (1..5).each do |i| %>
     <% if i <= full_stars %>
       <i class="material-icons star-icon filled" style="color: #FFD700;">star</i>
