@@ -93,7 +93,7 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.19.0)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     brotli (0.7.0)
     builder (3.3.0)
@@ -221,7 +221,7 @@ GEM
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
-    lefthook (2.0.12)
+    lefthook (2.0.13)
     lint_roller (1.1.0)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
