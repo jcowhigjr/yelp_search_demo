@@ -10,37 +10,37 @@
         </div>
       <% end %>
 
-      <%= form_for @user, class: "space-y-6" do |f| %>
+      <%= form_for @user, class: 'space-y-6' do |f| %>
         <div>
-          <%= f.label :name, "Name", class: "form-label" %>
-          <%= f.text_field :name, 
-              placeholder: "Your name",
-              required: true,
-              class: "material-input" %>
+          <%= f.label :name, 'Name', class: 'form-label' %>
+          <%= f.text_field :name,
+                           placeholder: 'Your name',
+                           required: true,
+                           class: 'material-input' %>
         </div>
 
         <div>
-          <%= f.label :email, "Email", class: "form-label" %>
-          <%= f.email_field :email, 
-              placeholder: "your@email.com",
-              required: true,
-              class: "material-input" %>
+          <%= f.label :email, 'Email', class: 'form-label' %>
+          <%= f.email_field :email,
+                            placeholder: 'your@email.com',
+                            required: true,
+                            class: 'material-input' %>
         </div>
 
         <div>
-          <%= f.label :password, "Password", class: "form-label" %>
-          <%= f.password_field :password, 
-              placeholder: "Password (must be at least 6 characters)",
-              required: true,
-              class: "material-input" %>
+          <%= f.label :password, 'Password', class: 'form-label' %>
+          <%= f.password_field :password,
+                               placeholder: 'Password (must be at least 6 characters)',
+                               required: true,
+                               class: 'material-input' %>
         </div>
 
         <div>
-          <%= f.label :password_confirmation, "Confirm Password", class: "form-label" %>
-          <%= f.password_field :password_confirmation, 
-              placeholder: "••••••••",
-              required: true,
-              class: "material-input" %>
+          <%= f.label :password_confirmation, 'Confirm Password', class: 'form-label' %>
+          <%= f.password_field :password_confirmation,
+                               placeholder: '••••••••',
+                               required: true,
+                               class: 'material-input' %>
         </div>
 
         <div class="mt-8">
@@ -49,7 +49,7 @@
       <% end %>
 
       <div class="mt-6 text-center">
-        <%= link_to "Already have an account? Login here", login_path, class: "form-link" %>
+        <%= link_to 'Already have an account? Login here', login_path, class: 'form-link' %>
       </div>
 
       <div class="mt-8">
@@ -58,16 +58,16 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <%= button_to '/auth/google_oauth2', 
-                      data: { turbo: false }, 
-                      class: 'material-button secondary' do %>
+          <%= button_to '/auth/google_oauth2',
+                        data: { turbo: false },
+                        class: 'material-button secondary' do %>
             <i class="fab fa-google" style="color: #DB4437; margin-right: 8px;"></i>
             Google
           <% end %>
-          
-          <%= button_to '#', 
-                      disabled: true,
-                      class: 'material-button secondary' do %>
+
+          <%= button_to '#',
+                        disabled: true,
+                        class: 'material-button secondary' do %>
             <i class="fab fa-facebook" style="color: #1877F2; margin-right: 8px;"></i>
             Facebook
           <% end %>
