@@ -105,7 +105,9 @@ __pycache__/
 *.py
 
 # Project specific
-.project/
+.project/*
+!.project/config/
+!.project/config/**
 
 # Local agent/editor caches and logs (not for git)
 .claude/
