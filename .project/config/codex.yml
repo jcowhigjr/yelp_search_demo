@@ -1,4 +1,5 @@
 # Codex automation environment prep steps aligned with .github/workflows/main.yml
+# Loaded automatically by the Codex runner at job start (no code.yml entry point).
 setup_sequence:
   - name: clear_mise_cache_and_config
     run: |
