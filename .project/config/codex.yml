@@ -14,3 +14,12 @@ setup_sequence:
     run: |
       export PATH="$HOME/.local/bin:$PATH"
       echo "Added $HOME/.local/bin to PATH for subsequent commands"
+  - name: verify_mise_available
+    run: |
+      if command -v mise >/dev/null 2>&1; then
+        echo "mise detected at: $(command -v mise)"
+        mise --version
+      else
+        echo "mise is not available on PATH after setup" >&2
+        exit 1
+      fi
