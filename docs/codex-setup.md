@@ -1,6 +1,6 @@
 # Codex Environment Setup
 
-Codex workers should mirror the CI bootstrap steps from `.github/workflows/main.yml` before running project commands. The shared configuration lives in `.project/config/codex.yml` and should be executed in order:
+Codex workers should mirror the CI bootstrap steps from `.github/workflows/main.yml` before running project commands. The shared configuration lives in `.project/config/codex.yml` and is executed automatically when a Codex job starts (this repository does not use a `code.yml` trigger). Follow the steps in order:
 
 1. **Clear mise cache and config:** remove `~/.local/share/mise` and `~/.config/mise`.
 2. **Run setup-environment:** set `SETUP_SKIP_NODE=true` and execute `bash bin/setup-environment.sh`.
