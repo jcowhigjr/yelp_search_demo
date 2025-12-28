@@ -141,7 +141,13 @@ echo_info "Configuring mise settings..."
 sleep 0.5
 "$MISE_CMD" settings experimental true
 "$MISE_CMD" settings legacy_version_file true # Important if using .tool-versions or similar
-"$MISE_CMD" settings all_compile true # Ensure tools like Ruby are compiled if necessary
+
+if [[ "${CODEX:-}" == "true" || "${CI:-}" == "true" ]]; then
+  echo_info "Skipping mise all_compile to allow binary downloads in CI/Codex environments"
+  "$MISE_CMD" settings all_compile false
+else
+  "$MISE_CMD" settings all_compile true # Ensure tools like Ruby are compiled if necessary
+fi
 
 # Trust the project's mise configuration
 echo_info "Trusting project's mise configuration ($PROJECT_ROOT/mise.toml)..."
