@@ -1,26 +1,26 @@
 <div class="form-group">
-  <%= form_for @search, html: { class: "w-full search-bar-container", data: { turbo: false } } do |f| %>
+  <%= form_for @search, html: { class: 'w-full search-bar-container', data: { turbo: false } } do |f| %>
     <div class="search-bar">
       <i class="material-icons search-icon" aria-hidden="true">search</i>
 
       <%= f.search_field :query,
                          placeholder: t('views.searches.placeholder'),
                          required: true,
-                         class: "search-input" %>
+                         class: 'search-input' %>
 
       <%= link_to new_search_path,
                   method: :get,
-                  class: "clear-button",
+                  class: 'clear-button',
                   data: { turbo_frame: dom_id(@search) },
                   aria: { label: t('views.searches.clear', default: 'Clear') } do %>
         <i class="material-icons">clear</i>
       <% end %>
 
-      <button type="button" class="search-button" data-action="geolocation#geolocate">
+      <button type="button" class="geolocation-button" data-action="geolocation#geolocate" aria-label="Use my current location">
         <i class="material-icons">my_location</i>
       </button>
 
-      <%= f.button :submit, class: "search-button" do %>
+      <%= f.button :submit, class: 'search-button' do %>
         <%= t('views.searches.submit', default: 'Search').strip %>
       <% end %>
     </div>

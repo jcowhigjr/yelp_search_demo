@@ -12,9 +12,9 @@
         <p class="page-text mb-6" style="color: var(--color-text); opacity: 0.6;">
           You haven't added any favorites yet
         </p>
-        <%= link_to 'Start searching for coffee shops', new_search_url, 
-                    class: "form-link",
-                    style: "color: var(--color-primary);" %>
+        <%= link_to 'Start searching for coffee shops', new_search_url,
+                    class: 'form-link',
+                    style: 'color: var(--color-primary);' %>
       </div>
     <% else %>
       <!-- Favorites Header -->
@@ -24,15 +24,15 @@
           Your favorite spots: <%= current_user.user_favorites.size %>
         </p>
       </div>
-      
+
       <!-- Favorites Grid -->
       <p class="mb-6" style="color: var(--color-text); opacity: 0.7;">
         <%= current_user.user_favorites.size %> <%= 'saved location'.pluralize(current_user.user_favorites.size) %>
       </p>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <% current_user.user_favorites.each do |fav| %>
-          <%= render partial: 'coffeeshops/coffeeshop_card', 
+          <%= render partial: 'coffeeshops/coffeeshop_card',
                      locals: { coffeeshop: fav.coffeeshop, search_query: nil } %>
         <% end %>
       </div>
