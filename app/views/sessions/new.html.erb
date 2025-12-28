@@ -4,7 +4,7 @@
     <div class="auth-container">
       <h1 class="page-name text-center mb-8">Login</h1>
 
-      <%= form_tag sessions_path, class: "space-y-6" do %>
+      <%= form_tag sessions_path, class: 'space-y-6' do %>
         <% if flash[:error] %>
           <div class="alert-error">
             <%= flash[:error] %>
@@ -12,30 +12,30 @@
         <% end %>
 
         <div>
-          <%= label_tag :email, "Email", class: "form-label" %>
+          <%= label_tag :email, 'Email', class: 'form-label' %>
           <%= text_field_tag :email, nil,
-              placeholder: 'your@email.com',
-              required: true,
-              class: "material-input" %>
+                             placeholder: 'your@email.com',
+                             required: true,
+                             class: 'material-input' %>
         </div>
 
         <div>
-          <%= label_tag :password, "Password", class: "form-label" %>
+          <%= label_tag :password, 'Password', class: 'form-label' %>
           <%= password_field_tag :password, nil,
-              required: true,
-              class: "material-input",
-              placeholder: "••••••••" %>
+                                 required: true,
+                                 class: 'material-input',
+                                 placeholder: '••••••••' %>
         </div>
 
         <div class="mt-8">
-          <%= submit_tag 'Log In', 
-              data: { turbo: false }, 
-              class: 'material-button large w-full' %>
+          <%= submit_tag 'Log In',
+                         data: { turbo: false },
+                         class: 'material-button large w-full' %>
         </div>
       <% end %>
 
       <div class="mt-6 text-center">
-        <%= link_to "Don't have an account? Sign up", signup_path, class: "form-link" %>
+        <%= link_to "Don't have an account? Sign up", signup_path, class: 'form-link' %>
       </div>
 
       <div class="mt-8">
@@ -44,16 +44,16 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-          <%= button_to '/auth/google_oauth2', 
-                      data: { turbo: false }, 
-                      class: 'material-button secondary' do %>
+          <%= button_to '/auth/google_oauth2',
+                        data: { turbo: false },
+                        class: 'material-button secondary' do %>
             <i class="fab fa-google" style="color: #DB4437; margin-right: 8px;"></i>
             Google
           <% end %>
-          
-          <%= button_to '#', 
-                      disabled: true,
-                      class: 'material-button secondary' do %>
+
+          <%= button_to '#',
+                        disabled: true,
+                        class: 'material-button secondary' do %>
             <i class="fab fa-facebook" style="color: #1877F2; margin-right: 8px;"></i>
             Facebook
           <% end %>
