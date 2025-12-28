@@ -23,6 +23,6 @@
         <i class='medium material-icons'>star</i> <i class='medium material-icons'>star</i> <i class='medium material-icons'>star</i> <i class='medium material-icons'>star</i> <i class='medium material-icons'>star</i>
     <% end %>
     <% if local_assigns[:review_count] && review_count > 0 %>
-      <span class="page-text ml-2">(<%= pluralize(review_count, "review") %>)</span>
+      <span class="page-text ml-2">(<%= pluralize(review_count, 'review') %>)</span>
     <% end %>
 </div>

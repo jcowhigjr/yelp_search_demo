@@ -60,6 +60,35 @@
   background-color: rgba(128, 128, 128, 0.1);
 }
 
+.geolocation-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: var(--color-text);
+  width: 40px;
+  height: 40px;
+}
+
+.geolocation-button:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+  transform: scale(1.05);
+}
+
+.geolocation-button:active {
+  transform: scale(0.95);
+}
+
+.geolocation-button i {
+  font-size: 18px;
+}
+
 .search-button {
   border: none;
   border-radius: 10px;
