@@ -19,20 +19,20 @@ export default class extends Controller {
   }
 
   success(position) {
-    let latitude = 36.91;
-    let longitude = -79.99;
-
-    this.latitudeTarget.value = `${position.coords.latitude.toFixed(2)}`;
-    this.longitudeTarget.value = `${position.coords.longitude.toFixed(2)}`;
-
-    // let latitude = 36.91;
-    // let longitude = -79.99;
-
-    return [latitude, longitude];
+    this.latitudeTarget.value = `${position.coords.latitude.toFixed(6)}`;
+    this.longitudeTarget.value = `${position.coords.longitude.toFixed(6)}`;
   }
 
   error(error) {
-    console.log(error);
-    this.latitudeTarget.textContent = 'check the console log for error'; // error.message
+    console.error('Geolocation error:', error);
+    // Show user-friendly error message
+    const errorMessage = error.code === 1 ? 
+      'Location access denied. Please enable location permissions.' :
+      error.code === 2 ? 
+      'Location unavailable. Please check your device settings.' :
+      'Location request timed out. Please try again.';
+    
+    // Show error in console and optionally update UI
+    console.log(errorMessage);
   }
 }
