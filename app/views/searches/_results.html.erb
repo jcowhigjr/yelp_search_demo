@@ -24,7 +24,7 @@
       <%= turbo_frame_tag 'coffeeshops' do %>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <% @search.coffeeshops.each do |coffeeshop| %>
-            <%= render partial: 'coffeeshops/coffeeshop_card', locals: { coffeeshop: coffeeshop, search_query: @search.query } %>
+            <%= render partial: 'coffeeshops/coffeeshop_card', locals: { coffeeshop:, search_query: @search.query } %>
           <% end %>
         </div>
       <% end %>
