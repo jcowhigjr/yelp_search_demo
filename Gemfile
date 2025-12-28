@@ -156,4 +156,4 @@ group :development, :ci do
 end
 
 # Ruby version (must match mise.toml)
-ruby '3.3.10'
+ruby '3.3.8'

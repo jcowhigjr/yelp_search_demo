@@ -141,13 +141,13 @@ canonical policy. Warp highlights just these reminders:
 - Tooling via mise (mise.toml)
 <<<<<<< HEAD
 <<<<<<< HEAD
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
+  - Ruby 3.3.8 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
 =======
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
+  - Ruby 3.3.8 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
 >>>>>>> 50cb06aa (Fix #1302: Update hardcoded Ruby version references to 3.3.9)
 =======
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
->>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.10)
+  - Ruby 3.3.8 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
+>>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.8)
   - Always execute with mise exec -- to match CI and hooks environment
 - Git enforcement via lefthook (lefthook.yml, .lefthook.yml)
   - Protects main/develop from direct commits

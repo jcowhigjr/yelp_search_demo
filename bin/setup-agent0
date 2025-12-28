@@ -3,15 +3,15 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 # Check Ruby version and install if needed
-required_ruby_version="3.3.10"
+required_ruby_version="3.3.8"
 =======
 # Check and install the required Ruby version
-required_ruby_version="3.3.10"
+required_ruby_version="3.3.8"
 >>>>>>> 50cb06aa (Fix #1302: Update hardcoded Ruby version references to 3.3.9)
 =======
 # Check Ruby version and install if needed
-required_ruby_version="3.3.10"
->>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.10)
+required_ruby_version="3.3.8"
+>>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.8)
 current_ruby_version=$(ruby -v | awk {print })
 
 if [[ "$current_ruby_version" != "$required_ruby_version" ]]; then

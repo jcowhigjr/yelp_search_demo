@@ -25,13 +25,18 @@ pre-commit:
       - merge
       - rebase
     validate_dependabot_config:
-      run: "#!/bin/bash\nREPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise\
-        \ --cd \"$REPO_ROOT\" exec --)\nif git diff --cached --name-only | grep -q\
-        \ \"\\.github/dependabot\\.yml\"; then\n  echo \"\U0001F50D Validating Dependabot\
-        \ configuration...\"\n  if ! \"${MISE_EXEC[@]}\" ruby scripts/validate-dependabot-v2.rb;\
-        \ then\n    echo \"\u274C Dependabot configuration validation failed\"\n \
-        \   echo \"   Please fix the issues before committing\"\n    exit 1\n  fi\n\
-        fi\n"
+      run: |
+        #!/bin/sh
+        REPO_ROOT="$(git rev-parse --show-toplevel)"
+        MISE_EXEC="mise --cd \"$REPO_ROOT\" exec --"
+        if git diff --cached --name-only | grep -q "\.github/dependabot\.yml"; then
+          echo "🔍 Validating Dependabot configuration..."
+          if ! eval "$MISE_EXEC ruby scripts/validate-dependabot-v2.rb"; then
+            echo "❌ Dependabot configuration validation failed"
+            echo "   Please fix the issues before committing"
+            exit 1
+          fi
+        fi
       skip:
       - merge
       - rebase

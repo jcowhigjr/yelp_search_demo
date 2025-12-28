@@ -248,7 +248,7 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0722)
     mini_mime (1.1.5)
-    minitest (5.25.5)
+    minitest (5.27.0)
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
@@ -551,6 +551,7 @@ DEPENDENCIES
   lefthook
   magic_test
   matrix
+  minitest (~> 5.26)
   mocha
   next_rails
   omniauth-google-oauth2
@@ -573,10 +574,12 @@ DEPENDENCIES
   sqlite3 (~> 2.8)
   tailwindcss-rails (~> 4.4)
   turbo-rails (~> 2.0)
-  tzinfo-data
   web-console
   webmock
   yaml-lint
+
+RUBY VERSION
+   ruby 3.3.8p144
 
 BUNDLED WITH
    2.5.22

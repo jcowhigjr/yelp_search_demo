@@ -588,7 +588,7 @@ DEPENDENCIES
   yaml-lint
 
 RUBY VERSION
-   ruby 3.3.10p183
+   ruby 3.3.8p144
 
 BUNDLED WITH
    2.7.1
