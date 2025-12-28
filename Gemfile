@@ -16,7 +16,7 @@ gem 'bundler', '~> 2.5'
 
 # Pin minitest to 5.x due to incompatibility with Rails 8.1.1
 # See issue #1337 for details
-gem 'minitest', '~> 5.26'
+gem 'minitest', '~> 6.0'
 
 # Bundle edge Rails instead: gem 'rails', "~> 8.0"
 # gem 'rails', "~> 8.0"
