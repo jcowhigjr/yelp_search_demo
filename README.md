@@ -72,6 +72,33 @@ This project leverages `mise` for consistent tool versioning and `Lefthook` for 
 *   **Mise Activation:** For interactive shells, `mise` is typically activated via `eval "$(mise activate zsh)"` (or your shell equivalent) in your shell's rc file (e.g., `~/.zshrc`). For non-interactive sessions or to make shims available with minimal overhead, `eval "$(mise activate zsh --shims)"` can be used in a profile script (e.g., `~/.zprofile`). The `bin/setup` script helps guide this.
 *   **Running Commands in Hooks:** To ensure that commands within `Lefthook` hooks (and other scripts) execute with the correct tool versions and environment variables defined by `mise`, they are prefixed with `mise exec --`. For example, a test command in `lefthook.yml` might look like `mise exec -- bundle exec rails test`. This is crucial for the reliability of automated checks.
 
+#### Codex/CI quick start (precompiled Ruby + lockfile)
+
+The Codex cloud runners are ephemeral Linux hosts, so treat `mise` as the single source of truth for Ruby/Bundler:
+
+1. Install mise and expose its shims:
+
+   ```bash
+   curl https://mise.run | sh
+   export PATH="$HOME/.local/bin:$PATH"
+   ```
+
+2. Install tools from `mise.toml`/`mise.lock` (uses precompiled Ruby binaries when available because `experimental = true` and `lockfile = true` are enabled):
+
+   ```bash
+   mise install -y
+   ```
+
+3. Run Ruby tooling through mise to avoid the system Ruby:
+
+   ```bash
+   mise x -- ruby -v
+   mise x -- bundle install
+   mise x -- bundle exec rake test
+   ```
+
+If a precompiled Ruby is unavailable and you need to force a source build, set `ruby.compile = true` (requires `experimental = true`).
+
 ### Common Development Tasks
 
 This project uses `mise` to manage and run common development tasks. You can list available tasks with `mise tasks` or `mise ls`. Here are some key examples:
