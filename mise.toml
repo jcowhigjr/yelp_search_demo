@@ -29,6 +29,7 @@ MISE_RUBY_BUILD_OPTS = "--disable-install-doc"
 [settings]
 # Container-specific settings
 experimental = true
+lockfile = true
 legacy_version_file = false # Changed as per PR 3 Option A
 # Enable faster installation via precompiled binaries
 always_keep_download = true
