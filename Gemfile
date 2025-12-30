@@ -151,6 +151,8 @@ gem 'flipper'
 
 gem 'dotenv'
 
+gem 'geocoder'
+
 group :development, :ci do
   gem 'faraday', '~> 2.14.0', require: false
 end
