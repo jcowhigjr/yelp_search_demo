@@ -4,6 +4,7 @@ export default class extends Controller {
   static targets = ['latitude', 'longitude'];
 
   connect() {
+    this.geolocate();
   }
 
   geolocate() {
