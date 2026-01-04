@@ -79,7 +79,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
     base64 (0.3.0)
-    bcrypt (3.1.20)
+    bcrypt (3.1.21)
     better_html (2.2.0)
       actionview (>= 7.0)
       activesupport (>= 7.0)
@@ -91,9 +91,9 @@ GEM
     bindex (0.8.1)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
-    bootsnap (1.19.0)
+    bootsnap (1.20.1)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     brotli (0.7.0)
     builder (3.3.0)
@@ -225,7 +225,7 @@ GEM
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
-    lefthook (2.0.12)
+    lefthook (2.0.13)
     lint_roller (1.1.0)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -441,7 +441,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.34.2)
+    rubocop-rails (2.34.3)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -469,9 +469,9 @@ GEM
     sprockets-exporters_pack (0.1.2)
       brotli (>= 0.2.0)
       sprockets (>= 4.0.0.beta3)
-    sqlite3 (2.8.1-arm64-darwin)
-    sqlite3 (2.8.1-x86_64-darwin)
-    sqlite3 (2.8.1-x86_64-linux-gnu)
+    sqlite3 (2.9.0-arm64-darwin)
+    sqlite3 (2.9.0-x86_64-darwin)
+    sqlite3 (2.9.0-x86_64-linux-gnu)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.2.0)
@@ -537,7 +537,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  bcrypt (~> 3.1.20)
+  bcrypt (~> 3.1.21)
   better_html
   bootsnap
   brakeman
@@ -585,7 +585,7 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   sprockets-exporters_pack
-  sqlite3 (~> 2.8)
+  sqlite3 (~> 2.9)
   tailwindcss-rails (~> 4.4)
   turbo-rails (~> 2.0)
   web-console
