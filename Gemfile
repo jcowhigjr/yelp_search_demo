@@ -50,11 +50,11 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'sqlite3', '~> 2.8', require: false, group: :development
+    gem 'sqlite3', '~> 2.9', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.20'
+gem 'bcrypt', '~> 3.1.21'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
