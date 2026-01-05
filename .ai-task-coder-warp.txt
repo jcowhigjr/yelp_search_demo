@@ -1,0 +1,3 @@
+Simulated Warp execution for issue #1220
+Task: Edit app/views/searches/_form.html.erb lines 19-21 to replace text 'Search' with a search icon () or arrow icon (), maintaining proper sizing and clickable area. Ensure the button has `aria-label="Search"` for accessibility. Update the Material Icons library to include the new icon, if necessary.
+Agent: coder
