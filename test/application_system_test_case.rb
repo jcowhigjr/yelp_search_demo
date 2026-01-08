@@ -2,6 +2,8 @@ require 'test_helper'
 require 'capybara'
 require 'capybara/cuprite'
 
+Capybara.default_max_wait_time = 10
+
 Capybara.register_driver :cuprite_mobile do |app|
   driver = Capybara::Cuprite::Driver.new(
     app,
