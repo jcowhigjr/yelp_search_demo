@@ -26,6 +26,16 @@ RUBY_CONFIGURE_OPTS = "--disable-install-doc"
 # Use precompiled Ruby binaries when available
 MISE_RUBY_BUILD_OPTS = "--disable-install-doc"
 
+[vars]
+# Shared test environment variables to avoid DRb/TMPDIR permission errors
+CI = "true"
+RAILS_ENV = "test"
+HEADLESS = "true"
+CUPRITE = "true"
+APP_HOST = "localhost"
+TMPDIR = "$PWD/tmp"
+PARALLEL_WORKERS = "1"
+
 [settings]
 # Container-specific settings
 experimental = true
@@ -58,33 +68,33 @@ alias = ["l"]
 
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
-run = "bin/rails tailwindcss:build && bin/rails test:prepare --trace"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails tailwindcss:build && bin/rails test:prepare --trace"
 
 [tasks.test]
 description = "Run unit and integration tests for main application"
-run = "bin/rails test"
+run = "CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails test"
 depends = ["test-prepare"]
 
 [tasks.test-system]
 description = "Run only system tests against an already-prepared test env (matches lefthook env)"
-run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=false bin/rails test:system"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost TMPDIR=$PWD/tmp CUPRITE_JS_ERRORS=false bin/rails test:system"
 
 [tasks.test-system-strict]
 description = "Run system tests with JS errors treated as failures"
-run = "CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost' CUPRITE_JS_ERRORS=true bin/rails test:system"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost TMPDIR=$PWD/tmp CUPRITE_JS_ERRORS=true bin/rails test:system"
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
-run = "next rails tailwindcss:build && next rails test:prepare --trace"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails tailwindcss:build && next rails test:prepare --trace"
 
 [tasks.test-next-run]
 description = "Run unit and integration tests for 'next' environment"
-run = "next rails test"
+run = "CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails test"
 depends = ["test-next-prepare"]
 
 [tasks.test-next-system]
 description = "Run system tests for 'next' environment"
-run = "HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST='localhost' next rails test:system"
+run = "mkdir -p tmp && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost TMPDIR=$PWD/tmp next rails test:system"
 depends = ["test-next-prepare"]
 
 [tasks.test-scripts]
@@ -93,8 +103,8 @@ run = "bash test/scripts/stacked_pr_cli_test.sh"
 
 [tasks.test-smoke]
 description = "Fast Rails smoke tests without system/browser suites"
-run = "bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
 
 [tasks.test-next-smoke]
 description = "Fast Next Rails smoke tests"
-run = "next rails test:prepare --trace && next rails test test/controllers test/models"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails test:prepare --trace && next rails test test/controllers test/models"
