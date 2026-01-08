@@ -21,9 +21,10 @@ class LogoutTest < ApplicationSystemTestCase
     if ENV['CUPRITE'] == 'true'
       # Open mobile sidenav
       sidenav_trigger = find('.sidenav-trigger')
-      sidenav_trigger.trigger("click")
+      sidenav_trigger.trigger('click')
+
       assert_selector '#mobile-demo', visible: true, wait: 5
-      find('#mobile-demo a', text: 'New Search').trigger("click")
+      find('#mobile-demo a', text: 'New Search').trigger('click')
     else
       # Desktop navigation - click directly
       click_on 'New Search'
@@ -34,9 +35,10 @@ class LogoutTest < ApplicationSystemTestCase
     # Open navigation again to access logout
     if ENV['CUPRITE'] == 'true'
       sidenav_trigger = find('.sidenav-trigger')
-      sidenav_trigger.trigger("click")
+      sidenav_trigger.trigger('click')
+
       assert_selector '#mobile-demo', visible: true, wait: 5
-      find('#mobile-demo a', text: 'Logout').trigger("click")
+      find('#mobile-demo a', text: 'Logout').trigger('click')
     else
       click_on 'Logout'
     end

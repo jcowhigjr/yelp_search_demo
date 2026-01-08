@@ -35,13 +35,13 @@ class ReviewsController < ApplicationController
       else
         flash.now[:review_error] = t('error.something_went_wrong')
 
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_content }
         format.turbo_stream do
           render(
             turbo_stream: turbo_stream.replace(@review,
                                                partial: 'reviews/edit_frame',
                                                locals: { review: @review, coffeeshop: @coffeeshop }),
-            status: :unprocessable_entity
+            status: :unprocessable_content,
           )
         end
       end

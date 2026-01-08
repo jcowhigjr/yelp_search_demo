@@ -279,7 +279,14 @@ sleep 0.3
 "$MISE_CMD" exec -- ruby --version
 if [ "${SETUP_SKIP_NODE:-false}" != "true" ]; then
   "$MISE_CMD" exec -- node --version
-  "$MISE_CMD" exec -- yarn --version # Assuming yarn is tied to Node.js presence
+  if "$MISE_CMD" exec -- yarn --version &>/dev/null; then
+    "$MISE_CMD" exec -- yarn --version
+  elif "$MISE_CMD" exec -- bun --version &>/dev/null; then
+    echo_info "yarn not found, but bun is available:"
+    "$MISE_CMD" exec -- bun --version
+  else
+    echo_info "Neither yarn nor bun found. This may be expected for projects using only npm or bun (if not symlinked)."
+  fi
 fi
 
 if [ -f /.dockerenv ]; then
