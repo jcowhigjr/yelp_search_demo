@@ -11,7 +11,7 @@ class NavigationTest < ApplicationSystemTestCase
     fill_in 'search[query]', with: 'tacos'
 
     # Use the first search button to avoid ambiguity
-    find('button[type="submit"]').click
+    click_button 'Search'
 
     # Wait for results to load and verify we're on the correct page
     wait_for_search_results
@@ -22,14 +22,17 @@ class NavigationTest < ApplicationSystemTestCase
 
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
+
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # Go back to search results and verify (either show or new)
     go_back
+
     assert_current_path(%r{^/searches/(new|#{search_id})$}, wait: 10)
 
     # Go back to search form and verify
     go_back
+
     assert_current_path new_search_path
   end
 

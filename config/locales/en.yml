@@ -163,6 +163,8 @@ en:
       new: User
       show: User
       update: User
+  favorites:
+    not_found: Coffeeshop not found.
   you-dont-have-a: You don't have any favorite shops yet!
   you-must-be-les: to leave a review!
   you-must-be-les-0: you-must-be-les

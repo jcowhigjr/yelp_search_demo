@@ -2,13 +2,14 @@ require 'application_system_test_case'
 
 class DebugFavoriteTest < ApplicationSystemTestCase
   setup do
-    stub_yelp_api_request("coffee")
+    stub_yelp_api_request('coffee')
     @user = users(:one)
   end
 
   test 'debug search results and favorite elements' do
     # Login
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
@@ -18,7 +19,7 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     visit new_search_path
     search_box = find(:fillable_field, 'search[query]', wait: 10)
     search_box.fill_in(with: 'coffee')
-    find('button[type="submit"]').click
+    click_button 'Search'
 
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10

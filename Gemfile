@@ -122,10 +122,7 @@ group :development do
   gem 'i18n-tasks', require: false
 end
 
-group :development, :ci do
-  # Ensure Lefthook is available in CI for installing Git hooks
-  gem 'lefthook', require: false
-end
+# group :development, :ci already defined below
 
 group :test do
   gem 'webmock', require: false
@@ -153,9 +150,7 @@ gem 'dotenv'
 
 gem 'geocoder'
 
-group :development, :ci do
-  gem 'faraday', '~> 2.14.0', require: false
-end
+# Removed duplicated development, ci group
 
 # Ruby version (must match mise.toml)
 ruby '3.3.10'
