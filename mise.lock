@@ -1,4 +1,7 @@
-# mise lockfile to pin tool versions for reproducible installs
-[tools]
-ruby = [{ version = "3.3.10" }]
-bun = [{ version = "1.1.38" }]
+[[tools.bun]]
+version = "1.1.38"
+backend = "core:bun"
+
+[[tools.ruby]]
+version = "3.3.10"
+backend = "core"

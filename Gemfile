@@ -50,11 +50,11 @@ platforms :ruby do
   gem 'pg', require: false
 
   if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-    gem 'sqlite3', '~> 2.8', require: false, group: :development
+    gem 'sqlite3', '~> 2.9', require: false, group: :development
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.20'
+gem 'bcrypt', '~> 3.1.21'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -122,10 +122,7 @@ group :development do
   gem 'i18n-tasks', require: false
 end
 
-group :development, :ci do
-  # Ensure Lefthook is available in CI for installing Git hooks
-  gem 'lefthook', require: false
-end
+# group :development, :ci already defined below
 
 group :test do
   gem 'webmock', require: false
@@ -153,9 +150,7 @@ gem 'dotenv'
 
 gem 'geocoder'
 
-group :development, :ci do
-  gem 'faraday', '~> 2.14.0', require: false
-end
+# Removed duplicated development, ci group
 
 # Ruby version (must match mise.toml)
 ruby '3.3.8'
