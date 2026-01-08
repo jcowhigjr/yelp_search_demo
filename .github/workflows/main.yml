@@ -203,8 +203,7 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          # test prepare required for tailwind css file required in application erb
-          mise run test-prepare
+          # test prepare is handled by dependency of mise run test
           mise run test
       - name: system-tests
         id: system-test

@@ -68,7 +68,7 @@ alias = ["l"]
 
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails tailwindcss:build && bin/rails test:prepare --trace"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails test:prepare --trace"
 
 [tasks.test]
 description = "Run unit and integration tests for main application"
@@ -85,7 +85,7 @@ run = "mkdir -p tmp && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOS
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails tailwindcss:build && next rails test:prepare --trace"
+run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails test:prepare --trace"
 
 [tasks.test-next-run]
 description = "Run unit and integration tests for 'next' environment"
