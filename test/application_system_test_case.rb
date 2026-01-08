@@ -4,7 +4,7 @@ require 'capybara/cuprite'
 
 Capybara.default_max_wait_time = 10
 
-Capybara.register_driver :cuprite_mobile do |app|
+Capybara.register_driver :cuprite_mobile do |app| # rubocop:disable Metrics/BlockLength
   driver = Capybara::Cuprite::Driver.new(
     app,
     screen_size: [375, 667],
@@ -101,7 +101,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # end
     end
   else
-  driven_by :cuprite,
+  driven_by :cuprite, # rubocop:disable Metrics/BlockLength
             screen_size: [375, 667],
             options: {
               # # Enable debugging capabilities
