@@ -12,7 +12,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     @original_asset_path_helper = original_asset_path_helper
 
     ActionController::Base.helpers.define_singleton_method(:asset_path) do |source, *args|
-      if source.to_s == 'tailwind.css' || source.to_s == 'tailwind'
+      if ['tailwind.css', 'tailwind'].include?(source.to_s)
         '/assets/tailwind.css'
       else
         original_asset_path_helper.call(source, *args)

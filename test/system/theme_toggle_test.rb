@@ -16,6 +16,7 @@ class ThemeToggleTest < ApplicationSystemTestCase
     
     # Verify theme changed
     expected_theme = initial_theme == 'dark' ? 'light' : 'dark'
+
     assert_equal expected_theme, page.evaluate_script('document.documentElement.getAttribute("data-theme")')
     
     # Verify persistence
