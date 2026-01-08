@@ -63,11 +63,11 @@ class DarkModeTest < ApplicationSystemTestCase
 
   def capture_search_results
     set_theme_text('#ffffff')
-    page.save_screenshot(Rails.root.join('tmp/dark-mode-search.png'), full: true)
+    # page.save_screenshot(Rails.root.join('tmp/dark-mode-search.png'), full: true)
   end
 
   def capture_show_page
     set_theme_text('#ffffff')
-    page.save_screenshot(Rails.root.join('tmp/dark-mode-show.png'), full: true)
+    # page.save_screenshot(Rails.root.join('tmp/dark-mode-show.png'), full: true)
   end
 end

@@ -60,7 +60,8 @@ Capybara.javascript_driver = :ferrum_block_fonts
 
 class ActiveSupport::TestCase
   # Run tests in parallel with configurable workers (default: 3) even for small suites
-  parallelize(workers: ENV.fetch("RAILS_TEST_WORKERS", 3).to_i, threshold: 0)
+  # Respect both RAILS_TEST_WORKERS and the PR's PARALLEL_WORKERS variable
+  parallelize(workers: ENV.fetch('PARALLEL_WORKERS', ENV.fetch('RAILS_TEST_WORKERS', 3)).to_i, threshold: 0)
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all

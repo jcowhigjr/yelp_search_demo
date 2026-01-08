@@ -41,11 +41,11 @@ class UsersTest < ApplicationSystemTestCase
   if ENV['CUPRITE'] == 'true'
     # Open mobile sidenav
     sidenav_trigger = find('.sidenav-trigger')
-    sidenav_trigger.trigger("click")
+    sidenav_trigger.trigger('click')
     # Wait for mobile navigation content to be visible
     assert_selector '#mobile-demo', visible: true, wait: 5
     # Click My Profile in mobile navigation using trigger to avoid coordinate issues
-    find('#mobile-demo a', text: 'My Profile').trigger("click")
+    find('#mobile-demo a', text: 'My Profile').trigger('click')
   else
     # Desktop navigation - click directly
     click_on 'My Profile'
