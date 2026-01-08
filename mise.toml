@@ -97,6 +97,10 @@ description = "Run system tests for 'next' environment"
 run = "mkdir -p tmp && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost TMPDIR=$PWD/tmp next rails test:system"
 depends = ["test-next-prepare"]
 
+[tasks.test-next-system-ci]
+description = "Run system tests for 'next' environment (CI optimized: skips prepare dependency)"
+run = "mkdir -p tmp && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost TMPDIR=$PWD/tmp next rails test:system"
+
 [tasks.test-scripts]
 description = "Shell-level CLI tests for helper scripts (stacked-pr.sh, etc.)"
 run = "bash test/scripts/stacked_pr_cli_test.sh"

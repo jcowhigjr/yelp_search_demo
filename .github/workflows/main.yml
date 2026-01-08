@@ -121,7 +121,6 @@ jobs:
         continue-on-error: false
         run: |
           mise run setup-next
-          mise run test-next-prepare
           mise run test-next-run
       - name: system-test-next
         id: system-test-next
@@ -133,7 +132,7 @@ jobs:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: |
-          mise run test-next-system
+          mise run test-next-system-ci
       - name: system-test-next-retry
         id: system-test-next-retry-1
         continue-on-error: true # make the step always success and set status later
@@ -142,7 +141,7 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
         run: |
-          mise run test-next-system -- --verbose
+          mise run test-next-system-ci -- --verbose
       - name: Upload failed system test images (next)
         uses: actions/upload-artifact@v5
         if: steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure' # check the step outcome, retry 1st time
