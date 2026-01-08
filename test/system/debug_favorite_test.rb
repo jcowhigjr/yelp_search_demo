@@ -19,7 +19,7 @@ class DebugFavoriteTest < ApplicationSystemTestCase
     visit new_search_path
     search_box = find(:fillable_field, 'search[query]', wait: 10)
     search_box.fill_in(with: 'coffee')
-    find('button[type="submit"]').click
+    click_button "Search"
 
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10

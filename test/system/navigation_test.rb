@@ -11,7 +11,7 @@ class NavigationTest < ApplicationSystemTestCase
     fill_in 'search[query]', with: 'tacos'
 
     # Use the first search button to avoid ambiguity
-    find('button[type="submit"]').click
+    click_button 'Search'
 
     # Wait for results to load and verify we're on the correct page
     wait_for_search_results
