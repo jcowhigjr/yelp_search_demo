@@ -101,7 +101,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       # end
     end
   else
-  driven_by :cuprite, # rubocop:disable Metrics/BlockLength
+  driven_by :cuprite,
             screen_size: [375, 667],
             options: {
               # # Enable debugging capabilities
