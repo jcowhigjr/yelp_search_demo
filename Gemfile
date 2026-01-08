@@ -150,11 +150,7 @@ gem 'dotenv'
 
 gem 'geocoder'
 
-group :development, :ci do
-  # Ensure Lefthook is available in CI for installing Git hooks
-  gem 'lefthook', require: false
-  gem 'faraday', '~> 2.14.0', require: false
-end
+# Removed duplicated development, ci group
 
 # Ruby version (must match mise.toml)
 ruby '3.3.10'

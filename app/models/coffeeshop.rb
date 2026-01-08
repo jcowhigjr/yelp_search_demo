@@ -9,6 +9,7 @@ class Coffeeshop < ApplicationRecord
   # broadcasts_to ->(coffeeshop) { [coffeeshop.search, :coffeeshops] },
   #               target: ->(coffeeshop) { "search_#{coffeeshop.search_id}_coffeeshops" }
 
+  # rubocop:disable Metrics/MethodLength
   def self.get_search_results(search)
     query = search.query
     lat = search.latitude
@@ -19,7 +20,8 @@ class Coffeeshop < ApplicationRecord
       
       if api_key.blank? || api_key == 'REPLACE_WITH_YOUR_YELP_API_KEY'
         return create_coffee_shops_from_results(test_fallback_results, search) if Rails.env.test?
-        return 'error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. Get your API key from: https://www.yelp.com/developers/v3/manage_app'
+        return 'error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. ' \
+               'Get your API key from: https://www.yelp.com/developers/v3/manage_app'
       end
       
       response = RestClient::Request.execute(
@@ -37,6 +39,7 @@ class Coffeeshop < ApplicationRecord
 
     coffeeshops = results['businesses']
     create_coffee_shops_from_results(coffeeshops, search)
+  # rubocop:enable Metrics/MethodLength
   end
 
   def self.create_coffee_shops_from_results(results, search)

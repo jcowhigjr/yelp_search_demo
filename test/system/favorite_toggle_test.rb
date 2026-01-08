@@ -21,7 +21,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button "Search"
+    click_button 'Search'
 
     # Wait for search results and the favorite button to be present
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
@@ -44,7 +44,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     frame_id = first('.coffeeshop-card').find("turbo-frame[id*='favorite']")[:id]
     
     within "##{frame_id}" do
-      find('button.favorite-btn').click
+      click_button 'Add To Favorites'
     end
 
     # Wait for the Turbo stream response to update the frame
@@ -63,7 +63,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Click to unfavorite
     within "##{frame_id}" do
-      find('button.favorite-btn').click
+      click_button 'Add To Favorites'
     end
 
     # Wait for final update and verify
@@ -93,7 +93,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button "Search"
+    click_button 'Search'
 
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
     within first('.coffeeshop-card') do
@@ -114,7 +114,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'pizza'
-    click_button "Search"
+    click_button 'Search'
 
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
     within first('.coffeeshop-card') do
@@ -136,7 +136,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button "Search"
+    click_button 'Search'
 
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
