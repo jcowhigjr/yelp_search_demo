@@ -192,7 +192,9 @@ jobs:
           RAILS_ENV: test # Ensure RAILS_ENV is set if bin/setup needs it
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
-        run: mise run setup -- --skip-server # Run application setup once
+        run: |
+          mise exec -- bundle check || mise exec -- bundle install
+          mise exec -- bin/rails db:prepare
       - name: Run Brakeman
         run: mise run brakeman
       - name: Script CLI tests (stacked-pr.sh)
