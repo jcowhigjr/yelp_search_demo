@@ -36,6 +36,7 @@ pre-commit:
       - merge
       - rebase
 pre-push:
+  parallel: true
   commands:
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
@@ -64,11 +65,11 @@ pre-push:
       run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
         $REPO_ROOT\" exec --)\nif [ -f .env ]; then\n  . ./.env\nfi\necho \"\U0001F680\
         \ Setting up test environment...\"\n\n# Setup phase - detailed logs captured\
-        \ by bin/setup into log/setup*.log\nif ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true\
+        \ by bin/setup into log/setup*.log\nif ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true SKIP_CLEAN=true\
         \ \"${MISE_EXEC[@]}\" bin/setup --skip-server; then\n  echo \"\u274C Failed\
         \ to set up test environment (see log/setup.log for details)\"\n  exit 1\n\
         fi\n\necho \"\U0001F527 Preparing test database...\"\nif ! CI=true RAILS_ENV=test\
-        \ \"${MISE_EXEC[@]}\" bin/rails test:prepare --trace; then\n  echo \"\u274C\
+        \ \"${MISE_EXEC[@]}\" bin/rails db:test:prepare --trace; then\n  echo \"\u274C\
         \ Failed to prepare test database\"\n  exit 1\nfi\n\necho \"\U0001F9EA Running\
         \ Rails tests...\"\nif ! CI=true RAILS_ENV=test \"${MISE_EXEC[@]}\" bin/rails\
         \ test --quiet; then\n  echo \"\u274C Rails tests failed\"\n  exit 1\nfi\n\
@@ -85,14 +86,14 @@ pre-push:
         $REPO_ROOT\" exec --)\nif [ -f .env ]; then\n  . ./.env\nfi\nif ./scripts/should-run-system-tests.sh;\
         \ then\n  echo \"\u23ED\uFE0F  Skipping system tests (safe changes only)\"\
         \n  exit 0\nfi\necho \"\U0001F680 Setting up system test environment...\"\n\
-        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true \"${MISE_EXEC[@]}\" bin/setup\
+        if ! CI=true RAILS_ENV=test SETUP_SKIP_NODE=true SKIP_CLEAN=true TEST_DATABASE_NAME='db/test-system.sqlite3' \"${MISE_EXEC[@]}\" bin/setup\
         \ --skip-server; then\n  echo \"\u274C Failed to set up system test environment\
         \ (see log/setup.log for details)\"\n  exit 1\nfi\n\necho \"\U0001F527 Preparing\
-        \ system test database...\"\nif ! CI=true RAILS_ENV=test \"${MISE_EXEC[@]}\"\
+        \ system test database...\"\nif ! CI=true RAILS_ENV=test TEST_DATABASE_NAME='db/test-system.sqlite3' \"${MISE_EXEC[@]}\"\
         \ bin/rails test:prepare --trace; then\n  echo \"\u274C Failed to prepare\
         \ system test database\"\n  exit 1\nfi\n\necho \"\U0001F9EA Running system\
         \ tests...\"\nif ! CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST='localhost'\
-        \ CUPRITE_JS_ERRORS=false \"${MISE_EXEC[@]}\" bin/rails test:system --quiet;\
+        \ TEST_DATABASE_NAME='db/test-system.sqlite3' CUPRITE_JS_ERRORS=false \"${MISE_EXEC[@]}\" bin/rails test:system --quiet;\
         \ then\n  echo \"\u274C System tests failed\"\n  exit 1\nfi\n\necho \"\u2705\
         \ All system tests passed\"\n"
     tailwind-build-check:

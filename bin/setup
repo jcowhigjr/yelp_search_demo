@@ -88,8 +88,12 @@ fi
   echo "\n== Preparing database =="
   system! "$MISE_EXEC_PATH" exec -- "bin/rails" "db:prepare"
 
-  echo "\n== Removing old logs and tempfiles =="
-  system! "$MISE_EXEC_PATH" exec -- "bin/rails" "log:clear" "tmp:clear"
+  if [ "${SKIP_CLEAN:-false}" != "true" ]; then
+    echo "\n== Removing old logs and tempfiles =="
+    system! "$MISE_EXEC_PATH" exec -- "bin/rails" "log:clear" "tmp:clear"
+  else
+    echo "\n== Skipping removal of old logs and tempfiles (SKIP_CLEAN=true) =="
+  fi
 
   if [[ ! "$*" =~ "--skip-server" ]]; then
     echo "\n== Starting development server =="
