@@ -34,7 +34,7 @@ HEADLESS = "true"
 CUPRITE = "true"
 APP_HOST = "localhost"
 TMPDIR = "$PWD/tmp"
-PARALLEL_WORKERS = "1"
+PARALLEL_WORKERS = "3"
 
 [settings]
 # Container-specific settings
