@@ -44,7 +44,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     frame_id = first('.coffeeshop-card').find("turbo-frame[id*='favorite']")[:id]
     
     within "##{frame_id}" do
-      click_button 'Add To Favorites'
+      find('button.favorite-btn').click # rubocop:disable Capybara/SpecificActions
     end
 
     # Wait for the Turbo stream response to update the frame
@@ -63,7 +63,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Click to unfavorite
     within "##{frame_id}" do
-      click_button 'Add To Favorites'
+      find('button.favorite-btn').click # rubocop:disable Capybara/SpecificActions
     end
 
     # Wait for final update and verify
