@@ -22,12 +22,12 @@ Capybara.register_driver :cuprite_mobile do |app|
         'use-fake-ui-for-media-stream': true,
         'disable-gpu': true,
         'window-size': '375,667',
-        geolocation: true
-      }
-    }
+        geolocation: true,
+      },
+    },
   )
 
-  driver.browser.command('Browser.grantPermissions', origin: "http://127.0.0.1:*", permissions: ['geolocation'])
+  driver.browser.command('Browser.grantPermissions', origin: 'http://127.0.0.1:*', permissions: ['geolocation'])
   driver.browser.command('Emulation.setGeolocationOverride', latitude: 40.7128, longitude: -74.0060, accuracy: 1)
   driver
 end

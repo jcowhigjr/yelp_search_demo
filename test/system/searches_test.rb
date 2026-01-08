@@ -31,10 +31,12 @@ class SearchesTest < ApplicationSystemTestCase
 
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
+
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # Go back once and ensure we land back on a search page
     go_back
+
     assert_current_path(%r{^/searches/(new|\d+)$}, wait: 10)
   end
 

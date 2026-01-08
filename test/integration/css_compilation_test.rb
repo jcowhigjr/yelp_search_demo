@@ -5,7 +5,7 @@ class CssCompilationTest < ActiveSupport::TestCase
 
   setup do
     # Rely on test:prepare (hooks/CI) to build Tailwind once. If not present, skip to avoid flaky native watcher issues.
-    skip "Tailwind build missing; test environment did not precompile assets" unless File.exist?(BUILD_PATH)
+    skip 'Tailwind build missing; test environment did not precompile assets' unless File.exist?(BUILD_PATH)
   end
 
   test 'tailwind.css is built and exists' do

@@ -22,14 +22,17 @@ class NavigationTest < ApplicationSystemTestCase
 
     # Click More Info and verify navigation to a coffeeshop page
     click_more_info_safely
+
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
     # Go back to search results and verify (either show or new)
     go_back
+
     assert_current_path(%r{^/searches/(new|#{search_id})$}, wait: 10)
 
     # Go back to search form and verify
     go_back
+
     assert_current_path new_search_path
   end
 

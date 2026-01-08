@@ -9,6 +9,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     user = users(:one)
     
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: user.email
     click_on 'Log In'
@@ -52,6 +53,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     
     # Login as user with no favorites
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: user.email
     click_on 'Log In'
@@ -71,6 +73,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     
     # Verify the link goes to search page
     click_link 'Start searching for coffee shops'
+
     assert_current_path new_search_path
   end
 end
