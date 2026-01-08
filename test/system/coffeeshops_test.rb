@@ -49,6 +49,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can submit a review' do
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
@@ -58,6 +59,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Search for a shop
     visit new_search_path
+
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
@@ -85,6 +87,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can edit and delete their review' do
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
@@ -124,6 +127,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
   test 'A logged in user can favorite and unfavorite a coffeeshop' do
     visit '/login'
+
     assert_selector 'h1', text: 'Login'
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
@@ -131,6 +135,7 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     # Search for a shop
     visit new_search_path
+
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
@@ -167,7 +172,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     # Verify the yelp_color CSS class is properly applied (should be #ff1a1a red)
     yelp_icon = find('svg.fa-yelp.yelp_color')
     computed_style = yelp_icon.evaluate_script("window.getComputedStyle(this).getPropertyValue('color')")
+
     assert_includes computed_style, '255, 26, 26', 
-               "Yelp icon must maintain brand red color (#ff1a1a) for licensing compliance"
+                    'Yelp icon must maintain brand red color (#ff1a1a) for licensing compliance'
   end
 end
