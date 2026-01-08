@@ -34,7 +34,7 @@ class CssCompilationTest < ActiveSupport::TestCase
     css_content = File.read(BUILD_PATH)
     # Matches --color-primary: #223556; or --color-primary:#223556; within a dark mode media query
     # Updated to expect :root:not([data-theme='light']) selector (quotes may be stripped by minifier)
-    regex = %r{@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root:not\(\[data-theme=['"]?light['"]?\]\)\s*{\s*--color-primary:\s*#223556;}i
+    regex = %r!@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root:not\(\[data-theme=['"]?light['"]?\]\)\s*{\s*--color-primary:\s*#223556;!i
 
     assert_match(regex, css_content,
                  'Expected dark mode override for --color-primary with #223556.')

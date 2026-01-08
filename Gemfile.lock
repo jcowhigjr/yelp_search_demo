@@ -225,7 +225,6 @@ GEM
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
-    lefthook (2.0.13)
     lint_roller (1.1.0)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -550,7 +549,6 @@ DEPENDENCIES
   dotenv
   erb_lint
   evil_systems
-  faraday (~> 2.14.0)
   flipper
   foreman
   geocoder
@@ -561,7 +559,6 @@ DEPENDENCIES
   i18n-tasks
   importmap-rails
   json
-  lefthook
   magic_test
   matrix
   meta_request
