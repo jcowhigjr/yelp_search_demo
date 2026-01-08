@@ -19,8 +19,9 @@ development:
 test:
   adapter: sqlite3
   database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
+  pool: 10
+  timeout: 20000
+  journal_mode: wal
 
 # production is postgresql
 production:

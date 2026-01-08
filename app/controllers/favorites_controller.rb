@@ -18,9 +18,9 @@ class FavoritesController < ApplicationController
   private
 
   def set_item
-    @item = Coffeeshop.find_by!(id: params[:id])
+    @item = Coffeeshop.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    flash[:alert] = "Coffeeshop not found."
+    flash[:alert] = t('.not_found')
     redirect_to root_path
   end
 

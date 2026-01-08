@@ -5,7 +5,7 @@ class CssCompilationTest < ActiveSupport::TestCase
 
   setup do
     # Rely on test:prepare (hooks/CI) to build Tailwind once. If not present, skip to avoid flaky native watcher issues.
-    skip "Tailwind build missing; test environment did not precompile assets" unless File.exist?(BUILD_PATH)
+    skip 'Tailwind build missing; test environment did not precompile assets' unless File.exist?(BUILD_PATH)
   end
 
   test 'tailwind.css is built and exists' do
@@ -34,7 +34,11 @@ class CssCompilationTest < ActiveSupport::TestCase
     css_content = File.read(BUILD_PATH)
     # Matches --color-primary: #223556; or --color-primary:#223556; within a dark mode media query
     # Updated to expect :root:not([data-theme='light']) selector (quotes may be stripped by minifier)
-    assert_match(/@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*:root:not\(\[data-theme=['"]?light['"]?\]\)\s*{\s*--color-primary:\s*#223556;/i, css_content,
+    regex = /@media\s*\(prefers-color-scheme:\s*dark\)\s*{\s*/
+    regex = Regexp.new(regex.source + /:root:not\(\[data-theme=['"]?light['"]?\]\)\s*{\s*/.source)
+    regex = Regexp.new(regex.source + /--color-primary:\s*#223556;/i.source)
+
+    assert_match(regex, css_content,
                  'Expected dark mode override for --color-primary with #223556.')
   end
 end
