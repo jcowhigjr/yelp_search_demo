@@ -7,7 +7,7 @@ require 'net/http'
 require 'uri'
 
 class DependabotValidator
-  SCHEMA_URL = 'https://json.schemastore.org/dependabot-2.0'
+  SCHEMA_URL = 'https://json.schemastore.org/dependabot-2.0'.freeze
   
   def initialize(config_file = '.github/dependabot.yml')
     @config_file = config_file
@@ -15,7 +15,7 @@ class DependabotValidator
   end
   
   def validate
-    puts "🔍 Validating Dependabot configuration..."
+    puts '🔍 Validating Dependabot configuration...'
     
     # Basic file existence check
     unless File.exist?(@config_file)
@@ -29,24 +29,24 @@ class DependabotValidator
     rescue YAML::SyntaxError => e
       puts "❌ YAML syntax error: #{e.message}"
       return false
-    rescue => e
+    rescue StandardError => e
       puts "❌ Error reading config: #{e.message}"
       return false
     end
     
     # Basic structure validation
     unless config.is_a?(Hash)
-      puts "❌ Config must be a YAML object/dictionary"
+      puts '❌ Config must be a YAML object/dictionary'
       return false
     end
     
     unless config['version'] == 2
-      puts "❌ Missing or incorrect version field (should be 2)"
+      puts '❌ Missing or incorrect version field (should be 2)'
       return false
     end
     
     unless config['updates'].is_a?(Array)
-      puts "❌ Updates field must be an array"
+      puts '❌ Updates field must be an array'
       return false
     end
     
@@ -55,51 +55,46 @@ class DependabotValidator
       puts "  📋 Validating update section #{index + 1}..."
       
       unless update['package-ecosystem']
-        puts "    ❌ Missing package-ecosystem"
+        puts '    ❌ Missing package-ecosystem'
         return false
       end
       
       # Validate allow section
       if update['allow']
         unless update['allow'].is_a?(Array)
-          puts "    ❌ Allow section must be an array"
+          puts '    ❌ Allow section must be an array'
           return false
         end
         
         update['allow'].each_with_index do |allow_rule, allow_index|
-          if allow_rule.is_a?(Hash)
-            # Check for invalid properties in allow section
-            invalid_props = allow_rule.keys - ['dependency-type']
-            if invalid_props.any?
-              puts "    ❌ Allow rule #{allow_index + 1} contains invalid properties: #{invalid_props.join(', ')}"
-              puts "       Valid properties: dependency-type"
-              return false
-            end
-          end
+          next unless allow_rule.is_a?(Hash)
+          # Check for invalid properties in allow section
+          invalid_props = allow_rule.keys - ['dependency-type']
+          next unless invalid_props.any?
+          puts "    ❌ Allow rule #{allow_index + 1} contains invalid properties: #{invalid_props.join(', ')}"
+          puts '       Valid properties: dependency-type'
+          return false
         end
       end
       
       # Validate groups
-      if update['groups']
-        unless update['groups'].is_a?(Hash)
-          puts "    ❌ Groups section must be a hash"
-          return false
-        end
+      next unless update['groups']
+      unless update['groups'].is_a?(Hash)
+        puts '    ❌ Groups section must be a hash'
+        return false
+      end
         
-        update['groups'].each do |group_name, group_config|
-          if group_config['update-types']
-            unless group_config['update-types'].is_a?(Array)
-              puts "    ❌ Group '#{group_name}' update-types must be an array"
-              return false
-            end
+      update['groups'].each do |group_name, group_config|
+        if group_config['update-types'] && !group_config['update-types'].is_a?(Array)
+            puts "    ❌ Group '#{group_name}' update-types must be an array"
+            return false
           end
-        end
       end
     end
     
     # Check for duplicate ecosystems
-    ecosystems = config['updates'].map { |u| u['package-ecosystem'] }
-    duplicates = ecosystems.group_by(&:itself).select { |k, v| v.size > 1 }.keys
+    ecosystems = config['updates'].pluck('package-ecosystem')
+    duplicates = ecosystems.group_by(&:itself).select { |_k, v| v.size > 1 }.keys
     
     if duplicates.any?
       puts "❌ Duplicate package ecosystems found: #{duplicates.join(', ')}"
@@ -107,7 +102,7 @@ class DependabotValidator
     end
     
     # Success
-    puts "✅ Dependabot configuration is valid"
+    puts '✅ Dependabot configuration is valid'
     puts "📦 Configured ecosystems: #{ecosystems.join(', ')}"
     puts "🔢 Number of update groups: #{config['updates'].size}"
     
@@ -118,28 +113,28 @@ class DependabotValidator
       puts "  📋 #{ecosystem}: #{groups.empty? ? 'no groups' : groups.join(', ')}"
     end
     
-    return true
+    true
   end
   
   def fetch_schema
-    puts "📥 Fetching official Dependabot schema..."
+    puts '📥 Fetching official Dependabot schema...'
     
     uri = URI(SCHEMA_URL)
       response = Net::HTTP.get_response(uri)
     
     if response.is_a?(Net::HTTPSuccess)
       @schema = JSON.parse(response.body)
-      puts "✅ Schema fetched successfully"
+      puts '✅ Schema fetched successfully'
     else
-      puts "⚠️  Could not fetch schema, using basic validation only"
+      puts '⚠️  Could not fetch schema, using basic validation only'
     end
-  rescue => e
+  rescue StandardError => e
     puts "⚠️  Error fetching schema: #{e.message}"
   end
 end
 
 # Run validation if called directly
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
   validator = DependabotValidator.new
   
   # Try to fetch schema (optional)

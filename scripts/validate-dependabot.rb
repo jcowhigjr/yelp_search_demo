@@ -16,40 +16,40 @@ def validate_dependabot_config
     
     # Check for basic structure
     unless config['version'] == 2
-      puts "❌ Missing or incorrect version field"
+      puts '❌ Missing or incorrect version field'
       return false
     end
     
     unless config['updates'].is_a?(Array)
-      puts "❌ Updates field is not an array"
+      puts '❌ Updates field is not an array'
       return false
     end
     
     # Check for duplicate ecosystems
-    ecosystems = config['updates'].map { |u| u['package-ecosystem'] }
-    duplicates = ecosystems.group_by(&:itself).select { |k, v| v.size > 1 }.keys
+    ecosystems = config['updates'].pluck('package-ecosystem')
+    duplicates = ecosystems.group_by(&:itself).select { |_k, v| v.size > 1 }.keys
     
     if duplicates.any?
       puts "❌ Duplicate package ecosystems found: #{duplicates.join(', ')}"
       return false
     end
     
-    puts "✅ Dependabot configuration is valid"
+    puts '✅ Dependabot configuration is valid'
     puts "📦 Configured ecosystems: #{ecosystems.join(', ')}"
     puts "🔢 Number of update groups: #{config['updates'].size}"
     
-    return true
+    true
     
   rescue YAML::SyntaxError => e
     puts "❌ YAML syntax error: #{e.message}"
-    return false
-  rescue => e
+    false
+  rescue StandardError => e
     puts "❌ Error reading config: #{e.message}"
-    return false
+    false
   end
 end
 
-if __FILE__ == $0
-  puts "🔍 Validating Dependabot configuration..."
+if __FILE__ == $PROGRAM_NAME
+  puts '🔍 Validating Dependabot configuration...'
   validate_dependabot_config
 end

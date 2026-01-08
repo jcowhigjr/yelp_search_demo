@@ -5,12 +5,10 @@ class BadRubyService
 
   def calculate_total(items)
     total = 0
-    if items != nil
-      items.each do |item|
-        total = total + item.price
+    items&.each do |item|
+        total += item.price
       end
-    end
-    return total
+    total
   end
 
   def find_active_posts
