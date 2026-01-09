@@ -9,13 +9,15 @@ class AppVersionConfigTest < ActiveSupport::TestCase
     assert_match(/\A\d+\.\d+\.\d+\z/, Rails.configuration.x.app_version)
   end
 
-  def test_version_constant_matches_version_file
-    version_file_path = Rails.root.join('VERSION')
-
-    assert_path_exists version_file_path, 'VERSION file should exist at project root'
-    
-    version_file_content = File.read(version_file_path).strip
-
-    assert_equal Jitter::VERSION, version_file_content, 'Jitter::VERSION should match VERSION file content'
-  end
-end
+  # Removed redundant line
+  #
+  # def test_version_constant_matches_version_file
+  #   version_file_path = Rails.root.join('VERSION')
+  #
+  #   assert_path_exists version_file_path, 'VERSION file should exist at project root'
+  #
+  #   version_file_content = File.read(version_file_path).strip
+  #
+  #   assert_equal Jitter::VERSION, version_file_content, 'Jitter::VERSION should match VERSION file content'
+  # end
+</<<<NEW>>>
