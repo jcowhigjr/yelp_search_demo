@@ -53,6 +53,11 @@ run = "bin/setup"
 description = "Run setup script for 'next' environment"
 run = "bin/setup-next"
 
+[tasks.setup-test]
+description = "CI-optimized setup (skips redundant environment checks)"
+run = "bin/setup --skip-server"
+env = { SETUP_SKIP_ENV = "true", SKIP_CLEAN = "true" }
+
 [tasks.brakeman]
 description = "Run Brakeman security scanner"
 run = "bundle exec brakeman --no-pager --quiet"

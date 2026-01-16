@@ -30,20 +30,36 @@ APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)"
 # Change to the app root directory
 cd "$APP_ROOT" || exit 1
 
-# Run setup-environment.sh, logging detailed output only to file
-echo "INFO: Running setup-environment.sh..." | tee -a "$SETUP_LOG" >/dev/null
-if ! "$APP_ROOT/bin/setup-environment.sh" >"$SETUP_ENV_LOG" 2>&1; then
-  echo "❌ ERROR: setup-environment.sh failed. See $SETUP_ENV_LOG for details." | tee -a "$SETUP_LOG" >&2
-  exit 1
+# Run setup-environment.sh unless explicitly skipped, logging detailed output only to file
+if [ "${SETUP_SKIP_ENV:-false}" != "true" ]; then
+  echo "INFO: Running setup-environment.sh..." | tee -a "$SETUP_LOG" >/dev/null
+  if ! "$APP_ROOT/bin/setup-environment.sh" >"$SETUP_ENV_LOG" 2>&1; then
+    echo "❌ ERROR: setup-environment.sh failed. See $SETUP_ENV_LOG for details." | tee -a "$SETUP_LOG" >&2
+    exit 1
+  fi
+else
+  echo "INFO: Skipping setup-environment.sh (SETUP_SKIP_ENV=true)" | tee -a "$SETUP_LOG" >/dev/null
+  # We still need to ensure MISE_EXEC_PATH is set if we have the log from a previous run,
+  # or default to 'mise' if it's already in the PATH.
+  if [ ! -f "$SETUP_ENV_LOG" ] && ! command -v mise >/dev/null 2>&1; then
+     echo "❌ ERROR: setup-environment.sh was skipped but mise is not in PATH." | tee -a "$SETUP_LOG" >&2
+     exit 1
+  fi
 fi
 
-# Extract the MISE executable path from the logged output
-MISE_EXEC_PATH=$(grep "^MISE_EXECUTABLE_PATH:" "$SETUP_ENV_LOG" | cut -d':' -f2-)
+# Determine the MISE executable path
+if [ -f "$SETUP_ENV_LOG" ]; then
+  MISE_EXEC_PATH=$(grep "^MISE_EXECUTABLE_PATH:" "$SETUP_ENV_LOG" | cut -d':' -f2-)
+fi
 
-if [ -z "$MISE_EXEC_PATH" ] || ! [ -x "$MISE_EXEC_PATH" ]; then
-  echo "❌ ERROR: Could not determine a valid MISE executable path from setup-environment.sh output." | tee -a "$SETUP_LOG" >&2
-  echo "Attempted path: '$MISE_EXEC_PATH'. Ensure setup-environment.sh prints MISE_EXECUTABLE_PATH:<path_to_mise>." | tee -a "$SETUP_LOG" >&2
-  exit 1
+# Fallback to 'mise' in PATH if log missing or path invalid
+if [ -z "${MISE_EXEC_PATH:-}" ] || ! [ -x "${MISE_EXEC_PATH:-}" ]; then
+  if command -v mise >/dev/null 2>&1; then
+    MISE_EXEC_PATH=$(command -v mise)
+  else
+    echo "❌ ERROR: Could not determine a valid MISE executable path." | tee -a "$SETUP_LOG" >&2
+    exit 1
+  fi
 fi
 
 echo "INFO: Using MISE executable: $MISE_EXEC_PATH" | tee -a "$SETUP_LOG" >/dev/null
