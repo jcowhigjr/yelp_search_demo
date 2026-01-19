@@ -11,7 +11,7 @@ class NavigationTest < ApplicationSystemTestCase
     fill_in 'search[query]', with: 'tacos'
 
     # Use the first search button to avoid ambiguity
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
 
     # Wait for results to load and verify we're on the correct page
     wait_for_search_results

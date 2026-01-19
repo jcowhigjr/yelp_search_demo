@@ -30,7 +30,7 @@ accuracy: 1)
 
     click_on 'my_location'
     fill_in 'search[query]', with: 'tacos'
-    click_on 'Search'
+    find('button[aria-label="Search"]').click
 
     assert_selector '.coffeeshop-card'
 
