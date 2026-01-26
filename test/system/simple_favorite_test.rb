@@ -20,7 +20,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     visit new_search_path
     
     fill_in 'search[query]', with: 'coffee'
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
     
