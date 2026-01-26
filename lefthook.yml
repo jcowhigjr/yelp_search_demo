@@ -37,8 +37,7 @@ pre-commit:
       - rebase
     ruby-version-consistency:
       run: bin/validate_ruby_versions
-      glob: "**/*.rb"
-      files: "{Gemfile,.ruby-version,mise.toml,Dockerfile}"
+      glob: "**/*"
     dependency_check:
       tags: validation
       run: "#!/bin/bash\necho \"\U0001F50D Checking for missing gem dependencies...\"\
