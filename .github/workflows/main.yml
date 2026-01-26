@@ -19,6 +19,13 @@ on:
       - main
     types: [opened, synchronize, reopened, edited, labeled, ready_for_review]
   workflow_dispatch:
+    inputs:
+      triggered_by:
+        description: 'Source of the trigger'
+        required: false
+      pr_number:
+        description: 'Associated PR number'
+        required: false
   workflow_run:
     workflows: ["Auto-update PRs", "Automated PR Management"]
     types:
