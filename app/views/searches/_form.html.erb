@@ -20,8 +20,8 @@
         <i class="material-icons">my_location</i>
       </button>
 
-      <%= f.button :submit, class: 'search-button' do %>
-        <%= t('views.searches.submit', default: 'Search').strip %>
+      <%= f.button :submit, class: 'search-button', aria: { label: t('views.searches.submit', default: 'Search') } do %>
+        <i class="material-icons">search</i>
       <% end %>
     </div>
 
