@@ -21,7 +21,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
 
     # Wait for search results and the favorite button to be present
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
@@ -93,7 +93,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
 
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
     within first('.coffeeshop-card') do
@@ -114,7 +114,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'pizza'
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
 
     assert_selector ".coffeeshop-card turbo-frame[id*='favorite']", wait: 10
     within first('.coffeeshop-card') do
@@ -136,7 +136,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
-    click_button 'Search'
+    find('button[aria-label="Search"]').click
 
     # Wait for search results
     assert_selector '.coffeeshop-card', wait: 10
