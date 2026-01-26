@@ -49,7 +49,7 @@ permissions:
 jobs:
   # Get risk assessment for Dependabot PRs (optional job)
   get-risk-assessment:
-    # Run for all PRs, but handle non-Dependabot PRs differently
+    # Only run for PRs, not for direct pushes
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_run'
     runs-on: ubuntu-latest
     outputs:
@@ -174,6 +174,7 @@ jobs:
              echo 'the first next system test failed, and the second one also failed'
              exit 1
           fi
+
   test:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
@@ -268,6 +269,26 @@ jobs:
              echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
+
+  # Add explicit error handling
+  verify-status-checks:
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check test status
+        if: needs.test.result != 'success'
+        run: |
+          echo "::error::Test job failed! Check test logs for details."
+          exit 1
+
+      - name: Verify required checks
+        run: |
+          if [[ -z "${{ needs.get-risk-assessment.outputs.risk-level }}" ]]; then
+            echo "::error::Risk assessment missing! Required check not completed."
+            exit 1
+          fi
+
   # Note: Auto-merge logic has been moved to auto-approve.yml
   # to avoid conflicts with branch protection and CodeQL requirements
 

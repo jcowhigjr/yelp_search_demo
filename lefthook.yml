@@ -35,12 +35,10 @@ pre-commit:
       skip:
       - merge
       - rebase
-pre-push:
-  parallel: true
-  commands:
-    review-loop-enforcement:
-      run: scripts/enforce-review-loop.sh
-      tags: meta reviews
+    ruby-version-consistency:
+      run: bin/validate_ruby_versions
+      glob: "**/*.rb"
+      files: "{Gemfile,.ruby-version,mise.toml,Dockerfile}"
     dependency_check:
       tags: validation
       run: "#!/bin/bash\necho \"\U0001F50D Checking for missing gem dependencies...\"\
@@ -186,26 +184,26 @@ pre-push:
         \n    exit 1\n  fi\nfi\necho \"\u2705 CI environment ready.\"\n"
     rubocop:
       tags: backend style
-      glob: '*.rb'
+      glob: '**/*.rb'
       run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
         $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
         \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
         \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
         \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
-        \ --name-only \"${diff_base}..HEAD\" -- '*.rb') )\nif [ ${#files[@]} -eq 0\
+        \ --name-only \"${diff_base}..HEAD\" -- '**/*.rb') )\nif [ ${#files[@]} -eq 0\
         \ ]; then\n  echo \"\u2705 No Ruby files changed; skipping rubocop\"\n  exit\
         \ 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec rubocop --parallel --force-exclusion\
         \ \"${files[@]}\"\n"
       stage_fixed: true
     erb_lint:
       tags: backend style
-      glob: '*.erb'
+      glob: '**/*.erb'
       run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
         $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
         \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
         \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
         \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
-        \ --name-only \"${diff_base}..HEAD\" -- '*.erb') )\nif [ ${#files[@]} -eq\
+        \ --name-only \"${diff_base}..HEAD\" -- '**/*.erb') )\nif [ ${#files[@]} -eq\
         \ 0 ]; then\n  echo \"\u2705 No ERB files changed; skipping erb_lint\"\n \
         \ exit 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec erblint --lint-all --format\
         \ compact \"${files[@]}\"\n"
@@ -224,13 +222,13 @@ pre-push:
     yaml-lint:
       tags: backend style
       exclude: rebase-merge-only develop
-      glob: '*.yml'
+      glob: '**/*.yml'
       run: "REPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise --cd \"\
         $REPO_ROOT\" exec --)\nif git rev-parse --verify HEAD@{upstream} >/dev/null\
         \ 2>&1; then\n  diff_base=\"HEAD@{upstream}\"\nelif git rev-parse --verify\
         \ origin/develop >/dev/null 2>&1; then\n  diff_base=\"$(git merge-base HEAD\
         \ origin/develop)\"\nelse\n  diff_base=\"HEAD^\"\nfi\n\nfiles=( $(git diff\
-        \ --name-only \"${diff_base}..HEAD\" -- '*.yml') )\nif [ ${#files[@]} -eq\
+        \ --name-only \"${diff_base}..HEAD\" -- '**/*.yml') )\nif [ ${#files[@]} -eq\
         \ 0 ]; then\n  echo \"\u2705 No YAML files changed; skipping yaml-lint\"\n\
         \  exit 0\nfi\n\n\"${MISE_EXEC[@]}\" bundle exec yaml-lint \"${files[@]}\"\
         \n"
@@ -255,3 +253,10 @@ pre-push:
       skip:
       - merge
       - rebase
+
+pre-push:
+  parallel: true
+  commands:
+    review-loop-enforcement:
+      run: scripts/enforce-review-loop.sh
+      tags: meta reviews

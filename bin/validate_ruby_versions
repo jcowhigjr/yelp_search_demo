@@ -1,0 +1,51 @@
+#!/bin/bash
+# Ensure consistent Ruby version references
+
+# Check if any target files are in staged changes
+target_files=("Gemfile" ".ruby-version" "mise.toml" "Dockerfile")
+staged_files=$(git diff --cached --name-only)
+
+should_validate=false
+for file in "${target_files[@]}"; do
+  if echo "$staged_files" | grep -q "^$file$"; then
+    should_validate=true
+    break
+  fi
+done
+
+if [ "$should_validate" = false ]; then
+  echo "No Ruby version files changed; skipping validation"
+  exit 0
+fi
+
+expected_version=$(grep '^ruby' mise.toml | awk -F'"' '{print $2}')
+errors=0
+
+# Check mise.toml
+mise_version=$(grep '^ruby' mise.toml | awk -F'"' '{print $2}')
+if [[ "$mise_version" != "$expected_version" ]]; then
+  echo "[ERROR] mise.toml: Expected Ruby $expected_version, found $mise_version"
+  errors=$((errors+1))
+fi
+
+# Check Dockerfile
+docker_version=$(grep '^ARG RUBY_VERSION' Dockerfile | awk -F'=' '{print $2}')
+if [[ "$docker_version" != "$expected_version" ]]; then
+  echo "[ERROR] Dockerfile: Expected Ruby $expected_version, found $docker_version"
+  errors=$((errors+1))
+fi
+
+# Check Gemfile
+gem_version=$(grep "^ruby '" Gemfile | awk -F"'" '{print $2}')
+if [[ "$gem_version" != "$expected_version" ]]; then
+  echo "[ERROR] Gemfile: Expected Ruby $expected_version, found $gem_version"
+  errors=$((errors+1))
+fi
+
+if [[ $errors -gt 0 ]]; then
+  echo "Found $errors version inconsistency errors"
+  exit 1
+fi
+
+echo "All Ruby version references match: $expected_version"
+exit 0
