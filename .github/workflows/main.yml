@@ -92,6 +92,13 @@ jobs:
           echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
           echo "is-dependabot=$IS_DEPENDABOT" >> $GITHUB_OUTPUT
 
+      - name: Ensure outputs set
+        if: steps.assessment == null || steps.assessment.outputs.risk-level == ''
+        run: |
+          echo "skip-system-tests=false" >> $GITHUB_OUTPUT
+          echo "risk-level=medium" >> $GITHUB_OUTPUT
+          echo "is-dependabot=false" >> $GITHUB_OUTPUT
+
   test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
