@@ -172,7 +172,7 @@ jobs:
     needs: [get-risk-assessment]
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
-      (github.event_name == 'pull_request' && 
+      ((github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && 
        (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped'))
     permissions:
       contents: read # Added for least privilege
