@@ -2,5 +2,5 @@ module Jitter
   module Version
   end
 
-  VERSION = '0.2.71'.freeze
+  VERSION = '0.2.72'.freeze
 end
