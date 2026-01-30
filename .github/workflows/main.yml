@@ -183,6 +183,7 @@ jobs:
        (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped'))
     permissions:
       contents: read # Added for least privilege
+      statuses: write # Required for commit status reporting
     env:
       # Control Rails test parallelization for classic tests (default: 3 workers)
       RAILS_TEST_WORKERS: 3
@@ -268,6 +269,21 @@ jobs:
              echo 'the first system test failed, and the second one also failed'
              exit 1
           fi
+      - name: Report status to commit
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: state,
+              context: 'test',
+              description: 'Ruby on Rails CI test job',
+              target_url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+            });
   # Note: Auto-merge logic has been moved to auto-approve.yml
   # to avoid conflicts with branch protection and CodeQL requirements
 
