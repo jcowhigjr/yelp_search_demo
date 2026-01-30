@@ -183,6 +183,7 @@ jobs:
        (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped'))
     permissions:
       contents: read # Added for least privilege
+      statuses: write # Required for commit status reporting
     env:
       # Control Rails test parallelization for classic tests (default: 3 workers)
       RAILS_TEST_WORKERS: 3
