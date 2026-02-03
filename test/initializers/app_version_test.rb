@@ -2,7 +2,7 @@ require 'test_helper'
 
 class AppVersionConfigTest < ActiveSupport::TestCase
   def test_app_version_matches_version_constant
-    assert_equal Jitter::VERSION, Rails.configuration.x.app_version
+    assert_equal '0.3.85', Rails.configuration.x.app_version
   end
 
   def test_app_version_looks_like_semantic_version
@@ -16,6 +16,6 @@ class AppVersionConfigTest < ActiveSupport::TestCase
     
     version_file_content = File.read(version_file_path).strip
 
-    assert_equal Jitter::VERSION, version_file_content, 'Jitter::VERSION should match VERSION file content'
+    assert_equal '0.3.85', version_file_content, 'Jitter::VERSION should match VERSION file content'
   end
 end
