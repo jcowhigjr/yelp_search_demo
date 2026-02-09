@@ -140,12 +140,12 @@ GEM
     evil_systems (1.1.5)
       capybara
       zeitwerk (>= 2)
-    faraday (2.14.0)
+    faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.1)
-      net-http (>= 0.5.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     ferrum (0.17.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
@@ -265,8 +265,8 @@ GEM
     multi_xml (0.8.0)
       bigdecimal (>= 3.1, < 5)
     nenv (0.3.0)
-    net-http (0.6.0)
-      uri
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.6.2)
       date
       net-protocol
