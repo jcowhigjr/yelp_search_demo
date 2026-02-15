@@ -16,17 +16,6 @@
 }
 
 .search-bar:focus-within {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-icon {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  color: var(--color-text);
-}
-
-.search-input {
   flex: 1;
   border: none;
   outline: none;
