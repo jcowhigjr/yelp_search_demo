@@ -1,7 +1,6 @@
 <div class="form-group">
   <%= form_for @search, html: { class: 'w-full search-bar-container', data: { turbo: false } } do |f| %>
     <div class="search-bar">
-      <i class="material-icons search-icon" aria-hidden="true">search</i>
 
       <%= f.search_field :query,
                          placeholder: t('views.searches.placeholder'),
