@@ -16,6 +16,10 @@
 }
 
 .search-bar:focus-within {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
   flex: 1;
   border: none;
   outline: none;
@@ -35,7 +39,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
