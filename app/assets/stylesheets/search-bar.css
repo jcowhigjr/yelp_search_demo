@@ -47,10 +47,17 @@
   transition: background-color 0.2s;
   flex-shrink: 0;
   color: var(--color-text);
+  width: 40px;
+  height: 40px;
 }
 
 .clear-button:hover {
   background-color: rgba(128, 128, 128, 0.1);
+}
+
+.clear-button-hidden {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .geolocation-button {
@@ -96,4 +103,10 @@
 .search-button:hover {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+@media (max-width: 320px) {
+  .geolocation-button {
+    display: none;
+  }
 }
