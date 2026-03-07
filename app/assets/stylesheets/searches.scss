@@ -2,5 +2,201 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
 .search-results {
-  margin-top: 100px;
+  margin-top: 3rem;
+}
+
+.search-hero-page {
+  min-height: calc(100vh - 6rem);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 35%),
+    radial-gradient(circle at top right, color-mix(in srgb, #f59e0b 14%, transparent), transparent 30%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg-secondary) 65%, var(--color-bg)), var(--color-bg));
+}
+
+.search-hero {
+  display: grid;
+  gap: 2rem;
+  padding: 4rem 0 3rem;
+}
+
+.search-hero__copy {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.search-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  margin-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.search-hero__title {
+  margin-bottom: 1rem;
+  line-height: 0.95;
+}
+
+.search-hero__subtitle {
+  max-width: 42rem;
+  margin: 0 auto;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  opacity: 0.82;
+}
+
+.search-hero__search-shell {
+  padding: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
+  border-radius: 2rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, white), color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-bg)));
+  box-shadow: 0 40px 80px -64px var(--color-shadow-dark);
+}
+
+.search-hero__highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.search-hero__highlight {
+  padding: 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border));
+  border-radius: 1.5rem;
+  background-color: color-mix(in srgb, var(--color-bg) 90%, white);
+  box-shadow: 0 24px 50px -42px var(--color-shadow-dark);
+}
+
+.search-hero__highlight h3 {
+  margin: 0.8rem 0 0.45rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.search-hero__highlight p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.search-hero__highlight-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 18%, transparent), color-mix(in srgb, #f59e0b 18%, transparent));
+  color: var(--color-primary-dark);
+}
+
+.search-results-masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border));
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-secondary) 92%, white), color-mix(in srgb, var(--color-bg) 96%, white));
+}
+
+.search-results-masthead__eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--color-primary-dark);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.search-results-masthead h2,
+.search-results-heading {
+  margin: 0;
+}
+
+.search-results-heading {
+  display: none;
+}
+
+.search-results-masthead__summary {
+  margin: 0.5rem 0 0;
+  color: var(--color-text-secondary);
+}
+
+.search-results-masthead__stats {
+  min-width: 8rem;
+  padding: 1rem 1.15rem;
+  border-radius: 1.25rem;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  text-align: center;
+}
+
+.search-results-masthead__stat-value {
+  display: block;
+  color: var(--color-text);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.search-results-masthead__stat-label {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.search-results-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.search-results-toolbar__label {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.search-results-grid {
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .search-hero__highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .search-results-masthead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .search-hero {
+    padding-top: 2rem;
+  }
+
+  .search-hero__search-shell {
+    padding: 1rem;
+    border-radius: 1.5rem;
+  }
+
+  .search-results {
+    margin-top: 1.5rem;
+  }
 }
