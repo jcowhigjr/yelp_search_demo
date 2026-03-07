@@ -1,6 +1,4 @@
-// Place all the styles related to the searches controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: https://sass-lang.com/
+/* Search page and results layouts */
 .search-results {
   margin-top: 3rem;
 }
@@ -57,7 +55,11 @@
   border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
   border-radius: 2rem;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, white), color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-bg)));
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 88%, white),
+      color-mix(in srgb, var(--color-bg-secondary) 88%, var(--color-bg))
+    );
   box-shadow: 0 40px 80px -64px var(--color-shadow-dark);
 }
 
@@ -95,7 +97,11 @@
   width: 2.9rem;
   height: 2.9rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 18%, transparent), color-mix(in srgb, #f59e0b 18%, transparent));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary) 18%, transparent),
+    color-mix(in srgb, #f59e0b 18%, transparent)
+  );
   color: var(--color-primary-dark);
 }
 
@@ -108,7 +114,11 @@
   border: 1px solid color-mix(in srgb, var(--color-primary) 10%, var(--color-border));
   border-radius: 1.5rem;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-secondary) 92%, white), color-mix(in srgb, var(--color-bg) 96%, white));
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-bg-secondary) 92%, white),
+      color-mix(in srgb, var(--color-bg) 96%, white)
+    );
 }
 
 .search-results-masthead__eyebrow {
