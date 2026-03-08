@@ -17,12 +17,12 @@
 
         <% if logged_in? %>
           <div class="center coffeeshop-card__favorite">
-            <%= turbo_frame_tag dom_id(coffeeshop, "favorite") do %>
-              <%= render "favorites/button",
-                    item:  coffeeshop,
-                    icon:  favorite_icon_for(local_assigns[:search_query]),
-                    liked: current_user.favorited?(coffeeshop),
-                    search_query: local_assigns[:search_query] %>
+            <%= turbo_frame_tag dom_id(coffeeshop, 'favorite') do %>
+              <%= render 'favorites/button',
+                         item: coffeeshop,
+                         icon: favorite_icon_for(local_assigns[:search_query]),
+                         liked: current_user.favorited?(coffeeshop),
+                         search_query: local_assigns[:search_query] %>
             <% end %>
           </div>
         <% end %>
@@ -33,15 +33,15 @@
       <span class="coffeeshop-card__meta">
         <address class="card-action coffeeshop-card__contact-list">
           <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
-                       target: :blank,
-                       rel: 'noopener',
-                       class: 'coffeeshop-card__contact-item' do %>
+                      target: :blank,
+                      rel: 'noopener',
+                      class: 'coffeeshop-card__contact-item' do %>
             <i class="material-icons">place</i>
             <span class="truncate"><%= coffeeshop.address %></span>
           <% end %>
 
           <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
-                       class: 'coffeeshop-card__contact-item' do %>
+                      class: 'coffeeshop-card__contact-item' do %>
             <i class="material-icons">phone</i>
             <span class="truncate"><%= number_to_phone(coffeeshop.phone_number, area_code: true) %></span>
           <% end %>
