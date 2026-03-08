@@ -1,61 +1,49 @@
-<div class="container mx-auto px-4 py-8">
-  <% if flash[:error] %>
-    <div class="row center mb-6">
-      <span class="page-text red-text"><%= flash[:error] %></span>
-    </div>
-  <% end %>
+<div class="search-hero-page">
+  <div class="container mx-auto px-4 py-8">
+    <% if flash[:error] %>
+      <div class="row center mb-6">
+        <span class="page-text red-text"><%= flash[:error] %></span>
+      </div>
+    <% end %>
 
-  <h2 class="text-xs text-transparent"><%= t('views.searches.new') %></h2>
+    <h2 class="text-xs text-transparent"><%= t('views.searches.new') %></h2>
 
-  <div class="text-center">
-    <h1 class="page-name mb-8">
-      COFFEE NEAR YOU!
-    </h1>
+    <section class="search-hero">
+      <div class="search-hero__copy text-center">
+        <p class="search-hero__eyebrow">Neighborhood search for coffee runs, catch-ups, and quick resets</p>
+        <h1 class="page-name search-hero__title">
+          COFFEE NEAR YOU!
+        </h1>
+        <p class="page-text search-hero__subtitle">
+          Find the best coffee shops in your area
+        </p>
+      </div>
 
-    <p class="page-text mb-12" style="opacity: 0.8;">
-      Find the best coffee shops in your area
-    </p>
-
-<!-- Feature icons section - hidden since buttons are not functional -->
-    <%#= content_tag :div, class: "flex flex-col sm:flex-row gap-4 justify-center items-center mt-12" do %>
-      <%#= content_tag :div, class: "text-center" do %>
-        <%# <div
-          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
-          style="background-color: var(--color-primary); opacity: 0.2;"
-        >
-          <span class="text-4xl">☕</span>
+      <div class="search-hero__search-shell">
+        <div class="max-w-3xl mx-auto">
+          <%= render 'searches/form', locals: { search: @search } if @search %>
         </div>
-        <p style="color: var(--color-text); opacity: 0.7;">
-          Search nearby
-        </p> %>
-      <%# end %>
+      </div>
 
-      <%#= content_tag :div, class: "text-center" do %>
-        <%# <div
-          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
-          style="background-color: var(--color-primary); opacity: 0.2;"
-        >
-          <span class="text-4xl">⭐</span>
-        </div>
-        <p style="color: var(--color-text); opacity: 0.7;">
-          Read reviews
-        </p> %>
-      <%# end %>
+      <div class="search-hero__highlights" aria-label="Search benefits">
+        <article class="search-hero__highlight">
+          <i class="material-icons search-hero__highlight-icon" aria-hidden="true">place</i>
+          <h3>Local first</h3>
+          <p>Use your current location to start with places you can reach fast.</p>
+        </article>
 
-      <%#= content_tag :div, class: "text-center" do %>
-        <%# <div
-          class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3"
-          style="background-color: var(--color-primary); opacity: 0.2;"
-        >
-          <span class="text-4xl">❤️</span>
-        </div>
-        <p style="color: var(--color-text); opacity: 0.7;">
-          Save favorites
-        </p> %>
-      <%# end %>
-    <%# end %>
+        <article class="search-hero__highlight">
+          <i class="material-icons search-hero__highlight-icon" aria-hidden="true">star</i>
+          <h3>Quality up front</h3>
+          <p>See highly rated shops before you commit to the next stop.</p>
+        </article>
 
-    <div class="max-w-3xl mx-auto">
-      <%= render 'searches/form', locals: { search: @search } if @search %>
-    </div>
+        <article class="search-hero__highlight">
+          <i class="material-icons search-hero__highlight-icon" aria-hidden="true">favorite</i>
+          <h3>Built to revisit</h3>
+          <p>Signed-in users can keep favorites close for the next search.</p>
+        </article>
+      </div>
+    </section>
+  </div>
 </div>
