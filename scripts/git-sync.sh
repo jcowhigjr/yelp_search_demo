@@ -27,8 +27,10 @@ fi
 echo "📥 Fetching latest changes..."
 git fetch --prune origin
 
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null || printf '%s\n' "$PWD")
+
 develop_worktree_path=$(
-    git worktree list --porcelain | awk -v cwd="$PWD" '
+    git worktree list --porcelain | awk -v cwd="$repo_root" '
         /^worktree / { path = substr($0, 10) }
         /^branch refs\/heads\/develop$/ && path != cwd { print path; exit }
     '
@@ -57,7 +59,7 @@ merged_branches=$(
         | grep -v '^develop$' \
         | grep -v '^main$' \
         | grep -v '^master$' \
-        | grep -v "^${current_branch}$" \
+        | grep -vxF "$current_branch" \
         || true
 )
 
