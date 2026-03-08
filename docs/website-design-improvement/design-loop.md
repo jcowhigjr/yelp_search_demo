@@ -23,7 +23,7 @@ Reference surfaces:
 
 - Production baseline: `https://dorkbob.herokuapp.com/`
 - Latest PR preview deploy for the active branch
-- Figma Make file: `cBXTTlkhEgX7f3IiPMst1d`
+- Figma Make file: `https://www.figma.com/make/cBXTTlkhEgX7f3IiPMst1d/Website-Design-Improvement?t=LYBlzOO9IMn67rWR-1`
 - Figma site: `https://thin-stick-32280158.figma.site/`
 
 ## Guardrails
@@ -67,7 +67,9 @@ An iteration is done only when:
 ## Current Working Set
 
 - Standing retrospective / project-brain thread: `#1228`
-- First next iteration issue: `#1737`
+- Active iteration issue: `#1737`
+
+Note: Update the "Active iteration issue" entry at the start of each new iteration to point to the current work item.
 
 ## Manual Trigger
 

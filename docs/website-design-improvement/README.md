@@ -82,7 +82,7 @@ The full, detailed implementation plan can be pasted or refined here as needed, 
 The repository now uses a standing design-loop workflow for small UI iterations.
 
 - Retrospective / project-brain issue: `#1228`
-- Current next iteration issue: `#1737`
+- Active iteration issue: `#1737`
 - Manual kickoff prompt: `Run the next design iteration.`
 - Planning-only prompt: `Plan the next design iteration only; do not implement.`
 
