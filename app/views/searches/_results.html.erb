@@ -11,25 +11,20 @@
           <%= t('views.searches.results', query: @search.query) %>
         </h2>
         <p class="search-results-masthead__summary">
-          Ranked results with quick links for directions, calls, and shop details.
+          Top-rated spots with direct actions for maps, calls, and details.
         </p>
+        <div class="search-results-masthead__meta">
+          <span class="search-results-masthead__meta-pill">
+            Query: <strong><%= @search.query %></strong>
+          </span>
+          <span class="search-results-masthead__meta-pill">Sorted by Yelp rating</span>
+        </div>
       </div>
 
       <div class="search-results-masthead__stats" data-testid="results-summary">
         <span class="search-results-masthead__stat-value"><%= @search.coffeeshops.length %></span>
         <span class="search-results-masthead__stat-label"><%= 'result'.pluralize(@search.coffeeshops.length) %> found</span>
       </div>
-    </div>
-
-    <div class="search-results-toolbar">
-      <p class="search-results-toolbar__label">Refine the search above to tighten the list.</p>
-      <p class="search-results-toolbar__label">Tap any card for directions, phone, or more details.</p>
-    </div>
-
-    <div class="mb-6">
-      <h2 class="search-results-heading" style="color: var(--color-text);">
-        <%= t('views.searches.results', query: @search.query) %>
-      </h2>
     </div>
 
     <% if @search.coffeeshops.empty? %>
