@@ -5,26 +5,32 @@
 
 .search-bar {
   width: 100%;
-  border-radius: 15px;
-  border: 1px solid var(--color-text);
-  padding: 5px 5px 5px 15px;
+  border-radius: 24px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: var(--color-bg);
+  gap: 0.5rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 82%, white), var(--color-bg))
+    padding-box;
+  box-shadow: 0 18px 40px -28px var(--color-shadow-dark);
   transition: all 0.3s;
 }
 
 .search-bar:focus-within {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  box-shadow: 0 20px 45px -24px var(--color-shadow-dark);
+  transform: translateY(-1px);
 }
 
 .search-input {
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
-  padding: 8px 4px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.9rem 0.35rem;
   min-width: 0;
   background-color: transparent;
   color: var(--color-text);
@@ -39,7 +45,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,20 +70,21 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  color: var(--color-text);
-  width: 40px;
-  height: 40px;
+  color: var(--color-primary);
+  width: 44px;
+  height: 44px;
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 .geolocation-button:hover {
-  background-color: rgba(128, 128, 128, 0.1);
+  background-color: color-mix(in srgb, var(--color-primary) 16%, transparent);
   transform: scale(1.05);
 }
 
@@ -91,22 +98,62 @@
 
 .search-button {
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: 16px;
+  padding: 0.95rem 1.2rem;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
-  background-color: var(--color-button-blue);
+  background:
+    linear-gradient(135deg, var(--color-button-blue), var(--color-primary-dark));
+  box-shadow: 0 14px 26px -20px var(--color-shadow-dark);
 }
 
 .search-button:hover {
-  opacity: 0.9;
   transform: translateY(-1px);
+  background:
+    linear-gradient(135deg, var(--color-primary-light), var(--color-button-blue-hover));
+}
+
+.search-button .material-icons {
+  color: #fff;
+}
+
+.search-bar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+  padding: 0 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.search-bar-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 @media (max-width: 320px) {
   .geolocation-button {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .search-bar {
+    padding: 0.4rem;
+  }
+
+  .search-input {
+    font-size: 1rem;
+    padding: 0.8rem 0.25rem;
+  }
+
+  .search-bar-meta {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
