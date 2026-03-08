@@ -56,6 +56,7 @@ When adding a runnable prototype under `prototype/`, keep in mind:
 For detailed responsibilities and how to split this work across multiple engineering agents, see:
 
 - `agents-playbook.md` – how to parallelize work and structure PRs
+- `design-loop.md` – standing operating model for the autonomous design teammate loop
 - `flows/` – per-flow UX docs (search, detail, favorites, auth)
 
 If you want to keep a compact version of the implementation plan here, you can summarize it like this:
@@ -75,3 +76,14 @@ If you want to keep a compact version of the implementation plan here, you can s
    - Use existing dark-mode variables and consistent form patterns.
 
 The full, detailed implementation plan can be pasted or refined here as needed, so that reviewers and other engineers can reason about the design work directly in the repo.
+
+## Autonomous Design Loop
+
+The repository now uses a standing design-loop workflow for small UI iterations.
+
+- Retrospective / project-brain issue: `#1228`
+- Active iteration issue: `#1737`
+- Manual kickoff prompt: `Run the next design iteration.`
+- Planning-only prompt: `Plan the next design iteration only; do not implement.`
+
+See `design-loop.md` for the execution rules, guardrails, and definition of done.
