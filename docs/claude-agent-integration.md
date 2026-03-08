@@ -43,7 +43,7 @@ The Claude Agent has been successfully integrated into the yelp_search_demo proj
 
 ### Agent Ecosystem Pattern
 ```
-User Issue → @claude → Analysis → Action → @copilot-reviewer → Auto-merge
+User Issue → @claude → Analysis → Action → Copilot Review Request → Auto-merge
      ↓              ↓           ↓          ↓                     ↓
   GitHub API    Codebase    Changes    Review             Deployment
 ```
@@ -64,7 +64,7 @@ lefthook pre-commit hooks → CI tests → Review → Merge
 
 ### Multi-Agent Coordination
 1. **Event-Driven**: Agents respond to GitHub events (comments, commits, status changes)
-2. **Mention-Based**: `@claude`, `@copilot-reviewer`, `@dependabot` trigger specific agents
+2. **Mention-Based**: `@claude` and `@dependabot` trigger specific agents; Copilot review is requested from GitHub's Reviewers UI or automatic review settings
 3. **Status Polling**: Agents monitor each other's progress through GitHub API
 4. **Standardized Tools**: All agents use `mise exec --` for consistency
 5. **Error Recovery**: Built-in retry mechanisms and manual fallbacks
@@ -90,7 +90,7 @@ lefthook pre-commit hooks → CI tests → Review → Merge
 # 2. Implement changes
 # 3. Add tests
 # 4. Create PR
-# 5. Request: @copilot-reviewer review
+# 5. Request Copilot from the GitHub Reviewers menu (or rely on automatic Copilot review)
 # 6. Auto-merge after approval
 ```
 
