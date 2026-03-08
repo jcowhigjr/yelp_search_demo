@@ -59,6 +59,8 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1
+    assert_select '.coffeeshop-card .coffeeshop-card__contact-item', minimum: 2
+    assert_select '.coffeeshop-card .card-action a a', count: 0
   end
 
   test '#update' do

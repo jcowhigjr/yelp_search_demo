@@ -29,6 +29,52 @@
   .card-action {
     border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   }
+
+  .coffeeshop-card__name {
+    margin-bottom: 0;
+  }
+
+  .coffeeshop-card__actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .coffeeshop-card__favorite {
+    margin-top: 0.75rem;
+  }
+
+  .coffeeshop-card__meta {
+    width: 100%;
+  }
+
+  .coffeeshop-card__contact-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .coffeeshop-card__contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .coffeeshop-card__contact-item .material-icons {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  @media (min-width: 40rem) {
+    .coffeeshop-card__contact-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
 }
 
 .rating {
