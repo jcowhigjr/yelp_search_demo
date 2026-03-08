@@ -25,6 +25,7 @@ class SearchesTest < ApplicationSystemTestCase
     find('button[aria-label="Search"]').click
 
     assert_text "Top Rated Searches for #{query} near you", wait: 4
+    assert_selector '[data-testid="results-summary"]', text: 'result', wait: 4
 
     # Wait for search results to fully load
     wait_for_search_results
@@ -46,12 +47,12 @@ class SearchesTest < ApplicationSystemTestCase
     # Check for hero section from prototype (implemented)
     assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
     assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
-    
+    assert_selector '.search-hero__highlight', count: 3, wait: 4
+
     # Check for improved search bar styling (implemented)
-    assert_selector 'div[class*="max-w-3xl"]'
+    assert_selector '.search-hero__search-shell'
     assert_selector 'input[placeholder*="coffee"]'
-    
-    # Feature icons are hidden since they are non-functional
+    assert_text 'Location sharing narrows results faster.'
   end
 
   test 'An anonymous user can update the query' do

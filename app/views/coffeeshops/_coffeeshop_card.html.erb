@@ -6,11 +6,21 @@
   </div>
 
   <div class="card-content">
-    <h3 class="card-title">
-      <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop),
-                  data: { turbo: false },
-                  class: 'coffeeshop-link' %>
-    </h3>
+    <div class="card-title-group">
+      <div>
+        <p class="card-kicker">Top rated pick</p>
+        <h3 class="card-title">
+          <%= link_to coffeeshop.name, coffeeshop_path(coffeeshop),
+                      data: { turbo: false },
+                      class: 'coffeeshop-link' %>
+        </h3>
+      </div>
+
+      <div class="rating-pill" aria-label="Rating">
+        <i class="material-icons" aria-hidden="true">star</i>
+        <span><%= coffeeshop.rating %></span>
+      </div>
+    </div>
 
     <% if logged_in? %>
       <div class="favorite-section">
@@ -49,9 +59,16 @@
       </div>
     </div>
 
-    <%= link_to t('coffeeshops.coffeeshop.more-info'),
-                coffeeshop_path(coffeeshop),
-                data: { turbo: false },
-                class: 'material-button large w-full' %>
+    <div class="card-actions-row">
+      <%= link_to t('coffeeshops.coffeeshop.more-info'),
+                  coffeeshop_path(coffeeshop),
+                  data: { turbo: false },
+                  class: 'material-button large w-full' %>
+      <%= link_to 'Open in Yelp',
+                  coffeeshop.yelp_url,
+                  target: :blank,
+                  rel: 'noopener',
+                  class: 'material-button large secondary card-secondary-action' %>
+    </div>
   </div>
 </div>

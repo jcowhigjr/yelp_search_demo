@@ -4,13 +4,32 @@
       <%= render 'searches/form' %>
     </div>
 
+    <div class="search-results-masthead mb-6">
+      <div class="search-results-masthead__copy">
+        <p class="search-results-masthead__eyebrow">Fresh picks for your next stop</p>
+        <h2 style="color: var(--color-text);">
+          <%= t('views.searches.results', query: @search.query) %>
+        </h2>
+        <p class="search-results-masthead__summary">
+          Ranked results with quick links for directions, calls, and shop details.
+        </p>
+      </div>
+
+      <div class="search-results-masthead__stats" data-testid="results-summary">
+        <span class="search-results-masthead__stat-value"><%= @search.coffeeshops.length %></span>
+        <span class="search-results-masthead__stat-label"><%= 'result'.pluralize(@search.coffeeshops.length) %> found</span>
+      </div>
+    </div>
+
+    <div class="search-results-toolbar">
+      <p class="search-results-toolbar__label">Refine the search above to tighten the list.</p>
+      <p class="search-results-toolbar__label">Tap any card for directions, phone, or more details.</p>
+    </div>
+
     <div class="mb-6">
-      <h2 style="color: var(--color-text);">
+      <h2 class="search-results-heading" style="color: var(--color-text);">
         <%= t('views.searches.results', query: @search.query) %>
       </h2>
-      <p style="color: var(--color-text); opacity: 0.6;">
-        <%= @search.coffeeshops.length %> <%= 'result'.pluralize(@search.coffeeshops.length) %> found
-      </p>
     </div>
 
     <% if @search.coffeeshops.empty? %>
@@ -22,7 +41,7 @@
     <% else %>
       <%= turbo_stream_from 'coffeeshops' %>
       <%= turbo_frame_tag 'coffeeshops' do %>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 search-results-grid">
           <% @search.coffeeshops.each do |coffeeshop| %>
             <%= render partial: 'coffeeshops/coffeeshop_card', locals: { coffeeshop:, search_query: @search.query } %>
           <% end %>
