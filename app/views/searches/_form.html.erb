@@ -30,6 +30,11 @@
       <% end %>
     </div>
 
+    <div class="search-bar-meta">
+      <span>Tip: try "espresso", "wifi", or "pastries".</span>
+      <span>Location sharing narrows results faster.</span>
+    </div>
+
     <div data-controller="geolocation">
       <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
       <%= f.hidden_field :longitude,  "data-geolocation-target": 'longitude' %>
