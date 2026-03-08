@@ -14,12 +14,11 @@
 When creating any PR, the workflow should:
 
 1. **Request Copilot Review**
-   ```bash
-   gh pr comment <PR_NUMBER> -b "@copilot-reviewer review"
-   ```
+   - Request Copilot from the PR's **Reviewers** menu on GitHub, or rely on repository/org-level automatic Copilot review if it is enabled.
+   - Do **not** assume `gh pr comment <PR_NUMBER> -b "@copilot-reviewer review"` will trigger a review. That mention is not a supported Copilot review trigger.
 
 2. **Monitor Loop** (automated sleep/check pattern)
-   - Wait for Copilot review to complete
+   - Wait for the Copilot review itself to appear on the PR before assuming the request succeeded
    - Address all review comments programmatically or manually
    - Re-request review if changes were made
    - Monitor CI status until all checks pass
@@ -202,7 +201,8 @@ MAX_WAIT=1800  # 30 minutes timeout
 CHECK_INTERVAL=30  # Check every 30 seconds
 
 # Step 1: Request Copilot review
-gh pr comment $PR_NUMBER -b "@copilot-reviewer review"
+echo "Request Copilot review from the GitHub Reviewers menu or ensure automatic Copilot review is enabled."
+echo "Do not rely on an @copilot-reviewer comment as the trigger."
 
 # Step 2: Monitor loop
 elapsed=0
