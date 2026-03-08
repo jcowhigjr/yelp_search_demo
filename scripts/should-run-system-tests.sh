@@ -45,9 +45,11 @@ done < <(git diff --name-status --diff-filter=ACDMR "${DIFF_BASE}..HEAD")
 SAFE_PATTERNS=(
   '^docs/'
   '^\.github/'
+  '^scripts/git-sync\.sh$'
   '^README\.md$'
   '^LICENSE$'
   '^WARP\.md$'
+  '^pr_compliance_comment\.md$'
   '^\.rubocop\.yml$'
   '^\.rubocop_todo\.yml$'
   '^\.erb_lint\.yml$'

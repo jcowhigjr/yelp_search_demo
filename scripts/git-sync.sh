@@ -7,8 +7,12 @@ set -euo pipefail
 echo "🔄 Syncing local repository with GitHub..."
 
 # Save current branch
-current_branch=$(git branch --show-current)
-echo "📍 Current branch: $current_branch"
+current_branch=$(git branch --show-current || true)
+if [ -n "$current_branch" ]; then
+    echo "📍 Current branch: $current_branch"
+else
+    echo "📍 Current branch: detached HEAD"
+fi
 
 # Check for uncommitted changes
 if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -23,19 +27,39 @@ fi
 echo "📥 Fetching latest changes..."
 git fetch --prune origin
 
-# Switch to develop and update it
-echo "🔄 Updating develop branch..."
-git checkout develop
+develop_worktree_path=$(
+    git worktree list --porcelain | awk -v cwd="$PWD" '
+        /^worktree / { path = substr($0, 10) }
+        /^branch refs\/heads\/develop$/ && path != cwd { print path; exit }
+    '
+)
 
-# Try fast-forward first, if it fails reset to origin/develop
-if ! git pull --ff-only origin develop 2>/dev/null; then
-    echo "⚠️  Local develop has diverged from remote. Resetting to match origin/develop..."
-    git reset --hard origin/develop
+# Switch to develop and update it when this worktree can safely own the branch.
+if [ -n "$develop_worktree_path" ]; then
+    echo "ℹ️  Skipping local develop checkout because it is already checked out in another worktree:"
+    echo "   $develop_worktree_path"
+    echo "   Using freshly fetched origin/develop for cleanup checks."
+else
+    echo "🔄 Updating develop branch..."
+    git checkout develop
+
+    # Try fast-forward first, if it fails reset to origin/develop
+    if ! git pull --ff-only origin develop 2>/dev/null; then
+        echo "⚠️  Local develop has diverged from remote. Resetting to match origin/develop..."
+        git reset --hard origin/develop
+    fi
 fi
 
 # Clean up local branches that are already merged into develop
 echo "🧹 Cleaning up merged branches..."
-merged_branches=$(git branch --merged develop | grep -v "^\*" | grep -v "develop" | grep -v "main" || true)
+merged_branches=$(
+    git for-each-ref --format='%(refname:short)' --merged origin/develop refs/heads \
+        | grep -v '^develop$' \
+        | grep -v '^main$' \
+        | grep -v '^master$' \
+        | grep -v "^${current_branch}$" \
+        || true
+)
 
 if [ -n "$merged_branches" ]; then
     echo "   Deleting merged branches:"
@@ -48,13 +72,16 @@ else
 fi
 
 # Return to original branch if it still exists
-if git show-ref --verify --quiet "refs/heads/$current_branch"; then
+if [ -n "$current_branch" ] && git show-ref --verify --quiet "refs/heads/$current_branch"; then
     echo "🔙 Returning to branch: $current_branch"
     git checkout "$current_branch"
 else
-    echo "ℹ️  Original branch '$current_branch' was deleted (already merged)"
-    echo "   Staying on develop"
-    current_branch="develop"
+    if [ -n "$current_branch" ]; then
+        echo "ℹ️  Original branch '$current_branch' was deleted (already merged)"
+        echo "   Staying on current checkout"
+    else
+        echo "ℹ️  Started from detached HEAD; leaving checkout unchanged"
+    fi
 fi
 
 # Restore stashed changes if any
