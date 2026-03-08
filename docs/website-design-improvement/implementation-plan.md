@@ -54,6 +54,26 @@ We need a low-tech-debt, incremental plan to port the visual and interaction pat
 * **Tests**
   * Extend `test/controllers/searches_controller_test.rb` `#show` to assert that at least one `.coffeeshop-card` is rendered when results are present.
 
+### Phase 2.5: Results-page parity follow-up (NEXT ITERATION)
+
+* **Tracked in GitHub**
+  * `#1737` – `UI: Results-page parity with Figma reference`
+
+* **Goal**
+  * Make the results page feel clearly more polished than production and closer to the Figma reference without changing feature semantics.
+
+* **Allowed scope**
+  * `app/views/searches/show.html.erb`
+  * `app/views/searches/_results.html.erb`
+  * coffeeshop card partials/CSS only if needed for density and action hierarchy
+  * related tests
+
+* **Acceptance signals**
+  * Stronger masthead hierarchy for query, location, and result count
+  * Improved spacing rhythm on mobile and desktop
+  * Less dense card presentation
+  * Visual verification against production, preview deploy, and Figma before merge
+
 ### Phase 3: Coffeeshop detail page layout alignment (DONE)
 
 * **Context**
