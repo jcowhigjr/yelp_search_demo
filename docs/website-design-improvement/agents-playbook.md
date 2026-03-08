@@ -4,6 +4,8 @@
 
 This playbook explains **how agents should work this issue in parallel** without stepping on each other, and how to keep PRs small, test-backed, and aligned with the design prototype.
 
+For the standing autonomous execution loop, also read `design-loop.md`.
+
 ## High-level phases
 
 Each phase should generally correspond to **one focused PR**:
@@ -100,6 +102,25 @@ For any phase you pick up:
    - Title: `Website Design Improvement – Phase X: <short description>`
    - Link to Issue #1002 and the specific flow doc.
    - Describe exactly which views and tests changed.
+
+## Autonomous Design Teammate Workflow
+
+When an agent is acting as the standing design teammate instead of picking an ad hoc phase:
+
+1. Start with the repo rules and design docs listed in `design-loop.md`.
+2. Compare production, the latest preview deploy, and Figma before choosing work.
+3. Restrict autonomous changes to a single surface and to view/CSS/test scope only.
+4. Use `#1228` as the retrospective thread and add a short "why this iteration" comment before coding.
+5. Reuse an existing issue when possible; otherwise create one with explicit acceptance criteria first.
+6. Re-run visual verification after deployment, not just locally.
+7. Add a short retrospective comment to `#1228` after merge, including any instruction or skill gap discovered.
+
+Current autonomous roadmap order:
+
+1. Results-page parity (`#1737`)
+2. Geolocation feedback (`#1221`)
+3. Footer and utility controls (`#1218`, `#1195`)
+4. Auth and favorites parity follow-up
 
 ## What “done” means for a phase
 
