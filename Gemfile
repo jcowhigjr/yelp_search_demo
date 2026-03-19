@@ -54,7 +54,7 @@ platforms :ruby do
   end
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.21'
+gem 'bcrypt', '~> 3.1.22'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
