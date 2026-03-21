@@ -39,23 +39,25 @@
     <div class="info-section">
       <div class="info-item">
         <i class="material-icons info-icon">place</i>
-        <span>
-          <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
-                      target: :blank,
-                      class: 'map-link' do %>
-            <%= coffeeshop.address %>
-          <% end %>
-        </span>
+        <%= link_to "https://www.google.com/maps/search/?api=1&query=#{coffeeshop.google_address_slug}",
+                    target: :blank,
+                    rel: 'noopener',
+                    class: 'map-link card-contact-link' do %>
+          <%= coffeeshop.address %>
+        <% end %>
       </div>
 
       <div class="info-item">
         <i class="material-icons info-icon">phone</i>
-        <span>
-          <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
-                      class: 'phone-link' do %>
+        <% phone_digits = coffeeshop.phone_number.to_s.gsub(/\D/, '') %>
+        <% if phone_digits.present? %>
+          <%= link_to "tel:#{phone_digits}",
+                      class: 'phone-link card-contact-link' do %>
             <%= number_to_phone(coffeeshop.phone_number, area_code: true) %>
           <% end %>
-        </span>
+        <% else %>
+          <span class="phone-unavailable">Phone unavailable</span>
+        <% end %>
       </div>
     </div>
 

@@ -60,6 +60,12 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1
+    assert_select '.coffeeshop-card .card-actions-row .material-button', minimum: 2
+    assert_select '.coffeeshop-card .info-item .map-link', minimum: 1
+    phone_link_count = css_select('.coffeeshop-card .info-item .phone-link').size
+    phone_unavailable_count = css_select('.coffeeshop-card .info-item .phone-unavailable').size
+    assert_operator phone_link_count + phone_unavailable_count, :>=, 1
+    assert_select '.coffeeshop-card .info-item a a', count: 0
   end
 
   test '#update' do

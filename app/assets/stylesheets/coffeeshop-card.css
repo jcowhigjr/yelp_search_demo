@@ -107,15 +107,16 @@
 .coffeeshop-card .info-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .coffeeshop-card .info-item {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .coffeeshop-card .info-icon {
@@ -131,7 +132,7 @@
 .coffeeshop-card .phone-link {
   color: var(--color-text);
   text-decoration: none;
-  white-space: normal;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -139,6 +140,15 @@
 .coffeeshop-card .map-link:hover,
 .coffeeshop-card .phone-link:hover {
   text-decoration: underline;
+}
+
+.coffeeshop-card .card-contact-link {
+  width: 100%;
+  display: inline-block;
+}
+
+.coffeeshop-card .phone-unavailable {
+  color: var(--color-text-secondary);
 }
 
 .coffeeshop-card .favorite-section {
@@ -151,6 +161,8 @@
 .coffeeshop-card .card-actions-row {
   display: grid;
   gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
 }
 
 .coffeeshop-card .material-button {
@@ -185,6 +197,8 @@
 
 .coffeeshop-card .card-secondary-action {
   background-color: color-mix(in srgb, var(--color-bg-secondary) 85%, transparent);
+  white-space: nowrap;
+  padding-inline: 0.95rem;
 }
 
 @media (max-width: 640px) {
@@ -198,5 +212,14 @@
 
   .coffeeshop-card .favorite-section {
     margin-left: 0;
+  }
+
+  .coffeeshop-card .map-link,
+  .coffeeshop-card .phone-link {
+    white-space: normal;
+  }
+
+  .coffeeshop-card .card-actions-row {
+    grid-template-columns: 1fr;
   }
 }
