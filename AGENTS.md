@@ -34,6 +34,29 @@ For deep policy and methodology, see `docs/AGENTS.md`.
   - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
   - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
 
+- **Run a long-session retro before final handoff**
+
+  - Before the final response in a long or blocker-heavy session, agents SHOULD invoke:
+    - `[$session-retro](/Users/temp/.codex/skills/session-retro/SKILL.md)`
+  - Treat a session as retro-required when any of these are true:
+    - runtime exceeds roughly 20 minutes
+    - more than 2 blocker classes appear
+    - more than 3 fallback or retry pivots occur
+    - the user explicitly asks for more autonomy
+    - repo work required multiple environment, auth, or tooling escalations
+  - The retro runs after implementation/publish work, not before, and may apply only the smallest safe systemic fix.
+
+- **Re-check capabilities after environment changes**
+
+  - If sandbox, auth, or network conditions materially change during a run, re-probe capabilities immediately.
+  - Do not keep assuming earlier blockers still apply after permissions or connectivity improve.
+  - Prefer `gh` for GitHub writes when `gh auth status` is healthy and MCP write permissions are narrower or failing.
+
+- **Treat worktree and preview failures as routing problems**
+
+  - If a branch is already checked out in another worktree, pivot immediately to a new branch, another worktree, or repo-wide PR mode.
+  - If a known preview URL is dead, treat that as deploy-discovery failure and search for the current preview before declaring visual verification blocked.
+
 - **CRITICAL: Confirm Acceptance Criteria & Linked Issue Before Starting Work**
 
   - **Before any non-trivial changes**, agents MUST:
