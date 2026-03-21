@@ -16,6 +16,7 @@ jobs:
     name: AI Code Review
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    continue-on-error: true
     
     # Only run on PRs or when @claude is mentioned
     if: |
@@ -180,4 +181,4 @@ jobs:
           steps.claude-3.outcome == 'failure'
         run: |
           echo "❌ All Claude review attempts failed"
-          exit 1
+          echo "Claude review is advisory; continuing without blocking the PR."
