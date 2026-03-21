@@ -123,7 +123,7 @@
 
 .search-results-masthead__copy {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.7rem;
 }
 
 .search-results-masthead__eyebrow {
@@ -144,27 +144,27 @@
   display: none;
 }
 
-.search-results-masthead__summary {
-  margin: 0;
-  color: var(--color-text-secondary);
-}
-
 .search-results-masthead__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .search-results-masthead__meta-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.28rem 0.65rem;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 14%, var(--color-border));
   border-radius: 999px;
   background-color: color-mix(in srgb, var(--color-bg) 84%, white);
   color: var(--color-text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
+}
+
+.search-results-masthead__meta-pill .material-icons {
+  font-size: 0.95rem;
+  opacity: 0.78;
 }
 
 .search-results-masthead__meta-pill strong {

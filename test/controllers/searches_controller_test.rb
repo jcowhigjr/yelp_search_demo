@@ -55,8 +55,9 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '.search-results-masthead h2',
                   text: "Top Rated Searches for #{@search.query} near you!"
-    assert_select '.search-results-masthead__meta-pill',
-                  text: /Sorted by Yelp rating/
+    assert_select '.search-results-masthead__meta-pill', minimum: 3
+    assert_select '.search-results-masthead__meta-pill', text: /Near you/
+    assert_select '.search-results-masthead__meta-pill', text: /result/
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1

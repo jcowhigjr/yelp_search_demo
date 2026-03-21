@@ -10,14 +10,19 @@
         <h2 style="color: var(--color-text);">
           <%= t('views.searches.results', query: @search.query) %>
         </h2>
-        <p class="search-results-masthead__summary">
-          Top-rated spots with direct actions for maps, calls, and details.
-        </p>
         <div class="search-results-masthead__meta">
           <span class="search-results-masthead__meta-pill">
+            <i class="material-icons tiny" aria-hidden="true">search</i>
             Query: <strong><%= @search.query %></strong>
           </span>
-          <span class="search-results-masthead__meta-pill">Sorted by Yelp rating</span>
+          <span class="search-results-masthead__meta-pill">
+            <i class="material-icons tiny" aria-hidden="true">place</i>
+            Near you
+          </span>
+          <span class="search-results-masthead__meta-pill">
+            <i class="material-icons tiny" aria-hidden="true">storefront</i>
+            <%= @search.coffeeshops.length %> <%= 'result'.pluralize(@search.coffeeshops.length) %>
+          </span>
         </div>
       </div>
 
