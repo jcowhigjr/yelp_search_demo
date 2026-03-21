@@ -696,3 +696,10 @@ Agents should resolve discrepancies by:
 
 - Favoring more recent, explicit guidance.
 - Avoiding changes that would violate the review-first protocol or empirical verification requirements.
+
+## Session Retro Contract
+
+- Before the final response in a long or blocker-heavy session, invoke `[$session-retro](/Users/temp/.codex/skills/session-retro/SKILL.md)`.
+- Re-check capabilities after sandbox, auth, or network conditions change during the run.
+- Prefer `gh` for GitHub writes when `gh auth status` is healthy and MCP writes are narrower or failing.
+- Treat `branch already used by worktree` and dead preview URLs as routing problems that require fallback, not early stop conditions.
