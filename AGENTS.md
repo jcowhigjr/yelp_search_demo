@@ -37,7 +37,7 @@ For deep policy and methodology, see `docs/AGENTS.md`.
 - **Run a long-session retro before final handoff**
 
   - Before the final response in a long or blocker-heavy session, agents SHOULD invoke:
-    - `[$session-retro](/Users/temp/.codex/skills/session-retro/SKILL.md)`
+    - the `session-retro` skill via the agent platform's skill or tool interface
   - Treat a session as retro-required when any of these are true:
     - runtime exceeds roughly 20 minutes
     - more than 2 blocker classes appear
