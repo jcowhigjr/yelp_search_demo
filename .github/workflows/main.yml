@@ -56,6 +56,7 @@ jobs:
       skip-system-tests: ${{ steps.assessment.outputs.skip-system-tests }}
       risk-level: ${{ steps.assessment.outputs.risk-level }}
       is-dependabot: ${{ steps.assessment.outputs.is-dependabot }}
+      skip-heavy-ci: ${{ steps.ci-scope.outputs.skip-heavy-ci }}
     steps:
       - name: Get Dependabot metadata
         id: metadata
@@ -92,10 +93,36 @@ jobs:
           echo "risk-level=$RISK_LEVEL" >> $GITHUB_OUTPUT
           echo "is-dependabot=$IS_DEPENDABOT" >> $GITHUB_OUTPUT
 
+      - name: Assess CI scope
+        id: ci-scope
+        uses: actions/github-script@v8
+        with:
+          script: |
+            if (context.eventName !== 'pull_request') {
+              core.setOutput('skip-heavy-ci', 'false');
+              return;
+            }
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              per_page: 100,
+            });
+
+            const docsOnly = files.length > 0 && files.every((file) => {
+              const filename = file.filename;
+              return filename === 'AGENTS.md' || filename.startsWith('docs/');
+            });
+
+            core.setOutput('skip-heavy-ci', docsOnly ? 'true' : 'false');
+
   test-next:
     runs-on: ubuntu-latest
     needs: [get-risk-assessment]
-    if: always() && !cancelled() && (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
+    if: |
+      always() && !cancelled() &&
+      (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
     permissions:
       contents: read # Added for least privilege
     env:
@@ -103,14 +130,17 @@ jobs:
       RAILS_TEST_WORKERS: 3
       BUNDLE_PATH: vendor/bundle
       BUNDLE_WITHOUT: production
+      RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
     steps:
       - name: checkout code
         uses: actions/checkout@v6
       - name: Install system dependencies
+        if: env.RUN_FULL_CI == 'true'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Cache mise tools
+        if: env.RUN_FULL_CI == 'true'
         uses: actions/cache@v5
         with:
           path: ~/.local/share/mise
@@ -118,6 +148,7 @@ jobs:
           restore-keys: |
             mise-${{ runner.os }}-
       - name: Cache gems (next)
+        if: env.RUN_FULL_CI == 'true'
         uses: actions/cache@v5
         with:
           path: vendor/bundle
@@ -125,6 +156,7 @@ jobs:
           restore-keys: |
             gems-next-${{ runner.os }}-
       - name: Setup Environment via mise
+        if: env.RUN_FULL_CI == 'true'
         env:
           SETUP_SKIP_NODE: "true"
         run: |
@@ -132,6 +164,7 @@ jobs:
           # Add mise to PATH for subsequent steps
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Build next and unit test
+        if: env.RUN_FULL_CI == 'true'
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -144,7 +177,7 @@ jobs:
         id: system-test-next
         continue-on-error: true # make the step always success and set status later
         # Skip system tests for low-risk Dependabot updates
-        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
+        if: env.RUN_FULL_CI == 'true' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -154,7 +187,7 @@ jobs:
       - name: system-test-next-retry
         id: system-test-next-retry-1
         continue-on-error: true # make the step always success and set status later
-        if: steps.system-test-next.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
+        if: env.RUN_FULL_CI == 'true' && steps.system-test-next.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -162,13 +195,17 @@ jobs:
           mise run test-next-system-ci -- --verbose
       - name: Upload failed system test images (next)
         uses: actions/upload-artifact@v7
-        if: steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure' # check the step outcome, retry 1st time
+        if: env.RUN_FULL_CI == 'true' && (steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure') # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
       - name: set the status for next tests # set the workflow status if command failed
-        if: steps.system-test-next.outcome=='failure'
+        if: always()
         run: |
-          if ${{ steps.system-test-next-retry-1.outcome=='success' }}; then
+          if [ "${{ steps.system-test-next.outcome }}" = "skipped" ]; then
+             echo 'next system tests were skipped'
+          elif [ "${{ steps.system-test-next.outcome }}" = "success" ]; then
+             echo 'the next system test passed'
+          elif [ "${{ steps.system-test-next.outcome }}" = "failure" ] && [ "${{ steps.system-test-next-retry-1.outcome }}" = "success" ]; then
              echo 'the first next system test failed, but the second one passed'
           else
              echo 'the first next system test failed, and the second one also failed'
@@ -189,14 +226,17 @@ jobs:
       RAILS_TEST_WORKERS: 3
       BUNDLE_PATH: vendor/bundle
       BUNDLE_WITHOUT: production
+      RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
     steps:
       - name: checkout code
         uses: actions/checkout@v6
       - name: Install system dependencies
+        if: env.RUN_FULL_CI == 'true'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Cache mise tools
+        if: env.RUN_FULL_CI == 'true'
         uses: actions/cache@v5
         with:
           path: ~/.local/share/mise
@@ -204,6 +244,7 @@ jobs:
           restore-keys: |
             mise-${{ runner.os }}-
       - name: Cache gems
+        if: env.RUN_FULL_CI == 'true'
         uses: actions/cache@v5
         with:
           path: vendor/bundle
@@ -211,6 +252,7 @@ jobs:
           restore-keys: |
             gems-${{ runner.os }}-
       - name: Setup Environment via mise
+        if: env.RUN_FULL_CI == 'true'
         env:
           SETUP_SKIP_NODE: "true"
         run: |
@@ -218,16 +260,20 @@ jobs:
           # Add mise to PATH for subsequent steps
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Setup Application (gems, db, etc.)
+        if: env.RUN_FULL_CI == 'true'
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
           CI: true
         run: mise run setup-test
       - name: Run Brakeman
+        if: env.RUN_FULL_CI == 'true'
         run: mise run brakeman
       - name: Script CLI tests (stacked-pr.sh)
+        if: env.RUN_FULL_CI == 'true'
         run: mise run test-scripts
       - name: Build and run unit-tests
+        if: env.RUN_FULL_CI == 'true'
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -239,7 +285,7 @@ jobs:
         id: system-test
         continue-on-error: true # make the step always success and set status later
         # Skip system tests for low-risk Dependabot updates
-        if: github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true')
+        if: env.RUN_FULL_CI == 'true' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -249,7 +295,7 @@ jobs:
       - name: system-test-retry
         id: system-test-retry-1
         continue-on-error: true # make the step always success and set status later
-        if: steps.system-test.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
+        if: env.RUN_FULL_CI == 'true' && steps.system-test.outcome=='failure' && (github.actor != 'dependabot[bot]' || (needs.get-risk-assessment.result != 'skipped' && needs.get-risk-assessment.outputs.skip-system-tests != 'true'))
         env:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_TEST_KEY }}
@@ -257,11 +303,11 @@ jobs:
           mise run test-system -- --verbose
       - name: Upload failed system test images
         uses: actions/upload-artifact@v7
-        if: steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure' # check the step outcome, retry 1st time
+        if: env.RUN_FULL_CI == 'true' && (steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure') # check the step outcome, retry 1st time
         with:
           path: ./tmp/capybara/screenshots/failures_*.png
       - name: set the status # set the workflow status if command failed
-        if: steps.system-test.outcome=='failure'
+        if: env.RUN_FULL_CI == 'true' && steps.system-test.outcome=='failure'
         run: |
           if ${{ steps.system-test-retry-1.outcome=='success' }}; then
              echo 'the first system test failed, but the second one passed'
