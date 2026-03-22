@@ -7,23 +7,21 @@
     <div class="search-results-masthead mb-6">
       <div class="search-results-masthead__copy">
         <p class="search-results-masthead__eyebrow">Fresh picks for your next stop</p>
-        <h2 style="color: var(--color-text);">
-          <%= t('views.searches.results', query: @search.query) %>
-        </h2>
-        <p class="search-results-masthead__summary">
-          Top-rated spots with direct actions for maps, calls, and details.
-        </p>
+        <h2 class="search-results-masthead__heading">Nearby results</h2>
         <div class="search-results-masthead__meta">
           <span class="search-results-masthead__meta-pill">
+            <span class="material-icons-round search-results-masthead__meta-icon" aria-hidden="true">search</span>
             Query: <strong><%= @search.query %></strong>
           </span>
-          <span class="search-results-masthead__meta-pill">Sorted by Yelp rating</span>
+          <span class="search-results-masthead__meta-pill">
+            <span class="material-icons-round search-results-masthead__meta-icon" aria-hidden="true">place</span>
+            Near you
+          </span>
+          <span class="search-results-masthead__meta-pill" data-testid="results-summary">
+            <span class="material-icons-round search-results-masthead__meta-icon" aria-hidden="true">storefront</span>
+            <%= @search.coffeeshops.length %> <%= 'result'.pluralize(@search.coffeeshops.length) %>
+          </span>
         </div>
-      </div>
-
-      <div class="search-results-masthead__stats" data-testid="results-summary">
-        <span class="search-results-masthead__stat-value"><%= @search.coffeeshops.length %></span>
-        <span class="search-results-masthead__stat-label"><%= 'result'.pluralize(@search.coffeeshops.length) %> found</span>
       </div>
     </div>
 

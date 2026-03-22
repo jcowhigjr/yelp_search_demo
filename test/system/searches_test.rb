@@ -24,7 +24,7 @@ class SearchesTest < ApplicationSystemTestCase
     # Use the same navigation pattern that works in the navigation test
     find('button[aria-label="Search"]').click
 
-    assert_text "Top Rated Searches for #{query} near you", wait: 4
+    assert_text 'Nearby results', wait: 4
     assert_selector '[data-testid="results-summary"]', text: 'result', wait: 4
 
     # Wait for search results to fully load
