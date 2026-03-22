@@ -50,6 +50,15 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#show' do
+    @search.coffeeshops.create!(
+      name: 'Linked Phone Cafe',
+      address: '456 Link St Test City, CA',
+      rating: 4,
+      yelp_url: 'https://example.com/linked-phone-cafe',
+      image_url: 'https://example.com/linked-phone/o.jpg',
+      phone_number: '(415) 555-0123'
+    )
+
     get search_url(@search, locale: nil)
 
     assert_response :success
@@ -60,6 +69,9 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1
+    assert_select '.coffeeshop-card .phone-link[href^="tel:"]', minimum: 1
+    assert_select '.coffeeshop-card .phone-link--unavailable', text: 'Phone unavailable', minimum: 1
+    assert_select '.coffeeshop-card .phone-link[href="tel:Unknown phone number."]', count: 0
   end
 
   test '#update' do

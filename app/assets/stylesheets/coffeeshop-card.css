@@ -141,6 +141,10 @@
   text-decoration: underline;
 }
 
+.coffeeshop-card .phone-link--unavailable {
+  color: var(--color-text-secondary);
+}
+
 .coffeeshop-card .favorite-section {
   flex-shrink: 0;
   margin-left: 16px;
