@@ -56,7 +56,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
       rating: 4,
       yelp_url: 'https://example.com/linked-phone-cafe',
       image_url: 'https://example.com/linked-phone/o.jpg',
-      phone_number: '(415) 555-0123'
+      phone_number: '(415) 555-0123',
     )
 
     get search_url(@search, locale: nil)
