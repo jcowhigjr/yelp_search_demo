@@ -20,7 +20,10 @@ gem 'minitest', '~> 6.0'
 
 # Bundle edge Rails instead: gem 'rails', "~> 8.0"
 # gem 'rails', "~> 8.0"
-gem 'next_rails'
+# `next_rails` 1.4.7 currently hard-requires `byebug`, which breaks this repo's
+# CI boot path because the app uses the `debug` gem instead. Keep the last known
+# good version pinned until compatibility is verified.
+gem 'next_rails', '= 1.4.6'
 
 gem 'rails', '>= 8.1.0.beta1', '< 8.2'
 
