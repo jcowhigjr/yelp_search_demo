@@ -338,7 +338,12 @@ jobs:
     name: Verify Heroku Deployment
     runs-on: ubuntu-latest
     needs: [test, test-next] # Ensure tests pass before verifying deployment
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: |
+      always() && !cancelled() &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/develop' &&
+      needs.test.result == 'success' &&
+      needs.test-next.result == 'success'
     permissions:
       contents: read # Added for least privilege
     env:
