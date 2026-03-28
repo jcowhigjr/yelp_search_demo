@@ -44,6 +44,6 @@ accuracy: 1)
 
     switch_to_window(new_window)
 
-    assert_match(/google\.com\/maps|blocked\.freedom\.to/, current_url)
+    assert_match(%r{google\.com/maps|blocked\.freedom\.to}, current_url)
   end
 end
