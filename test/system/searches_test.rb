@@ -3,7 +3,8 @@ require 'application_system_test_case'
 class SearchesTest < ApplicationSystemTestCase
   COMMON_SEARCH_SELECTORS = '.search-results, [data-results], .results, #search-results, ' \
     'div[role="main"], main, [data-controller~="search"]'.freeze
-  GEO_STATUS_PATTERN = /Checking location|Requesting location|Location ready|Location blocked|Location unavailable/.freeze
+  GEO_STATUS_PATTERN =
+    /Checking location|Requesting location|Location ready|Location blocked|Location unavailable/
 
   setup do
     stub_yelp_api_request('yoga')
