@@ -7,30 +7,54 @@ on:
     types: [created]
 
 permissions:
-  id-token: write  # Required for OIDC token generation
-  contents: write  # Required for commits
+  id-token: write
+  contents: read
   pull-requests: write
 
 jobs:
-  claude-review:
+  # Auto-review: runs on every non-dependabot PR open/sync
+  claude-auto-review:
     runs-on: ubuntu-latest
-    # Skip for Dependabot PRs (already auto-approved)
-    # Skip if not triggered by comment or PR
     if: |
-      github.actor != 'dependabot[bot]' && (
-        github.event_name == 'pull_request' ||
-        (github.event_name == 'issue_comment' && 
-         github.event.issue.pull_request &&
-         contains(github.event.comment.body, '@claude'))
-      )
+      github.event_name == 'pull_request' &&
+      github.actor != 'dependabot[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Claude Auto Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Review this pull request. Focus on:
+            - Bugs, logic errors, and security issues
+            - Rails/Ruby idioms and best practices
+            - Performance concerns
+            - Test coverage gaps
+
+            Be concise. Only comment on things that matter.
+            Use `gh pr comment` for overall feedback.
+            Use inline comments for specific code issues.
+
+  # Interactive: responds to @claude comments on PRs
+  claude-interactive:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@claude') &&
+      github.actor != 'dependabot[bot]'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Claude Code Review
+      - name: Claude Interactive
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           trigger_phrase: "@claude"
-          label_trigger: "claude-review"
