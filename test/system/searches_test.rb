@@ -16,6 +16,9 @@ class SearchesTest < ApplicationSystemTestCase
     # Check for prototype hero section elements (implemented)
     assert_selector 'h1.page-name', text: 'COFFEE NEAR YOU!', wait: 4
     assert_selector 'p.page-text', text: 'Find the best coffee shops in your area', wait: 4
+    assert_selector '.geolocation-status-chip[data-state]',
+                    text: /(Checking location|Requesting location|Location ready|Location blocked|Location unavailable)/,
+                    wait: 4
     
     # Feature icons are hidden since they are non-functional
 
@@ -53,6 +56,8 @@ class SearchesTest < ApplicationSystemTestCase
     assert_selector '.search-hero__search-shell'
     assert_selector 'input[placeholder*="coffee"]'
     assert_text 'Location sharing narrows results faster.'
+    assert_selector '.geolocation-status-chip[data-state]',
+                    text: /(Checking location|Requesting location|Location ready|Location blocked|Location unavailable)/
   end
 
   test 'An anonymous user can update the query' do
