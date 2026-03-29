@@ -136,6 +136,38 @@
   gap: 0.35rem;
 }
 
+.geolocation-status-chip {
+  margin-left: auto;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  background-color: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.geolocation-status-chip[data-state='requesting'] {
+  border-color: color-mix(in srgb, var(--color-warning) 40%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-warning) 12%, var(--color-bg-secondary));
+  color: color-mix(in srgb, var(--color-warning) 70%, var(--color-text));
+}
+
+.geolocation-status-chip[data-state='success'] {
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-success) 12%, var(--color-bg-secondary));
+  color: color-mix(in srgb, var(--color-success) 78%, var(--color-text));
+}
+
+.geolocation-status-chip[data-state='denied'],
+.geolocation-status-chip[data-state='unavailable'] {
+  border-color: color-mix(in srgb, var(--color-error) 40%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-error) 10%, var(--color-bg-secondary));
+  color: color-mix(in srgb, var(--color-error) 78%, var(--color-text));
+}
+
 @media (max-width: 320px) {
   .geolocation-button {
     display: none;
@@ -155,5 +187,9 @@
   .search-bar-meta {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .geolocation-status-chip {
+    margin-left: 0;
   }
 }
