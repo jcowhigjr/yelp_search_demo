@@ -577,6 +577,25 @@ end
 
 Agents MUST prefer **empirical verification** over reasoning alone.
 
+- **Treat Heroku and other remote deploy integrations as black boxes unless credentials are available**
+
+  - GitHub state, repository code, PR metadata, review app URLs mentioned in PRs, and the public behavior of deployed apps are observable.
+  - Heroku pipeline configuration, branch mapping, release history, config vars, review-app rules, and promotion targets are **not** observable or queryable unless the current run has working Heroku credentials.
+  - Do **not** assume that a merged PR is running in production.
+  - Do **not** assume that a successful feature-branch app implies production is updated.
+  - When deployment ownership is unclear or account access is unavailable, agents MUST treat the deployment layer as untrusted external state and verify behavior empirically from the live app.
+
+- **Use public provenance and live-site checks to answer deployment questions**
+
+  - When asked why production does not match a merged PR or preview app, agents SHOULD answer using evidence from:
+    - current live DOM or asset behavior on the public app
+    - repository code at the merged branch or commit
+    - PR preview references and recorded verification steps
+    - any public commit/build provenance exposed by the app itself
+  - If the live app lacks a commit SHA, build stamp, or a version or health endpoint that exposes build identity, or any other equivalent provenance marker, agents SHOULD explicitly call out that gap as a deployment observability problem.
+  - If production behavior differs from merged code and the remote deploy platform cannot be inspected directly, agents SHOULD classify the root cause as a deployment-layer mismatch, meaning a problem in the deploy system, environment, or routing that makes live behavior diverge from what repository state and CI claim is deployed, unless contradicted by stronger evidence.
+  - Example: if a PR that changes the site header is merged and its review app shows the new header, but production still shows the old header after a reported successful deploy, agents SHOULD treat that as a deployment-layer mismatch unless stronger evidence points elsewhere.
+
 - For code changes:
   - Run the appropriate Rails tests via `mise exec -- bin/rails test ...`.
   - Use system tests / headless verification (Cuprite, Puppeteer/Playwright MCP) for non-trivial UI changes.
