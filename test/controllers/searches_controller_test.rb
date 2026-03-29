@@ -38,6 +38,12 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'form' do
       assert_select 'input[name=?]', 'search[query]'
     end
+
+    # Geolocation status chip contract for inline location feedback
+    assert_select '[data-geolocation-target=?][data-state=?]',
+                  'status',
+                  'idle',
+                  text: 'Checking location...'
   end
 
   test '#create' do

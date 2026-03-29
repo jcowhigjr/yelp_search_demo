@@ -1,5 +1,9 @@
 <div class="form-group">
-  <%= form_for @search, html: { class: 'w-full search-bar-container', data: { turbo: false, controller: 'search-form' } } do |f| %>
+  <%= form_for @search,
+               html: {
+                 class: 'w-full search-bar-container',
+                 data: { turbo: false, controller: 'search-form geolocation' },
+               } do |f| %>
     <div class="search-bar">
       <button type="button" class="geolocation-button" data-action="geolocation#geolocate" aria-label="Use my current location">
         <i class="material-icons">my_location</i>
@@ -33,9 +37,15 @@
     <div class="search-bar-meta">
       <span>Tip: try "espresso", "wifi", or "pastries".</span>
       <span>Location sharing narrows results faster.</span>
+      <span class="geolocation-status-chip geolocation-status-chip--idle"
+            data-geolocation-target="status"
+            data-state="idle"
+            aria-live="polite">
+        Checking location...
+      </span>
     </div>
 
-    <div data-controller="geolocation">
+    <div>
       <%= f.hidden_field :latitude, "data-geolocation-target": 'latitude' %>
       <%= f.hidden_field :longitude,  "data-geolocation-target": 'longitude' %>
     </div>
