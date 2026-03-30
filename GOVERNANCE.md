@@ -60,7 +60,7 @@ The following actions require explicit user approval in the current session:
 The following actions are never acceptable:
 
 - committing or printing secrets into tracked files, logs, or comments
-- using `--no-verify` to bypass repo hooks
+- using `--no-verify` to bypass repo hooks without explicitly following a documented emergency workflow, calling out the bypass, and running the skipped checks as soon as possible
 - pretending verification ran when it did not
 
 ## Rules
