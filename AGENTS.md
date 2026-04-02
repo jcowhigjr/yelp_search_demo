@@ -3,7 +3,43 @@
 This file defines **project-wide rules for all AI agents** working in this repository (Warp, Codex, Claude, Copilot-style tools, etc.).
 
 For Warp-specific details, see `WARP.md`.
+For explicit risk, approval, and preflight rules, see `GOVERNANCE.md`.
 For deep policy and methodology, see `docs/AGENTS.md`.
+
+---
+
+## 0. Governance contract
+
+This repository is self-contained. Do not assume a global AI setup exists.
+
+- Before any meaningful mutation, apply the preflight classification from `GOVERNANCE.md`.
+- Surface a governance warning whenever a rule is triggered; do not hide it in internal reasoning.
+- Re-run the classification at phase transitions:
+  - planning to implementation
+  - implementation to verification
+  - verification to commit, push, PR, or deploy actions
+- Treat these as explicit approval gates:
+  - production-impacting changes
+  - destructive or irreversible actions
+  - non-trivial database or persistent data changes
+  - secrets, auth, credentials, or permission changes
+  - bypassing existing tests, hooks, or validation
+  - scope expansion beyond the stated task or linked issue
+- Never:
+  - commit or print secrets
+  - use `--no-verify`
+  - claim verification ran when it did not
+
+Use these baseline orientation commands before non-trivial work:
+
+```bash
+mise exec -- lefthook run workflow-status
+mise exec -- git status --short --branch
+mise exec -- git log --oneline --decorate --graph -10
+mise exec -- bin/rails db:version
+```
+
+When governance is triggered in a review, planning note, or automation artifact, include a `## Governance Flags` section listing the rule, trigger reason, and resolution or required approval.
 
 ---
 
