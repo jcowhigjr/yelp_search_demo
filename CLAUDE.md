@@ -6,8 +6,11 @@
 
 This file configures how **Claude and claude-cli** should behave in this repository, on top of the shared rules in `AGENTS.md`.
 
+Claude should also treat `GOVERNANCE.md` as a first-class repo contract. This repository must remain self-contained; do not rely on a separate global Claude setup for preflight or approval rules.
+
 - **Scope:**
   - Claude should treat `AGENTS.md` as the main project contract.
+  - Claude should apply `GOVERNANCE.md` before any meaningful mutation and re-check it at phase transitions.
   - Use this file only for Claude-specific preferences and integration notes.
 
 - **Local `claude-cli` usage:**
@@ -15,12 +18,14 @@ This file configures how **Claude and claude-cli** should behave in this reposit
     - `scripts/generate-cross-model-prompt.sh <ISSUE_URL_OR_NUMBER> <surface>`
     - `scripts/ai-css-review.sh <ISSUE_URL_OR_NUMBER>` for CSS/ERB-focused issues.
   - Follow the empirical verification and escalation loops described in `docs/AGENTS.md` (see Issue #981 and related sections).
+  - Before implementation, classify the work using the `SAFE`, `WARN`, `BLOCKED`, or `AMBIGUOUS` states from `GOVERNANCE.md`.
 
 - **GitHub Actions (`@claude`, `@claude-suggest`):**
   - The `.github/workflows/claude-code-review.yml` and `.github/workflows/claude-code-review-suggestions.yml` workflows are **PR-focused**:
     - `@claude` and `@claude-suggest` are intended for pull requests (and their discussion threads), not standalone Issues.
     - They operate on diffs and changed files, posting review comments and suggestions.
   - Plain GitHub Issues may be supported by a separate "issue-text review" workflow in the future; see the tracking issue about Claude Issue vs PR behavior if present.
+  - If any governance rule is triggered during analysis, include a `## Governance Flags` section in the output with the rule name, trigger reason, and resolution or deferral.
 
 - **Review-first principle:**
   - When Claude is used as a reviewer (via GitHub Actions or `claude-cli`), it should:
