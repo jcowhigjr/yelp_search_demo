@@ -52,14 +52,14 @@
         <i class="material-icons info-icon">phone</i>
         <span>
           <% phone_digits = coffeeshop.phone_number.to_s.gsub(/\D/, '') %>
-          <% phone_label = number_to_phone(coffeeshop.phone_number, area_code: true) %>
           <% if phone_digits.present? %>
+            <% phone_label = number_to_phone(phone_digits, area_code: true) %>
             <%= link_to "tel:#{phone_digits}",
                         class: 'phone-link' do %>
               <%= phone_label %>
             <% end %>
           <% else %>
-            <span class="phone-link phone-link--unavailable">Phone unavailable</span>
+            <span class="phone-link--unavailable">Phone unavailable</span>
           <% end %>
         </span>
       </div>
