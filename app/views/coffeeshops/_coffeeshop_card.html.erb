@@ -51,9 +51,15 @@
       <div class="info-item">
         <i class="material-icons info-icon">phone</i>
         <span>
-          <%= link_to "tel:#{number_to_phone(coffeeshop.phone_number, area_code: true)}",
-                      class: 'phone-link' do %>
-            <%= number_to_phone(coffeeshop.phone_number, area_code: true) %>
+          <% phone_digits = coffeeshop.phone_number.to_s.gsub(/\D/, '') %>
+          <% if phone_digits.present? %>
+            <% phone_label = number_to_phone(phone_digits, area_code: true) %>
+            <%= link_to "tel:#{phone_digits}",
+                        class: 'phone-link' do %>
+              <%= phone_label %>
+            <% end %>
+          <% else %>
+            <span class="phone-link--unavailable">Phone unavailable</span>
           <% end %>
         </span>
       </div>
