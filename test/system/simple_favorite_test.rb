@@ -19,8 +19,8 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     # Navigate to search page after login
     visit new_search_path
 
-    assert_selector "input#search-query-input[name='search[query]']", wait: 10
-    fill_in 'search-query-input', with: 'coffee'
+    assert_selector "input#search_query[name='search[query]']", wait: 10
+    fill_in 'search_query', with: 'coffee'
     find('button[aria-label="Search"]').click
     
     assert_selector '.coffeeshop-card', wait: 10
