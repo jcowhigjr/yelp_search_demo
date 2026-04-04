@@ -137,8 +137,19 @@
 }
 
 .coffeeshop-card .map-link:hover,
-.coffeeshop-card .phone-link:hover {
+.coffeeshop-card a.phone-link:hover {
   text-decoration: underline;
+}
+
+.coffeeshop-card .phone-link--unavailable {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  cursor: default;
+}
+
+.coffeeshop-card .phone-link--unavailable:hover {
+  text-decoration: none;
+  cursor: default;
 }
 
 .coffeeshop-card .favorite-section {

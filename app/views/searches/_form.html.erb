@@ -12,6 +12,8 @@
       <%= f.search_field :query,
                          placeholder: t('views.searches.placeholder'),
                          required: true,
+                         id: 'search_query',
+                         aria: { label: t('views.searches.placeholder', default: 'Search for coffee shops...') },
                          class: 'search-input',
                          data: {
                            'search-form-target': 'input',
