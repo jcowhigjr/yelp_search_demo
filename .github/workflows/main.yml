@@ -197,7 +197,9 @@ jobs:
         uses: actions/upload-artifact@v7
         if: env.RUN_FULL_CI == 'true' && (steps.system-test-next.outcome=='failure'  ||  steps.system-test-next-retry-1.outcome=='failure') # check the step outcome, retry 1st time
         with:
+          name: failed-system-test-images-next
           path: ./tmp/capybara/screenshots/failures_*.png
+          overwrite: true
       - name: set the status for next tests # set the workflow status if command failed
         if: always()
         run: |
@@ -307,7 +309,9 @@ jobs:
         uses: actions/upload-artifact@v7
         if: env.RUN_FULL_CI == 'true' && (steps.system-test.outcome=='failure'  ||  steps.system-test-retry-1.outcome=='failure') # check the step outcome, retry 1st time
         with:
+          name: failed-system-test-images
           path: ./tmp/capybara/screenshots/failures_*.png
+          overwrite: true
       - name: set the status # set the workflow status if command failed
         if: env.RUN_FULL_CI == 'true' && steps.system-test.outcome=='failure'
         run: |
