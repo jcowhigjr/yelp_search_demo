@@ -23,7 +23,7 @@ gem 'minitest', '~> 6.0'
 # `next_rails` 1.4.7 currently hard-requires `byebug`, which breaks this repo's
 # CI boot path because the app uses the `debug` gem instead. Keep the last known
 # good version pinned until compatibility is verified.
-gem 'next_rails', '1.4.8'
+gem 'next_rails', '1.5.0'
 
 gem 'rails', '>= 8.1.0.beta1', '< 8.2'
 
