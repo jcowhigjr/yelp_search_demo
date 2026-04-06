@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1849
-Task: Add a file-scope rule for issue-closing automation and require at least one non-orchestration file change before allowing automatic closure. Update the workflow documentation to reflect the difference between bookkeeping PRs and shippable PRs.
+Simulated Warp execution for issue #1847
+Task: Edit VERSION file to include current Git commit SHA and build time, e.g. '0.2.2-1234567890'. Run bin/rails test test/initializers/app_version_test.rb and report results.
 Agent: coder
