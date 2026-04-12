@@ -6,24 +6,22 @@
 
     <div class="search-results-masthead mb-6">
       <div class="search-results-masthead__copy">
-        <p class="search-results-masthead__eyebrow">Fresh picks for your next stop</p>
-        <h2 style="color: var(--color-text);">
-          <%= t('views.searches.results', query: @search.query) %>
-        </h2>
-        <p class="search-results-masthead__summary">
-          Top-rated spots with direct actions for maps, calls, and details.
-        </p>
+        <p class="search-results-masthead__eyebrow"><%= t('views.searches.results_masthead.eyebrow') %></p>
+        <h2 class="search-results-masthead__heading"><%= t('views.searches.results_masthead.heading') %></h2>
         <div class="search-results-masthead__meta">
           <span class="search-results-masthead__meta-pill">
-            Query: <strong><%= @search.query %></strong>
+            <span class="material-icons search-results-masthead__meta-icon" aria-hidden="true">search</span>
+            <%= t('views.searches.results_masthead.query_label') %> <strong><%= @search.query %></strong>
           </span>
-          <span class="search-results-masthead__meta-pill">Sorted by Yelp rating</span>
+          <span class="search-results-masthead__meta-pill">
+            <span class="material-icons search-results-masthead__meta-icon" aria-hidden="true">place</span>
+            <%= t('views.searches.results_masthead.near_you') %>
+          </span>
+          <span class="search-results-masthead__meta-pill" data-testid="results-summary">
+            <span class="material-icons search-results-masthead__meta-icon" aria-hidden="true">storefront</span>
+            <%= t('views.searches.results_masthead.result_count', count: @search.coffeeshops.length) %>
+          </span>
         </div>
-      </div>
-
-      <div class="search-results-masthead__stats" data-testid="results-summary">
-        <span class="search-results-masthead__stat-value"><%= @search.coffeeshops.length %></span>
-        <span class="search-results-masthead__stat-label"><%= 'result'.pluralize(@search.coffeeshops.length) %> found</span>
       </div>
     </div>
 
