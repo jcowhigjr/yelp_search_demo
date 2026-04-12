@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1848
-Task: Create a new automated job in GitHub Actions that checks the live app after merge to the production-tracking branch. The job should assert at least one feature marker or provenance marker that proves the expected deploy is live, and create a visible failure signal in GitHub or open a follow-up issue automatically if the check fails.
+Simulated Warp execution for issue #1849
+Task: Classify PRs that change only orchestration/task-tracking files as separate from product PRs by editing the PR's metadata. Update existing automation comments and PR templates to reduce ambiguity.
 Agent: coder
