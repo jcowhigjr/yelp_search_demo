@@ -345,7 +345,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (7.2.0)
+    puma (8.0.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.21)
@@ -574,7 +574,7 @@ DEPENDENCIES
   pg
   prettier
   propshaft
-  puma (~> 7.2)
+  puma (~> 8.0)
   rack-brotli
   rack-livereload
   rails (>= 8.1.0.beta1, < 8.2)
