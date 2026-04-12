@@ -81,7 +81,7 @@ jobs:
           echo "  Version change: $UPDATE_TYPE"
           
       - name: Add risk assessment comment
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const riskLevel = '${{ steps.assessment.outputs.risk-level }}';
