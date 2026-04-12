@@ -144,6 +144,14 @@ en:
       new: New Search
       placeholder: Search for coffee shops...
       results: Top Rated Searches for %{query} near you!
+      results_masthead:
+        eyebrow: Fresh picks for your next stop
+        heading: Nearby results
+        near_you: Near you
+        query_label: "Query:"
+        result_count:
+          one: 1 result
+          other: "%{count} results"
       show: Search
       submit: Search
       update: Search
