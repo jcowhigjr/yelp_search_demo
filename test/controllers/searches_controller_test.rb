@@ -68,8 +68,10 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     get search_url(@search, locale: nil)
 
     assert_response :success
-    assert_select '.search-results-masthead h2', text: 'Nearby results'
-    assert_select '.search-results-masthead__meta-pill', text: /Query:/
+    assert_select '.search-results-masthead h2',
+                  text: I18n.t('views.searches.results_masthead.heading')
+    assert_select '.search-results-masthead__meta-pill',
+                  text: /#{Regexp.escape(I18n.t('views.searches.results_masthead.query_label'))}/
     assert_select '[data-testid="results-summary"]', text: /result/
 
     # Ensure at least one coffeeshop card is rendered when results are present
