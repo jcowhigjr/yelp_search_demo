@@ -61,7 +61,7 @@ jobs:
       - name: Get Dependabot metadata
         id: metadata
         if: github.event.pull_request.user.login == 'dependabot[bot]'
-        uses: dependabot/fetch-metadata@v2.4.0
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       
@@ -95,7 +95,7 @@ jobs:
 
       - name: Assess CI scope
         id: ci-scope
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             if (context.eventName !== 'pull_request') {
@@ -323,7 +323,7 @@ jobs:
           fi
       - name: Report status to commit
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const state = '${{ job.status }}' === 'success' ? 'success' : 'failure';
