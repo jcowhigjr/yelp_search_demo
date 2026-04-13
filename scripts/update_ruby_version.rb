@@ -59,9 +59,14 @@ def resolve_latest_patch(current_version)
   candidates.max.to_s
 end
 
+# rubocop:disable Metrics/MethodLength
 def apply_version_updates(current_version, target_version, apply:)
+  seen_targets = {}
+
   # rubocop:disable Metrics/BlockLength
   FILES.each do |path, patterns|
+    resolved_path = File.realpath(path)
+    next if seen_targets[resolved_path]
     original = File.read(path)
     updated = patterns.reduce(original) do |content, pattern|
       content.gsub(pattern) { |match| match.sub(current_version, target_version) }
@@ -75,9 +80,11 @@ def apply_version_updates(current_version, target_version, apply:)
     else
       puts "Would update #{path}"
     end
+    seen_targets[resolved_path] = true
   end
   # rubocop:enable Metrics/BlockLength
 end
+# rubocop:enable Metrics/MethodLength
 
 current_version = extract_version('mise.toml', FILES.fetch('mise.toml').first)
 target_version = options[:target_version] || resolve_latest_patch(current_version)
