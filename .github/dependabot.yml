@@ -19,7 +19,8 @@ updates:
       gha-minor-patch:
         update-types: ["minor", "patch"]
     
-  # Ruby/Bundler dependencies
+  # Ruby gems for the stable lane.
+  # Ruby runtime version bumps are handled separately by the Ruby Evergreen workflow.
   - package-ecosystem: bundler
     directory: /
     schedule:
