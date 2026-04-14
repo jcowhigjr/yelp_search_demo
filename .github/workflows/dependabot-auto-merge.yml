@@ -21,9 +21,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-approve PR
-        uses: hmarr/auto-approve-action@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review --approve "${{ github.event.pull_request.number }}" \
+            --body "Auto-approved by CI for Dependabot PR. Auto-merge will occur after required checks pass."
 
       - name: Enable auto-merge for safe updates
         # Auto-merge patch updates, minor updates for dev deps, and all development dependencies
