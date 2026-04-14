@@ -117,3 +117,7 @@ run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp bin/rails test:pre
 [tasks.test-next-smoke]
 description = "Fast Next Rails smoke tests"
 run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=$PWD/tmp next rails test:prepare --trace && next rails test test/controllers test/models"
+
+[tasks.ruby-evergreen-patch]
+description = "Update Ruby version declarations to the latest patch in the current minor"
+run = "ruby scripts/update_ruby_version.rb --latest-patch --apply"
