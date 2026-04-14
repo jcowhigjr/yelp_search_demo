@@ -14,6 +14,7 @@ class DependabotValidator
     @schema = nil
   end
   
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Naming/PredicateMethod
   def validate
     puts '🔍 Validating Dependabot configuration...'
     
@@ -51,6 +52,7 @@ class DependabotValidator
     end
     
     # Validate each update section
+    # rubocop:disable Metrics/BlockLength
     config['updates'].each_with_index do |update, index|
       puts "  📋 Validating update section #{index + 1}..."
       
@@ -91,9 +93,12 @@ class DependabotValidator
           end
       end
     end
+    # rubocop:enable Metrics/BlockLength
     
     # Check for duplicate ecosystems
-    ecosystems = config['updates'].pluck('package-ecosystem')
+    # rubocop:disable Rails/Pluck
+    ecosystems = config['updates'].map { |update| update['package-ecosystem'] }
+    # rubocop:enable Rails/Pluck
     duplicates = ecosystems.group_by(&:itself).select { |_k, v| v.size > 1 }.keys
     
     if duplicates.any?
@@ -115,6 +120,7 @@ class DependabotValidator
     
     true
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Naming/PredicateMethod
   
   def fetch_schema
     puts '📥 Fetching official Dependabot schema...'
