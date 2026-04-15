@@ -3,8 +3,9 @@
 # Exit when any command fails
 set -e
 
-# run all with lefthook in parallel
-lefthook run fixer
+# run the actual configured hooks
+mise exec -- lefthook run pre-commit
+mise exec -- lefthook run pre-push
 
 # Check Ruby code formatting
 # bundle exec standardrb --fix
