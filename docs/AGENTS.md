@@ -345,7 +345,7 @@ Use this quick checklist when eliminating manual Dependabot toil.
 ## Notes
 - Requires: repo "Allow auto-merge" enabled; Actions `GITHUB_TOKEN` has PR write perms
 - Branch protection: required checks must pass for auto-merge to execute
-- Run this reminder anytime: `lefthook run workflow-status`
+- Run this reminder anytime: `./scripts/git-sync.sh`
 
 ## ⚠️ CRITICAL: `@dependabot rebase` vs `@dependabot recreate`
 
