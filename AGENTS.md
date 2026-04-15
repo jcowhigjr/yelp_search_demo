@@ -25,10 +25,15 @@ This repository is self-contained. Do not assume a global AI setup exists.
   - secrets, auth, credentials, or permission changes
   - bypassing existing tests, hooks, or validation
   - scope expansion beyond the stated task or linked issue
+- Treat these as explicit completion gates for production-adjacent work:
+  - technical verification is complete
+  - rollback or feature-flag posture is documented
+  - user acceptance is explicitly recorded, or the user explicitly approved proceeding without it
 - Never:
   - commit or print secrets
   - use `--no-verify`
   - claim verification ran when it did not
+  - present production-adjacent work as complete when it is only technically validated and not yet user accepted
 
 Use these baseline orientation commands before non-trivial work:
 
@@ -40,6 +45,38 @@ mise exec -- bin/rails db:version
 ```
 
 When governance is triggered in a review, planning note, or automation artifact, include a `## Governance Flags` section listing the rule, trigger reason, and resolution or required approval.
+
+## 0.1 Production Acceptance Gate
+
+For any `production-adjacent` change, agents MUST treat the work as incomplete until all of the following are true:
+
+- the linked issue has explicit acceptance criteria
+- verification evidence is recorded
+- the rollback path or feature-flag posture is recorded
+- the user has accepted the outcome, or has explicitly authorized merge/closure without waiting for acceptance
+
+`Production-adjacent` includes:
+
+- deploy or release automation
+- CI/CD workflows that can mutate branches, PRs, environments, or scheduled automation behavior
+- feature-flag changes, runtime configuration, or production environment logic
+- changes whose success depends on live behavior after merge
+
+When production-adjacent work is technically validated but not yet accepted, agents MUST describe it as:
+
+- `validated-not-accepted`
+
+Agents MUST NOT merge, close the linked issue, or describe the work as complete unless either:
+
+- user acceptance is explicitly recorded, or
+- the user explicitly directs the agent to proceed without acceptance
+
+For production-adjacent work, the final summary before merge or close MUST answer:
+
+- what was verified
+- what was not verified
+- what the rollback or flagging path is
+- who accepted the work, or whether the user explicitly overrode that requirement
 
 ---
 
@@ -116,6 +153,16 @@ When governance is triggered in a review, planning note, or automation artifact,
     - Adding missing tests for existing code
   - **If no issue exists**: Create one first before starting implementation
   - **If A/C unclear**: Ask user to define them before proceeding
+
+- **Production-adjacent work requires acceptance and rollback tracking**
+
+  - For production-adjacent work, agents MUST capture in the issue, PR, or final handoff:
+    - verification evidence
+    - explicit unverified items
+    - rollback path or feature-flag posture
+    - user acceptance status
+  - If user acceptance has not happened yet, agents MUST call the work `validated-not-accepted`.
+  - Agents MUST NOT merge or close production-adjacent work without user acceptance unless the user explicitly authorizes that exception in the current session.
 
 - **Use the mise toolchain**
 
