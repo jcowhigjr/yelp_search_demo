@@ -9,7 +9,7 @@ This file defines the repository's explicit AI governance contract. It is intend
 Use these commands first when orienting in the repo:
 
 ```bash
-mise exec -- lefthook run workflow-status
+./scripts/git-sync.sh
 mise exec -- git status --short --branch
 mise exec -- git log --oneline --decorate --graph -10
 mise exec -- bin/rails db:version
