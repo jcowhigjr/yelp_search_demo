@@ -20,7 +20,7 @@ Warp-friendly, runnable commands that some agents might ignore when scanning `AG
 - **Sync and branch creation (see `AGENTS.md` §1 for the policy)**
   ```bash
   ./scripts/git-sync.sh
-  lefthook run workflow-new-feature feature/<branch-name>
+  git switch -c feature/<branch-name>
   ```
 
 ## 🔄 PR COMPLETION PROTOCOL (command cheatsheet)
@@ -32,8 +32,6 @@ The full review-first / PR lifecycle rules are defined once in `AGENTS.md` §2 a
 
   ```bash
   ./scripts/review-loop.sh
-  # or the lefthook wrapper
-  lefthook run workflow-review-loop
   ```
 
 - **Overall PR completion status**
@@ -84,14 +82,14 @@ canonical policy. Warp highlights just these reminders:
   - ERB: mise exec -- bundle exec erblint --lint-all
   - Prettier check: mise exec -- yarn prettier --check 'app/\*_/_.{js,jsx,ts,tsx,css,scss,json}'
   - Prettier write: mise exec -- yarn prettier --write 'app/\*_/_.{js,jsx,ts,tsx,css,scss,json}'
-  - Auto-fix set: lefthook run fixer
+  - Auto-fix set: mise exec -- bundle exec rubocop && mise exec -- bundle exec erblint --lint-all
 - Security/audits
   - Brakeman: mise run brakeman
   - Gems: mise exec -- bundle audit update && mise exec -- bundle audit check
   - Importmap audit: mise exec -- bin/importmap audit
 - Git workflow (lefthook)
-  - Status: lefthook run workflow-status
-  - New feature branch: lefthook run workflow-new-feature <branch-name>
+  - Sync/status: ./scripts/git-sync.sh && mise exec -- git status --short --branch
+  - New feature branch: git switch -c <branch-name>
 - Branch/PR helpers (scripts)
   - Sync with base: ./scripts/sync-branch.sh [main|develop]
   - PR lifecycle: ./scripts/pr-lifecycle.sh [trigger|poll|sync] [...]
@@ -163,7 +161,7 @@ canonical policy. Warp highlights just these reminders:
 4. Focused usage examples
 
 - Create and work on a new feature branch
-  - lefthook run workflow-new-feature feature/my-change
+  - git switch -c feature/my-change
   - Implement changes; commit/push normally (hooks will run)
 - Quickly run a single test
   - mise exec -- bin/rails test test/models/user_test.rb:42
