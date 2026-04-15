@@ -29,10 +29,10 @@ The Claude Agent has been successfully integrated into the yelp_search_demo proj
 - **claude-test**: Test Claude integration (safe testing)
 - **claude-validate**: Comprehensive integration validation
 
-### 4. Extended Lefthook Commands (`lefthook.yml`)
-- **workflow-claude-status**: Detailed Claude agent status check
-- **workflow-claude-test**: Interactive Claude testing workflow
-- **Integration Checks**: Token validation, workflow status, recent runs
+### 4. Claude Validation Commands
+- **`mise run claude-validate`**: Validate Claude integration and prerequisites
+- **`mise run claude-logs`**: View recent Claude workflow logs
+- **`mise run agent-status`**: Check agent workflow status across the repo
 
 ### 5. Validation Tools
 - **Setup Validation Script**: `scripts/claude-setup-validation.sh`
@@ -55,7 +55,7 @@ User Issue → @claude → Analysis → Action → Copilot Review Request → Au
 
 # Claude executes through mise toolchain
 mise exec -- bundle exec rails test
-mise exec -- lefthook run fixer
+mise exec -- lefthook run pre-commit
 mise exec -- gh pr create
 
 # Quality gates maintained
@@ -98,10 +98,6 @@ lefthook pre-commit hooks → CI tests → Review → Merge
 ```bash
 # Check Claude status
 mise run claude-validate
-mise exec -- lefthook run workflow-claude-status
-
-# Test Claude integration
-mise exec -- lefthook run workflow-claude-test
 
 # Monitor Claude activity
 mise run claude-logs
@@ -139,7 +135,7 @@ mise run claude-validate
 mise run agent-status
 
 # Detailed Claude status
-mise exec -- lefthook run workflow-claude-status
+mise run claude-validate
 ```
 
 ### Troubleshooting
@@ -151,7 +147,7 @@ mise exec -- lefthook run workflow-claude-status
 ## 📈 Next Steps
 
 ### Immediate
-1. **Test the Integration**: Use `mise exec -- lefthook run workflow-claude-test`
+1. **Test the Integration**: Use `mise run claude-validate`
 2. **Try Real Usage**: Mention `@claude` in issue #895 to resolve it
 3. **Monitor Results**: Watch Claude's automated fixes and PR creation
 

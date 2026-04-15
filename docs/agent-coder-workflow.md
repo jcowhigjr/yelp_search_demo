@@ -9,18 +9,18 @@ This project has automated git workflow protections via Lefthook. **You MUST use
 ### Before Starting Any Work
 
 ```bash
-# 1. Check current workflow status (ALWAYS run this first)
-lefthook run workflow-status
+# 1. Sync and orient the repo (ALWAYS run this first)
+./scripts/git-sync.sh
 
 # 2. If you need to create a new feature branch
-lefthook run workflow-new-feature fix/description-of-fix
+git switch -c fix/description-of-fix
 ```
 
 ### Making Changes
 
 ```bash
-# 3. Run code quality fixes before committing
-lefthook run fixer
+# 3. Run the actual configured local checks before committing
+mise exec -- lefthook run pre-commit
 
 # 4. Normal git operations are now safe (lefthook will protect you)
 git add .
@@ -40,9 +40,9 @@ git push
 If lefthook prevents an operation:
 
 1. **Read the error message carefully** - it usually tells you exactly what to do
-2. **Use the suggested lefthook commands** instead of trying to bypass
-3. **Check `lefthook run workflow-status`** to understand current state
-4. **Run `lefthook run fixer`** to auto-fix code quality issues
+2. **Use the repo scripts and real hook names** instead of trying to bypass
+3. **Run `./scripts/git-sync.sh`** to refresh local state
+4. **Run `mise exec -- lefthook run pre-commit`** to reproduce configured checks
 
 ## ❌ DO NOT Do These Things
 
@@ -55,13 +55,13 @@ If lefthook prevents an operation:
 
 ```bash
 # Start work
-lefthook run workflow-status                    # Check current state
-lefthook run workflow-new-feature fix/bug-123   # Create feature branch
+./scripts/git-sync.sh                           # Refresh local state
+git switch -c fix/bug-123                       # Create feature branch
 
 # Make changes to files...
 
 # Finish work
-lefthook run fixer                              # Fix code quality
+mise exec -- lefthook run pre-commit            # Run configured local checks
 git add .                                       # Stage changes
 git commit -m "Fix bug 123"                    # Commit (pre-commit hooks run)
 git push                                        # Push (pre-push tests run)
