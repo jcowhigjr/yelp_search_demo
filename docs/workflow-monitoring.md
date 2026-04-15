@@ -53,7 +53,7 @@ For more detailed monitoring, we recommend using an APM tool like Datadog or New
 
 This project follows the workflow documented in `docs/agent-coder-workflow.md` and enforced by lefthook hooks:
 
-1. **Feature Development:** Use `lefthook run workflow-new-feature <branch-name>` to create feature branches
+1. **Feature Development:** Sync with `./scripts/git-sync.sh`, then create feature branches with `git switch -c <branch-name>`
 2. **Code Quality:** Pre-commit hooks run automated checks (tests, linting, security scans)
 3. **Pre-push Validation:** Comprehensive test suite runs before code is pushed
 4. **Pull Request:** Automated review and CI/CD pipeline validation
@@ -121,7 +121,7 @@ heroku logs --tail --app dorkbob
 
 ```bash
 # Check lefthook configuration
-lefthook run workflow-status
+./scripts/git-sync.sh
 
 # Verify environment setup
 bin/container-healthcheck.sh

@@ -292,7 +292,7 @@ Why? Because:
 
 ## Complete Script Example
 
-Here's a full script that implements the review loop (also available via `lefthook run workflow-review-loop` which calls the same script):
+Here's a full script that implements the review loop:
 
 ```bash
 #!/bin/bash

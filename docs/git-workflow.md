@@ -24,47 +24,27 @@ Lefthook automatically enforces these protections:
 
 ## 🔧 Manual Workflow Commands
 
-### Core Lefthook Commands
+### Core Repo Commands
 
 ```bash
-# Check current workflow status
-lefthook run workflow-status
+# Sync and orient the repo
+./scripts/git-sync.sh
 
-# Create a new feature branch (requires feature name as argument)
-lefthook run workflow-new-feature fix/some-issue
+# Create a new feature branch
+git switch -c fix/some-issue
 
-# Stack helpers (new!)
-lefthook run workflow-stack-create feature/foo-child
-lefthook run workflow-stack-sync          # rebases current branch on parent
-lefthook run workflow-stack-show          # prints parent chain
-lefthook run workflow-queue-pr            # runs readiness + queues auto-merge
+# Stack helpers
+scripts/stacked-pr.sh create feature/foo-child
+scripts/stacked-pr.sh sync
+scripts/stacked-pr.sh show
+scripts/stacked-pr.sh queue
 
-# Run code quality fixes
-lefthook run fixer
+# Run configured hooks manually
+mise exec -- lefthook run pre-commit
+mise exec -- lefthook run pre-push
 
 # Install/reinstall git hooks
 lefthook install
-```
-
-### Alternative: Safe Workflow Script
-
-For more user-friendly commands, you can also use the `bin/safe-workflow` script:
-
-```bash
-# Check status with guidance
-bin/safe-workflow status
-
-# Create feature branch with interactive prompts
-bin/safe-workflow new-feature fix/some-issue
-
-# Pull latest changes safely
-bin/safe-workflow pull-latest
-
-# Commit with protections
-bin/safe-workflow commit "Your message"
-
-# Push with checks
-bin/safe-workflow push
 ```
 
 ## 🚫 What's Prevented
@@ -77,13 +57,13 @@ bin/safe-workflow push
 
 ## 🎯 Recommended Workflow
 
-1. **Start work**: `lefthook run workflow-new-feature feature/my-feature`
-2. **Stack follow-up work** (optional): `lefthook run workflow-stack-create feature/my-feature-part-2`
+1. **Start work**: `./scripts/git-sync.sh && git switch -c feature/my-feature`
+2. **Stack follow-up work** (optional): `scripts/stacked-pr.sh create feature/my-feature-part-2`
 3. **Make changes**: Edit your code
-4. **Sync stack before push**: `lefthook run workflow-stack-sync`
+4. **Sync stack before push**: `scripts/stacked-pr.sh sync`
 5. **Commit**: `git commit -m "Your message"` (automatic quality checks run)
 6. **Push**: `git push origin feature/my-feature` (comprehensive testing runs)
-7. **Queue PR**: `lefthook run workflow-queue-pr`
+7. **Queue PR**: `scripts/stacked-pr.sh queue`
 8. **Create PR**: Use GitHub interface if auto-merge/queue is not enabled
 
 ## 🔧 Configuration
@@ -92,8 +72,7 @@ The workflow configuration is in `lefthook.yml`. Key sections:
 
 - **pre-commit**: Branch protection and quality checks
 - **pre-push**: Testing and security validation
-- **fixer**: Automatic code formatting and fixes
-- **workflow-\***: Custom workflow commands
+- Repo helper scripts live under `scripts/` for sync, review-loop, PR lifecycle, and stacked PR flows
 
 ## 📝 For Agent Coders
 
@@ -110,12 +89,12 @@ This must be the **first command** you run when starting work. It:
 
 After syncing, create your branch:
 ```bash
-lefthook run workflow-new-feature feature/<name>
+git switch -c feature/<name>
 ```
 
 Additional rules:
 1. **Never bypass lefthook**: The hooks are there for critical protections
-2. **Use lefthook commands**: Prefer `lefthook run workflow-status` over manual git commands
+2. **Use real repo entrypoints**: Prefer `./scripts/git-sync.sh`, `./scripts/review-loop.sh`, and `scripts/stacked-pr.sh` over stale wrapper names
 3. **Understand the protections**: Know why branch protection exists
 4. **Fix issues properly**: If hooks fail, fix the underlying issue, don't skip hooks
 
@@ -129,11 +108,12 @@ lefthook install
 git commit --no-verify
 git push --no-verify
 
-# Check hook configuration
-lefthook run workflow-status
+# Sync/orient current state
+./scripts/git-sync.sh
 
-# Run all quality fixes
-lefthook run fixer
+# Run configured local checks
+mise exec -- lefthook run pre-commit
+mise exec -- lefthook run pre-push
 ```
 
 Remember: The hooks are your safety net. They prevent broken code from reaching production and enforce team coding standards.

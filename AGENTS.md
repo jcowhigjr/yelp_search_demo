@@ -38,7 +38,7 @@ This repository is self-contained. Do not assume a global AI setup exists.
 Use these baseline orientation commands before non-trivial work:
 
 ```bash
-mise exec -- lefthook run workflow-status
+./scripts/git-sync.sh
 mise exec -- git status --short --branch
 mise exec -- git log --oneline --decorate --graph -10
 mise exec -- bin/rails db:version
@@ -102,7 +102,7 @@ For production-adjacent work, the final summary before merge or close MUST answe
 - **Always sync first**
 
   - Before doing any work in this repo, run:
-    - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
+    - `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
   - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
   - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
@@ -183,9 +183,9 @@ For production-adjacent work, the final summary before merge or close MUST answe
 - **Prefer lefthook workflows for Git operations**
 
   - Example: create a new feature branch using:
-    - `lefthook run workflow-new-feature feature/<branch-name>`
+    - `git switch -c feature/<branch-name>`
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
-  - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
+  - Use helper scripts under `scripts/` (e.g., `git-sync.sh`, `review-loop.sh`, `stacked-pr.sh`, `pr-lifecycle.sh`) instead of inventing repo-specific wrapper commands.
 
 - **Terminal command safety & escaping**
   - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
