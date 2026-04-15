@@ -156,4 +156,4 @@ gem 'geocoder'
 # Removed duplicated development, ci group
 
 # Ruby version (must match mise.toml)
-ruby '3.3.10'
+ruby '3.3.11'
