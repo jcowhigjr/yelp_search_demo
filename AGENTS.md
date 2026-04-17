@@ -25,58 +25,21 @@ This repository is self-contained. Do not assume a global AI setup exists.
   - secrets, auth, credentials, or permission changes
   - bypassing existing tests, hooks, or validation
   - scope expansion beyond the stated task or linked issue
-- Treat these as explicit completion gates for production-adjacent work:
-  - technical verification is complete
-  - rollback or feature-flag posture is documented
-  - user acceptance is explicitly recorded, or the user explicitly approved proceeding without it
 - Never:
   - commit or print secrets
   - use `--no-verify`
   - claim verification ran when it did not
-  - present production-adjacent work as complete when it is only technically validated and not yet user accepted
 
 Use these baseline orientation commands before non-trivial work:
 
 ```bash
-./scripts/git-sync.sh
+mise exec -- lefthook run workflow-status
 mise exec -- git status --short --branch
 mise exec -- git log --oneline --decorate --graph -10
 mise exec -- bin/rails db:version
 ```
 
 When governance is triggered in a review, planning note, or automation artifact, include a `## Governance Flags` section listing the rule, trigger reason, and resolution or required approval.
-
-## 0.1 Production Acceptance Gate
-
-For any `production-adjacent` change, agents MUST treat the work as incomplete until all of the following are true:
-
-- the linked issue has explicit acceptance criteria
-- verification evidence is recorded
-- the rollback path or feature-flag posture is recorded
-- the user has accepted the outcome, or has explicitly authorized merge/closure without waiting for acceptance
-
-`Production-adjacent` includes:
-
-- deploy or release automation
-- CI/CD workflows that can mutate branches, PRs, environments, or scheduled automation behavior
-- feature-flag changes, runtime configuration, or production environment logic
-- changes whose success depends on live behavior after merge
-
-When production-adjacent work is technically validated but not yet accepted, agents MUST describe it as:
-
-- `validated-not-accepted`
-
-Agents MUST NOT merge, close the linked issue, or describe the work as complete unless either:
-
-- user acceptance is explicitly recorded, or
-- the user explicitly directs the agent to proceed without acceptance
-
-For production-adjacent work, the final summary before merge or close MUST answer:
-
-- what was verified
-- what was not verified
-- what the rollback or flagging path is
-- who accepted the work, or whether the user explicitly overrode that requirement
 
 ---
 
@@ -102,7 +65,7 @@ For production-adjacent work, the final summary before merge or close MUST answe
 - **Always sync first**
 
   - Before doing any work in this repo, run:
-    - `./scripts/git-sync.sh`
+    - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
   - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
   - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
@@ -154,16 +117,6 @@ For production-adjacent work, the final summary before merge or close MUST answe
   - **If no issue exists**: Create one first before starting implementation
   - **If A/C unclear**: Ask user to define them before proceeding
 
-- **Production-adjacent work requires acceptance and rollback tracking**
-
-  - For production-adjacent work, agents MUST capture in the issue, PR, or final handoff:
-    - verification evidence
-    - explicit unverified items
-    - rollback path or feature-flag posture
-    - user acceptance status
-  - If user acceptance has not happened yet, agents MUST call the work `validated-not-accepted`.
-  - Agents MUST NOT merge or close production-adjacent work without user acceptance unless the user explicitly authorizes that exception in the current session.
-
 - **Use the mise toolchain**
 
   - Prefix all runtime commands with:
@@ -183,9 +136,9 @@ For production-adjacent work, the final summary before merge or close MUST answe
 - **Prefer lefthook workflows for Git operations**
 
   - Example: create a new feature branch using:
-    - `git switch -c feature/<branch-name>`
+    - `lefthook run workflow-new-feature feature/<branch-name>`
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
-  - Use helper scripts under `scripts/` (e.g., `git-sync.sh`, `review-loop.sh`, `stacked-pr.sh`, `pr-lifecycle.sh`) instead of inventing repo-specific wrapper commands.
+  - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
 
 - **Terminal command safety & escaping**
   - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
@@ -659,25 +612,6 @@ end
 ## 5. Empirical verification & cross-model escalation
 
 Agents MUST prefer **empirical verification** over reasoning alone.
-
-- **Treat Heroku and other remote deploy integrations as black boxes unless credentials are available**
-
-  - GitHub state, repository code, PR metadata, review app URLs mentioned in PRs, and the public behavior of deployed apps are observable.
-  - Heroku pipeline configuration, branch mapping, release history, config vars, review-app rules, and promotion targets are **not** observable or queryable unless the current run has working Heroku credentials.
-  - Do **not** assume that a merged PR is running in production.
-  - Do **not** assume that a successful feature-branch app implies production is updated.
-  - When deployment ownership is unclear or account access is unavailable, agents MUST treat the deployment layer as untrusted external state and verify behavior empirically from the live app.
-
-- **Use public provenance and live-site checks to answer deployment questions**
-
-  - When asked why production does not match a merged PR or preview app, agents SHOULD answer using evidence from:
-    - current live DOM or asset behavior on the public app
-    - repository code at the merged branch or commit
-    - PR preview references and recorded verification steps
-    - any public commit/build provenance exposed by the app itself
-  - If the live app lacks a commit SHA, build stamp, or a version or health endpoint that exposes build identity, or any other equivalent provenance marker, agents SHOULD explicitly call out that gap as a deployment observability problem.
-  - If production behavior differs from merged code and the remote deploy platform cannot be inspected directly, agents SHOULD classify the root cause as a deployment-layer mismatch, meaning a problem in the deploy system, environment, or routing that makes live behavior diverge from what repository state and CI claim is deployed, unless contradicted by stronger evidence.
-  - Example: if a PR that changes the site header is merged and its review app shows the new header, but production still shows the old header after a reported successful deploy, agents SHOULD treat that as a deployment-layer mismatch unless stronger evidence points elsewhere.
 
 - For code changes:
   - Run the appropriate Rails tests via `mise exec -- bin/rails test ...`.

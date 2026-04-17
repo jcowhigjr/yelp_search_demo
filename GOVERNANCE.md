@@ -9,7 +9,7 @@ This file defines the repository's explicit AI governance contract. It is intend
 Use these commands first when orienting in the repo:
 
 ```bash
-./scripts/git-sync.sh
+mise exec -- lefthook run workflow-status
 mise exec -- git status --short --branch
 mise exec -- git log --oneline --decorate --graph -10
 mise exec -- bin/rails db:version
@@ -60,7 +60,7 @@ The following actions require explicit user approval in the current session:
 The following actions are never acceptable:
 
 - committing or printing secrets into tracked files, logs, or comments
-- using `--no-verify` to bypass repo hooks without explicitly following a documented emergency workflow, calling out the bypass, and running the skipped checks as soon as possible
+- using `--no-verify` to bypass repo hooks
 - pretending verification ran when it did not
 
 ## Rules
