@@ -134,3 +134,7 @@ quick_test_results.json
 test_workflow.txt
 dev.log
 .mise*.log
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
