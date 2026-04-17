@@ -3,9 +3,9 @@ pre-commit:
     protect_main_branches:
       run: "#!/bin/bash\nbranch=$(git branch --show-current)\nif [ \"$branch\" = \"\
         main\" ] || [ \"$branch\" = \"develop\" ]; then\n  echo \"\u274C Direct commits\
-        \ to $branch are not allowed!\"\n  echo \"   Use: lefthook run workflow-new-feature\
-        \ <branch-name>\"\n  echo \"   Example: lefthook run workflow-new-feature\
-        \ fix/issue-123\"\n  exit 1\nfi\n"
+        \ to $branch are not allowed!\"\n  echo \"   Sync first with: ./scripts/git-sync.sh\"\
+        \n  echo \"   Create a branch with: git switch -c feature/<branch-name>\"\
+        \n  echo \"   Example: git switch -c fix/issue-123\"\n  exit 1\nfi\n"
     validate-mise-toml:
       glob: mise.toml
       run: bash scripts/validate-mise-toml.sh
@@ -85,26 +85,30 @@ pre-push:
       run: |
         REPO_ROOT="$(git rev-parse --show-toplevel)"
         MISE_RUN=(mise --cd "$REPO_ROOT" run)
+        SYSTEM_TEST_DB='db/test-system.sqlite3'
         if [ -f .env ]; then . ./.env; fi
         if ./scripts/should-run-system-tests.sh; then
           echo "⏭️  Skipping system tests (safe changes only)"
           exit 0
         fi
 
+        echo "🧹 Resetting disposable system test SQLite files..."
+        rm -f -- "$SYSTEM_TEST_DB" "$SYSTEM_TEST_DB"-* "$SYSTEM_TEST_DB"_*
+
         echo "🚀 Setting up system test environment..."
-        if ! TEST_DATABASE_NAME='db/test-system.sqlite3' "${MISE_RUN[@]}" setup-test; then
+        if ! TEST_DATABASE_NAME="$SYSTEM_TEST_DB" "${MISE_RUN[@]}" setup-test; then
           echo "❌ Failed to set up system test environment"
           exit 1
         fi
 
         echo "🔧 Preparing system test database..."
-        if ! TEST_DATABASE_NAME='db/test-system.sqlite3' "${MISE_RUN[@]}" test-prepare; then
+        if ! TEST_DATABASE_NAME="$SYSTEM_TEST_DB" "${MISE_RUN[@]}" test-prepare; then
           echo "❌ Failed to prepare system test database"
           exit 1
         fi
 
         echo "🧪 Running system tests..."
-        if ! TEST_DATABASE_NAME='db/test-system.sqlite3' "${MISE_RUN[@]}" test-system; then
+        if ! TEST_DATABASE_NAME="$SYSTEM_TEST_DB" "${MISE_RUN[@]}" test-system; then
           echo "❌ System tests failed"
           exit 1
         fi

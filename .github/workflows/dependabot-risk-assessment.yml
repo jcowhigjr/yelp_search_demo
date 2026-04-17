@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2.4.0
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       
@@ -81,7 +81,7 @@ jobs:
           echo "  Version change: $UPDATE_TYPE"
           
       - name: Add risk assessment comment
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const riskLevel = '${{ steps.assessment.outputs.risk-level }}';

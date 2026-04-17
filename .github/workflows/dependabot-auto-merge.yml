@@ -16,14 +16,16 @@ jobs:
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v2.4.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-approve PR
-        uses: hmarr/auto-approve-action@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review --approve "${{ github.event.pull_request.number }}" \
+            --body "Auto-approved by CI for Dependabot PR. Auto-merge will occur after required checks pass."
 
       - name: Enable auto-merge for safe updates
         # Auto-merge patch updates, minor updates for dev deps, and all development dependencies
@@ -48,7 +50,7 @@ jobs:
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-major' ||
           (steps.metadata.outputs.update-type == 'version-update:semver-minor' && steps.metadata.outputs.dependency-type != 'development')
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.createComment({

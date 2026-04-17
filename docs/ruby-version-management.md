@@ -4,7 +4,9 @@ This document describes the process for managing Ruby versions in this project u
 
 ## Overview
 
-This project uses `mise` with the **core Ruby plugin** to manage Ruby versions. The Ruby version is specified in `mise.toml` as the single source of truth.
+This project uses `mise` with the **core Ruby plugin** to manage Ruby versions. The Ruby version is specified in `mise.toml` as the runtime source of truth, and the `ruby` directives in `Gemfile` and `Gemfile.next` are synchronized compatibility declarations for Bundler.
+
+Dependabot updates gems in the stable lane, including Rails when the Bundler graph changes. It does **not** manage the repository Ruby version. Ruby patch upgrades are handled by the `Ruby Evergreen` workflow and the `mise run ruby-evergreen-patch` task.
 
 ## Quick Reference
 
@@ -15,7 +17,10 @@ mise exec -- ruby -v
 # List available Ruby versions (sorted, newest last)
 mise ls-remote ruby
 
-# Update Ruby version in mise.toml
+# Update Ruby version declarations to the latest patch in the current minor
+mise run ruby-evergreen-patch
+
+# Or update mise.toml directly when doing a manual version bump
 mise use ruby@3.4.8  # or whatever version you need
 
 # Install the updated Ruby version
@@ -39,15 +44,21 @@ mise ls-remote ruby | tail -20
 mise ls-remote ruby | grep "^3.4"
 ```
 
-### 2. Update Ruby Version in mise.toml
+### 2. Update Ruby Version Declarations
 
-**IMPORTANT**: Always use the `mise` CLI to update the version - never manually edit `mise.toml`:
+For automated patch updates in the current Ruby minor:
+
+```bash
+mise run ruby-evergreen-patch
+```
+
+For manual updates, always use the `mise` CLI to update the version in `mise.toml`, then synchronize the Bundler declarations in `Gemfile` and `Gemfile.next`:
 
 ```bash
 # Update to a specific version
 mise use ruby@3.4.8
 
-# This will automatically update mise.toml
+# Then update the matching ruby directives in Gemfile and Gemfile.next
 ```
 
 ### 3. Check for Other Ruby Version References
@@ -107,9 +118,10 @@ mise run brakeman
 
 ## Important Notes
 
-### Single Source of Truth
+### Source of Truth
 
-- `mise.toml` is the **only** place where the Ruby version should be managed
+- `mise.toml` is the runtime source of truth for Ruby selection
+- `Gemfile` and `Gemfile.next` must stay synchronized with `mise.toml` so Bundler resolves against the same version declaration
 - Do NOT create `.ruby-version` files (they are ignored per `mise.toml` settings)
 - All commands should be prefixed with `mise exec --` to ensure version consistency
 
@@ -120,6 +132,13 @@ Patch version updates (e.g., 3.3.10 → 3.3.11 or 3.4.4 → 3.4.8) typically do 
 1. Run `rg` to find any hardcoded references
 2. Review the search results
 3. Update only if the patch version is explicitly referenced
+
+The `Ruby Evergreen` workflow follows a conservative policy:
+
+1. It only proposes the latest patch release within the current Ruby minor
+2. It updates `mise.toml`, `Gemfile`, and `Gemfile.next` together
+3. It refreshes both lockfiles with `bundle install`
+4. It runs `mise run test-smoke` and `mise run test-next-smoke` before opening a PR
 
 ### Major/Minor Version Updates
 
@@ -165,8 +184,9 @@ If RuboCop shows errors after updating:
 The CI environment uses `mise` to manage Ruby versions, so:
 
 1. CI will automatically use the version specified in `mise.toml`
-2. No need to update separate CI configuration for Ruby versions
-3. CI runs `mise install` as part of the setup process
+2. No separate Dependabot configuration is used for Ruby runtime upgrades
+3. The scheduled `Ruby Evergreen` workflow opens a PR for patch updates instead of mutating `develop`
+4. Minor-version Ruby upgrades should stay manual and approval-gated
 
 ## References
 

@@ -38,6 +38,12 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'form' do
       assert_select 'input[name=?]', 'search[query]'
     end
+
+    # Geolocation status chip contract for inline location feedback
+    assert_select '[data-geolocation-target=?][data-state=?]',
+                  'status',
+                  'idle',
+                  text: 'Checking location...'
   end
 
   test '#create' do
@@ -50,16 +56,29 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#show' do
+    @search.coffeeshops.create!(
+      name: 'Linked Phone Cafe',
+      address: '456 Link St Test City, CA',
+      rating: 4,
+      yelp_url: 'https://example.com/linked-phone-cafe',
+      image_url: 'https://example.com/linked-phone/o.jpg',
+      phone_number: '(415) 555-0123',
+    )
+
     get search_url(@search, locale: nil)
 
     assert_response :success
     assert_select '.search-results-masthead h2',
-                  text: "Top Rated Searches for #{@search.query} near you!"
+                  text: I18n.t('views.searches.results_masthead.heading')
     assert_select '.search-results-masthead__meta-pill',
-                  text: /Sorted by Yelp rating/
+                  text: /#{Regexp.escape(I18n.t('views.searches.results_masthead.query_label'))}/
+    assert_select '[data-testid="results-summary"]', text: /result/
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1
+    assert_select '.coffeeshop-card .phone-link[href^="tel:"]', minimum: 1
+    assert_select '.coffeeshop-card .phone-link--unavailable', text: 'Phone unavailable', minimum: 1
+    assert_select '.coffeeshop-card .phone-link[href="tel:Unknown phone number."]', count: 0
   end
 
   test '#update' do

@@ -1,0 +1,104 @@
+name: Ruby Evergreen
+
+on:
+  schedule:
+    - cron: "30 15 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ruby-patch-upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq libyaml-dev libpq-dev
+
+      - name: Setup Environment via mise
+        env:
+          SETUP_SKIP_NODE: "true"
+        run: |
+          bash bin/setup-environment.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Update Ruby version files to latest patch
+        id: update_ruby
+        run: |
+          mise exec -- ruby scripts/update_ruby_version.rb --latest-patch --apply
+          echo "version=$(ruby -e 'puts File.read(\"mise.toml\")[/ruby = \"([^\"]+)\"/, 1]')" >> "$GITHUB_OUTPUT"
+          if git diff --quiet -- mise.toml Gemfile Gemfile.next; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bundle install for stable lane
+        if: steps.update_ruby.outputs.changed == 'true'
+        run: mise exec -- bundle install
+
+      - name: Bundle install for next lane
+        if: steps.update_ruby.outputs.changed == 'true'
+        env:
+          BUNDLE_GEMFILE: Gemfile.next
+          BUNDLE_FROZEN: "false"
+        run: mise exec -- bundle install
+
+      - name: Run stable smoke tests
+        if: steps.update_ruby.outputs.changed == 'true'
+        run: mise run test-smoke
+
+      - name: Run next-lane smoke tests
+        if: steps.update_ruby.outputs.changed == 'true'
+        run: mise run test-next-smoke
+
+      - name: Commit branch and open pull request
+        if: steps.update_ruby.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.update_ruby.outputs.version }}"
+          BRANCH="chore/ruby-evergreen-${VERSION}"
+          TITLE="Build(ruby): bump Ruby to ${VERSION}"
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$BRANCH"
+          git add Gemfile Gemfile.lock Gemfile.next Gemfile.next.lock mise.toml
+          git commit -m "$TITLE"
+          git push --force-with-lease origin "$BRANCH"
+
+          EXISTING_PR="$(gh pr list --head "$BRANCH" --base develop --json number --jq '.[0].number // ""')"
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists for $BRANCH"
+            exit 0
+          fi
+
+          cat > /tmp/ruby-evergreen-pr.md <<EOF
+          ## Summary
+
+          - bumps Ruby to the latest patch release in the current minor line
+          - updates \`mise.toml\`, \`Gemfile\`, \`Gemfile.next\`, and refreshed lockfiles
+          - runs stable and next-lane smoke tests before opening the PR
+
+          Related to #2238.
+          EOF
+
+          gh pr create \
+            --base develop \
+            --head "$BRANCH" \
+            --title "$TITLE" \
+            --body-file /tmp/ruby-evergreen-pr.md

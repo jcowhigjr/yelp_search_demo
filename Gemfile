@@ -7,8 +7,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby File.read('.ruby-version').strip
 
-# I want dependabot to update ruby to the latest patch version and set it in the Gemfile.lock
-# I think this will allow different machines to run tests with different ruby patch versions
+# Ruby upgrades are handled by the evergreen workflow, not Dependabot.
+# Keep this declaration synchronized with mise.toml for Bundler compatibility.
 
 # ruby File.read('.ruby-version').strip
 
@@ -20,7 +20,10 @@ gem 'minitest', '~> 6.0'
 
 # Bundle edge Rails instead: gem 'rails', "~> 8.0"
 # gem 'rails', "~> 8.0"
-gem 'next_rails'
+# `next_rails` 1.4.7 currently hard-requires `byebug`, which breaks this repo's
+# CI boot path because the app uses the `debug` gem instead. Keep the last known
+# good version pinned until compatibility is verified.
+gem 'next_rails', '1.5.0'
 
 gem 'rails', '>= 8.1.0.beta1', '< 8.2'
 
@@ -35,7 +38,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'json'
 gem 'rest-client'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 7.2'
+gem 'puma', '~> 8.0'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -153,4 +156,4 @@ gem 'geocoder'
 # Removed duplicated development, ci group
 
 # Ruby version (must match mise.toml)
-ruby '3.3.10'
+ruby '3.3.11'

@@ -149,6 +149,75 @@ If headless browser verification is not configured or fails to run, the agent mu
 
 This is a **prompt-level/dev workflow** policy only. It does not require any changes to the Rails application itself.
 
+## Production Acceptance and Rollback Gate
+
+Technical validation is necessary but not sufficient for production-adjacent work.
+
+### Work classification
+
+Treat the following as `production-adjacent`:
+
+- deploy, release, CI, or workflow automation that can affect production behavior
+- runtime configuration and environment behavior
+- scheduled jobs or bots that can mutate branches, pull requests, or release flow
+- changes whose real success depends on live behavior after merge
+
+### Required state transitions
+
+Production-adjacent work must move through these states explicitly:
+
+1. `implemented`
+2. `validated`
+3. `validated-not-accepted`
+4. `accepted`
+
+Agents must not collapse `validated` into `accepted`.
+
+### Required evidence before merge
+
+For any production-adjacent PR, record all of the following in the PR body, issue, or closeout note:
+
+- **Verification**
+  - what was tested locally
+  - what was verified on GitHub, preview, or production-adjacent infrastructure
+  - what remains unverified
+- **Rollback / Flagging**
+  - feature flag path, if one exists
+  - otherwise, the revert-ready path
+  - the fastest safe rollback action available
+- **User Acceptance**
+  - who accepted the work, or
+  - the explicit instruction from the user to merge without waiting for acceptance
+
+### Merge and close rules
+
+Agents MUST NOT merge or close production-adjacent work if any of these are missing:
+
+- a linked issue with acceptance criteria
+- recorded verification evidence
+- recorded rollback or flag posture
+- explicit user acceptance, unless the user explicitly overrides that gate
+
+If the work is technically validated but not yet user accepted, the agent must describe it as `validated-not-accepted` and leave the issue or PR open unless the user says otherwise.
+
+### Preferred rollout posture
+
+- Prefer feature flags for user-facing production changes when a flag already exists or can be added cheaply.
+- If feature flags are not practical, require a documented revert path before merge.
+- For workflow and automation changes, the revert path can be:
+  - a revert PR reference
+  - a single-commit rollback plan
+  - a clear “disable this workflow or restore previous workflow version” note
+
+### Required final handoff summary
+
+Before merge/close, the agent must answer these four questions in plain language:
+
+- What was verified?
+- What was not verified?
+- What is the rollback or flagging path?
+- Who accepted the work?
+
 ### ⚠️ Known CSS Conflicts & Gotchas
 
 #### Materialize CSS Override Issue
@@ -276,7 +345,7 @@ Use this quick checklist when eliminating manual Dependabot toil.
 ## Notes
 - Requires: repo "Allow auto-merge" enabled; Actions `GITHUB_TOKEN` has PR write perms
 - Branch protection: required checks must pass for auto-merge to execute
-- Run this reminder anytime: `lefthook run workflow-status`
+- Run this reminder anytime: `./scripts/git-sync.sh`
 
 ## ⚠️ CRITICAL: `@dependabot rebase` vs `@dependabot recreate`
 
