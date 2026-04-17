@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1737
-Task: Edit app/views/search/index.html.erb to add a stronger masthead with clear hierarchy for query, location, and result count. Update the layout to improve results spacing rhythm on mobile and desktop without changing controller/model behavior. Run bin/rails test test/initializers/app_version_test.rb and report results.
+Simulated Warp execution for issue #1847
+Task: Edit VERSION file to include current Git commit SHA and build time, e.g. '0.2.2-1234567890'. Run bin/rails test test/initializers/app_version_test.rb and report results.
 Agent: coder
