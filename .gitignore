@@ -45,6 +45,10 @@ LiveReload.crx
 /config/credentials/production.key
 /config/credentials/test.key
 .env
+.env.local
+.env.development
+.env.test.local
+.env.*.local
 
 # node
 /node_modules
