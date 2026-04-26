@@ -65,7 +65,7 @@ jobs:
       - name: Fetch Dependabot metadata
         if: steps.pr.outputs.number != ''
         id: metadata
-        uses: dependabot/fetch-metadata@v3.0.0
+        uses: dependabot/fetch-metadata@v3.1.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           pull-request: ${{ steps.pr.outputs.number || github.event.pull_request.number || '' }}
