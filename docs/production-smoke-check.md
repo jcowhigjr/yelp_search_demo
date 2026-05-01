@@ -30,7 +30,8 @@ a failed deploy went unnoticed.  This check closes that gap.
 
 Both checks use only public HTTP — **no private Heroku credentials are required**.
 
-The workflow waits 90 seconds after the push before checking, to allow Heroku time to deploy.
+The workflow waits **3 minutes** after the push before checking to allow Heroku time to deploy,
+then retries each check (health: up to 5×; root page: up to 3×) before declaring a failure.
 
 ## What happens on failure
 
@@ -47,7 +48,8 @@ The workflow waits 90 seconds after the push before checking, to allow Heroku ti
   and activity log.
 - **Root page missing `search-hero-page` marker** — the app responded but the expected view
   is not rendering.  This could mean a stale asset cache, a failed asset pipeline build, or
-  that the wrong code revision was deployed.
+  that the wrong code revision was deployed.  The first 1000 bytes of the response are printed
+  to the workflow log to aid debugging.
 
 ## Extending the checks
 
