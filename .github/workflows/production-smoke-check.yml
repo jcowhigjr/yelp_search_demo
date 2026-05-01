@@ -1,0 +1,125 @@
+# Post-merge live-site smoke verification (issue #1848)
+#
+# Runs after every push to develop (the production-tracking branch) once
+# the standard CI suite has had a chance to complete.  It waits a short
+# period for Heroku to finish deploying, then makes two public HTTP
+# assertions against https://dorkbob.herokuapp.com/:
+#
+#  1. /healthz  →  HTTP 200 + body "OK"   (DB-backed app is alive)
+#  2. /          →  HTTP 200 + DOM marker  (Rails is rendering views)
+#
+# A failure exits non-zero (red check visible on the commit/branch in
+# GitHub) AND automatically opens a follow-up issue so drift is never
+# silent.  No private Heroku credentials are required.
+
+name: 'Production Smoke Check'
+
+on:
+  push:
+    branches:
+      - develop           # production-tracking branch
+  workflow_dispatch:      # allow manual re-runs
+
+permissions:
+  contents: read
+  issues: write           # needed to open a follow-up issue on failure
+
+env:
+  PROD_URL: 'https://dorkbob.herokuapp.com'
+
+jobs:
+  smoke-check:
+    name: Live-site smoke check
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------------
+      # 1. Give Heroku time to deploy after the push
+      # ----------------------------------------------------------------
+      - name: Wait for Heroku deployment
+        run: |
+          echo "Waiting 90 seconds for Heroku to finish deploying…"
+          sleep 90
+
+      # ----------------------------------------------------------------
+      # 2. Health endpoint — proves the app is up and DB is reachable
+      # ----------------------------------------------------------------
+      - name: Check /healthz endpoint
+        id: healthz
+        run: |
+          echo "Checking ${PROD_URL}/healthz …"
+          HTTP_STATUS=$(curl --silent --output /tmp/healthz_body \
+            --write-out '%{http_code}' \
+            --max-time 30 \
+            "${PROD_URL}/healthz")
+          BODY=$(cat /tmp/healthz_body)
+
+          echo "HTTP status : ${HTTP_STATUS}"
+          echo "Response body: ${BODY}"
+
+          if [[ "${HTTP_STATUS}" != "200" ]]; then
+            echo "::error::/healthz returned HTTP ${HTTP_STATUS} (expected 200)"
+            exit 1
+          fi
+
+          if [[ "${BODY}" != "OK" ]]; then
+            echo "::error::/healthz body was '${BODY}' (expected 'OK')"
+            exit 1
+          fi
+
+          echo "✅ /healthz check passed"
+
+      # ----------------------------------------------------------------
+      # 3. Root page — proves routing works and views are rendering
+      # ----------------------------------------------------------------
+      - name: Check root page DOM marker
+        id: root_page
+        run: |
+          echo "Checking ${PROD_URL}/ for DOM marker 'search-hero-page' …"
+          HTTP_STATUS=$(curl --silent --output /tmp/root_body \
+            --write-out '%{http_code}' \
+            --max-time 30 \
+            "${PROD_URL}/")
+
+          echo "HTTP status: ${HTTP_STATUS}"
+
+          if [[ "${HTTP_STATUS}" != "200" ]]; then
+            echo "::error::Root page returned HTTP ${HTTP_STATUS} (expected 200)"
+            exit 1
+          fi
+
+          if ! grep -q 'search-hero-page' /tmp/root_body; then
+            echo "::error::Root page HTML did not contain the expected DOM marker 'search-hero-page'"
+            echo "--- First 500 chars of response ---"
+            head -c 500 /tmp/root_body
+            exit 1
+          fi
+
+          echo "✅ Root page DOM marker check passed"
+
+      # ----------------------------------------------------------------
+      # 4. On failure — open a GitHub issue for visibility
+      # ----------------------------------------------------------------
+      - name: Open follow-up issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🚨 Production smoke check failed after merge to develop (run ${{ github.run_id }})" \
+            --body "## Production smoke check failure
+
+The automated live-site smoke check failed after merging commit \`${{ github.sha }}\` to \`develop\`.
+
+**Failing step:** one or more assertions against \`${PROD_URL}\` did not pass.
+
+**Checks performed:**
+- \`GET /healthz\` → expected HTTP 200 + body \"OK\"
+- \`GET /\` → expected HTTP 200 + DOM marker \`search-hero-page\`
+
+**CI run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+**Action required:** Investigate whether the deploy completed successfully or if production is serving stale code.
+
+_Opened automatically by the Production Smoke Check workflow._"
