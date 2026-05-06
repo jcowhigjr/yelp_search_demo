@@ -1,4 +1,3 @@
-Simulated Warp execution for issue #1847
-Task: Modify a central location (e.g., app/controllers/application_controller.rb or a dedicated service object) to read and aggregate the build provenance data (Git SHA, branch, and build time) from environment variables or build artifacts. This ensures the data is available without platform credentials (AC3).
-Next, implement a dedicated endpoint, such as /version, and/or modify the application middleware to expose this aggregated provenance data in a response header (AC4).
+Simulated Warp execution for issue #1744
+Task: Bump the patch version by +1 (semver) in both the `VERSION` file and `lib/jitter/version.rb`, ensuring both files are updated to the same new version string. After the version bump, run the test command `mise exec -- bin/rails test test/initializers/app_version_test.rb` and confirm that all tests pass. Finally, open or update the PR with a short summary and the exact test command(s) executed.
 Agent: coder
