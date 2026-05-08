@@ -4,7 +4,9 @@ require 'capybara/cuprite'
 
 Capybara.default_max_wait_time = 10
 
-# Domains to block in system tests — these cause Ferrum::PendingConnectionsError
+# Hosts to abort in Chrome via Ferrum network interception.
+# These external font/analytics domains cause Ferrum::PendingConnectionsError
+# because Chrome opens connections that never close within the test timeout.
 BLOCKED_HOSTS = %w[
   fonts.googleapis.com
   fonts.gstatic.com
@@ -21,6 +23,10 @@ Capybara.register_driver :cuprite_mobile do |app| # rubocop:disable Metrics/Bloc
       js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
       timeout: 60,
       process_timeout: 60,
+      # Safety net: don't error on pending CDN connections that slip past interception.
+      # We actively block BLOCKED_HOSTS via network interception in before_setup,
+      # but Materialize/Font Awesome CDNs (cdnjs.cloudflare.com) are required and may
+      # be slow in CI. Tests still validate app behavior via element assertions.
       pending_connection_errors: false,
       browser_options: {
         'no-sandbox': true,
@@ -69,11 +75,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     ENV.delete('YELP_API_KEY')
   end
 
-  # setup do
-  #   # Precompile assets before running the tests
-  #   system 'bin/rails tailwindcss:build'
-  # end
-
   # these helpers help with Timeouts on go_back
   include EvilSystems::Helpers
   include OAuthTestHelper
@@ -88,38 +89,20 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include SystemTestHelpers
 
   if ENV.fetch('SELENIUM', nil) == 'true'
-    # https://github.com/bullet-train-co/magic_test/wiki/Magic-Test-and-Cuprite
-    # TODO: This can run headless  https://github.com/hotwired/turbo-rails/blob/bb5cfcbc7eb9e96668803dd9fad50fdabd8cd6aa/test/application_system_test_case.rb
     driven_by :selenium,
               using: (ENV['SHOW_TESTS'] ? :chrome : :headless_chrome),
               screen_size: [1400, 1400] do |driver_option|
-      # https://edgeapi.rubyonrails.org/classes/ActionDispatch/SystemTestCase.html
-      # https://dev.to/doctolib/loading-chrome-extensions-in-capybara-integration-tests-3880
-      # 16) Add https://edgeapi.rubyonrails.org/classes/ActionDispatch/SystemTestCase.html capycorder extension for
-      # 17) Try out https://github.com/bullet-train-co/magic_test/issues which solves a similar issue i'm having
-      # 18) https://evilmartians.com/chronicles/system-of-a-test-2-robust-rails-browser-testing-with-sitepris
-      # Enable debugging capabilities
-
-      # save local crx for extensions: https://thebyteseffect.com/posts/crx-extractor-features/
-      # if ENV['SHOW_TESTS']
-      #   driver_option.add_extension('capycorder102.crx')
-      #   driver_option.add_extension('RailsPanel.crx')
-      #   # driver_option.add_extension('LiveReload.crx')
-      #   include MagicTest::Support
-      # end
     end
   else
   driven_by :cuprite,
             screen_size: [375, 667],
             options: {
-              # # Enable debugging capabilities
               inspector: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
-              # # Allow running Chrome in a headful mode by setting HEADLESS env
-              # # var to a falsey value
               headless: !ENV['HEADLESS'].in?(%w[n 0 no false]) && !ENV['MAGIC_TEST'].in?(%w[1]),
               js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
               timeout: 60,
               process_timeout: 60,
+              # Safety net — see comment on cuprite_mobile driver above.
               pending_connection_errors: false,
               browser_options: {
                 'no-sandbox': true,
@@ -134,30 +117,36 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
                 geolocation: true,
               },
             } do |driver_option|
-
-      # # TODO: # Mock geolocation
-      # driver_option.browser.command('Browser.grantPermissions',
-      #                               origin: 'http://127.0.0.1:*',
-      #                               permissions: ['geolocation'],
-      # )
-      # driver_option.browser.command('Emulation.setGeolocationOverride',
-      #                               latitude: 0.0,
-      #                               longitude: 0.0,
-      #                               accuracy: 100,
-      # )
     end
   end
 
-  # Capybara.configure do |config|
-  #   config.server = :puma, { Silent: true }
-  # end
-  # Include YelpApiHelper for API stubbing
   include YelpApiHelper
 
-  # Mock out the Yelp API in tests
   setup do
-    # Stub Yelp API requests for any search term and location
     stub_yelp_api_request
+  end
+
+  # Block external font/analytics domains that cause PendingConnectionsError.
+  # Runs before each test, after the browser is initialized.
+  setup do
+    if page.driver.respond_to?(:browser)
+      page.driver.browser.network.intercept
+      page.driver.browser.on(:request) do |request|
+        host = begin
+          URI(request.url).host
+        rescue URI::InvalidURIError
+          nil
+        end
+        if BLOCKED_HOSTS.include?(host)
+          request.abort
+        else
+          request.continue
+        end
+      end
+    end
+  rescue StandardError => e
+    # Network interception is best-effort; don't fail test setup
+    debug_output("Network interception setup failed: #{e.message}")
   end
 
   private
@@ -165,8 +154,15 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Viewport-aware navigation helper.
   # At mobile viewport (<=600px) Materialize hides desktop nav and shows
   # the sidenav-trigger hamburger. At desktop it's the reverse.
-  # This helper picks the right path automatically.
+  #
+  # Raises RuntimeError if the navbar is not present (e.g. not logged in),
+  # rather than producing a confusing ElementNotFound error downstream.
   def navigate_via_nav(link_text)
+    unless page.has_css?('nav', wait: 3)
+      raise "navigate_via_nav('#{link_text}') called but no <nav> found on page. " \
+            'The navbar only renders when logged in — check that login succeeded.'
+    end
+
     if mobile_viewport?
       open_mobile_sidenav
       find('#mobile-demo a', text: link_text, wait: 5).trigger('click')
@@ -175,15 +171,23 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     end
   end
 
+  # Returns true if the current browser viewport is mobile-width.
+  # Only rescues Ferrum-specific errors (dead browser, JS error, timeout),
+  # NOT all StandardError — unrelated exceptions must propagate.
   def mobile_viewport?
     page.evaluate_script('window.innerWidth') <= 600
-  rescue StandardError
-    # Default to checking screen_size from driver config
-    true # Cuprite default is 375px
+  rescue Ferrum::Error
+    # If we can't evaluate JS (browser dead, timeout), assume mobile
+    # since the default Cuprite screen_size is 375px.
+    true
   end
 
+  # Opens the Materialize mobile sidenav.
+  # Uses visible: true (not :all) so we only click triggers the user can see.
+  # If the trigger is hidden (e.g. at desktop width), this correctly fails
+  # rather than silently clicking an invisible element.
   def open_mobile_sidenav
-    trigger = find('.sidenav-trigger', visible: :all, wait: 5)
+    trigger = find('.sidenav-trigger', visible: true, wait: 5)
     trigger.trigger('click')
     assert_selector '#mobile-demo', visible: true, wait: 5
   end

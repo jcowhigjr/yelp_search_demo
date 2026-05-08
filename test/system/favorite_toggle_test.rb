@@ -48,7 +48,6 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     end
 
     # Wait for the Turbo stream response to update the frame
-    # Use has_selector to wait for the condition without raising an error
     assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after first click"
     assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), 
            "Button should exist in frame #{frame_id} after first click"
