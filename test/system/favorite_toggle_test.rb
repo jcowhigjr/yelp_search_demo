@@ -17,9 +17,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     click_on 'Log In'
 
     # Search for coffee to see results with contextual icons
-    visit '/'
+    visit new_search_path
 
-    assert_selector 'form.search-bar-container'
+    assert_selector 'form.search-bar-container', wait: 10
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 
@@ -89,9 +89,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     click_on 'Log In'
 
     # Coffee search - should show ☕️
-    visit '/'
+    visit new_search_path
 
-    assert_selector 'form.search-bar-container'
+    assert_selector 'form.search-bar-container', wait: 10
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 
@@ -110,9 +110,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Pizza search - should show 🍕
     stub_yelp_api_request('pizza')
-    visit '/'
+    visit new_search_path
 
-    assert_selector 'form.search-bar-container'
+    assert_selector 'form.search-bar-container', wait: 10
     fill_in 'search[query]', with: 'pizza'
     find('button[aria-label="Search"]').click
 
@@ -132,9 +132,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
   test 'anonymous user does not see favorite buttons' do
     # Don't login, just search
-    visit '/'
+    visit new_search_path
 
-    assert_selector 'form.search-bar-container'
+    assert_selector 'form.search-bar-container', wait: 10
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 

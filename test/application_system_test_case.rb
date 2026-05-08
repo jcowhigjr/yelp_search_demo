@@ -4,6 +4,13 @@ require 'capybara/cuprite'
 
 Capybara.default_max_wait_time = 10
 
+# Domains to block in system tests — these cause Ferrum::PendingConnectionsError
+BLOCKED_HOSTS = %w[
+  fonts.googleapis.com
+  fonts.gstatic.com
+  ga.jspm.io
+].freeze
+
 Capybara.register_driver :cuprite_mobile do |app| # rubocop:disable Metrics/BlockLength
   driver = Capybara::Cuprite::Driver.new(
     app,
@@ -14,6 +21,7 @@ Capybara.register_driver :cuprite_mobile do |app| # rubocop:disable Metrics/Bloc
       js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
       timeout: 60,
       process_timeout: 60,
+      pending_connection_errors: false,
       browser_options: {
         'no-sandbox': true,
         'disable-web-security': true,
@@ -112,6 +120,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
               js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
               timeout: 60,
               process_timeout: 60,
+              pending_connection_errors: false,
               browser_options: {
                 'no-sandbox': true,
                 'disable-web-security': true,
@@ -149,5 +158,33 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   setup do
     # Stub Yelp API requests for any search term and location
     stub_yelp_api_request
+  end
+
+  private
+
+  # Viewport-aware navigation helper.
+  # At mobile viewport (<=600px) Materialize hides desktop nav and shows
+  # the sidenav-trigger hamburger. At desktop it's the reverse.
+  # This helper picks the right path automatically.
+  def navigate_via_nav(link_text)
+    if mobile_viewport?
+      open_mobile_sidenav
+      find('#mobile-demo a', text: link_text, wait: 5).trigger('click')
+    else
+      click_on link_text
+    end
+  end
+
+  def mobile_viewport?
+    page.evaluate_script('window.innerWidth') <= 600
+  rescue StandardError
+    # Default to checking screen_size from driver config
+    true # Cuprite default is 375px
+  end
+
+  def open_mobile_sidenav
+    trigger = find('.sidenav-trigger', visible: :all, wait: 5)
+    trigger.trigger('click')
+    assert_selector '#mobile-demo', visible: true, wait: 5
   end
 end
