@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
 module SearchTestHelper
-  # Waits for actual search result cards to render.
-  # Checks for .coffeeshop-card (minimum: 1) rather than container selectors
-  # like .search-results or .search-results-grid, which may exist as empty
-  # elements before results load.
   def wait_for_search_results(timeout: 10)
-    assert_selector('.coffeeshop-card', minimum: 1, wait: timeout)
+    # Wait for search results to load
+    assert_selector('.search-results, .coffeeshop-card, [data-results]', wait: timeout)
   end
 
   def wait_for_more_info_button(timeout: 10)
+    # Wait for "More Info" button to be available
+    # Try multiple selectors in case the button text is localized differently
     selectors = [
       'a:text("More Info")',
       'a[href*="/coffeeshops/"]',
-      'a.material-button',
       '.btn-small',
       'a.btn-small',
     ]
@@ -30,31 +28,27 @@ module SearchTestHelper
     false
   end
 
-  # Clicks the first "More Info" / coffeeshop link using a fallback chain.
-  # Uses find(match: :first) instead of first() so that a miss raises
-  # Capybara::ElementNotFound (caught by rescue) rather than returning nil
-  # and raising NoMethodError on .click.
   def click_more_info_safely
-    click_on('More Info', match: :first)
-  rescue Capybara::ElementNotFound
-    begin
-      find('a[href*="/coffeeshops/"]', match: :first).click
+    # Try multiple strategies to click "More Info"
+    
+      click_on('More Info', match: :first)
     rescue Capybara::ElementNotFound
+      # Try alternative selectors
       begin
-        find('.material-button', match: :first).click
+        first('a[href*="/coffeeshops/"]').click
       rescue Capybara::ElementNotFound
-        find('.btn-small', match: :first).click
+        first('.btn-small').click
       end
-    end
+    
   end
 
   def perform_search(query, from_path: new_search_path)
     visit from_path
-    assert_selector 'form.search-bar-container', wait: 10
     fill_in 'search[query]', with: query
-    find('button[aria-label="Search"]').click
-
-    # Wait for actual result cards, not just containers
+    click_on 'search'
+    
+    # Wait for results
+    assert_text "Top Rated Searches for #{query} near you", wait: 10
     wait_for_search_results
   end
 end

@@ -16,14 +16,32 @@ class LogoutTest < ApplicationSystemTestCase
     fill_in 'email', with: @user.email
     fill_in 'Password', with: default_password
     click_on 'Log In'
+  
+    # In the new design, navigate using the updated navigation structure
+    if ENV['CUPRITE'] == 'true'
+      # Open mobile sidenav
+      sidenav_trigger = find('.sidenav-trigger')
+      sidenav_trigger.trigger('click')
 
-    # Use viewport-aware navigation helper
-    navigate_via_nav('New Search')
+      assert_selector '#mobile-demo', visible: true, wait: 5
+      find('#mobile-demo a', text: 'New Search').trigger('click')
+    else
+      # Desktop navigation - click directly
+      click_on 'New Search'
+    end
 
     assert_current_path '/searches/new'
+  
+    # Open navigation again to access logout
+    if ENV['CUPRITE'] == 'true'
+      sidenav_trigger = find('.sidenav-trigger')
+      sidenav_trigger.trigger('click')
 
-    # Navigate to logout
-    navigate_via_nav('Logout')
+      assert_selector '#mobile-demo', visible: true, wait: 5
+      find('#mobile-demo a', text: 'Logout').trigger('click')
+    else
+      click_on 'Logout'
+    end
 
     assert_current_path '/'
     fill_in 'search_query', with: 'yoga'

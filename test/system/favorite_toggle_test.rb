@@ -17,9 +17,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     click_on 'Log In'
 
     # Search for coffee to see results with contextual icons
-    visit new_search_path
+    visit '/'
 
-    assert_selector 'form.search-bar-container', wait: 10
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 
@@ -48,6 +48,7 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     end
 
     # Wait for the Turbo stream response to update the frame
+    # Use has_selector to wait for the condition without raising an error
     assert has_selector?("##{frame_id}", wait: 10), "Frame #{frame_id} should still exist after first click"
     assert has_selector?("##{frame_id} button.favorite-btn", wait: 10), 
            "Button should exist in frame #{frame_id} after first click"
@@ -88,9 +89,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
     click_on 'Log In'
 
     # Coffee search - should show ☕️
-    visit new_search_path
+    visit '/'
 
-    assert_selector 'form.search-bar-container', wait: 10
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 
@@ -109,9 +110,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
     # Pizza search - should show 🍕
     stub_yelp_api_request('pizza')
-    visit new_search_path
+    visit '/'
 
-    assert_selector 'form.search-bar-container', wait: 10
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'pizza'
     find('button[aria-label="Search"]').click
 
@@ -131,9 +132,9 @@ class FavoriteToggleTest < ApplicationSystemTestCase
 
   test 'anonymous user does not see favorite buttons' do
     # Don't login, just search
-    visit new_search_path
+    visit '/'
 
-    assert_selector 'form.search-bar-container', wait: 10
+    assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
     find('button[aria-label="Search"]').click
 

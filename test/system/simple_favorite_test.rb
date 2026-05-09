@@ -19,8 +19,7 @@ class SimpleFavoriteTest < ApplicationSystemTestCase
     # Navigate to search page after login
     visit new_search_path
 
-    # Wait for the search form to render (form has class search-bar-container)
-    assert_selector 'form.search-bar-container', wait: 10
+    assert_selector "input#search_query[name='search[query]']", wait: 10
     fill_in 'search_query', with: 'coffee'
     find('button[aria-label="Search"]').click
     
