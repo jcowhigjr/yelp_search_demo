@@ -14,6 +14,7 @@ Capybara.register_driver :cuprite_mobile do |app| # rubocop:disable Metrics/Bloc
       js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
       timeout: 60,
       process_timeout: 60,
+      pending_connection_errors: false,
       browser_options: {
         'no-sandbox': true,
         'disable-web-security': true,
@@ -112,6 +113,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
               js_errors: ENV.fetch('CUPRITE_JS_ERRORS', nil) == 'true',
               timeout: 60,
               process_timeout: 60,
+              pending_connection_errors: false,
               browser_options: {
                 'no-sandbox': true,
                 'disable-web-security': true,
