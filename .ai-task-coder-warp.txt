@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1744
-Task: Bump the patch version by +1 (semver) in both the `VERSION` file and `lib/jitter/version.rb`, ensuring both files are updated to the same new version string. After the version bump, run the test command `mise exec -- bin/rails test test/initializers/app_version_test.rb` and confirm that all tests pass. Finally, open or update the PR with a short summary and the exact test command(s) executed.
+Simulated Warp execution for issue #2268
+Task: Perform a comprehensive audit by reviewing `Gemfile`, `mise.toml`, workflow configuration files, and documentation to compare current Ruby and Rails declarations against the latest stable upstream versions (Ruby 3.3.11, Rails 8.1.3). Identify all mismatches and confirm if the current Ruby evergreen automation targets the intended patch line. Based on the audit, recommend whether the Rails prerelease lane should update its version constraint and propose necessary edits to the configuration files and documentation to align the repository with the recommended Ruby future path (3.3 patch only vs.
 Agent: coder
