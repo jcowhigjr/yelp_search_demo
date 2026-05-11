@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1744
-Task: Bump the patch version by +1 (semver) in both the `VERSION` file and `lib/jitter/version.rb`, ensuring both files are updated to the same new version string. After the version bump, run the test command `mise exec -- bin/rails test test/initializers/app_version_test.rb` and confirm that all tests pass. Finally, open or update the PR with a short summary and the exact test command(s) executed.
+Simulated Warp execution for issue #1737
+Task: Modify the main results page partials (e.g., app/views/search/_masthead.html.erb and app/views/search/results.html.erb) and associated CSS files to implement the stronger masthead, improve overall spacing rhythm, and redesign the coffee shop card partials to feel less dense, ensuring all changes are view/CSS only. Additionally, update the result card partials to visually enhance the scanability of primary and secondary actions, and extend the relevant feature spec files (e.g., spec/features/search_results_spec.rb) to cover the new UI structure and ensure full parity with the Figma reference.
 Agent: coder
