@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1744
-Task: Bump the patch version by +1 (semver) in both the `VERSION` file and `lib/jitter/version.rb`, ensuring both files are updated to the same new version string. After the version bump, run the test command `mise exec -- bin/rails test test/initializers/app_version_test.rb` and confirm that all tests pass. Finally, open or update the PR with a short summary and the exact test command(s) executed.
+Simulated Warp execution for issue #2238
+Task: Modify .github/workflows/dependabot.next.yml to restrict execution only to Dependabot-origin updates and ensure validation before pushing Gemfile.next.lock. In this workflow, replace any use of 'bundle install --update' with an explicit Bundler command targeting Gemfile.next, and implement smoke validation that fails the check without committing if tests fail.
 Agent: coder
