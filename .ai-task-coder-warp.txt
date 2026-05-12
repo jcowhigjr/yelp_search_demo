@@ -1,3 +1,3 @@
-Simulated Warp execution for issue #1744
-Task: Bump the patch version by +1 (semver) in both the `VERSION` file and `lib/jitter/version.rb`, ensuring both files are updated to the same new version string. After the version bump, run the test command `mise exec -- bin/rails test test/initializers/app_version_test.rb` and confirm that all tests pass. Finally, open or update the PR with a short summary and the exact test command(s) executed.
+Simulated Warp execution for issue #1331
+Task: Edit lefthook.yml to remove all invalid properties (including shell, verbose, skip_output, pre-command, post-command, fixer, workflow-* commands, and null skips) while ensuring all existing functional hooks and mise environment fixes are preserved. Additionally, update AGENTS.md to include explicit validation requirements for future configuration commits, and create a memory entry detailing the lefthook corruption prevention guide.
 Agent: coder
