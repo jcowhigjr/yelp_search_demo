@@ -142,11 +142,12 @@ sleep 0.5
 "$MISE_CMD" settings experimental true
 "$MISE_CMD" settings legacy_version_file true # Important if using .tool-versions or similar
 
-if [[ "${CODEX:-}" == "true" || "${CI:-}" == "true" ]]; then
-  echo_info "Skipping mise all_compile to allow binary downloads in CI/Codex environments"
-  "$MISE_CMD" settings all_compile false
+if [[ "${SETUP_FORCE_RUBY_COMPILE:-false}" == "true" ]]; then
+  echo_info "SETUP_FORCE_RUBY_COMPILE is true. Allowing source compilation for mise-managed tools."
+  "$MISE_CMD" settings all_compile true
 else
-  "$MISE_CMD" settings all_compile true # Ensure tools like Ruby are compiled if necessary
+  echo_info "Preferring precompiled mise-managed tools for faster, no-admin bootstrap."
+  "$MISE_CMD" settings all_compile false
 fi
 
 # Trust the project's mise configuration
