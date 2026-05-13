@@ -336,6 +336,59 @@ jobs:
               description: 'Ruby on Rails CI test job',
               target_url: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
             });
+
+  production-bundle:
+    name: Validate production bundle
+    runs-on: ubuntu-latest
+    needs: [get-risk-assessment]
+    if: |
+      always() && !cancelled() &&
+      (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')
+    permissions:
+      contents: read
+    env:
+      BUNDLE_PATH: vendor/bundle
+      BUNDLE_WITH: postgres
+      BUNDLE_WITHOUT: development:test
+      RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v6
+      - name: Install system dependencies
+        if: env.RUN_FULL_CI == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq jq libyaml-dev libpq-dev
+      - name: Cache mise tools
+        if: env.RUN_FULL_CI == 'true'
+        uses: actions/cache@v5
+        with:
+          path: ~/.local/share/mise
+          key: mise-${{ runner.os }}-${{ hashFiles('mise.toml') }}
+          restore-keys: |
+            mise-${{ runner.os }}-
+      - name: Cache production gems
+        if: env.RUN_FULL_CI == 'true'
+        uses: actions/cache@v5
+        with:
+          path: vendor/bundle
+          key: gems-production-${{ runner.os }}-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            gems-production-${{ runner.os }}-
+      - name: Setup Environment via mise
+        if: env.RUN_FULL_CI == 'true'
+        env:
+          SETUP_SKIP_NODE: "true"
+        run: |
+          bash bin/setup-environment.sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install production bundle
+        if: env.RUN_FULL_CI == 'true'
+        env:
+          CI: true
+        run: |
+          mise exec -- bundle install
+          mise exec -- ruby -e 'require "pg"; require "psych"; puts "production bundle is loadable"'
   # Note: Auto-merge logic has been moved to auto-approve.yml
   # to avoid conflicts with branch protection and CodeQL requirements
 
