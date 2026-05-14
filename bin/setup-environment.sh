@@ -145,9 +145,11 @@ sleep 0.5
 if [[ "${SETUP_FORCE_RUBY_COMPILE:-false}" == "true" ]]; then
   echo_info "SETUP_FORCE_RUBY_COMPILE is true. Allowing source compilation for mise-managed tools."
   "$MISE_CMD" settings all_compile true
+  "$MISE_CMD" settings ruby.compile true
 else
   echo_info "Preferring precompiled mise-managed tools for faster, no-admin bootstrap."
   "$MISE_CMD" settings all_compile false
+  "$MISE_CMD" settings ruby.compile false
 fi
 
 # Trust the project's mise configuration
