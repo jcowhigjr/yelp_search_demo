@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :coffeeshops, through: :user_favorites
   has_many :reviews, dependent: :destroy
   has_many :searches, dependent: :destroy
+  has_many :outcome_events, dependent: :nullify
 
   include Flipper::Identifier
 

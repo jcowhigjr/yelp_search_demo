@@ -24,6 +24,7 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     # Mock Yelp API response to prevent real API calls in tests
     RestClient::Request.stubs(:execute).returns(MOCK_API_RESPONSE)
+
   end
 
   test '#new' do
