@@ -7,18 +7,25 @@ class FavoritesController < ApplicationController
 
   def create
     current_user.user_favorites.create!(coffeeshop: @item)
+    OutcomeEvents.record(
+      'favorite_added',
+      user: current_user,
+      payload: { coffeeshop_id: @item.id },
+    )
     set_button_variables
+    render layout: false
   end
 
   def destroy
     current_user.user_favorites.find_by(coffeeshop: @item)&.destroy
     set_button_variables
+    render layout: false
   end
 
   private
 
   def set_item
-    @item = Coffeeshop.find(params[:id])
+    @item = Coffeeshop.find(params.expect(:id))
   rescue ActiveRecord::RecordNotFound
     flash[:alert] = t('.not_found')
     redirect_to root_path
