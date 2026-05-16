@@ -8,16 +8,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     @review = reviews(:one)
     @user = users(:one)
 
-    original_asset_path_helper = ActionController::Base.helpers.method(:asset_path)
-    @original_asset_path_helper = original_asset_path_helper
-
-    ActionController::Base.helpers.define_singleton_method(:asset_path) do |source, *args|
-      if ['tailwind.css', 'tailwind'].include?(source.to_s)
-        '/assets/tailwind.css'
-      else
-        original_asset_path_helper.call(source, *args)
-      end
-    end
+    stub_tailwind_asset_path
   end
 
   teardown do
@@ -29,6 +20,8 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create review' do
+    login_as(@user)
+
     assert_difference('Review.count') do
       post coffeeshop_reviews_path(@coffeeshop, locale: nil),
            params: {
@@ -103,5 +96,20 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to coffeeshop_path(@coffeeshop)
+  end
+
+  private
+
+  def stub_tailwind_asset_path
+    original_asset_path_helper = ActionController::Base.helpers.method(:asset_path)
+    @original_asset_path_helper = original_asset_path_helper
+
+    ActionController::Base.helpers.define_singleton_method(:asset_path) do |source, *args|
+      if ['tailwind.css', 'tailwind'].include?(source.to_s)
+        '/assets/tailwind.css'
+      else
+        original_asset_path_helper.call(source, *args)
+      end
+    end
   end
 end

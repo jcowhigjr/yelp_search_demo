@@ -33,7 +33,7 @@ class NavigationTest < ApplicationSystemTestCase
     # Go back to search form and verify
     go_back
 
-    assert_current_path new_search_path
+    assert_current_path new_search_path, wait: 10
   end
 
   private

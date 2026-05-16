@@ -100,4 +100,15 @@ class UserTest < ActiveSupport::TestCase
 
     assert_not user2.valid?
   end
+
+  test 'destroying a user preserves outcome events without attribution' do
+    user = users(:one)
+    event = OutcomeEvent.create!(user:, event_type: 'search_success')
+
+    assert_difference('OutcomeEvent.count', 0) do
+      user.destroy!
+    end
+
+    assert_nil event.reload.user
+  end
 end
