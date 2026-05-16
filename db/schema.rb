@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_16_190000) do
   create_table "coffeeshops", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
@@ -22,6 +22,18 @@ ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
     t.datetime "updated_at", null: false
     t.string "yelp_url"
     t.index ["search_id"], name: "index_coffeeshops_on_search_id"
+  end
+
+  create_table "outcome_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event_type", null: false
+    t.json "payload", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["created_at"], name: "index_outcome_events_on_created_at"
+    t.index ["event_type", "created_at"], name: "index_outcome_events_on_event_type_and_created_at"
+    t.index ["event_type"], name: "index_outcome_events_on_event_type"
+    t.index ["user_id"], name: "index_outcome_events_on_user_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -63,4 +75,6 @@ ActiveRecord::Schema[8.1].define(version: 2022_04_24_011602) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
   end
+
+  add_foreign_key "outcome_events", "users"
 end
