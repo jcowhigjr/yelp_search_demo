@@ -1,6 +1,5 @@
 <div class="row center">
     <%= form_with(model: [@coffeeshop, review], id: "#{dom_id(review)}_form" ) do |f| %>
-        <%= f.hidden_field :user_id, value: current_user.id %>
         <%= f.label t('.rating') %>
         <%= f.select(:rating,
                      options_for_select([['★☆☆☆☆', 1],['★★☆☆☆', 2], ['★★★☆☆', 3], ['★★★★☆', 4], ['★★★★★', 5]]),
