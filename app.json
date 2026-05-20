@@ -8,6 +8,10 @@
       "required": true,
       "value": "en_US.UTF-8"
     },
+    "BUNDLE_WITH": {
+      "required": true,
+      "value": "postgres"
+    },
     "RACK_ENV": {
       "required": true,
       "value": "production"
