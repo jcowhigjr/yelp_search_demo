@@ -45,5 +45,6 @@
   "debug.javascript.defaultRuntimeExecutable": {
     "pwa-node": "/Users/temp/.local/share/mise/shims/node"
   },
-  "python.defaultInterpreterPath": "/Users/temp/.local/share/mise/installs/python/3.12.9/bin/python"
+  "python.defaultInterpreterPath": "/Users/temp/.local/share/mise/installs/python/3.12.9/bin/python",
+  "shellcheck.executablePath": "/Users/temp/.local/share/mise/shims/shellcheck"
 }
