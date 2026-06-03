@@ -218,7 +218,7 @@ jobs:
     needs: [get-risk-assessment]
     if: |
       always() && !cancelled() && (
-      (github.event_name == 'push' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'push' && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/dependabot/'))) ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') ||
       ((github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && 
        (needs.get-risk-assessment.result == 'success' || needs.get-risk-assessment.result == 'skipped')))

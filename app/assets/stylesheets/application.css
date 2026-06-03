@@ -52,14 +52,7 @@ body {
 .btn-small {
   background-color: #1c5b82;
 }
-.search-bar {
-  width: 100%;
-  border-radius: 15px;
-  border: 1px #000 solid;
-  padding: 5px 5px 5px 25px;
-  display: inline-block;
-  color: var(--color-text);
-}
+/* .search-bar styles moved to search-bar.css */
 
 .landing-logo {
   margin-top: 100px;
