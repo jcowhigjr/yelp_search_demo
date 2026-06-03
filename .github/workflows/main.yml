@@ -358,7 +358,7 @@ jobs:
         if: env.RUN_FULL_CI == 'true'
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq jq libyaml-dev libpq-dev
+          sudo apt-get install -y -qq jq libyaml-dev libpq-dev pkg-config
       - name: Cache mise tools
         if: env.RUN_FULL_CI == 'true'
         uses: actions/cache@v5
@@ -387,6 +387,7 @@ jobs:
         env:
           CI: true
         run: |
+          mise exec -- bundle config set --local build.pg "--with-pg-config=/usr/bin/pg_config"
           mise exec -- bundle install
           mise exec -- ruby -e 'require "pg"; require "psych"; puts "production bundle is loadable"'
   # Note: Auto-merge logic has been moved to auto-approve.yml
