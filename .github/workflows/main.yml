@@ -389,7 +389,7 @@ jobs:
         run: |
           mise exec -- bundle config set --local build.pg "--with-pg-config=/usr/bin/pg_config"
           mise exec -- bundle install
-          mise exec -- ruby -e 'require "pg"; require "psych"; puts "production bundle is loadable"'
+          mise exec -- bundle exec ruby -e 'require "pg"; require "psych"; puts "production bundle is loadable"'
   # Note: Auto-merge logic has been moved to auto-approve.yml
   # to avoid conflicts with branch protection and CodeQL requirements
 
