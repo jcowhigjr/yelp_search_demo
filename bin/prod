@@ -8,7 +8,7 @@ fi
 
 rm .env
 env
-bundle install -j4
+BUNDLE_WITH=postgres bundle install -j4
 bin/rake assets:precompile
 bin/rake assets:clean
 

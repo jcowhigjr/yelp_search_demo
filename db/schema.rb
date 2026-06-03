@@ -76,5 +76,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_16_190000) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
-  add_foreign_key "outcome_events", "users"
+  add_foreign_key "outcome_events", "users", on_delete: :nullify
 end

@@ -45,6 +45,11 @@ legacy_version_file = false # Changed as per PR 3 Option A
 always_keep_download = true
 trusted_config_paths = ["."]
 
+[settings.ruby]
+# Opt into precompiled Ruby binaries on macOS arm64 so no-admin bootstrap
+# does not need Xcode CLI tools or libyaml headers just to install Ruby.
+compile = false
+
 [tasks.setup]
 description = "Run development setup script"
 run = "bin/setup"
