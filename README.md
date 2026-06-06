@@ -4,6 +4,14 @@ A pretty generic Ruby on Rails 8 application that allows users to find anything 
 
 Use the application at https://dorkbob.herokuapp.com
 
+## Development
+
+Run the test suite with:
+
+```bash
+bin/rails test
+```
+
 ## 🤖 For AI Agents / Agent Coders
 
 **IMPORTANT**: This project uses automated git workflow protection. Before making any changes, please read:
