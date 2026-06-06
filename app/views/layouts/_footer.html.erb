@@ -1,32 +1,29 @@
-<footer class="page-footer mt-auto py-8">
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-      <!-- Copyright -->
+<footer class="page-footer mt-auto">
+  <div class="footer-shell container mx-auto px-4">
+    <div class="footer-layout">
       <p class="footer-text">
         © <%= Time.current.year %> Jitter
       </p>
 
-      <!-- Footer Links -->
-      <ul class="flex items-center gap-6">
+      <ul class="footer-links" aria-label="Footer links">
         <li>
           <%= link_to 'About',
                       static_home_url,
-                      class: 'language-nav__link' %>
+                      class: 'footer-link' %>
         </li>
         <li>
           <%= link_to 'Contact',
                       static_home_url,
-                      class: 'language-nav__link' %>
+                      class: 'footer-link' %>
         </li>
         <li>
           <%= link_to 'Privacy',
                       static_home_url,
-                      class: 'language-nav__link' %>
+                      class: 'footer-link' %>
         </li>
       </ul>
 
-      <!-- Language Navigation -->
-      <nav class="language-nav" aria-label="Language and footer links">
+      <div class="footer-language" role="navigation" aria-label="Language selection">
         <% I18n.available_locales.each_with_index do |locale, index| %>
           <span class="language-nav__item">
             <%= link_to request.params.merge(locale: resolve_locale(locale)),
@@ -43,7 +40,7 @@
           <% end %>
         <% end %>
         <span class="language-nav__cta"><%= Flipper[:early_access_preview].enabled? ? t('.early-access') : t('.coming-soon-sig') %></span>
-      </nav>
+      </div>
     </div>
   </div>
 </footer>

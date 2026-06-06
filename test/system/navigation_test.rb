@@ -36,6 +36,19 @@ class NavigationTest < ApplicationSystemTestCase
     assert_current_path new_search_path, wait: 10
   end
 
+  test 'footer renders grouped links and language selection without Materialize nav chrome' do
+    visit new_search_path
+
+    within 'footer.page-footer' do
+      assert_text 'Jitter'
+      assert_selector '.footer-links a.footer-link', text: 'About'
+      assert_selector '.footer-links a.footer-link', text: 'Contact'
+      assert_selector '.footer-links a.footer-link', text: 'Privacy'
+      assert_selector '.footer-language[role="navigation"][aria-label="Language selection"]'
+      assert_no_selector 'nav.language-nav'
+    end
+  end
+
   private
 
   def go_back
