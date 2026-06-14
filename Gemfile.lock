@@ -93,7 +93,7 @@ GEM
       debug_inspector (>= 1.2.0)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
-    brakeman (8.0.4)
+    brakeman (8.0.5)
       racc
     brotli (0.8.0)
     builder (3.3.0)
