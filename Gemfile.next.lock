@@ -477,12 +477,12 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (4.4.0)
+    tailwindcss-rails (4.6.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.1.16-arm64-darwin)
-    tailwindcss-ruby (4.1.16-x86_64-darwin)
-    tailwindcss-ruby (4.1.16-x86_64-linux-gnu)
+    tailwindcss-ruby (4.3.1-arm64-darwin)
+    tailwindcss-ruby (4.3.1-x86_64-darwin)
+    tailwindcss-ruby (4.3.1-x86_64-linux-gnu)
     temple (0.10.4)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
@@ -575,7 +575,7 @@ DEPENDENCIES
   selenium-webdriver
   sprockets-exporters_pack
   sqlite3 (~> 2.9)
-  tailwindcss-rails (~> 4.4)
+  tailwindcss-rails (~> 4.6)
   turbo-rails (~> 2.0)
   web-console
   webmock
