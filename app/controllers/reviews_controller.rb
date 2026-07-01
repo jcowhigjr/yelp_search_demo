@@ -1,5 +1,5 @@
 class ReviewsController < ApplicationController
-  before_action :require_login, only: [:create, :destroy]
+  before_action :require_login, only: [:create, :destroy, :index]
   before_action :find_or_redirect, except: [:create]
   helper_method :permission?
 

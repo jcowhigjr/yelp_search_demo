@@ -32,7 +32,7 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
            }
     end
 
-    assert_redirected_to coffeeshop_path(@coffeeshop)
+    assert_redirected_to static_home_path
   end
 
   test 'redirects unauthenticated create without creating review' do
