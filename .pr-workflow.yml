@@ -2,7 +2,7 @@
 # This file configures the automated PR workflow for this repository
 
 # Base branch to merge PRs into
-baseBranch: main
+baseBranch: gpt-4
 
 # How to merge PRs: merge, squash, or rebase
 mergeMethod: squash
@@ -11,7 +11,7 @@ mergeMethod: squash
 pollInterval: 300
 
 # Review model to use: local-gpt, gpt-4, claude, gemini, or disabled
-reviewModel: local-gpt
+reviewModel: gpt-4
 
 # Whether to auto-approve PRs that meet all criteria
 autoApprove: false
