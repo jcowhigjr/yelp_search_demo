@@ -35,7 +35,7 @@ The MCP (Model Context Protocol) environment has been verified with mixed health
 1. **mcp-redis**
    - Status: Exited (255) 14 hours ago
    - Ports: 0.0.0.0:6379->6379/tcp
-   - Action Taken: Attempted restart
+   - Action Taken: Removed from container restart loop
 
 2. **mcp-yelp-server**
    - Status: Exited (255) 14 hours ago  
@@ -89,8 +89,8 @@ Per the project's `/docs/pr-workflow.md` conventions:
 
 1. **Immediate Actions:**
    - Investigate `mcp-docker` restart loop issue
-   - Consider restarting `mcp-redis` if Redis functionality is required
-   - Monitor `mcp-context7` and `mcp-review-server` for continued stability
+   - Consider rebuilding the image if necessary
+   - Monitor `mcp-review-server` and `mcp-context7` for continued stability
 
 2. **Maintenance:**
    - Review container logs for the failing `mcp-docker` service
