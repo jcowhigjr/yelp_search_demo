@@ -11,9 +11,8 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     stub_tailwind_asset_path
   end
 
-  teardown do
-    ActionController::Base.helpers.define_singleton_method(:asset_path, @original_asset_path_helper)
-  end
+  teardown { ActionController::Base.helpers.define_singleton_method(:asset_path, @original_asset_path_helper) }
+
   def login_as(user)
     ApplicationController.any_instance.stubs(:current_user).returns(user)
     ApplicationController.any_instance.stubs(:logged_in?).returns(true)
@@ -34,6 +33,15 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to coffeeshop_path(@coffeeshop)
+  end
+
+  test 'redirects unauthenticated create without creating review' do
+    assert_no_difference('Review.count') do
+      post coffeeshop_reviews_path(@coffeeshop, locale: nil),
+           params: { review: { rating: @review.rating, content: @review.content } }
+    end
+
+    assert_redirected_to static_home_path
   end
 
   test 'updates review and redirects on html success' do
@@ -91,11 +99,19 @@ class ReviewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should destroy the user review' do
+    login_as(@user)
+
     assert_difference('Review.count', -1) do
       delete user_review_path(@user, @review, locale: nil)
     end
 
     assert_redirected_to coffeeshop_path(@coffeeshop)
+  end
+
+  test 'redirects unauthenticated destroy without deleting review' do
+    assert_no_difference('Review.count') { delete user_review_path(@user, @review, locale: nil) }
+
+    assert_redirected_to static_home_path
   end
 
   private

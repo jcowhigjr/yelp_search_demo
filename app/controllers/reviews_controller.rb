@@ -1,4 +1,5 @@
 class ReviewsController < ApplicationController
+  before_action :require_login, only: [:create, :destroy]
   before_action :find_or_redirect, except: [:create]
   helper_method :permission?
 
@@ -41,6 +42,10 @@ class ReviewsController < ApplicationController
   end
 
   private
+
+  def require_login
+    redirect_to static_home_url unless logged_in?
+  end
 
   def review_params
     params.expect(review: [:content, :rating, :coffeeshop_id])
