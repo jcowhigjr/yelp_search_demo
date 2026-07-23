@@ -49,7 +49,11 @@ gem 'importmap-rails'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
-gem 'pg', require: false
+# PostgreSQL is optional for local bootstrap. Keep it in an opt-in bundle so
+# standard macOS accounts can install and run the app without native PG headers.
+group :postgres, optional: true do
+  gem 'pg', require: false
+end
 
 if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
   gem 'sqlite3', '~> 2.9', require: false, group: :development

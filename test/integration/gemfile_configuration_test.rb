@@ -1,18 +1,33 @@
 require 'test_helper'
+require 'json'
 
 class GemfileConfigurationTest < ActiveSupport::TestCase
   GEMFILE = Rails.root.join('Gemfile')
+  APP_JSON = Rails.root.join('app.json')
 
-  test 'pg gem must be in the default group without platform restrictions' do
-    lines = File.readlines(GEMFILE).map(&:chomp)
-    pg_line_idx = lines.index { |l| l.match?(/^\s*gem ['"]pg['"]/) }
+  test 'pg gem must be in the optional postgres group' do
+    content = File.read(GEMFILE)
+    group_match = content.match(/group\s+:postgres,\s*optional:\s*true\s+do\s*\n((?:.*\n)*?)(?=\s+end)/)
 
-    assert pg_line_idx, 'pg gem declaration not found in Gemfile'
+    assert group_match, 'Gemfile must have `group :postgres, optional: true do ... end`'
+    assert_includes group_match[1], "gem 'pg'",
+                    'pg gem must be declared inside the optional postgres group'
+  end
 
-    pg_line = lines[pg_line_idx]
+  test 'default bootstrap bundle excludes postgres group' do
+    content = File.read(GEMFILE)
 
-    assert_not pg_line.match?(/^  /),
-               "pg gem appears to be indented (#{pg_line.strip}), meaning it's inside a block. " \
-               'It must be at the top level of the Gemfile to avoid Bundler 2.7.1 deployment-mode issues on Heroku.'
+    assert_includes content, "group :postgres, optional: true",
+                    'postgres group must be optional so default bundle install skips pg'
+  end
+
+  test 'app.json declares BUNDLE_WITH=postgres for Review Apps and new apps' do
+    app_config = JSON.parse(File.read(APP_JSON))
+
+    assert_equal 'postgres', app_config.dig('env', 'BUNDLE_WITH', 'value'),
+                 'app.json must set BUNDLE_WITH=postgres so new/Review Apps include the pg gem'
+
+    assert app_config.dig('env', 'BUNDLE_WITH', 'required'),
+           'app.json must mark BUNDLE_WITH as required'
   end
 end
