@@ -64,20 +64,6 @@ fi
 
 echo "INFO: Using MISE executable: $MISE_EXEC_PATH" | tee -a "$SETUP_LOG" >/dev/null
 
-echo "\n== Setting up Git hooks =="
-# Try lefthook via standalone binary first, then via Bundler; otherwise skip gracefully in CI
-if [ "${CI:-false}" != "true" ]; then
-  if command -v lefthook >/dev/null 2>&1; then
-    system! "$MISE_EXEC_PATH" exec -- lefthook install
-  elif "$MISE_EXEC_PATH" exec -- bundle exec lefthook --version >/dev/null 2>&1; then
-    system! "$MISE_EXEC_PATH" exec -- bundle exec lefthook install
-  else
-    echo "⚠️ Lefthook not found; skipping Git hooks installation"
-  fi
-else
-  echo "CI environment detected; skipping Git hooks installation"
-fi
-
   # This script is a way to set up or update your development environment automatically.
   # This script is idempotent, so that you can run it at any time and get an expectable outcome.
   # Add necessary setup steps to this file.
@@ -94,6 +80,28 @@ fi
       echo "Working directory: $(pwd)"
       exit 1
     fi
+  fi
+
+  echo "\n== Setting up Git hooks =="
+  # Git hooks are a local-development convenience. Install them only after the
+  # primary bundle is ready, and never execute a project Bundler binstub that
+  # may have been generated for a different Gemfile.
+  if [ "${CI:-false}" != "true" ]; then
+    LEFTHOOK_BIN=$(command -v lefthook 2>/dev/null || true)
+    if [ "$LEFTHOOK_BIN" = "$APP_ROOT/bin/lefthook" ]; then
+      echo "⚠️ Ignoring project lefthook binstub; looking for a usable installation"
+      LEFTHOOK_BIN=""
+    fi
+
+    if [ -n "$LEFTHOOK_BIN" ]; then
+      system! "$MISE_EXEC_PATH" exec -- "$LEFTHOOK_BIN" install
+    elif "$MISE_EXEC_PATH" exec -- bundle exec lefthook --version >/dev/null 2>&1; then
+      system! "$MISE_EXEC_PATH" exec -- bundle exec lefthook install
+    else
+      echo "⚠️ Lefthook not found; skipping Git hooks installation"
+    fi
+  else
+    echo "CI environment detected; skipping Git hooks installation"
   fi
 
   # echo "\n== Copying sample files =="
