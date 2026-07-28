@@ -132,22 +132,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cat > /tmp/smoke-issue-body.md <<EOF
+          ## Production smoke check failure
+
+          The automated live-site smoke check failed after merging commit \`${{ github.sha }}\` to \`develop\`.
+
+          **Checks performed against \`${PROD_URL}\`:**
+          - \`GET /healthz\` → expected HTTP 200 + body \`OK\`
+          - \`GET /\` → expected HTTP 200 + DOM marker \`search-hero-page\`
+
+          **CI run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ### Next steps
+          1. Check the [Heroku activity log](https://dashboard.heroku.com/) to confirm the deploy completed.
+          2. If the deploy failed, re-trigger it manually.
+          3. If the deploy succeeded but checks still fail, inspect the application logs.
+
+          _Opened automatically by the [Production Smoke Check](.github/workflows/production-smoke-check.yml) workflow._
+          EOF
+
           gh issue create \
             --repo "${{ github.repository }}" \
             --title "🚨 Production smoke check failed after merge to develop (run ${{ github.run_id }})" \
-            --body "## Production smoke check failure
-
-The automated live-site smoke check failed after merging commit \`${{ github.sha }}\` to \`develop\`.
-
-**Checks performed against \`${PROD_URL}\`:**
-- \`GET /healthz\` → expected HTTP 200 + body \`OK\`
-- \`GET /\` → expected HTTP 200 + DOM marker \`search-hero-page\`
-
-**CI run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-### Next steps
-1. Check the [Heroku activity log](https://dashboard.heroku.com/) to confirm the deploy completed.
-2. If the deploy failed, re-trigger it manually.
-3. If the deploy succeeded but checks still fail, inspect the application logs.
-
-_Opened automatically by the [Production Smoke Check](.github/workflows/production-smoke-check.yml) workflow._"
+            --body-file /tmp/smoke-issue-body.md
