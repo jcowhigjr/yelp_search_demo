@@ -13,8 +13,6 @@ permissions:
 jobs:
   auto-update:
     runs-on: ubuntu-latest
-    # Skip this job for PRs from Dependabot to avoid circular updates
-    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -23,17 +21,25 @@ jobs:
       
       - name: Update PR branches that are behind develop
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
           echo "Listing PRs targeting develop that are behind..."
-          # Fetch PRs with fields we need and select those behind base
+
           mapfile -t PRS < <(gh pr list \
             --base develop \
             --state open \
-            --json number,isCrossRepository,headRefName \
-            --jq '.[] | select(.isCrossRepository == false) | .number')
+            --json number,isCrossRepository,headRefName,headRefOid,mergeStateStatus,autoMergeRequest \
+            --jq '.[] |
+              select(.isCrossRepository == false and .mergeStateStatus == "BEHIND") |
+              [
+                .number,
+                .headRefName,
+                .headRefOid,
+                (.autoMergeRequest != null)
+              ] |
+              @tsv')
 
           if [[ ${#PRS[@]} -eq 0 ]]; then
             echo "No open PRs behind develop."
@@ -41,34 +47,38 @@ jobs:
           fi
 
           echo "PRs to update: ${PRS[*]}"
-          for PR in "${PRS[@]}"; do
+          for PR_DATA in "${PRS[@]}"; do
+            IFS=$'\t' read -r PR HEAD_BRANCH HEAD_SHA RESTORE_AUTO_MERGE <<< "$PR_DATA"
             echo "Updating branch on PR #${PR}"
-            # Fetch the current head SHA and branch name for concurrency control
-            PR_DATA=$(gh pr view "$PR" --json headRefOid,headRefName --jq '{sha: .headRefOid, branch: .headRefName}')
-            HEAD_SHA=$(echo "$PR_DATA" | jq -r '.sha')
-            HEAD_BRANCH=$(echo "$PR_DATA" | jq -r '.branch')
 
-            # Conditionally include expected_head_sha only if non-empty
-            if [[ -n "$HEAD_SHA" ]]; then
-              gh api \
-                -X PUT \
-                "repos/${{ github.repository }}/pulls/${PR}/update-branch" \
-                -f expected_head_sha="$HEAD_SHA" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
-            else
-              gh api \
-                -X PUT \
-                "repos/${{ github.repository }}/pulls/${PR}/update-branch" || echo "Update-branch API failed for PR #${PR} (likely already up-to-date or permissions). Continuing."
+            gh api \
+              -X PUT \
+              "repos/${{ github.repository }}/pulls/${PR}/update-branch" \
+              -f expected_head_sha="$HEAD_SHA"
+
+            UPDATED_HEAD_SHA="$HEAD_SHA"
+            for _ in {1..12}; do
+              sleep 5
+              UPDATED_HEAD_SHA=$(gh pr view "$PR" --json headRefOid --jq '.headRefOid')
+              if [[ "$UPDATED_HEAD_SHA" != "$HEAD_SHA" ]]; then
+                break
+              fi
+            done
+
+            if [[ "$UPDATED_HEAD_SHA" == "$HEAD_SHA" ]]; then
+              echo "PR #${PR} did not receive an updated head commit within 60 seconds."
+              exit 1
             fi
 
-            # Wait a moment for the async update to complete
-            echo "Waiting for branch update to complete..."
-            sleep 5
+            if [[ "$RESTORE_AUTO_MERGE" == "true" ]]; then
+              echo "Restoring the existing auto-merge request on PR #${PR}"
+              gh pr merge --auto --squash "$PR"
+            fi
 
-            # Explicitly trigger CI workflow for this PR
             echo "Triggering CI workflow for PR #${PR} (branch: ${HEAD_BRANCH})"
             gh workflow run main.yml \
               --ref "${HEAD_BRANCH}" \
               --field triggered_by="auto-update-prs" \
-              --field pr_number="${PR}" || echo "Failed to trigger workflow for PR #${PR}. May not have workflow_dispatch enabled."
+              --field pr_number="${PR}"
           done
           echo "Done."
