@@ -50,7 +50,7 @@ The rails app:update command can sometimes overwrite configuration files includi
 Original notes:
 updated ruby (.ruby-version and Gemfile)
 
-hid pg gem in Gemfile because it was trying to install locally
+pg gem is in group :postgres, optional: true — installs only when BUNDLE_WITH=postgres is set
 
 (a single user doesn't need PG for this kind of dev but run bin/setup if sqlite ever locks)
 
@@ -204,7 +204,7 @@ github actions will run CI including a rails tests on a PR to develop see .githu
 # Deployment
 
 heroku pipelines will deploy a preview instance on a PR that has passed CI
--> BUNDLE_WITHOUT='development:test' BUNDLE_PATH=vendor/bundle BUNDLE_BIN=vendor/bundle/bin BUNDLE_DEPLOYMENT=1 bundle install -j4
+-> BUNDLE_WITH=postgres BUNDLE_WITHOUT='development:test' BUNDLE_PATH=vendor/bundle BUNDLE_BIN=vendor/bundle/bin BUNDLE_DEPLOYMENT=1 bundle install -j4
 
 # Environment variables
 
