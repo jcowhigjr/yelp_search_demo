@@ -25,13 +25,47 @@ pre-commit:
       - merge
       - rebase
     validate_dependabot_config:
-      run: "#!/bin/bash\nREPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise\
-        \ --cd \"$REPO_ROOT\" exec --)\nif git diff --cached --name-only | grep -q\
-        \ \"\\.github/dependabot\\.yml\"; then\n  echo \"\U0001F50D Validating Dependabot\
+      run: "#!/bin/bash\nREPO_ROOT=\"$(git rev-parse --show-toplevel)\"\nMISE_EXEC=(mise \
+        --cd \"$REPO_ROOT\" exec --)\nif git diff --cached --name-only | grep -q \"\
+        \\.github/dependabot\\.yml\"; then\n  echo \"\U0001F50D Validating Dependabot\
         \ configuration...\"\n  if ! \"${MISE_EXEC[@]}\" ruby scripts/validate-dependabot-v2.rb;\
-        \ then\n    echo \"\u274C Dependabot configuration validation failed\"\n \
-        \   echo \"   Please fix the issues before committing\"\n    exit 1\n  fi\n\
-        fi\n"
+        \ then\n    echo \"\u274C Dependabot configuration validation failed\"\n   \
+        \ echo \"   Please fix the issues before committing\"\n    exit 1\n  fi\nfi\n"
+      skip:
+      - merge
+      - rebase
+    check_sql_portability:
+      run: |
+        set -euo pipefail
+        staged=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(rb|erb)$' || true)
+        if [ -z "$staged" ]; then exit 0; fi
+        errors=0
+        for file in $staged; do
+          [ -f "$file" ] || continue
+          if grep -nE "['\"].*==.*\?" "$file" 2>/dev/null | grep -qiE "where|having|order|on\s+"; then
+            echo "✘ $file: nonstandard SQL == operator detected"
+            grep -nE "['\"].*==.*\?" "$file" 2>/dev/null | grep -iE "where|having|order|on\s+" || true
+            errors=$((errors + 1))
+          fi
+          if grep -n "= NULL\|!= NULL" "$file" 2>/dev/null | grep -v "^[[:space:]]*#" > /dev/null; then
+            echo "✘ $file: use IS NULL/IS NOT NULL instead of = NULL/!= NULL"
+            errors=$((errors + 1))
+          fi
+          if grep -n "DISTINCT ON" "$file" 2>/dev/null > /dev/null; then
+            echo "✘ $file: DISTINCT ON is PostgreSQL-only syntax"
+            errors=$((errors + 1))
+          fi
+          if grep -nE "\bgroup_concat\b|\bstring_agg\b" "$file" 2>/dev/null > /dev/null; then
+            echo "✘ $file: adapter-specific aggregation function (group_concat/string_agg)"
+            errors=$((errors + 1))
+          fi
+        done
+        if [ "$errors" -gt 0 ]; then
+          echo ""
+          echo "✘ SQL portability check failed: $errors issue(s) found. Fix before committing."
+          echo "   See issue #2977"
+          exit 1
+        fi
       skip:
       - merge
       - rebase
