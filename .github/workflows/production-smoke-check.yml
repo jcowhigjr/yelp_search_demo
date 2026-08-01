@@ -125,14 +125,22 @@ jobs:
           exit 1
 
       # ----------------------------------------------------------------
-      # 4. On failure — open a GitHub Issue so the team can't miss it.
+      # 4. On failure — open or update a GitHub Issue so the team can't miss it.
       # ----------------------------------------------------------------
       - name: Open follow-up issue on failure
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat > /tmp/smoke-issue-body.md <<EOF
+          ISSUE_TITLE="🚨 Production smoke check failed on develop"
+          ISSUE_MARKER="smoke-failure-marker:production-smoke-check"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY_FILE="$(mktemp /tmp/smoke-issue-body.XXXXXX.md)"
+          COMMENT_FILE="$(mktemp /tmp/smoke-issue-comment.XXXXXX.md)"
+          trap 'rm -f "$BODY_FILE" "$COMMENT_FILE"' EXIT
+
+          cat > "$BODY_FILE" <<EOF
+          <!-- ${ISSUE_MARKER} -->
           ## Production smoke check failure
 
           The automated live-site smoke check failed after merging commit \`${{ github.sha }}\` to \`develop\`.
@@ -141,7 +149,7 @@ jobs:
           - \`GET /healthz\` → expected HTTP 200 + body \`OK\`
           - \`GET /\` → expected HTTP 200 + DOM marker \`search-hero-page\`
 
-          **CI run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          **CI run:** ${RUN_URL}
 
           ### Next steps
           1. Check the [Heroku activity log](https://dashboard.heroku.com/) to confirm the deploy completed.
@@ -150,8 +158,42 @@ jobs:
 
           _Opened automatically by the [Production Smoke Check](.github/workflows/production-smoke-check.yml) workflow._
           EOF
-
-          gh issue create \
+          existing_issue_number=$(gh issue list \
             --repo "${{ github.repository }}" \
-            --title "🚨 Production smoke check failed after merge to develop (run ${{ github.run_id }})" \
-            --body-file /tmp/smoke-issue-body.md
+            --state open \
+            --search "\"${ISSUE_MARKER}\" in:body" \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -z "$existing_issue_number" ]; then
+            existing_issue_number=$(gh issue list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --search "in:title \"${ISSUE_TITLE}\"" \
+              --json number \
+              --jq '.[0].number // empty')
+          fi
+
+          if [ -n "$existing_issue_number" ]; then
+            cat > "$COMMENT_FILE" <<EOF
+          Another production smoke check failure was detected.
+
+          - Commit: \`${{ github.sha }}\`
+          - CI run: ${RUN_URL}
+            EOF
+
+            gh issue comment "$existing_issue_number" \
+              --repo "${{ github.repository }}" \
+              --body-file "$COMMENT_FILE"
+
+            echo "Commented on existing smoke-failure issue #${existing_issue_number}"
+          else
+            gh issue create \
+              --repo "${{ github.repository }}" \
+              --title "${ISSUE_TITLE}" \
+              --body-file "$BODY_FILE" \
+              --label smoke-failure || gh issue create \
+              --repo "${{ github.repository }}" \
+              --title "${ISSUE_TITLE}" \
+              --body-file "$BODY_FILE"
+          fi
