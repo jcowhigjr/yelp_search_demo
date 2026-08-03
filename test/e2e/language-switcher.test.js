@@ -18,6 +18,7 @@ const puppeteer = require('puppeteer');
 
 // Configuration
 const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
+const START_PATH = process.env.TEST_START_PATH || '/en/searches/new';
 const HEADLESS = process.env.TEST_HEADLESS !== 'false';
 const TIMEOUT = 30000;
 
@@ -36,7 +37,11 @@ async function getHtmlLang(page) {
 async function waitForPageLoad(page) {
   await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: TIMEOUT });
   // Additional wait to ensure all JavaScript has executed
-  await page.waitForTimeout(500);
+  await new Promise(resolve => setTimeout(resolve, 500));
+}
+
+function buildUrl(path) {
+  return new URL(path, BASE_URL).toString();
 }
 
 /**
@@ -62,7 +67,7 @@ async function runTest() {
 
     // Test 1: Navigate to homepage and verify English is default
     console.log('✅ Test 1: Verify initial page loads with English locale');
-    await page.goto(BASE_URL, { waitUntil: 'networkidle0', timeout: TIMEOUT });
+    await page.goto(buildUrl(START_PATH), { waitUntil: 'networkidle0', timeout: TIMEOUT });
     
     const initialLang = await getHtmlLang(page);
     if (initialLang === 'en') {
@@ -76,9 +81,8 @@ async function runTest() {
     // Test 2: Verify English heading is present
     console.log('✅ Test 2: Verify English heading is present');
     try {
-      // Check for the main heading on the homepage
-      const englishHeading = await page.$eval('h2', el => el.textContent);
-      if (englishHeading && englishHeading.includes('Save time by sharing your device location')) {
+      const englishHeading = await page.$eval('h1', el => el.textContent);
+      if (englishHeading && englishHeading.includes('COFFEE NEAR YOU!')) {
         console.log(`   ✓ Found English heading: "${englishHeading.trim()}"`);
         testsPassed++;
       } else {
@@ -93,7 +97,7 @@ async function runTest() {
     // Test 3: Verify English search placeholder
     console.log('✅ Test 3: Verify English search placeholder');
     try {
-      const placeholder = await page.$eval('input[type="text"]', el => el.getAttribute('placeholder'));
+      const placeholder = await page.$eval('input[name="search[query]"]', el => el.getAttribute('placeholder'));
       if (placeholder && placeholder.includes('Search for coffee shops')) {
         console.log(`   ✓ Found English placeholder: "${placeholder}"`);
         testsPassed++;
@@ -110,11 +114,11 @@ async function runTest() {
     console.log('✅ Test 4: Locate and click French language selector');
     try {
       // Wait for footer to be present
-      await page.waitForSelector('footer .language-nav', { timeout: TIMEOUT });
+      await page.waitForSelector('footer .footer-language', { timeout: TIMEOUT });
       
       // Find the French language link
       const frenchLinkFound = await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+        const links = Array.from(document.querySelectorAll('footer .footer-language a'));
         const frenchLink = links.find(link => link.textContent.trim() === 'Français');
         return !!frenchLink;
       });
@@ -130,7 +134,7 @@ async function runTest() {
 
       // Click the French link
       await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+        const links = Array.from(document.querySelectorAll('footer .footer-language a'));
         const frenchLink = links.find(link => link.textContent.trim() === 'Français');
         if (frenchLink) {
           frenchLink.click();
@@ -160,10 +164,10 @@ async function runTest() {
     // Test 6: Verify French heading is displayed (or note if hardcoded)
     console.log('✅ Test 6: Verify heading element exists');
     try {
-      const frenchHeading = await page.$eval('h2', el => el.textContent);
+      const frenchHeading = await page.$eval('h1', el => el.textContent);
       if (frenchHeading) {
         console.log(`   ✓ Found heading: "${frenchHeading.trim()}"`);
-        if (frenchHeading.includes('Save time by sharing your device location')) {
+        if (frenchHeading.includes('COFFEE NEAR YOU!')) {
           console.log('   ⚠️  Note: Heading appears to be hardcoded in English');
         }
         testsPassed++;
@@ -179,7 +183,7 @@ async function runTest() {
     // Test 7: Verify French search placeholder
     console.log('✅ Test 7: Verify French search placeholder');
     try {
-      const placeholder = await page.$eval('input[type="text"]', el => el.getAttribute('placeholder'));
+      const placeholder = await page.$eval('input[name="search[query]"]', el => el.getAttribute('placeholder'));
       if (placeholder && placeholder.includes('Rechercher des cafés')) {
         console.log(`   ✓ Found French placeholder: "${placeholder}"`);
         testsPassed++;
@@ -196,7 +200,7 @@ async function runTest() {
     console.log('✅ Test 8: Verify active language link has correct styling');
     try {
       const activeClass = await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .language-nav a'));
+        const links = Array.from(document.querySelectorAll('footer .footer-language a'));
         const frenchLink = links.find(link => link.textContent.trim() === 'Français');
         return frenchLink ? frenchLink.className : null;
       });
