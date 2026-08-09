@@ -18,7 +18,8 @@ const puppeteer = require('puppeteer');
 
 // Configuration
 const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
-const START_PATH = process.env.TEST_START_PATH || '/en/searches/new';
+const ROOT_PATH = process.env.TEST_ROOT_PATH || '/';
+const SEARCH_PATH = process.env.TEST_SEARCH_PATH || '/en/searches/new';
 const HEADLESS = process.env.TEST_HEADLESS !== 'false';
 const TIMEOUT = 30000;
 
@@ -29,15 +30,6 @@ async function getHtmlLang(page) {
   return await page.evaluate(() => {
     return document.documentElement.getAttribute('lang');
   });
-}
-
-/**
- * Helper function to wait for navigation and ensure page is loaded
- */
-async function waitForPageLoad(page) {
-  await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: TIMEOUT });
-  // Additional wait to ensure all JavaScript has executed
-  await new Promise(resolve => setTimeout(resolve, 500));
 }
 
 function buildUrl(path) {
@@ -67,7 +59,7 @@ async function runTest() {
 
     // Test 1: Navigate to homepage and verify English is default
     console.log('✅ Test 1: Verify initial page loads with English locale');
-    await page.goto(buildUrl(START_PATH), { waitUntil: 'networkidle0', timeout: TIMEOUT });
+    await page.goto(buildUrl(ROOT_PATH), { waitUntil: 'networkidle0', timeout: TIMEOUT });
     
     const initialLang = await getHtmlLang(page);
     if (initialLang === 'en') {
@@ -78,15 +70,26 @@ async function runTest() {
       testsFailed++;
     }
 
-    // Test 2: Verify English heading is present
-    console.log('✅ Test 2: Verify English heading is present');
+    await page.goto(buildUrl(SEARCH_PATH), { waitUntil: 'networkidle0', timeout: TIMEOUT });
+
+    // Test 2: Verify English search headings are present
+    console.log('✅ Test 2: Verify English search headings are present');
     try {
-      const englishHeading = await page.$eval('h1', el => el.textContent);
-      if (englishHeading && englishHeading.includes('COFFEE NEAR YOU!')) {
-        console.log(`   ✓ Found English heading: "${englishHeading.trim()}"`);
+      const englishHeroHeading = await page.$eval('h1', el => el.textContent);
+      const englishSectionHeading = await page.$eval('h2', el => el.textContent);
+      if (
+        englishHeroHeading &&
+        englishHeroHeading.includes('COFFEE NEAR YOU!') &&
+        englishSectionHeading &&
+        englishSectionHeading.includes('New Search')
+      ) {
+        console.log(`   ✓ Found English hero heading: "${englishHeroHeading.trim()}"`);
+        console.log(`   ✓ Found English translated heading: "${englishSectionHeading.trim()}"`);
         testsPassed++;
       } else {
-        console.error(`   ✗ English heading not found or incorrect. Found: "${englishHeading}"`);
+        console.error(
+          `   ✗ English headings not found or incorrect. Found h1: "${englishHeroHeading}", h2: "${englishSectionHeading}"`,
+        );
         testsFailed++;
       }
     } catch (error) {
@@ -132,17 +135,16 @@ async function runTest() {
         throw new Error('French link not found');
       }
 
-      // Click the French link
-      await page.evaluate(() => {
-        const links = Array.from(document.querySelectorAll('footer .footer-language a'));
-        const frenchLink = links.find(link => link.textContent.trim() === 'Français');
-        if (frenchLink) {
-          frenchLink.click();
-        }
-      });
-
-      // Wait for navigation to complete
-      await waitForPageLoad(page);
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: 'networkidle0', timeout: TIMEOUT }),
+        page.evaluate(() => {
+          const links = Array.from(document.querySelectorAll('footer .footer-language a'));
+          const frenchLink = links.find(link => link.textContent.trim() === 'Français');
+          if (frenchLink) {
+            frenchLink.click();
+          }
+        }),
+      ]);
       console.log('   ✓ Clicked French language selector');
 
     } catch (error) {
@@ -161,18 +163,24 @@ async function runTest() {
       testsFailed++;
     }
 
-    // Test 6: Verify French heading is displayed (or note if hardcoded)
-    console.log('✅ Test 6: Verify heading element exists');
+    // Test 6: Verify French search headings are displayed
+    console.log('✅ Test 6: Verify French search headings are displayed');
     try {
-      const frenchHeading = await page.$eval('h1', el => el.textContent);
-      if (frenchHeading) {
-        console.log(`   ✓ Found heading: "${frenchHeading.trim()}"`);
-        if (frenchHeading.includes('COFFEE NEAR YOU!')) {
-          console.log('   ⚠️  Note: Heading appears to be hardcoded in English');
-        }
+      const frenchHeroHeading = await page.$eval('h1', el => el.textContent);
+      const frenchSectionHeading = await page.$eval('h2', el => el.textContent);
+      if (
+        frenchHeroHeading &&
+        frenchHeroHeading.includes('COFFEE NEAR YOU!') &&
+        frenchSectionHeading &&
+        frenchSectionHeading.includes('Nouvelle recherche')
+      ) {
+        console.log(`   ✓ Found French hero heading: "${frenchHeroHeading.trim()}"`);
+        console.log(`   ✓ Found French translated heading: "${frenchSectionHeading.trim()}"`);
         testsPassed++;
       } else {
-        console.error('   ✗ Heading element found but has no content');
+        console.error(
+          `   ✗ French headings not found or incorrect. Found h1: "${frenchHeroHeading}", h2: "${frenchSectionHeading}"`,
+        );
         testsFailed++;
       }
     } catch (error) {
