@@ -140,7 +140,7 @@ jobs:
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Cache mise tools
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.local/share/mise
           key: mise-${{ runner.os }}-${{ hashFiles('mise.toml') }}
@@ -148,7 +148,7 @@ jobs:
             mise-${{ runner.os }}-
       - name: Cache gems (next)
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: gems-next-${{ runner.os }}-${{ hashFiles('Gemfile.lock') }}
@@ -240,7 +240,7 @@ jobs:
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev chromium-browser
       - name: Cache mise tools
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.local/share/mise
           key: mise-${{ runner.os }}-${{ hashFiles('mise.toml') }}
@@ -248,7 +248,7 @@ jobs:
             mise-${{ runner.os }}-
       - name: Cache gems
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: gems-${{ runner.os }}-${{ hashFiles('Gemfile.lock') }}
@@ -360,7 +360,7 @@ jobs:
           sudo apt-get install -y -qq jq libyaml-dev libpq-dev pkg-config
       - name: Cache mise tools
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.local/share/mise
           key: mise-${{ runner.os }}-${{ hashFiles('mise.toml') }}
@@ -368,7 +368,7 @@ jobs:
             mise-${{ runner.os }}-
       - name: Cache production gems
         if: env.RUN_FULL_CI == 'true'
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: gems-production-${{ runner.os }}-${{ hashFiles('Gemfile.lock') }}
