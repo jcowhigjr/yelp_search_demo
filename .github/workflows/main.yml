@@ -132,7 +132,7 @@ jobs:
       RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
     steps:
       - name: checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install system dependencies
         if: env.RUN_FULL_CI == 'true'
         run: |
@@ -232,7 +232,7 @@ jobs:
       RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
     steps:
       - name: checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install system dependencies
         if: env.RUN_FULL_CI == 'true'
         run: |
@@ -352,7 +352,7 @@ jobs:
       RUN_FULL_CI: ${{ github.event_name != 'pull_request' || needs.get-risk-assessment.outputs.skip-heavy-ci != 'true' }}
     steps:
       - name: checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install system dependencies
         if: env.RUN_FULL_CI == 'true'
         run: |
