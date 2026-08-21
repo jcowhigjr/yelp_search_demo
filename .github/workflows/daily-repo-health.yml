@@ -1,0 +1,130 @@
+# Daily repository health sweep (issue #2996 class of silent drift).
+#
+# Pure shell + gh CLI with the built-in GITHUB_TOKEN. No external API keys.
+# Runs every morning and only speaks up when something is wrong:
+#
+#  1. Open PRs with auto-merge queued but branch BEHIND develop (stranded)
+#  2. Dependabot PRs open for more than 24 hours
+#  3. Latest Production Smoke Check run on develop failed
+#  4. Latest Rails CI (main.yml) run on develop failed
+#
+# Findings go into a single deduplicated issue (titled "Daily repo health"):
+# a comment is added if one is already open, otherwise a new issue is created.
+
+name: 'Daily Repo Health'
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # 09:00 ET daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+env:
+  MARKER_TITLE: 'Daily repo health'
+  REPO: ${{ github.repository }}
+
+jobs:
+  health-check:
+    name: Sweep for silent drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gather findings
+        id: findings
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          FINDINGS_FILE=$(mktemp)
+          : > "$FINDINGS_FILE"
+
+          # --- 1. Stranded auto-merge PRs (BEHIND with merge queued) ---
+          STRANDED=$(gh pr list --repo "$REPO" --state open --limit 50 \
+            --json number,title,mergeStateStatus,autoMergeRequest \
+            --jq '[.[] | select(.autoMergeRequest != null and .mergeStateStatus == "BEHIND")]')
+          COUNT=$(echo "$STRANDED" | jq 'length')
+          if [ "$COUNT" -gt 0 ]; then
+            {
+              echo "### Stranded auto-merge PRs (queued but BEHIND develop)"
+              echo "$STRANDED" | jq -r '.[] | "- #\(.number) \(.title)"'
+              echo ""
+            } >> "$FINDINGS_FILE"
+          fi
+
+          # --- 2. Dependabot PRs open > 24h ---
+          CUTOFF=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          AGING=$(gh pr list --repo "$REPO" --state open --author "dependabot[bot]" --limit 50 \
+            --json number,title,createdAt \
+            --jq --arg cutoff "$CUTOFF" '[.[] | select(.createdAt < $cutoff)]')
+          COUNT=$(echo "$AGING" | jq 'length')
+          if [ "$COUNT" -gt 0 ]; then
+            {
+              echo "### Dependabot PRs open more than 24h"
+              echo "$AGING" | jq -r '.[] | "- #\(.number) \(.title) (opened \(.createdAt))"'
+              echo ""
+            } >> "$FINDINGS_FILE"
+          fi
+
+          # --- 3. Production smoke check red on develop ---
+          SMOKE=$(gh run list --repo "$REPO" --workflow production-smoke-check.yml \
+            --branch develop --limit 1 --json conclusion,url,createdAt)
+          if [ "$(echo "$SMOKE" | jq -r '.[0].conclusion // "none"')" = "failure" ]; then
+            {
+              echo "### Production Smoke Check failing on develop"
+              echo "- Latest run: $(echo "$SMOKE" | jq -r '.[0].url') ($(echo "$SMOKE" | jq -r '.[0].createdAt'))"
+              echo ""
+            } >> "$FINDINGS_FILE"
+          fi
+
+          # --- 4. Rails CI red on develop ---
+          CI=$(gh run list --repo "$REPO" --workflow main.yml \
+            --branch develop --limit 1 --json conclusion,url,createdAt)
+          if [ "$(echo "$CI" | jq -r '.[0].conclusion // "none"')" = "failure" ]; then
+            {
+              echo "### Rails CI (main.yml) failing on develop"
+              echo "- Latest run: $(echo "$CI" | jq -r '.[0].url') ($(echo "$CI" | jq -r '.[0].createdAt'))"
+              echo ""
+            } >> "$FINDINGS_FILE"
+          fi
+
+          if [ -s "$FINDINGS_FILE" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "Findings detected:"
+            cat "$FINDINGS_FILE"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No drift detected. Silent success."
+          fi
+          cp "$FINDINGS_FILE" /tmp/daily-health-findings.md
+
+      - name: Create or update tracking issue
+        if: steps.findings.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open \
+            --search "in:title \"${MARKER_TITLE}\"" --limit 1 \
+            --json number --jq '.[0].number // ""')
+
+          BODY_FILE=$(mktemp)
+          {
+            echo "## Daily repo health findings ($(date -u +%Y-%m-%d))"
+            echo ""
+            cat /tmp/daily-health-findings.md
+            echo "---"
+            echo "_Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}_"
+          } > "$BODY_FILE"
+
+          if [ -n "$ISSUE_NUMBER" ]; then
+            gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$BODY_FILE"
+            echo "Commented on existing issue #$ISSUE_NUMBER"
+          else
+            gh issue create --repo "$REPO" \
+              --title "${MARKER_TITLE}: drift detected $(date -u +%Y-%m-%d)" \
+              --body-file "$BODY_FILE"
+            echo "Created new tracking issue"
+          fi
