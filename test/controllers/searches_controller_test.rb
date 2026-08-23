@@ -77,6 +77,12 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
 
     # Ensure at least one coffeeshop card is rendered when results are present
     assert_select '.coffeeshop-card', minimum: 1
+    assert_select '.coffeeshop-card .card-primary-action[href^="/coffeeshops/"]',
+                  text: /#{Regexp.escape(I18n.t('coffeeshops.coffeeshop.more-info'))}/,
+                  minimum: 1
+    assert_select '.coffeeshop-card .card-secondary-action[href^="https://"]',
+                  text: /Open in Yelp/,
+                  minimum: 1
     assert_select '.coffeeshop-card .phone-link[href^="tel:"]', minimum: 1
     assert_select '.coffeeshop-card .phone-link--unavailable', text: 'Phone unavailable', minimum: 1
     assert_select '.coffeeshop-card .phone-link[href="tel:Unknown phone number."]', count: 0

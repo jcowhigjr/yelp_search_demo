@@ -2,6 +2,7 @@ require 'application_system_test_case'
 
 class CoffeeshopsTest < ApplicationSystemTestCase
   include ActionView::Helpers::NumberHelper
+  include DetailFavoriteHelper
 
   setup do
     stub_yelp_api_request('coffee')
@@ -16,10 +17,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_selector 'h1', text: @coffeeshop.name
 
-    # Back to Results button
     assert_selector 'a', text: '← BACK TO RESULTS'
 
-    # About section
     within('[data-testid="about-section"]') do
       assert_link @coffeeshop.address,
                   href:
@@ -27,23 +26,14 @@ class CoffeeshopsTest < ApplicationSystemTestCase
       assert_link number_to_phone(@coffeeshop.phone_number, area_code: true),
                   href: "tel:#{number_to_phone(@coffeeshop.phone_number, area_code: true)}"
       assert_link 'View on Yelp', href: @coffeeshop.yelp_url
-      
-      # Critical: Verify Yelp brand compliance - icon and color must be present
-      # Font Awesome 6 generates SVG elements, not <i> tags
+
       assert_selector 'svg.fa-yelp.yelp_color'
     end
 
-    # CTA Buttons
     assert_selector 'a', text: 'GET DIRECTIONS'
     assert_selector 'a', text: 'CALL NOW'
-
-    # Review count with rating
     assert_text "(#{@coffeeshop.reviews.size} #{'review'.pluralize(@coffeeshop.reviews.size)})"
-
-    # Heart icon accessibility and state
     assert_selector 'i.material-icons[aria-label="Not favorited"]', text: 'favorite_border'
-
-    # Rating and reviews section container still present
     assert_selector '.review-container', minimum: 1, wait: 5
   end
 
@@ -57,7 +47,6 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_current_path '/sessions'
 
-    # Search for a shop
     visit new_search_path
 
     assert_selector 'form.search-bar-container'
@@ -70,13 +59,8 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     wait_for_search_results
     click_more_info_safely
 
-    # Add to favorites - ensure button is visible and clickable
-    assert_selector('input[type="submit"][value="Add To Favorites"]')
-    click_on('Add To Favorites')
+    toggle_detail_favorite('Add to favorites', 'Remove from favorites')
 
-    assert_selector('input[type="submit"][value="Remove From Favorites"]')
-
-    # Submit a review
     select '★★★★★', from: 'review[rating]'
     fill_in 'review[content]', match: :first, with: 'Great coffee!'
 
@@ -95,33 +79,27 @@ class CoffeeshopsTest < ApplicationSystemTestCase
 
     assert_current_path '/sessions'
 
-    # Visit the fixture coffeeshop directly
     visit coffeeshop_path(@coffeeshop, locale: nil)
 
     assert_current_path %r{^/coffeeshops/\d{1,9}}
 
-    # Find and click edit within the review container
     within('.review-container', text: 'Cold Brew is the best') do
       click_on 'Edit this Review'
-      
-      # Form should appear in the Turbo frame
+
       assert_selector('form')
       fill_in 'review[content]', with: 'Amazing coffee!'
       click_on 'SUBMIT REVIEW'
     end
 
-    # The page should not change, but content should update
     assert_current_path %r{^/coffeeshops/\d{1,9}}
     assert_text 'Amazing coffee!'
 
-    # Delete the review - with Turbo confirmation
     within('.review-container', text: 'Amazing coffee!') do
       accept_confirm do
         click_on 'Delete this Review'
       end
     end
 
-    # After deletion, the review should be gone
     assert_no_text 'Amazing coffee!'
   end
 
@@ -133,43 +111,28 @@ class CoffeeshopsTest < ApplicationSystemTestCase
     fill_in 'Password', with: default_password
     click_on 'Log In'
 
-    # Search for a shop
     visit new_search_path
 
     assert_selector 'form.search-bar-container'
     fill_in 'search[query]', with: 'coffee'
 
-    # Use the first submit button in the search form to avoid ambiguous "search" matches
     first('form button[type="submit"]').click
 
-    # Find and click the first More Info link
     wait_for_search_results
     click_more_info_safely
 
+    toggle_detail_favorite('Add to favorites', 'Remove from favorites')
+    toggle_detail_favorite('Remove from favorites', 'Add to favorites')
 
-    # Add to favorites
-    assert_selector('input[type="submit"][value="Add To Favorites"]')
-    click_on 'Add To Favorites'
-
-    # Remove from favorites
-    assert_selector('input[type="submit"][value="Remove From Favorites"]')
-    click_on 'Remove From Favorites'
-
-    # Verify we can add to favorites again
-    assert_selector('input[type="submit"][value="Add To Favorites"]')
+    assert_detail_favorite_state('Add to favorites')
   end
 
   test 'Yelp brand compliance - icon and color must be maintained' do
     visit coffeeshop_path(@coffeeshop, locale: nil)
     
-    # Critical licensing requirement: Yelp icon must be present with brand color
-    # Font Awesome 6 generates SVG elements, not <i> tags
     assert_selector 'svg.fa-yelp.yelp_color'
-    
-    # Verify the Yelp link is also present and functional
     assert_link 'View on Yelp', href: @coffeeshop.yelp_url
-    
-    # Verify the yelp_color CSS class is properly applied (should be #ff1a1a red)
+
     yelp_icon = find('svg.fa-yelp.yelp_color')
     computed_style = yelp_icon.evaluate_script("window.getComputedStyle(this).getPropertyValue('color')")
 
