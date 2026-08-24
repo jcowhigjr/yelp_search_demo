@@ -174,9 +174,17 @@
   transition: all 0.2s;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   font-weight: 400;
   font-size: 14px;
+}
+
+.coffeeshop-card .material-button .material-icons {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .coffeeshop-card .material-button:hover {
@@ -194,8 +202,22 @@
   width: 100%;
 }
 
+.coffeeshop-card .material-button.primary {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  font-weight: 700;
+}
+
+.coffeeshop-card .material-button.primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-bg);
+}
+
 .coffeeshop-card .card-secondary-action {
   background-color: color-mix(in srgb, var(--color-bg-secondary) 85%, transparent);
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 640px) {

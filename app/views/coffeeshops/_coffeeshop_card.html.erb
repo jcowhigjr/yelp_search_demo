@@ -66,15 +66,19 @@
     </div>
 
     <div class="card-actions-row">
-      <%= link_to t('coffeeshops.coffeeshop.more-info'),
-                  coffeeshop_path(coffeeshop),
+      <%= link_to coffeeshop_path(coffeeshop),
                   data: { turbo: false },
-                  class: 'material-button large w-full' %>
-      <%= link_to 'Open in Yelp',
-                  coffeeshop.yelp_url,
+                  class: 'material-button large w-full primary card-primary-action' do %>
+        <span class="material-icons" aria-hidden="true">info</span>
+        <span><%= t('coffeeshops.coffeeshop.more-info') %></span>
+      <% end %>
+      <%= link_to coffeeshop.yelp_url,
                   target: :blank,
                   rel: 'noopener',
-                  class: 'material-button large secondary card-secondary-action' %>
+                  class: 'material-button large secondary card-secondary-action' do %>
+        <span class="material-icons" aria-hidden="true">open_in_new</span>
+        <span>Open in Yelp</span>
+      <% end %>
     </div>
   </div>
 </div>
