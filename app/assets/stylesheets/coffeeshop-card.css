@@ -187,9 +187,14 @@
   line-height: 1;
 }
 
+.coffeeshop-card .material-button.primary .material-icons {
+  color: var(--color-bg);
+}
+
 .coffeeshop-card .material-button:hover {
   background-color: var(--color-bg-secondary);
   border-color: var(--color-border);
+  opacity: 1;
   transform: translateY(-1px);
 }
 
@@ -215,9 +220,26 @@
   color: var(--color-bg);
 }
 
-.coffeeshop-card .card-secondary-action {
+.coffeeshop-card .material-button.card-secondary-action {
   background-color: color-mix(in srgb, var(--color-bg-secondary) 85%, transparent);
   color: var(--color-text-secondary);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+.coffeeshop-card .material-button.card-secondary-action .material-icons {
+  color: var(--color-text-secondary);
+}
+
+.coffeeshop-card .material-button.card-secondary-action:hover {
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.coffeeshop-card .material-button.card-secondary-action:hover .material-icons {
+  color: var(--color-text);
 }
 
 @media (max-width: 640px) {
