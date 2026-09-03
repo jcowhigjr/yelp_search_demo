@@ -1,8 +1,11 @@
 # AGENTS.md
 
-This file defines **project-wide rules for all AI agents** working in this repository (Warp, Codex, Claude, Copilot-style tools, etc.).
+This file defines **project-wide rules for all AI agents** working in this repository (Antigravity/Gemini, Warp, Codex, Claude, Copilot-style tools, etc.).
 
+For Antigravity & Gemini details, see `GEMINI.md` and `.agents/`.
 For Warp-specific details, see `WARP.md`.
+For Claude-specific details, see `CLAUDE.md`.
+For Copilot-specific details, see `.github/copilot-instructions.md`.
 For explicit risk, approval, and preflight rules, see `GOVERNANCE.md`.
 For deep policy and methodology, see `docs/AGENTS.md`.
 
@@ -698,6 +701,14 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ## 7. Tool-specific notes
 
+### Antigravity / Gemini
+
+- Antigravity agents should:
+  - Treat `GEMINI.md` and `.agents/` as the primary project configuration and rules contract.
+  - Deliver immediate confidence checks on new conversations and capability refreshers when model versions shift.
+  - Obey model calibration guidelines in `.agents/rules/model-refresher.md` (Medium reasoning effort default for 3.8 Flash, High for complex refactors/Cuprite debugging).
+  - Verify changes empirically using `mise run test` and `mise run test-system`.
+
 ### Warp (warp.dev)
 
 - Warp agents should:
@@ -720,12 +731,12 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
-## 7. Source-of-truth hierarchy
+## 8. Source-of-truth hierarchy
 
 In case of conflict or ambiguity:
 
 1. **Project rules:** This `AGENTS.md` file (cross-agent contract).
-2. **Warp-specific details:** `WARP.md`.
+2. **Tool-specific configurations:** `GEMINI.md` (Antigravity), `WARP.md` (Warp), `CLAUDE.md` (Claude).
 3. **Deep policy & methodology:** `docs/AGENTS.md`.
 
 Agents should resolve discrepancies by:
