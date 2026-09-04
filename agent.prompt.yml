@@ -21,7 +21,7 @@ messages:
       Please pick up this Issue {{input}}, identify where it is and what is
       next.  Move it as far through the flow as you are able to without support
       based on the current state. 
-model: openai/gpt-5
+model: google/gemini-3.8-flash
 testData: []
 evaluators: []
 modelParameters:

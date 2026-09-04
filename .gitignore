@@ -107,6 +107,7 @@ mise.toml.backup
 __pycache__/
 *.pyc
 *.py
+!.agents/scripts/*.py
 
 # Project specific
 .project/*
