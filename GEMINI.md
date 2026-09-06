@@ -35,6 +35,21 @@ When a new model generation arrives or when switched into a different Gemini mod
 
 ---
 
+## 2b. Shared Skills
+
+Skills in `.agents/skills/` are read directly by Antigravity and are shared with
+every other harness in this repo (see `AGENTS.md` section 9). Keep them
+harness-neutral: when a step needs a specific tool, add it to the skill's
+"Tooling adapter" table rather than hardcoding Antigravity's API.
+
+- `/groom-backlog` - TPM-style backlog refinement. Interviews the user issue by
+  issue, plans delegation, and records decisions in `docs/ROADMAP.md`. It does
+  **not** implement anything.
+- `/model-refresher` - capability refresher when the active model changes.
+- `/multi-model-review` - independent cross-model review of in-flight changes.
+
+---
+
 ## 3. Core Repo Invariants & Rules
 
 ### A. Environment & Runtimes
@@ -64,6 +79,6 @@ When a new model generation arrives or when switched into a different Gemini mod
 
 ### E. Multi-Model Review & Escalation Hierarchy
 When requesting an external review of changes:
-1. **Warp Agent (Claude 3 Opus)**: Use interactive terminal prompt when cross-model planning review is desired (configured in `~/.warp/ai_preferences.yaml`).
+1. **Warp Agent (Claude)**: Use interactive terminal prompt when cross-model planning review is desired (configured in `~/.warp/ai_preferences.yaml`).
 2. **In-Situ Subagent Review**: Spawn an independent `research` subagent via `invoke_subagent` with an objective audit prompt to catch syntax, edge-case, and safety issues without leaving Antigravity.
 3. **CLI Reviewers**: Use `agent codex review --uncommitted` (Codex) or `claude -p` (Claude). If token errors occur, run `claude auth login` in terminal for 2-step Chrome re-auth.

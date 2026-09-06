@@ -33,4 +33,12 @@ Claude should also treat `GOVERNANCE.md` as a first-class repo contract. This re
     - Avoid declaring success without tests or empirical checks.
     - Surface clear, actionable recommendations that fit within this repo’s conventions (Rails 8, mise, lefthook, Cuprite system tests).
 
+- **Shared skills:**
+  - Project skills are committed under `.claude/skills/`. Each one is a thin pointer
+    to the canonical, harness-neutral definition in `.agents/skills/<name>/SKILL.md`.
+  - `/groom-backlog` refines and prioritizes the backlog without implementing it,
+    recording decisions in `docs/ROADMAP.md`.
+  - Change behaviour in `.agents/skills/`, never in the `.claude/skills/` pointer.
+  - See `AGENTS.md` section 9 for the full list and for other harnesses.
+
 For more detail, see `WARP.md` and `docs/AGENTS.md`.

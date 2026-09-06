@@ -115,7 +115,10 @@ __pycache__/
 !.project/config/**
 
 # Local agent/editor caches and logs (not for git)
-.claude/
+# `.claude/*` rather than `.claude/` so shared skills can be re-included below;
+# git will not descend into a directory ignored with a trailing slash.
+.claude/*
+!.claude/skills/
 .cursor/
 .mcp-cache/
 act-logs/

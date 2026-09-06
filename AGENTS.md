@@ -731,13 +731,49 @@ See `docs/AGENTS.md` for the full hypothesis-driven development methodology (Iss
 
 ---
 
+## 9. Shared agent skills
+
+Reusable workflows live in `.agents/skills/<name>/SKILL.md` and are **harness-neutral
+by contract** - no skill there may hardcode one tool's API. Where behaviour must
+differ per harness, the skill carries a "Tooling adapter" table naming the
+equivalent in each.
+
+| Skill | Use it when |
+|-------|-------------|
+| `groom-backlog` | Refining, prioritizing, or breaking down the backlog rather than implementing it. Records decisions in `docs/ROADMAP.md`. |
+| `model-refresher` | The active model changed, or the user asks about capabilities and reasoning effort. |
+| `multi-model-review` | Escalating a change for independent review across models. |
+
+Discovery differs by harness:
+
+- **Claude Code** reads `.claude/skills/`, which is committed and points at the
+  canonical file. Nothing to install.
+- **Antigravity / Gemini** read `.agents/skills/` directly.
+- **Codex, Warp, Windsurf, Cursor** need a one-time link:
+
+  ```bash
+  scripts/install-agent-skills.sh          # --dry-run to preview
+  ```
+
+  This symlinks the canonical directories into each harness's own skills folder,
+  so there is exactly one copy to maintain.
+
+- **Any other agent** can be pointed at `.agents/skills/<name>/SKILL.md` directly;
+  the files are plain Markdown with YAML frontmatter.
+
+When adding a skill, put the real definition in `.agents/skills/`, add a pointer
+under `.claude/skills/`, and list it in the table above.
+
+---
+
 ## 8. Source-of-truth hierarchy
 
 In case of conflict or ambiguity:
 
 1. **Project rules:** This `AGENTS.md` file (cross-agent contract).
 2. **Tool-specific configurations:** `GEMINI.md` (Antigravity), `WARP.md` (Warp), `CLAUDE.md` (Claude).
-3. **Deep policy & methodology:** `docs/AGENTS.md`.
+3. **Shared skills:** `.agents/skills/<name>/SKILL.md` (see section 9).
+4. **Deep policy & methodology:** `docs/AGENTS.md`.
 
 Agents should resolve discrepancies by:
 
