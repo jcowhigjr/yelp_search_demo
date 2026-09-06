@@ -45,6 +45,13 @@ class BlanketStagingIsDenied(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertEqual(decision_for(command), "deny")
 
+    def test_denies_blanket_pathspec_after_separator(self):
+        # `--` marks the start of pathspecs; a blanket pathspec is still
+        # blanket there and must not become an escape hatch.
+        for command in ["git add -- .", "git add -- :/", "git add -- '*'"]:
+            with self.subTest(command=command):
+                self.assertEqual(decision_for(command), "deny")
+
     def test_denies_nested_shell_invocations(self):
         # The previous anchoring fix let these through.
         for command in ['sh -c "git add ."', "bash -c 'git add -A'"]:

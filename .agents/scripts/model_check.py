@@ -41,8 +41,13 @@ SHELL_COMMANDS = frozenset({"sh", "bash", "zsh", "dash", "ksh"})
 # Without this, `echo git add .` would be denied.
 TEXT_ONLY_COMMANDS = frozenset({"echo", "printf", "cat"})
 
-# `git add` arguments that stage more than an explicit path.
-BLANKET_ADD_ARGS = frozenset({".", "*", "-A", "--all", "-u", "--update", ":", ":/"})
+# `git add` pathspecs that stage more than an explicit path. These stay
+# forbidden after a `--` separator, where they are still pathspecs.
+BLANKET_ADD_PATHSPECS = frozenset({".", "*", ":", ":/"})
+
+# `git add` flags that stage more than an explicit path. Only meaningful
+# before a `--` separator.
+BLANKET_ADD_FLAGS = frozenset({"-A", "--all", "-u", "--update"})
 
 # git's own global options that consume the following token.
 GIT_GLOBAL_VALUE_OPTS = frozenset({"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path"})
@@ -102,10 +107,18 @@ def _skip_git_global_opts(argv):
 
 
 def _add_violation(args):
+    after_separator = False
     for arg in args:
-        if arg == "--":
-            break
-        if arg in BLANKET_ADD_ARGS:
+        if arg == "--" and not after_separator:
+            after_separator = True
+            continue
+        # A blanket pathspec is forbidden on either side of `--`; writing
+        # `git add -- .` must not be a way around the guard.
+        if arg in BLANKET_ADD_PATHSPECS:
+            return True
+        if after_separator:
+            continue  # everything past `--` is a path, never a flag
+        if arg in BLANKET_ADD_FLAGS:
             return True
         # Bundled short flags such as `-Av` or `-nu`.
         if arg.startswith("-") and not arg.startswith("--") and len(arg) > 1:
