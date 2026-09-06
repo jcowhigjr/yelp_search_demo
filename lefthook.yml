@@ -13,6 +13,13 @@ pre-commit:
       skip:
       - merge
       - rebase
+    agent-hook-tests:
+      glob: .agents/scripts/*.py
+      run: python3 -m unittest discover -s .agents/scripts -p 'test_*.py'
+      tags: validation agents
+      skip:
+      - merge
+      - rebase
     check_branch_sync:
       run: "#!/bin/bash\nif git rev-parse --verify HEAD@{upstream} >/dev/null 2>&1;\
         \ then\n  local_sha=$(git rev-parse HEAD)\n  remote_sha=$(git rev-parse HEAD@{upstream})\n\
