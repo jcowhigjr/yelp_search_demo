@@ -45,6 +45,11 @@ done < <(git diff --name-status --diff-filter=ACDMR "${DIFF_BASE}..HEAD")
 SAFE_PATTERNS=(
   '^docs/'
   '^\.github/'
+  '^\.agents/'
+  '^AGENTS\.md$'
+  '^CLAUDE\.md$'
+  '^GEMINI\.md$'
+  '^GOVERNANCE\.md$'
   '^scripts/git-sync\.sh$'
   '^README\.md$'
   '^LICENSE$'
