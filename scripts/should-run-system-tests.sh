@@ -46,6 +46,8 @@ SAFE_PATTERNS=(
   '^docs/'
   '^\.github/'
   '^\.agents/'
+  '^\.claude/skills/'
+  '^scripts/install-agent-skills\.sh$'
   '^AGENTS\.md$'
   '^CLAUDE\.md$'
   '^GEMINI\.md$'

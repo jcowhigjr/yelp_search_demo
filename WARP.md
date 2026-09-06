@@ -11,6 +11,13 @@ This repository uses `AGENTS.md` at the project root as the **cross-agent config
 - Treat `AGENTS.md` as the primary project contract for all agents.
 - Use `WARP.md` for Warp-specific runtime commands, git workflows, and the PR completion protocol.
 - Consult `docs/AGENTS.md` for deeper policies (empirical verification, review-first loops, Claude integration, etc.).
+- Use the shared skills in `.agents/skills/` (see `AGENTS.md` §9). They are
+  harness-neutral, so the same `/groom-backlog` workflow runs here, in Claude
+  Code, and in Antigravity. Link them into Warp once with:
+
+  ```bash
+  scripts/install-agent-skills.sh
+  ```
 
 ## 🤖 CRITICAL FOR AI AGENTS (Warp-specific)
 
