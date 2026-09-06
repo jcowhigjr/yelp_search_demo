@@ -82,6 +82,9 @@ pre-push:
     review-loop-enforcement:
       run: scripts/enforce-review-loop.sh
       tags: meta reviews
+    review-provenance:
+      run: python3 .agents/scripts/verify_review_provenance.py
+      tags: meta reviews
     dependency_check:
       tags: validation
       run: "#!/bin/bash\necho \"\U0001F50D Checking for missing gem dependencies...\"\
