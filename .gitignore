@@ -120,6 +120,8 @@ __pycache__/
 .claude/*
 !.claude/skills/
 .cursor/
+# Symlinks created by scripts/install-agent-skills.sh; machine-specific, never committed.
+.windsurf/skills/
 .mcp-cache/
 act-logs/
 

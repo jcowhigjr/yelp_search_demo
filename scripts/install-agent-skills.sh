@@ -9,6 +9,9 @@
 #
 # Claude Code needs no linking - .claude/skills/ is committed to the repo.
 #
+# Targets inside the repo (Windsurf, Cursor) are gitignored, since the symlinks
+# they create carry absolute machine-specific paths.
+#
 # Usage:
 #   scripts/install-agent-skills.sh            # link into every harness found
 #   scripts/install-agent-skills.sh --dry-run  # show what would happen
