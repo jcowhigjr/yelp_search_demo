@@ -8,6 +8,10 @@ The reviewer must not have authored the change and must start from a fresh
 context. Every reported finding must have survived an explicit attempt to
 disprove it; the ones that did not survive go under "Disproved".
 
+These records are **spot-checked by hand** against the diffs they describe. The
+automated check confirms the record is complete and consistent; a human confirms
+it is true. Write it for that reader.
+
 **If you are not confident, stop and say so.** Set `Escalated to human?` to
 `yes - <reason>` and leave Findings and Disproved empty. That is a complete,
 honest record and it passes validation. There is never a reason to invent a

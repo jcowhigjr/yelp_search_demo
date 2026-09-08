@@ -70,7 +70,10 @@ for more than it is.
 - **The record is self-written.** A determined author can produce a plausible
   record for a review that never happened. The check raises the cost of faking
   it; it does not make faking it impossible.
-- **Review quality is unverified.** The validator checks structure only.
+- **Review quality is unverified by tooling.** The validator checks structure
+  only; a well-written record of a shallow review passes like a thorough one.
+  This is covered by manual spot-checks of records against their diffs, which is
+  the intended backstop rather than a gap to automate away.
 
 ## Not reviewed
 

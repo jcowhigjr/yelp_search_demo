@@ -100,6 +100,20 @@ When creating any PR, the workflow should:
    `Independent? yes` while recording that the reviewer authored the change or
    lacked a fresh context. It validates the paper trail, not the review quality.
 
+   **Records are spot-checked manually for quality.** The CI job proves a record
+   exists, is filled in, and is internally consistent. It cannot tell whether the
+   review behind it was any good - a well-written record of a shallow review
+   passes exactly like a well-written record of a thorough one. That gap is
+   closed by a human reading a sample of records against their diffs, not by
+   more automation.
+
+   Assume any record may be read. When it is, the questions are: did the
+   findings match what the diff actually does, was the Disproved section real
+   reasoning or decoration, and - where a change was escalated - was that honest
+   or avoidance? A record that overstates its review is treated as a more
+   serious problem than a change that was escalated or left unreviewed, because
+   it removes the signal that a human should look.
+
    **On judging whether this is working.** Acceptance rate is a tempting metric
    and a misleading one. DoorDash's benchmarking found that "was accepted" and
    "was real" are different questions - engineers accept or reject review
