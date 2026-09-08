@@ -13,12 +13,126 @@
 ### Automated PR Completion Loop
 When creating any PR, the workflow should:
 
-1. **Request Copilot Review**
-   - Request Copilot from the PR's **Reviewers** menu on GitHub, or rely on repository/org-level automatic Copilot review if it is enabled.
-   - Do **not** assume `gh pr comment <PR_NUMBER> -b "@copilot-reviewer review"` will trigger a review. That mention is not a supported Copilot review trigger.
+1. **Obtain an independent review** - either route below satisfies this step.
+
+   **Route A - Copilot on the PR**
+   - Request Copilot from the PR's **Reviewers** menu on GitHub, or rely on
+     repository/org-level automatic Copilot review if it is enabled.
+   - Do **not** assume `gh pr comment <PR_NUMBER> -b "@copilot-reviewer review"` will
+     trigger a review. That mention is not a supported Copilot review trigger.
+   - Note that requesting Copilot **cannot currently be automated**: `gh pr edit
+     --add-reviewer`, the GitHub MCP `request_copilot_review` tool, and a direct
+     `POST /pulls/{n}/requested_reviewers` all return success while leaving
+     `requested_reviewers` empty. Only the Reviewers menu works. An agent that
+     cannot reach that UI must use Route B rather than report this step done.
+
+   **Route B - local review via MCP or CLI**
+
+   A review requested locally through an MCP server or a CLI reviewer is
+   equally acceptable, provided it is auditable. All four conditions are
+   required; a review that skips any of them does not count.
+
+   1. **An independent reviewer ran.** Independence here is *architectural*, not
+      a matter of which vendor supplies the model:
+
+      - the reviewer did **not** author the change, and
+      - it starts from a **fresh context** - it has not seen the reasoning that
+        produced the code, only the result.
+
+      A different provider is fine but not required. DoorDash's production
+      reviewer runs on the same model family that writes much of their code; what
+      makes it independent is the fresh context and the adversarial role. Their
+      rule is worth stating plainly: never let the agent that wrote the code be
+      its only judge. The failure being prevented is *narrative momentum* - an
+      agent that has committed to an approach defends it instead of evaluating
+      it, and switching vendors does not fix that while re-using the same context
+      does not fix it either.
+
+      Acceptable reviewers: a fresh subagent given only the diff and the repo, an
+      MCP review tool, `mise exec -- agent codex review --uncommitted`, or
+      `mise exec -- claude -p --model opus`. Self-review by the authoring agent in
+      its own context is **not** independent; record it as such if that is all
+      that happened.
+
+   2. **Findings survived a disprove-it pass.** Before a finding is reported, the
+      reviewer must explicitly try to falsify it - re-read the surrounding code
+      and the tests and attempt to show the finding is wrong. Only findings that
+      survive get recorded. This trades recall for precision on purpose: a
+      reviewer that cries wolf gets ignored, and an ignored reviewer provides no
+      safety at all. Findings that did not survive are listed under "Disproved"
+      in the record, so the pass is visible rather than assumed.
+
+   **Escalation is a valid outcome, and is never a failure.** If the reviewer is
+   not confident - the change is outside what it can judge, the tooling is
+   unavailable, the diff needs domain knowledge it does not have - it records
+   `Escalated to human? yes - <reason>` and stops. That record is complete and
+   passes validation; only the DoD review box stays unticked, which is exactly
+   the signal a human needs.
+
+   No agent should ever fabricate a review to satisfy this step. A false record
+   is worse than an absent one: an absent record says "nobody looked", while a
+   false one says "somebody looked" and removes the reason for anyone to check.
+   If you would have to guess, say you are guessing and hand it back.
+
+   3. **The issues are noted in the commit.** Findings that changed the code go in
+      the commit message body, not only in a PR comment - the commit is what
+      survives a squash merge. Findings deliberately not acted on are recorded
+      with the reason.
+
+   4. **Provenance is documented locally.** Add a record under `docs/reviews/`
+      using `docs/reviews/TEMPLATE.md`, and reference it from the commit with a
+      `Review-record:` trailer. This is the audit trail: it must be possible to
+      tell later *who* reviewed *which* commit, *with what*, and *what happened
+      to each finding*.
+
+   Commit trailers for Route B:
+
+   ```
+   Reviewed-by: codex/gpt-5.4 (local CLI)
+   Review-record: docs/reviews/2026-09-06-groom-backlog-skill.md
+   ```
+
+   `.agents/scripts/verify_review_provenance.py` runs on pre-push and checks that any
+   commit carrying a `Review-record:` trailer points at a file that exists and is
+   filled in. Placeholder detection reads `docs/reviews/TEMPLATE.md` at runtime
+   rather than keeping its own list, so adding a row to the template
+   automatically makes that row checked. It also refuses a record that claims
+   `Independent? yes` while recording that the reviewer authored the change or
+   lacked a fresh context. It validates the paper trail, not the review quality.
+
+   **Records are spot-checked manually for quality.** The CI job proves a record
+   exists, is filled in, and is internally consistent. It cannot tell whether the
+   review behind it was any good - a well-written record of a shallow review
+   passes exactly like a well-written record of a thorough one. That gap is
+   closed by a human reading a sample of records against their diffs, not by
+   more automation.
+
+   Assume any record may be read. When it is, the questions are: did the
+   findings match what the diff actually does, was the Disproved section real
+   reasoning or decoration, and - where a change was escalated - was that honest
+   or avoidance? A record that overstates its review is treated as a more
+   serious problem than a change that was escalated or left unreviewed, because
+   it removes the signal that a human should look.
+
+   **On judging whether this is working.** Acceptance rate is a tempting metric
+   and a misleading one. DoorDash's benchmarking found that "was accepted" and
+   "was real" are different questions - engineers accept or reject review
+   comments based on timing and PR urgency as much as correctness. If this policy
+   is ever evaluated, sample the findings and ask whether they were *right*, not
+   whether they were taken.
+
+   Prior art: DoorDash's AI code reviewer and its Flux agent platform. Two
+   differences worth knowing. Their reviews are triggered by a webhook on PR
+   open, so the authoring agent has no say in whether a review happens - our
+   Route B still relies on the agent choosing to request one, which is weaker.
+   And their reviewers are given a full repository clone rather than a diff,
+   because most bugs worth catching live in how a change interacts with its
+   callers rather than in the diff itself. Give the reviewer the repo, not just
+   the patch.
 
 2. **Monitor Loop** (automated sleep/check pattern)
-   - Wait for the Copilot review itself to appear on the PR before assuming the request succeeded
+   - Route A: wait for the Copilot review itself to appear on the PR before
+     assuming the request succeeded
    - Address all review comments programmatically or manually
    - Re-request review if changes were made
    - Monitor CI status until all checks pass
@@ -38,7 +152,7 @@ When creating any PR, the workflow should:
    ```
 
 ### Definition of Done Checklist
-- [ ] Copilot review requested and feedback addressed
+- [ ] Independent review obtained and feedback addressed - either Copilot on the PR, or a local MCP/CLI review whose findings are in the commit and whose provenance is recorded under `docs/reviews/`
 - [ ] All CI checks passing (tests, linting, security)
 - [ ] Review comments resolved and approved
 - [ ] PR merged to base branch
