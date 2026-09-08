@@ -15,6 +15,7 @@ Definition of Done, plus the template and validator that make it auditable.
 | Authored the change? | no |
 | Fresh context? | yes - the reviewer never saw the reasoning that produced the change, only the result |
 | Independent? | yes |
+| Escalated to human? | no |
 | Given | full repo |
 
 Independence here is architectural, not vendor-based: the reviewer shares a model
@@ -38,6 +39,9 @@ Only findings that survived the disprove-it pass.
 | 5 | medium | A commit with no `Review-record:` trailer is skipped entirely, so the cheapest bypass is to omit the trailer. Route A is likewise unverified by any tooling | accepted, documented - inherent to a trailer-based scheme. Recorded in "Known limits" below rather than papered over |
 | 6 | medium | Route B is structurally more gameable than Route A, because its audit trail is a file the authoring agent writes itself rather than an external system of record | accepted, documented - see "Known limits" |
 | 7 | medium | `.agents/skills/multi-model-review/SKILL.md` offers an in-session subagent as a reviewer, which may share context with the author and so is not reliably "fresh" | accepted, not fixed here - that skill is outside this change; noted for follow-up |
+| 8 | high | Finding 5's "omitting the trailer skips the check" was accepted as inherent. It is not: the checker is plain Python with no model call, so it can run in CI where the author cannot skip it | fixed - `.github/workflows/review-provenance.yml` runs it on every PR with `--require-record`. No API cost |
+| 9 | medium | A `sha_consistency` check that required every named commit to be inside the change flagged this record for citing its own base commit. Fourth prose-matching false positive in this branch's history | fixed by narrowing, not by exception - the check now only rejects a sha that resolves to nothing, which is provable. Membership requires guessing which mentions are claims |
+| 10 | high | The mechanism had no vocabulary for "I was not confident, a human should look". `Independent? no` read as a shortfall, so the cheapest way to look compliant was to overstate a review. Raised by the repo owner | fixed - `Escalated to human?` is a first-class passing outcome requiring only a reason. Findings and Disproved may then be empty |
 
 ## Disproved
 
@@ -58,10 +62,11 @@ Candidates the reviewer raised and then falsified.
 These are real and unfixed. They are recorded so the mechanism is not mistaken
 for more than it is.
 
-- **Omitting the trailer skips the check entirely.** Neither route is verified
-  against an external system of record. DoorDash avoids this by triggering
-  review from a webhook on PR open, so the authoring agent has no say in whether
-  a review happens. Matching that would mean moving this into CI.
+- ~~**Omitting the trailer skips the check entirely.**~~ Fixed. The checker now
+  runs in CI with `--require-record`, so a change with no record fails there
+  regardless of what happens on the author's machine. This costs no API spend -
+  the checker calls no model. What remains outside CI is the *review* itself,
+  which is a deliberate cost decision, not an oversight.
 - **The record is self-written.** A determined author can produce a plausible
   record for a review that never happened. The check raises the cost of faking
   it; it does not make faking it impossible.
@@ -78,7 +83,11 @@ for more than it is.
 
 ```
 python3 -m unittest discover -s .agents/scripts -p 'test_*.py'
-Ran 26 tests in 0.002s - OK
+Ran 30 tests in 0.002s - OK
+
+verify_review_provenance.py <range> --require-record   # record present -> exit 0
+verify_review_provenance.py <no-record range> --require-record  # -> exit 1
+verify_review_provenance.py <no-record range>          # pre-push -> exit 0
 ```
 
 The two high-severity findings were reproduced against a scratch repository

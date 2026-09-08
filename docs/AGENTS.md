@@ -62,6 +62,18 @@ When creating any PR, the workflow should:
       safety at all. Findings that did not survive are listed under "Disproved"
       in the record, so the pass is visible rather than assumed.
 
+   **Escalation is a valid outcome, and is never a failure.** If the reviewer is
+   not confident - the change is outside what it can judge, the tooling is
+   unavailable, the diff needs domain knowledge it does not have - it records
+   `Escalated to human? yes - <reason>` and stops. That record is complete and
+   passes validation; only the DoD review box stays unticked, which is exactly
+   the signal a human needs.
+
+   No agent should ever fabricate a review to satisfy this step. A false record
+   is worse than an absent one: an absent record says "nobody looked", while a
+   false one says "somebody looked" and removes the reason for anyone to check.
+   If you would have to guess, say you are guessing and hand it back.
+
    3. **The issues are noted in the commit.** Findings that changed the code go in
       the commit message body, not only in a PR comment - the commit is what
       survives a squash merge. Findings deliberately not acted on are recorded

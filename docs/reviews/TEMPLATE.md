@@ -8,6 +8,13 @@ The reviewer must not have authored the change and must start from a fresh
 context. Every reported finding must have survived an explicit attempt to
 disprove it; the ones that did not survive go under "Disproved".
 
+**If you are not confident, stop and say so.** Set `Escalated to human?` to
+`yes - <reason>` and leave Findings and Disproved empty. That is a complete,
+honest record and it passes validation. There is never a reason to invent a
+review to fill this in: a fabricated record is worse than no record, because it
+removes the signal that a human should look. Handing work back is a valid
+outcome of doing the work.
+
 ## Provenance
 
 | Field | Value |
@@ -20,6 +27,7 @@ disprove it; the ones that did not survive go under "Disproved".
 | Authored the change? | yes / no - "yes" makes this a self-review, not an independent one |
 | Fresh context? | yes / no - "no" if the reviewer had already seen the reasoning behind the code |
 | Independent? | yes only when the two rows above are "no" and "yes" respectively |
+| Escalated to human? | no - or "yes - <what you were not confident about>" if you stopped rather than guess |
 | Given | diff only / full repo - prefer full repo; most real bugs live in the callers |
 
 ## Findings

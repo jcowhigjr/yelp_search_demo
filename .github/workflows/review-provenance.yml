@@ -1,0 +1,46 @@
+name: Review Provenance
+
+# Runs the review-provenance checker where the author cannot skip it.
+#
+# This costs nothing beyond runner minutes: it is plain Python over git
+# metadata, with no model call, no API key, and no network access. The point is
+# not to review the code - it is to make the audit trail mandatory rather than
+# opt-in. On a developer's machine the check only runs if a `Review-record:`
+# trailer is already present, so omitting the trailer skips it entirely. Here it
+# does not.
+#
+# A change with no record fails. Recording that you escalated to a human is a
+# passing outcome; only a *missing* or *fabricated* record fails.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    # Dependabot opens its own PRs and cannot write a review record.
+    # `no-review-record` is a deliberate human opt-out, visible on the PR.
+    if: >-
+      github.actor != 'dependabot[bot]' &&
+      !contains(github.event.pull_request.labels.*.name, 'no-review-record')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Full history so the base commit and the PR's commits are present.
+          fetch-depth: 0
+
+      - name: Verify review provenance
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          echo "Checking ${base}..${head}"
+          python3 .agents/scripts/verify_review_provenance.py \
+            "${base}..${head}" --require-record
+
+      - name: Self-test the checker
+        run: python3 -m unittest discover -s .agents/scripts -p 'test_*.py'

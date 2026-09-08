@@ -28,6 +28,7 @@ TEMPLATE = """# Review record
 | Authored the change? | yes / no - "yes" makes this a self-review |
 | Fresh context? | yes / no - "no" if the reviewer had seen the reasoning |
 | Independent? | yes only when the two rows above are "no" and "yes" |
+| Escalated to human? | no - or "yes - <reason>" if you stopped rather than guess |
 | Given | diff only / full repo |
 
 ## Findings
@@ -57,6 +58,7 @@ VALID = """# Review record
 | Authored the change? | no |
 | Fresh context? | yes |
 | Independent? | yes |
+| Escalated to human? | no |
 | Given | full repo |
 
 ## Findings
@@ -155,6 +157,53 @@ class DisproveItPassIsChecked(unittest.TestCase):
             "| 1 | high / medium / low | what the reviewer said | fixed in `<sha>` |",
         )
         self.assertTrue(any("Findings" in p for p in problems(content)))
+
+
+class EscalationIsAValidOutcome(unittest.TestCase):
+    """Handing work back must be a complete record, not a shortfall.
+
+    If the honest path is harder than fabricating one, the mechanism produces
+    exactly the fabrications it exists to prevent.
+    """
+
+    ESCALATED = """# Review record
+
+## Provenance
+
+| Field | Value |
+|-------|-------|
+| Date (UTC) | 2026-09-08 |
+| Commit(s) reviewed | `abc1234` |
+| Reviewer | `claude/opus-5` |
+| Authored the change? | no |
+| Fresh context? | yes |
+| Independent? | yes |
+| Escalated to human? | yes - the migration's backfill semantics need domain knowledge I do not have |
+"""
+
+    def test_escalated_record_needs_no_findings(self):
+        self.assertEqual(problems(self.ESCALATED), [])
+
+    def test_escalated_record_needs_no_disproved_section(self):
+        self.assertNotIn(
+            "Disproved", " ".join(problems(self.ESCALATED))
+        )
+
+    def test_escalation_without_a_reason_is_rejected(self):
+        content = self.ESCALATED.replace(
+            "| Escalated to human? | yes - the migration's backfill semantics "
+            "need domain knowledge I do not have |",
+            "| Escalated to human? | yes |",
+        )
+        found = problems(content)
+        self.assertTrue(any("no reason" in p for p in found), found)
+
+    def test_not_escalated_still_requires_findings_and_disproved(self):
+        self.assertTrue(problems(self.ESCALATED.replace(
+            "| Escalated to human? | yes - the migration's backfill semantics "
+            "need domain knowledge I do not have |",
+            "| Escalated to human? | no |",
+        )))
 
 
 class SectionParsing(unittest.TestCase):
