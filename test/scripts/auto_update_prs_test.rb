@@ -10,15 +10,9 @@ require 'tmpdir'
 # stale must be picked up by the bounded fresh-state recheck.
 class AutoUpdatePrsTest < ActiveSupport::TestCase
   include GhStubHelpers
+  include AutoUpdateStubHelpers
 
   SCRIPT = Rails.root.join('scripts/auto-update-prs.sh')
-  AUTO_MERGE = { 'enabledAt' => 'x' }.freeze
-  FAST_BOUNDS = {
-    'AUTO_UPDATE_RECHECK_ATTEMPTS' => '3',
-    'AUTO_UPDATE_RECHECK_DELAY_SECONDS' => '0',
-    'AUTO_UPDATE_HEAD_WAIT_ATTEMPTS' => '5',
-    'AUTO_UPDATE_HEAD_WAIT_DELAY_SECONDS' => '0',
-  }.freeze
 
   def setup
     setup_gh_stub('fake_gh_auto_update_prs.sh')
@@ -34,7 +28,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
       pr(number: 12, state: 'BEHIND', 'isCrossRepository' => true),
     ])
 
-    stdout, _stderr, status = run_script
+    stdout, _stderr, status = run_script(SCRIPT)
 
     assert_predicate status, :success?, stdout
     assert_includes stdout, 'No open PRs behind develop.'
@@ -45,7 +39,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     prs([pr(number: 8, state: 'BEHIND', 'headRefOid' => 'sha-eight')])
     write_head(8, 'sha-eight')
 
-    stdout, _stderr, status = run_script
+    stdout, _stderr, status = run_script(SCRIPT)
 
     assert_predicate status, :success?, stdout
     assert_includes gh_calls, 'pulls/8/update-branch'
@@ -59,7 +53,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     write_state_sequence(42, %w[UNKNOWN BEHIND])
     write_head(42, 'sha-queued')
 
-    stdout, _stderr, status = run_script
+    stdout, _stderr, status = run_script(SCRIPT)
 
     assert_predicate status, :success?, stdout
     assert_includes stdout, 'PR #42 reported BEHIND on fresh-state recheck'
@@ -74,7 +68,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     write_state_sequence(9, %w[CLEAN])
     write_head(9, 'sha-9')
 
-    stdout, _stderr, status = run_script
+    stdout, _stderr, status = run_script(SCRIPT)
 
     assert_predicate status, :success?, stdout
     assert_includes stdout, 'PR #9 fresh state is CLEAN; no update needed.'
@@ -84,7 +78,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
   test 'fails loudly when the initial pr list fails' do
     prs([pr(number: 8, state: 'BEHIND')])
 
-    stdout, _stderr, status = run_script('GH_STUB_FAIL_PR_LIST' => '1')
+    stdout, _stderr, status = run_script(SCRIPT, 'GH_STUB_FAIL_PR_LIST' => '1')
 
     assert_not_predicate status, :success?
     assert_not_includes stdout, 'No open PRs behind develop.'
@@ -94,7 +88,7 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     prs([pr(number: 8, state: 'BEHIND')])
     write_head(8, 'sha-8')
 
-    _stdout, _stderr, status = run_script('GH_STUB_FAIL_UPDATE' => '1')
+    _stdout, _stderr, status = run_script(SCRIPT, 'GH_STUB_FAIL_UPDATE' => '1')
 
     assert_not_predicate status, :success?
     assert_includes gh_calls, 'update-branch'
@@ -105,39 +99,10 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     write_state_sequence(11, %w[UNKNOWN UNKNOWN UNKNOWN])
     write_head(11, 'sha-11')
 
-    stdout, _stderr, status = run_script('AUTO_UPDATE_RECHECK_ATTEMPTS' => '2')
+    stdout, _stderr, status = run_script(SCRIPT, 'AUTO_UPDATE_RECHECK_ATTEMPTS' => '2')
 
     assert_not_predicate status, :success?
     assert_includes stdout, '::error::PR #11 never reached a definitive merge state'
     assert_not_includes gh_calls, 'update-branch'
-  end
-
-  private
-
-  def pr(number:, state:, **fields)
-    {
-      'number' => number,
-      'isCrossRepository' => false,
-      'headRefName' => "branch-#{number}",
-      'headRefOid' => "sha-#{number}",
-      'mergeStateStatus' => state,
-      'autoMergeRequest' => nil,
-    }.merge(fields)
-  end
-
-  def prs(payload)
-    File.write(File.join(@stub_dir, 'prs.json'), JSON.generate(payload))
-  end
-
-  def write_head(number, sha)
-    File.write(File.join(@stub_dir, "head-#{number}"), sha)
-  end
-
-  def write_state_sequence(number, states)
-    File.write(File.join(@stub_dir, "seq-#{number}"), "#{states.join("\n")}\n")
-  end
-
-  def run_script(extra_env = {})
-    run_stubbed_script(SCRIPT, FAST_BOUNDS.merge(extra_env))
   end
 end
