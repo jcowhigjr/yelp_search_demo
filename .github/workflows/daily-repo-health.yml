@@ -19,6 +19,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   issues: write
   pull-requests: read
@@ -32,73 +33,25 @@ jobs:
     name: Sweep for silent drift
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
       - name: Gather findings
         id: findings
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -uo pipefail
-          FINDINGS_FILE=$(mktemp)
-          : > "$FINDINGS_FILE"
+          bash scripts/daily-repo-health-findings.sh > /tmp/daily-health-findings.md
 
-          # --- 1. Stranded auto-merge PRs (BEHIND with merge queued) ---
-          STRANDED=$(gh pr list --repo "$REPO" --state open --limit 50 \
-            --json number,title,mergeStateStatus,autoMergeRequest \
-            --jq '[.[] | select(.autoMergeRequest != null and .mergeStateStatus == "BEHIND")]')
-          COUNT=$(echo "$STRANDED" | jq 'length')
-          if [ "$COUNT" -gt 0 ]; then
-            {
-              echo "### Stranded auto-merge PRs (queued but BEHIND develop)"
-              echo "$STRANDED" | jq -r '.[] | "- #\(.number) \(.title)"'
-              echo ""
-            } >> "$FINDINGS_FILE"
-          fi
-
-          # --- 2. Dependabot PRs open > 24h ---
-          CUTOFF=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
-          AGING=$(gh pr list --repo "$REPO" --state open --author "dependabot[bot]" --limit 50 \
-            --json number,title,createdAt \
-            --jq --arg cutoff "$CUTOFF" '[.[] | select(.createdAt < $cutoff)]')
-          COUNT=$(echo "$AGING" | jq 'length')
-          if [ "$COUNT" -gt 0 ]; then
-            {
-              echo "### Dependabot PRs open more than 24h"
-              echo "$AGING" | jq -r '.[] | "- #\(.number) \(.title) (opened \(.createdAt))"'
-              echo ""
-            } >> "$FINDINGS_FILE"
-          fi
-
-          # --- 3. Production smoke check red on develop ---
-          SMOKE=$(gh run list --repo "$REPO" --workflow production-smoke-check.yml \
-            --branch develop --limit 1 --json conclusion,url,createdAt)
-          if [ "$(echo "$SMOKE" | jq -r '.[0].conclusion // "none"')" = "failure" ]; then
-            {
-              echo "### Production Smoke Check failing on develop"
-              echo "- Latest run: $(echo "$SMOKE" | jq -r '.[0].url') ($(echo "$SMOKE" | jq -r '.[0].createdAt'))"
-              echo ""
-            } >> "$FINDINGS_FILE"
-          fi
-
-          # --- 4. Rails CI red on develop ---
-          CI=$(gh run list --repo "$REPO" --workflow main.yml \
-            --branch develop --limit 1 --json conclusion,url,createdAt)
-          if [ "$(echo "$CI" | jq -r '.[0].conclusion // "none"')" = "failure" ]; then
-            {
-              echo "### Rails CI (main.yml) failing on develop"
-              echo "- Latest run: $(echo "$CI" | jq -r '.[0].url') ($(echo "$CI" | jq -r '.[0].createdAt'))"
-              echo ""
-            } >> "$FINDINGS_FILE"
-          fi
-
-          if [ -s "$FINDINGS_FILE" ]; then
+          if [ -s /tmp/daily-health-findings.md ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
             echo "Findings detected:"
-            cat "$FINDINGS_FILE"
+            cat /tmp/daily-health-findings.md
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
             echo "No drift detected. Silent success."
           fi
-          cp "$FINDINGS_FILE" /tmp/daily-health-findings.md
 
       - name: Create or update tracking issue
         if: steps.findings.outputs.found == 'true'
