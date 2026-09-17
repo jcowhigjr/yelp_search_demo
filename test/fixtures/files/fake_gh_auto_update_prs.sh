@@ -11,6 +11,10 @@ case "$sub" in
     action="$1"; shift || true
     case "$action" in
       list)
+        if [ "${GH_STUB_FAIL_PR_LIST:-0}" = "1" ]; then
+          echo "gh: pr list failed (injected)" >&2
+          exit 1
+        fi
         cat "$GH_STUB_PRS"
         ;;
       view)
@@ -33,6 +37,10 @@ case "$sub" in
     esac
     ;;
   api)
+    if [ "${GH_STUB_FAIL_UPDATE:-0}" = "1" ]; then
+      echo "gh: api update-branch failed (injected)" >&2
+      exit 1
+    fi
     for a in "$@"; do
       case "$a" in
         repos/*/pulls/*/update-branch)

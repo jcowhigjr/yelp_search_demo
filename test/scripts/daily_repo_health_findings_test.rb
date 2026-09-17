@@ -67,14 +67,29 @@ class DailyRepoHealthFindingsTest < ActiveSupport::TestCase
     assert_not_includes File.read(SCRIPT), '--jq'
   end
 
+  test 'fails loudly when gh itself fails' do
+    _stdout, _stderr, status = run_findings('GH_STUB_FAIL' => '1')
+
+    assert_not_predicate status, :success?
+  end
+
+  test 'workflow invokes the script with the permissions its checks need' do
+    workflow = Rails.root.join('.github/workflows/daily-repo-health.yml').read
+
+    assert_includes workflow, 'bash scripts/daily-repo-health-findings.sh'
+    assert_includes workflow, 'actions/checkout'
+    assert_includes workflow, 'actions: read'
+    assert_includes workflow, 'issues: write'
+  end
+
   private
 
   def run_json(conclusion, url)
     { 'conclusion' => conclusion, 'url' => url, 'createdAt' => '2026-09-15T01:00:00Z' }
   end
 
-  def run_findings
-    run_stubbed_script(SCRIPT)
+  def run_findings(extra_env = {})
+    run_stubbed_script(SCRIPT, extra_env)
   end
 
   def write_stub_json(name, payload)

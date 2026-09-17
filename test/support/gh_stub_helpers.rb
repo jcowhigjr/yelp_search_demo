@@ -14,7 +14,7 @@ module GhStubHelpers
   end
 
   def teardown_gh_stub
-    FileUtils.remove_entry(@dir)
+    FileUtils.remove_entry(@dir) if @dir
   end
 
   def run_stubbed_script(script, extra_env = {})

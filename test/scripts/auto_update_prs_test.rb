@@ -81,6 +81,25 @@ class AutoUpdatePrsTest < ActiveSupport::TestCase
     assert_not_includes gh_calls, 'update-branch'
   end
 
+  test 'fails loudly when the initial pr list fails' do
+    prs([pr(number: 8, state: 'BEHIND')])
+
+    stdout, _stderr, status = run_script('GH_STUB_FAIL_PR_LIST' => '1')
+
+    assert_not_predicate status, :success?
+    assert_not_includes stdout, 'No open PRs behind develop.'
+  end
+
+  test 'a failed update-branch call is a visible failure' do
+    prs([pr(number: 8, state: 'BEHIND')])
+    write_head(8, 'sha-8')
+
+    _stdout, _stderr, status = run_script('GH_STUB_FAIL_UPDATE' => '1')
+
+    assert_not_predicate status, :success?
+    assert_includes gh_calls, 'update-branch'
+  end
+
   test 'recheck exhaustion is a visible failure, not silent success' do
     prs([pr(number: 11, state: 'UNKNOWN', 'autoMergeRequest' => AUTO_MERGE)])
     write_state_sequence(11, %w[UNKNOWN UNKNOWN UNKNOWN])

@@ -26,16 +26,19 @@ HEAD_WAIT_ATTEMPTS="${AUTO_UPDATE_HEAD_WAIT_ATTEMPTS:-12}"
 HEAD_WAIT_DELAY="${AUTO_UPDATE_HEAD_WAIT_DELAY_SECONDS:-5}"
 
 echo "Listing PRs targeting develop that may be behind..."
-PRS=()
-while IFS= read -r line; do
-  PRS+=("$line")
-done < <("$GH" pr list \
-  --repo "$REPO" --base develop --state open \
+# Capture first so a gh/jq failure aborts the run instead of reading as an
+# empty list (process substitution would swallow the producer's exit status).
+PRS_TSV=$("$GH" pr list \
+  --repo "$REPO" --base develop --state open --limit 50 \
   --json number,isCrossRepository,headRefName,headRefOid,mergeStateStatus,autoMergeRequest \
   | jq -r '.[] |
     select(.isCrossRepository == false) |
     [.number, .headRefName, .headRefOid, .mergeStateStatus, (.autoMergeRequest != null)] |
     @tsv')
+PRS=()
+while IFS= read -r line; do
+  PRS+=("$line")
+done <<< "$PRS_TSV"
 
 CANDIDATES=()
 QUEUED=()
@@ -109,11 +112,12 @@ if [ ${#CANDIDATES[@]} -gt 0 ]; then
 
     if [[ "$RESTORE_AUTO_MERGE" == "true" ]]; then
       echo "Restoring the existing auto-merge request on PR #${PR}"
-      "$GH" pr merge --auto --squash "$PR"
+      "$GH" pr merge --auto --squash "$PR" --repo "$REPO"
     fi
 
     echo "Triggering CI workflow for PR #${PR} (branch: ${HEAD_BRANCH})"
     "$GH" workflow run main.yml \
+      --repo "$REPO" \
       --ref "${HEAD_BRANCH}" \
       --field triggered_by="auto-update-prs" \
       --field pr_number="${PR}"
