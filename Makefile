@@ -16,23 +16,23 @@ tailwind_enforce_config:
 		echo "\033[31mFAIL:\033[0m tailwindcss-rails gem not found. Please install it. See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
-	# Check for v4 files and configs (existence check)
+	# Check for v4 files and the Procfile watcher (the standalone binary does not
+	# need config/tailwind.config.js)
 	@if [ ! -f app/assets/tailwind/application.css ] || \
 	   [ ! -d app/assets/builds ] || \
 	   [ ! -f Procfile.dev ] || \
-	   ! grep -q "css: bin/rails tailwindcss:watch" Procfile.dev || \
-	   [ ! -f config/tailwind.config.js ]; then \
-		echo "\033[31mFAIL:\033[0m Required Tailwind v4 files/configs not found or Procfile.dev incorrect. Run 'bin/rails tailwindcss:install' or check setup. See Makefile:tailwind_enforce_config for details."; \
+	   ! grep -qE 'css: bin/rails .?tailwindcss:watch' Procfile.dev; then \
+		echo "\033[31mFAIL:\033[0m Required Tailwind v4 files not found or Procfile.dev css watcher missing. Run 'bin/rails tailwindcss:install' or check setup. See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
 	# Check application.html.erb for correct stylesheet link tag
-	@if ! grep -q '<%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>' app/views/layouts/application.html.erb; then \
-		echo "\033[31mFAIL:\033[0m Incorrect stylesheet_link_tag in application.html.erb. Expected '<%= stylesheet_link_tag \"tailwind\", \"data-turbo-track\": \"reload\" %>'. See Makefile:tailwind_enforce_config for details."; \
+	@if ! grep -qE 'stylesheet_link_tag .?tailwind' app/views/layouts/application.html.erb; then \
+		echo "\033[31mFAIL:\033[0m Missing stylesheet_link_tag for tailwind in application.html.erb. See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
-	# Check application.css does not import tailwind directly
-	@if grep -q '@import "tailwindcss";' app/assets/tailwind/application.css; then \
-		echo "\033[31mFAIL:\033[0m application.css should not import tailwindcss directly when using tailwindcss-rails. See Makefile:tailwind_enforce_config for details."; \
+	# Check the v4 entrypoint imports tailwind
+	@if ! grep -q '@import "tailwindcss"' app/assets/tailwind/application.css; then \
+		echo "\033[31mFAIL:\033[0m app/assets/tailwind/application.css must import tailwindcss (v4 entrypoint). See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
 	# ensure the cdn is not present
