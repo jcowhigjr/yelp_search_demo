@@ -21,7 +21,7 @@ tailwind_enforce_config:
 	@if [ ! -f app/assets/tailwind/application.css ] || \
 	   [ ! -d app/assets/builds ] || \
 	   [ ! -f Procfile.dev ] || \
-	   ! grep -qE 'css: bin/rails .?tailwindcss:watch' Procfile.dev; then \
+	   ! grep -qE 'css: bin/rails .?tailwindcss:watch\[[^]]*always' Procfile.dev; then \
 		echo "\033[31mFAIL:\033[0m Required Tailwind v4 files not found or Procfile.dev css watcher missing. Run 'bin/rails tailwindcss:install' or check setup. See Makefile:tailwind_enforce_config for details."; \
 		exit 1; \
 	fi
