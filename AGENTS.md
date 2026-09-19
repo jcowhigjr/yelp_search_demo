@@ -36,11 +36,15 @@ This repository is self-contained. Do not assume a global AI setup exists.
 Use these baseline orientation commands before non-trivial work:
 
 ```bash
-mise exec -- lefthook run workflow-status
+mise exec -- ./scripts/git-sync.sh
 mise exec -- git status --short --branch
 mise exec -- git log --oneline --decorate --graph -10
 mise exec -- bin/rails db:version
 ```
+
+(`lefthook run workflow-status` does not exist as a lefthook hook in this repo -
+`lefthook.yml` only defines `pre-commit` and `pre-push` - so it errors with
+`hook workflow-status doesn't exist in the config` if run. Use the script.)
 
 When governance is triggered in a review, planning note, or automation artifact, include a `## Governance Flags` section listing the rule, trigger reason, and resolution or required approval.
 
@@ -68,7 +72,7 @@ When governance is triggered in a review, planning note, or automation artifact,
 - **Always sync first**
 
   - Before doing any work in this repo, run:
-    - `lefthook run workflow-status` (preferred) or `./scripts/git-sync.sh`
+    - `./scripts/git-sync.sh`
   - Goal: ensure `develop` is up to date, old merged branches are cleaned up, and you are not working on stale code.
   - **IMPORTANT**: See `docs/agent-coder-workflow.md` for the complete agent workflow with required commands.
   - If hooks or tooling fail, check for upstream fixes by syncing with `develop` before proposing local workarounds.
@@ -136,12 +140,15 @@ When governance is triggered in a review, planning note, or automation artifact,
   - Do **not** use `--no-verify` with Git.
   - Respect lefthook workflows and scripts; they enforce tests, audits, and PR review loops.
 
-- **Prefer lefthook workflows for Git operations**
+- **Prefer the repo's helper scripts for Git operations over bespoke git flows**
 
-  - Example: create a new feature branch using:
-    - `lefthook run workflow-new-feature feature/<branch-name>`
+  - Example: create a new feature branch using standard git, then keep it current with:
+    - `git checkout -b feature/<branch-name>` (or `bugfix/<branch-name>`)
+    - `scripts/sync-branch.sh` to rebase/sync it against `develop`
   - Use descriptive branch names, typically prefixed with `feature/` (or `bugfix/` when appropriate), for example: `feature/agents-config-docs`.
   - Use helper scripts under `scripts/` (e.g., `sync-branch.sh`, `pr-lifecycle.sh`) instead of bespoke Git flows.
+  - Note: there is no `lefthook run workflow-new-feature` command - `lefthook.yml`
+    defines only `pre-commit` and `pre-push` hooks, no custom workflow commands.
 
 - **Terminal command safety & escaping**
   - **CRITICAL**: Be extremely careful with command line arguments to prevent terminal hangs
