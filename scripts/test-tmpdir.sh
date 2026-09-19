@@ -19,7 +19,7 @@
 #
 # That failure looks like a broken test suite but is purely a path-length
 # problem, so it costs whoever hits it a debugging detour. Prefer the local tmp
-# dir; fall back to a short, private, repo-scoped dir only when it cannot fit.
+# dir; fall back to a short, private dir only when it cannot fit.
 set -euo pipefail
 
 # Worst case drb suffix: "/druby" (6) + pid (up to 7 digits) + "." (1) + n (2).
@@ -34,65 +34,78 @@ esac
 # terminator and the usable path length is sun_path_max - 1.
 budget=$((sun_path_max - 1 - SUFFIX_MAX))
 
-# Measure BYTES, not characters. The kernel enforces sun_path in bytes, while
-# ${#var} counts characters under a multibyte LC_CTYPE (en_US.UTF-8 on most dev
-# machines), which under-measures any non-ASCII path.
-byte_len() { LC_ALL=C printf '%s' "$1" | wc -c | tr -d '[:space:]'; }
+# Measure BYTES, not characters. Fail closed: missing wc / non-numeric output
+# must not be treated as "fits" by a failed `[ "" -le N ]` comparison.
+byte_len() {
+  local n
+  n=$(LC_ALL=C printf '%s' "$1" | wc -c 2>/dev/null | tr -d '[:space:]') || return 1
+  case "$n" in
+    '' | *[!0-9]*) return 1 ;;
+  esac
+  printf '%s\n' "$n"
+}
+
+fits_budget() {
+  local n
+  n=$(byte_len "$1") || return 1
+  [ "$n" -le "$budget" ]
+}
+
+# DRb needs to create entries inside TMPDIR: directory + write + search (x).
+# Bases may themselves be symlinks (macOS /tmp -> /private/tmp); that is fine.
+# Candidates we return must be real directories we created or own — never a link.
+is_usable_base() {
+  [ -d "$1" ] && [ -w "$1" ] && [ -x "$1" ]
+}
+
+is_usable_dir() {
+  [ -d "$1" ] && [ ! -L "$1" ] && [ -w "$1" ] && [ -x "$1" ]
+}
 
 # NOTE: every failure below is checked explicitly rather than left to `set -e`.
 # bash disables errexit for the whole body of a function invoked as the left
-# operand of `||`, so an unchecked `mkdir -p` in that position would fail
-# silently and we would hand back a path that does not exist or is not writable.
+# operand of `||`, so an unchecked mkdir in that position would fail silently.
 
 # 1. Preferred: repo-local tmp, the existing behaviour. Its mode is left alone -
-#    it is part of the checkout, not ours to tighten.
+#    it is part of the checkout, not ours to tighten. We still require it to be
+#    a real, writable, searchable directory so DRb can create sockets in it.
 local_tmp="$PWD/tmp"
-if [ "$(byte_len "$local_tmp")" -le "$budget" ] &&
+if fits_budget "$local_tmp" &&
   mkdir -p "$local_tmp" 2>/dev/null &&
-  [ -w "$local_tmp" ]; then
+  is_usable_dir "$local_tmp"; then
   printf '%s\n' "$local_tmp"
   exit 0
 fi
 
-# Repo-scoped suffix so concurrent checkouts and worktrees never share a socket
-# dir. This is a collision-avoidance id, not a security boundary - the 0700 mode
-# and the checks below are what keep the directory ours.
-#
-# Guarded deliberately: a bare `x="$(cmd | cmd)"` assignment is NOT protected by
-# the rule above - under `set -e` a failing pipeline aborts the whole script, so
-# a missing cksum would kill the run instead of falling through to /tmp.
-repo_id=""
-if command -v cksum >/dev/null 2>&1; then
-  repo_id="$(printf '%s' "$PWD" | cksum | cut -d' ' -f1)" || repo_id=""
+if ! command -v mktemp >/dev/null 2>&1; then
+  printf 'test-tmpdir: mktemp is required for fallback TMPDIR creation\n' >&2
+  exit 1
 fi
-if [ -z "$repo_id" ]; then
-  repo_id="$(printf '%s' "$PWD" | tr -c 'A-Za-z0-9' '-' | tail -c 21)" || repo_id=""
-fi
-[ -n "$repo_id" ] || repo_id="default"
 
-# 2. Under the system temp dir (per-user already on macOS), else 3. /tmp, which
-#    is short everywhere.
+# 2. Under the system temp dir (per-user already on macOS), else 3. /tmp.
+#    Create with mktemp -d so the path is unique and private at creation time
+#    (umask 077 -> mode 0700). Do NOT mkdir/chmod a path predictable from $PWD:
+#    that races with symlink swaps and can chmod an unrelated same-uid decoy.
 for base in "${TMPDIR:-/tmp}" /tmp; do
-  candidate="${base%/}/ysd-test-${repo_id}"
-  if [ "$(byte_len "$candidate")" -gt "$budget" ]; then continue; fi
+  base="${base%/}"
+  is_usable_base "$base" || continue
 
-  # Refuse a pre-existing symlink. This path is fully predictable from $PWD, and
-  # both `mkdir -p` and `chmod` follow links: a link planted here (stale
-  # artifact, reused container path, co-resident process) makes mkdir a silent
-  # no-op and redirects `chmod 700` onto the link's target - mutating an
-  # unrelated directory the invoking uid happens to own, then handing back a
-  # path that was never vetted. Tested: a link to a mode-755 dir had its target
-  # changed to 700 and the path was returned as safe.
-  if [ -L "$candidate" ]; then continue; fi
-  mkdir -p "$candidate" 2>/dev/null || continue
-  # Re-check: a link could have been swapped in between the test and the mkdir.
-  if [ -L "$candidate" ]; then continue; fi
+  old_umask=$(umask)
+  umask 077
+  candidate=$(mktemp -d "${base}/ysd-test.XXXXXX" 2>/dev/null) || {
+    umask "$old_umask"
+    continue
+  }
+  umask "$old_umask"
 
-  # Must be private AND ours. If the mode cannot be enforced - a stale dir left
-  # by another uid, e.g. a previous container run - skip rather than return a
-  # path that is neither private nor reliably writable.
-  chmod 700 "$candidate" 2>/dev/null || continue
-  if [ ! -d "$candidate" ] || [ ! -w "$candidate" ]; then continue; fi
+  if ! fits_budget "$candidate"; then
+    rmdir "$candidate" 2>/dev/null || true
+    continue
+  fi
+  if ! is_usable_dir "$candidate"; then
+    rmdir "$candidate" 2>/dev/null || true
+    continue
+  fi
 
   printf '%s\n' "$candidate"
   exit 0
