@@ -45,9 +45,12 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # Trigger on @claude comments (agent mode)
           trigger_phrase: "@claude"
-          # NOTE: label_trigger was removed - it could never fire. The action's
-          # label trigger needs the `labeled` pull_request type, which this
-          # workflow does not subscribe to (see `on:` above). See #3021.
+          # NOTE: label_trigger was removed - it could never fire on a PR. In
+          # claude-code-action v1 the label check is gated on
+          # `isIssuesEvent(context) && eventAction === "labeled"`
+          # (src/github/validation/trigger.ts), i.e. the `issues` webhook only.
+          # A PR label never reaches it, whatever `pull_request` types are
+          # subscribed - so adding `labeled` to `on:` would NOT revive it. See #3021.
           #
           # Read-only git inspection. The action's default tag-mode allowlist grants
           # only Bash(git add/commit/rm) + the push script, yet its own prompt tells
