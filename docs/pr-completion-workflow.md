@@ -12,7 +12,7 @@ This workflow ensures agents can work on PRs without requiring repeated "continu
 
 **Always start here when working on an existing PR.**
 
-> **Reminder:** GitHub sets `mergeStateStatus=BLOCKED` whenever *any* review thread (human or automated) remains unresolved. Treat Codex (`@codex review` / `@codex address that feedback`) and Claude (`@claude`, `@claude-suggest`) comments exactly like human reviewers: fix, reply, resolve.
+> **Reminder:** GitHub sets `mergeStateStatus=BLOCKED` whenever *any* review thread (human or automated) remains unresolved. Treat Codex (`@codex review` / `@codex address that feedback`) and Claude (`@claude`) comments exactly like human reviewers: fix, reply, resolve. (`@claude-suggest` does not exist in this repo - its workflow was removed in #1827.)
 
 ### Checklist
 
