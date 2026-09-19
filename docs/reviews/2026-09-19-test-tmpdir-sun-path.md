@@ -43,7 +43,7 @@ findings were against `df61940`; the fixes are in the commit carrying this recor
 
 ## Not reviewed
 
-- ~~The rewritten script was not re-reviewed by an independent reviewer.~~ **Done** - a second independent pass was run at the user's request; see "Second review" below. It found two further defects, both fixed. The state after *those* fixes has again not been independently re-reviewed.
+- ~~The rewritten script was not re-reviewed by an independent reviewer.~~ **Done** - second pass (see below). ~~Post-`050dc55` not re-reviewed.~~ **Done** - third pass (see "Third review" below).
 - **Linux behaviour was not executed**, only reasoned about: `sun_path_max=108` and the `uname -s` branch are untested on Linux from this macOS host. CI exercises the Linux path on this PR.
 - **System/`next`-environment test tasks** use the same `TMPDIR=` rewrite but were not run locally; only `mise run test` was executed.
 
@@ -110,3 +110,62 @@ every candidate blocked by a file       -> exit 1, "no candidate fits the 104-by
 short checkout                          -> $PWD/tmp still preferred
 mise run test (deep worktree, parallel) -> 99 runs, 456 assertions, 0 failures
 ```
+
+---
+
+# Third review - post-050dc55
+
+Requested by the user (plan option A) because each prior round still found real
+defects. Reviewer: `codex/gpt-6-astra` via `codex exec` (Claude CLI credits were
+exhausted). Fresh context, full repo, shell access, adversarial execution with
+real Ruby DRb 2.2.3. Verdict was `needs-fixes`. All five survivors below are
+fixed in the commit carrying this update.
+
+## Findings
+
+| # | Severity | Finding | Disposition |
+|---|----------|---------|-------------|
+| 6 | medium | Symlink recheck before `chmod` still raced: a concurrent swap of the predictable candidate path for a same-uid decoy link let `chmod 700` mutate the decoy. Stationary-symlink guard was real but incomplete. | fixed: abandoned predictable `mkdir`/`chmod` paths. Fallback now uses `mktemp -d` under umask `077` (unique private dir at creation). No pathname-based `chmod` on a reusable candidate. |
+| 7 | low | Missing `wc` made length checks fail *open*: empty `byte_len` made `[ "" -gt "$budget" ]` false, so an overlong path was accepted and DRb died with sun_path overflow. | fixed: `byte_len` validates numeric output and returns nonzero on failure; `fits_budget` fails closed. Verified: missing `wc` -> exit 1, no path emitted. |
+| 8 | medium | Local `$PWD/tmp` with mode `0600` passed `-w` but is not searchable; DRb could not create sockets inside it. | fixed: `is_usable_dir` requires `-d`, not a symlink, `-w`, and `-x`. Mode `0600`/`0500` fall through to mktemp fallback. |
+| 9 | medium | Mise tasks used `TMPDIR="$(scripts/test-tmpdir.sh)" cmd`. A failed substitution inside an assignment does not stop `cmd`, so Rails ran with empty `TMPDIR`. | fixed: every test task is now `resolved=$(scripts/test-tmpdir.sh) && export TMPDIR="$resolved" && …`. Helper failure aborts before Rails. |
+| 10 | medium | `test-smoke` / `test-next-smoke` applied TMPDIR only to `test:prepare`; the following test command inherited the long ambient TMPDIR and still overflowed sun_path. | fixed: `export TMPDIR="$resolved"` so both commands in the `&&` chain receive it. Verified both lines report the same short `ysd-test.*` path. |
+
+## Disproved (third review)
+
+| Candidate | Why it does not hold |
+|-----------|----------------------|
+| Spaces break quoting | Short and deep space-containing `$PWD` both succeed. |
+| Unset TMPDIR / duplicate `/tmp` entries break fallback | Both succeed; blocked candidates exit 1 with no stdout. |
+| Ordinary concurrent invocations conflict | Each gets its own `mktemp` dir (or shared local tmp when preferred). |
+| Missing `mkdir`/`chmod` false success | N/A after mktemp path; missing `mktemp` exits 1 explicitly. |
+| macOS `/tmp` is a symlink so fallback is impossible | Addressed: bases use `is_usable_base` (allows symlink bases like `/tmp` -> `/private/tmp`); returned candidates still must be real dirs. |
+
+## Confirmed still fixed (prior 1-5)
+
+| Prior | Status after third-round fixes |
+|---|---|
+| 1 unchecked mkdir/chmod | Still held; plus searchable-dir check and mktemp creation. |
+| 2 NUL byte reserved | Unchanged; 87-byte budget on macOS. |
+| 3 bytes not characters | Unchanged; fail-closed numeric `byte_len`. |
+| 4 symlink chmod | Strengthened: no predictable chmod path remains. |
+| 5 missing cksum abort | Path-derived id path removed with mktemp rewrite; missing `mktemp`/`wc` fail closed instead. |
+
+## Verification (third round)
+
+```
+deep checkout                         -> /tmp/ysd-test.XXXXXX (mode 0700), socket bind OK
+short checkout                        -> $PWD/tmp preferred
+mode 0600 / 0500 local tmp            -> fallback mktemp; local mode untouched
+missing wc                            -> exit 1, no path
+helper failure in mise task           -> rc!=0, Rails never starts
+test-smoke both commands              -> same exported short TMPDIR
+mise run test (deep worktree, parallel) -> 99 runs, 456 assertions, 0 failures
+./scripts/validate-mise-toml.sh       -> taplo OK
+```
+
+## Not reviewed / residual
+
+- The state after *these* third-round fixes has not been independently re-reviewed.
+- Linux `sun_path_max=108` still only exercised in CI, not on this macOS host.
+- System / `next` tasks share the same wiring pattern but were not run end-to-end locally beyond decoded-command probes.
