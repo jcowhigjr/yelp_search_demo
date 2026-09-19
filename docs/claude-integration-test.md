@@ -11,10 +11,11 @@ This file tests the production Claude Code review workflow.
 
 ## Expected Behavior
 
-- Workflow runs on PR open/sync/reopen
+- Workflow runs on PR open/sync/reopen, but only *reviews* when triggered
 - Agent mode: only responds when triggered
-- Comment `@claude` to get AI review
-- Or add `claude-review` label
+- Comment `@claude` to get an AI review, or put `@claude` in the PR body or title
+- Adding a `claude-review` label does **not** trigger a review: the action's
+  label trigger only fires for `issues` events, never PR labels
 
 ## Sample Code for Review
 
