@@ -45,5 +45,25 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # Trigger on @claude comments (agent mode)
           trigger_phrase: "@claude"
-          # Or add 'claude-review' label to trigger
-          label_trigger: "claude-review"
+          # NOTE: label_trigger was removed - it could never fire on a PR. In
+          # claude-code-action v1 the label check is gated on
+          # `isIssuesEvent(context) && eventAction === "labeled"`
+          # (src/github/validation/trigger.ts), i.e. the `issues` webhook only.
+          # A PR label never reaches it, whatever `pull_request` types are
+          # subscribed - so adding `labeled` to `on:` would NOT revive it. See #3021.
+          #
+          # Read-only git inspection. The action's default tag-mode allowlist grants
+          # only Bash(git add/commit/rm) + the push script, yet its own prompt tells
+          # the agent "you have access to these git commands ... git status ... git diff
+          # ... IMPORTANT: For PR diffs, use: git diff origin/develop...HEAD". Without
+          # these the reviewer inspects the diff blind and logs permission denials (#3021).
+          # --allowedTools is ADDITIVE to the action's defaults.
+          #
+          # Deliberately NOT granted:
+          #   WebFetch / WebSearch - disabled upstream "by default for security";
+          #     issue_comment runs in base-repo context with secrets, so granting
+          #     network access opens an exfiltration path from untrusted PR content.
+          #   Bash(mise exec:*) - `mise exec` runs arbitrary commands, which would be
+          #     equivalent to unrestricted Bash.
+          claude_args: |
+            --allowedTools "Bash(git diff:*),Bash(git status:*),Bash(git log:*),Bash(git show:*)"

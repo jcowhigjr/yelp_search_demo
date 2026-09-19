@@ -19,14 +19,17 @@ class DependabotWorkflowConfigurationTest < ActiveSupport::TestCase
 
   test 'base refresh restores only an existing auto-merge request' do
     update_workflow = File.read(WORKFLOWS.join('auto-update-prs.yml'))
+    update_script = Rails.root.join('scripts/auto-update-prs.sh').read
 
-    assert_includes update_workflow, '.mergeStateStatus == "BEHIND"'
-    assert_includes update_workflow, '.autoMergeRequest != null'
-    assert_includes update_workflow, 'if [[ "$RESTORE_AUTO_MERGE" == "true" ]]'
-    assert_includes update_workflow, 'gh pr merge --auto --squash "$PR"'
+    assert_includes update_workflow, 'bash scripts/auto-update-prs.sh'
+    assert_includes update_script, 'mergeStateStatus'
+    assert_includes update_script, '"$STATE" = "BEHIND"'
+    assert_includes update_script, '.autoMergeRequest != null'
+    assert_includes update_script, 'if [[ "$RESTORE_AUTO_MERGE" == "true" ]]'
+    assert_includes update_script, '"$GH" pr merge --auto --squash "$PR"'
     assert_not_includes update_workflow, "github.actor != 'dependabot[bot]'"
-    assert_not_includes update_workflow, 'Update-branch API failed'
-    assert_not_includes update_workflow, 'Failed to trigger workflow'
+    assert_not_includes update_script, 'Update-branch API failed'
+    assert_not_includes update_script, 'Failed to trigger workflow'
   end
 
   test 'stale refresh recreates PRs without changing merge policy' do
