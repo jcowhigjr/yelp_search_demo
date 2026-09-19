@@ -43,7 +43,7 @@ findings were against `df61940`; the fixes are in the commit carrying this recor
 
 ## Not reviewed
 
-- **The rewritten script was not re-reviewed by an independent reviewer.** The three fixes above were authored in response to this review and verified by the author only (see Verification). A second independent pass over the rewrite would be a reasonable ask before merge.
+- ~~The rewritten script was not re-reviewed by an independent reviewer.~~ **Done** - a second independent pass was run at the user's request; see "Second review" below. It found two further defects, both fixed. The state after *those* fixes has again not been independently re-reviewed.
 - **Linux behaviour was not executed**, only reasoned about: `sun_path_max=108` and the `uname -s` branch are untested on Linux from this macOS host. CI exercises the Linux path on this PR.
 - **System/`next`-environment test tasks** use the same `TMPDIR=` rewrite but were not run locally; only `mise run test` was executed.
 
@@ -68,3 +68,45 @@ short checkout (/tmp/shortrepo)       -> /tmp/shortrepo/tmp   (preferred path st
 ```
 
 Before the fix the first three of those emitted a path anyway and exited 0.
+
+
+---
+
+# Second review - the rewrite
+
+Requested because the first review's three fixes had only ever been verified by
+their author. Reviewer: `claude/opus-5`, fresh context, full repo, shell access
+so it could run the script adversarially. 27 turns, 9 permission denials.
+Reviewed the post-fix state of `scripts/test-tmpdir.sh` on
+`fix/issue-tmpdir-socket-path`, which the first reviewer never saw.
+
+It confirmed all three original fixes are real, not papered over, and found two
+further defects.
+
+## Findings
+
+| # | Severity | Finding | Disposition |
+|---|----------|---------|-------------|
+| 4 | medium | `chmod 700 "$candidate"` follows symlinks. The candidate path is fully predictable from `$PWD`. With a symlink planted there, `mkdir -p` is a silent no-op and `chmod 700` retargets onto the link's **target** - mutating an unrelated directory the invoking uid owns - after which the script returns the unvetted path as safe. The existing "stale dir owned by another uid" guard does not cover the same-uid case. | fixed in the commit carrying this update: the loop refuses a pre-existing symlink and re-checks after `mkdir` to close the swap window. Reproduced first: a link to a mode-755 dir had its target changed to 700 and the path returned. After the fix the link is skipped, the decoy stays `drwxr-xr-x`, and the script falls through to `/tmp`. |
+| 5 | low | `repo_id="$(printf … \| cksum \| cut …)"` is a bare assignment, so it is **not** covered by this script's own "every failure is checked explicitly" rule. Under `set -e` a failing pipeline aborts the whole run, so a missing `cksum` would kill the script with a raw shell error instead of falling through to `/tmp`. | fixed: guarded behind `command -v cksum`, with a deterministic path-derived id as fallback and a final `default`. Verified with `cksum` removed from `PATH`: the script now returns `…/ysd-test-iew-github-prs-5c6196` instead of aborting. |
+
+## Disproved (second review)
+
+| Candidate | Why it does not hold |
+|-----------|----------------------|
+| Original finding 1 (errexit disabled inside a function on the LHS of `\|\|`) still present. | Gone. `mkdir -p … \|\| continue` and `chmod 700 … \|\| continue` invoke external commands directly; no shell function appears on the left of `\|\|` anywhere in the rewrite. |
+| Original finding 2 (no NUL byte reserved) still present. | `budget=$((sun_path_max - 1 - SUFFIX_MAX))` subtracts it explicitly. |
+| Original finding 3 (characters not bytes) still present. | `byte_len()` uses `LC_ALL=C printf '%s' \| wc -c`; POSIX `wc -c` is a byte count. |
+| `for base in "${TMPDIR:-/tmp}" /tmp` misbehaves when both entries are identical (`TMPDIR=/tmp`). | Traced under `bash -x`: the loop `exit 0`s on the first iteration, so the duplicate is never reached. In a failure case both iterations compute the same candidate and fail identically - redundant, not incorrect. |
+| `byte_len`'s subshell inside `[ ]` aborts under `set -e`. | Simulated a missing `wc`: the empty substitution makes `[` return non-zero, which the enclosing `if`/`\|\|` consumes as intended. Unlike finding 5, this call site is always in a conditional context. |
+| `$PWD` deleted mid-run breaks it. | `mkdir -p` recreates the tree; the script still returns a valid writable path. Surprising, not a bug. |
+
+## Verification (second round)
+
+```
+symlink planted at the candidate path   -> skipped; decoy stays drwxr-xr-x; falls through to /tmp
+cksum removed from PATH                 -> path-derived id used; no abort
+every candidate blocked by a file       -> exit 1, "no candidate fits the 104-byte sun_path budget"
+short checkout                          -> $PWD/tmp still preferred
+mise run test (deep worktree, parallel) -> 99 runs, 456 assertions, 0 failures
+```

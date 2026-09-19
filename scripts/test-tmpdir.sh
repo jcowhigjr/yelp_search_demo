@@ -55,21 +55,45 @@ if [ "$(byte_len "$local_tmp")" -le "$budget" ] &&
 fi
 
 # Repo-scoped suffix so concurrent checkouts and worktrees never share a socket
-# dir. cksum is POSIX and present everywhere; this is a collision-avoidance id,
-# not a security boundary - the 0700 mode below is what keeps it private.
-repo_id="$(printf '%s' "$PWD" | cksum | cut -d' ' -f1)"
+# dir. This is a collision-avoidance id, not a security boundary - the 0700 mode
+# and the checks below are what keep the directory ours.
+#
+# Guarded deliberately: a bare `x="$(cmd | cmd)"` assignment is NOT protected by
+# the rule above - under `set -e` a failing pipeline aborts the whole script, so
+# a missing cksum would kill the run instead of falling through to /tmp.
+repo_id=""
+if command -v cksum >/dev/null 2>&1; then
+  repo_id="$(printf '%s' "$PWD" | cksum | cut -d' ' -f1)" || repo_id=""
+fi
+if [ -z "$repo_id" ]; then
+  repo_id="$(printf '%s' "$PWD" | tr -c 'A-Za-z0-9' '-' | tail -c 21)" || repo_id=""
+fi
+[ -n "$repo_id" ] || repo_id="default"
 
 # 2. Under the system temp dir (per-user already on macOS), else 3. /tmp, which
 #    is short everywhere.
 for base in "${TMPDIR:-/tmp}" /tmp; do
   candidate="${base%/}/ysd-test-${repo_id}"
-  [ "$(byte_len "$candidate")" -le "$budget" ] || continue
+  if [ "$(byte_len "$candidate")" -gt "$budget" ]; then continue; fi
+
+  # Refuse a pre-existing symlink. This path is fully predictable from $PWD, and
+  # both `mkdir -p` and `chmod` follow links: a link planted here (stale
+  # artifact, reused container path, co-resident process) makes mkdir a silent
+  # no-op and redirects `chmod 700` onto the link's target - mutating an
+  # unrelated directory the invoking uid happens to own, then handing back a
+  # path that was never vetted. Tested: a link to a mode-755 dir had its target
+  # changed to 700 and the path was returned as safe.
+  if [ -L "$candidate" ]; then continue; fi
   mkdir -p "$candidate" 2>/dev/null || continue
+  # Re-check: a link could have been swapped in between the test and the mkdir.
+  if [ -L "$candidate" ]; then continue; fi
+
   # Must be private AND ours. If the mode cannot be enforced - a stale dir left
   # by another uid, e.g. a previous container run - skip rather than return a
   # path that is neither private nor reliably writable.
   chmod 700 "$candidate" 2>/dev/null || continue
-  [ -w "$candidate" ] || continue
+  if [ ! -d "$candidate" ] || [ ! -w "$candidate" ]; then continue; fi
+
   printf '%s\n' "$candidate"
   exit 0
 done
