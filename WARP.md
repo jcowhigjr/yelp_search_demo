@@ -101,7 +101,7 @@ canonical policy. Warp highlights just these reminders:
   - Sync with base: ./scripts/sync-branch.sh [main|develop]
   - PR lifecycle: ./scripts/pr-lifecycle.sh [trigger|poll|sync] [...]
 - Tailwind CSS v4
-  - Dev watch (from Procfile.dev): css process runs via yarn tailwindcss --watch
+  - Dev watch (from Procfile.dev): css process runs via bin/rails "tailwindcss:watch[always]" (tailwindcss-ruby binary; `always` survives foreman's closed stdin)
   - Validate setup: make tailwind_enforce_config
 - Docker (optional)
   - docker-compose up -d
@@ -156,7 +156,7 @@ canonical policy. Warp highlights just these reminders:
   - sync-branch.sh: detects ahead/behind/diverged and auto-merges base (uses mise exec -- for merges/pushes)
   - pr-lifecycle.sh: trigger/poll/sync PRs with verification and coding standards checks
 - Procfiles
-  - Procfile.dev: web (bin/rails server) + css (yarn tailwindcss watcher)
+  - Procfile.dev: web (bin/rails server) + css (tailwindcss:watch[always] via tailwindcss-rails)
   - Procfile.test: guard flow for test:prepare and headless system runs
 
 4. Focused usage examples

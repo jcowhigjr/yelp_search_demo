@@ -1,2 +1,5 @@
 web: bin/rails server
-css: sh -c 'bin/rails assets:clobber && mise exec -- bun x tailwindcss -i ./app/assets/tailwind/application.css -o ./app/assets/builds/tailwind.css --watch'
+# Single compiler for dev + CI: the tailwindcss-ruby binary bundled by
+# tailwindcss-rails. `-w always` keeps the watcher alive when foreman closes
+# stdin (upstream --watch exits on stdin EOF, which killed bin/dev, #3017).
+css: bin/rails "tailwindcss:watch[always]"
