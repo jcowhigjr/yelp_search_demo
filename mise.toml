@@ -82,38 +82,40 @@ alias = ["l"]
 
 [tasks.test-prepare]
 description = "Prepare test database for main tests"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" bin/rails test:prepare --trace"
+# Resolve TMPDIR first so a helper failure aborts the task (assignment-form
+# TMPDIR="$(…)" cmd ignores substitution failure and runs cmd anyway).
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test bin/rails test:prepare --trace"
 
 [tasks.test]
 description = "Run unit and integration tests for main application"
-run = "CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" bin/rails test"
+run = "resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test bin/rails test"
 depends = ["test-prepare"]
 
 [tasks.test-system]
 description = "Run only system tests against an already-prepared test env (matches lefthook env)"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost TMPDIR=\"$(scripts/test-tmpdir.sh)\" CUPRITE_JS_ERRORS=false bin/rails test:system"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost CUPRITE_JS_ERRORS=false bin/rails test:system"
 
 [tasks.test-system-strict]
 description = "Run system tests with JS errors treated as failures"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost TMPDIR=\"$(scripts/test-tmpdir.sh)\" CUPRITE_JS_ERRORS=true bin/rails test:system"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test HEADLESS=true CUPRITE=true APP_HOST=localhost CUPRITE_JS_ERRORS=true bin/rails test:system"
 
 [tasks.test-next-prepare]
 description = "Prepare test database for 'next' environment"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" next rails test:prepare --trace"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test next rails test:prepare --trace"
 
 [tasks.test-next-run]
 description = "Run unit and integration tests for 'next' environment"
-run = "CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" next rails test"
+run = "resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test next rails test"
 depends = ["test-next-prepare"]
 
 [tasks.test-next-system]
 description = "Run system tests for 'next' environment"
-run = "mkdir -p tmp && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost TMPDIR=\"$(scripts/test-tmpdir.sh)\" next rails test:system"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost next rails test:system"
 depends = ["test-next-prepare"]
 
 [tasks.test-next-system-ci]
 description = "Run system tests for 'next' environment (CI optimized: skips prepare dependency)"
-run = "mkdir -p tmp && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost TMPDIR=\"$(scripts/test-tmpdir.sh)\" next rails test:system"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && HEADLESS=true CUPRITE=true CUPRITE_JS_ERRORS=true APP_HOST=localhost next rails test:system"
 
 [tasks.test-scripts]
 description = "Shell-level CLI tests for helper scripts (stacked-pr.sh, etc.)"
@@ -121,11 +123,12 @@ run = "bash test/scripts/stacked_pr_cli_test.sh"
 
 [tasks.test-smoke]
 description = "Fast Rails smoke tests without system/browser suites"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
+# export so both prepare and the following test command receive the resolved dir
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test bin/rails test:prepare --trace && bin/rails test test/controllers test/models"
 
 [tasks.test-next-smoke]
 description = "Fast Next Rails smoke tests"
-run = "mkdir -p tmp && CI=true RAILS_ENV=test TMPDIR=\"$(scripts/test-tmpdir.sh)\" next rails test:prepare --trace && next rails test test/controllers test/models"
+run = "mkdir -p tmp && resolved=$(scripts/test-tmpdir.sh) && export TMPDIR=\"$resolved\" && CI=true RAILS_ENV=test next rails test:prepare --trace && next rails test test/controllers test/models"
 
 [tasks.ruby-evergreen-patch]
 description = "Update Ruby version declarations to the latest patch in the current minor"
