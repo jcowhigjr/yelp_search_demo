@@ -20,10 +20,14 @@ Claude should also treat `GOVERNANCE.md` as a first-class repo contract. This re
   - Follow the empirical verification and escalation loops described in `docs/AGENTS.md` (see Issue #981 and related sections).
   - Before implementation, classify the work using the `SAFE`, `WARN`, `BLOCKED`, or `AMBIGUOUS` states from `GOVERNANCE.md`.
 
-- **GitHub Actions (`@claude`, `@claude-suggest`):**
-  - The `.github/workflows/claude-code-review.yml` and `.github/workflows/claude-code-review-suggestions.yml` workflows are **PR-focused**:
-    - `@claude` and `@claude-suggest` are intended for pull requests (and their discussion threads), not standalone Issues.
-    - They operate on diffs and changed files, posting review comments and suggestions.
+- **GitHub Actions (`@claude`):**
+  - The `.github/workflows/claude-code-review.yml` workflow is **PR-focused**:
+    - `@claude` in a PR comment, review, or review comment triggers a review; `@claude`
+      in a PR's own body or title also triggers one on `opened`/`synchronize`/`reopened`.
+      Not intended for standalone Issues.
+    - It operates on diffs and changed files, posting review comments.
+    - (`@claude-suggest` and `claude-code-review-suggestions.yml` do not exist in this
+      repo - that workflow was removed in #1827. Only `@claude` is live.)
   - Plain GitHub Issues may be supported by a separate "issue-text review" workflow in the future; see the tracking issue about Claude Issue vs PR behavior if present.
   - If any governance rule is triggered during analysis, include a `## Governance Flags` section in the output with the rule name, trigger reason, and resolution or deferral.
 

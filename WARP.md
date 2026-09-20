@@ -144,20 +144,14 @@ canonical policy. Warp highlights just these reminders:
 3. Repo conventions and workflows
 
 - Tooling via mise (mise.toml)
-<<<<<<< HEAD
-<<<<<<< HEAD
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
-=======
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
->>>>>>> 50cb06aa (Fix #1302: Update hardcoded Ruby version references to 3.3.9)
-=======
-  - Ruby 3.3.10 pinned; tasks define test/test-system/brakeman flows; several env defaults disable pagers
->>>>>>> 10a210bd (Update Ruby version from 3.3.9 to 3.3.10)
+  - Ruby version pinned in mise.toml (see docs/ruby-version-management.md for the
+    canonical process - do not hardcode a version here, it will drift)
+  - tasks define test/test-system/brakeman flows; several env defaults disable pagers
   - Always execute with mise exec -- to match CI and hooks environment
 - Git enforcement via lefthook (lefthook.yml, .lefthook.yml)
   - Protects main/develop from direct commits
   - Pre-commit runs branch sync checks and linters; pre-push runs full Rails tests and audits (see lefthook.yml)
-  - Never bypass hooks; prefer lefthook run workflow-\* utilities to manage branches
+  - Never bypass hooks; prefer the repo's helper scripts (git-sync.sh, sync-branch.sh) over bespoke git flows
 - Scripts (scripts/\*.sh)
   - sync-branch.sh: detects ahead/behind/diverged and auto-merges base (uses mise exec -- for merges/pushes)
   - pr-lifecycle.sh: trigger/poll/sync PRs with verification and coding standards checks
