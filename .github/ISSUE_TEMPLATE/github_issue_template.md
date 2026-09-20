@@ -64,7 +64,7 @@ assignees: ''
 
 ### Quality Assurance Requirements
 <!-- Reference lefthook.yml CI/CD standards -->
-- [ ] Pre-commit hooks pass (`lefthook run workflow-status`)
+- [ ] Pre-commit hooks pass (`./scripts/git-sync.sh`, then `git commit`/`git push` - lefthook's own `pre-commit`/`pre-push` hooks run automatically)
 - [ ] Code style checks pass (rubocop, erb_lint, prettier)
 - [ ] Security audits pass (brakeman, gem audit, js audit)
 - [ ] All tests pass (Rails tests, system tests, frontend tests)
@@ -118,7 +118,7 @@ assignees: ''
 ### Workflow Compliance
 <!-- Ensure adherence to project standards -->
 - [ ] Follow git workflow documented in `/docs/git-workflow.md`
-- [ ] Use lefthook commands for branch management (`lefthook run workflow-new-feature`)
+- [ ] Use standard git branch creation (`git checkout -b feature/<name>`), then `scripts/sync-branch.sh` to keep it current with `develop`
 - [ ] Ensure PR follows guidelines in `/docs/pr-workflow.md`
 - [ ] Reference appropriate documentation in `/docs/` for context
 - [ ] Validate environment setup per `/docs/container-organization.md`

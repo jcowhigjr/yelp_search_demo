@@ -191,7 +191,7 @@ Before opening or merging a bug-fix PR, follow this safety loop:
 
 This escalation loop is opt-in but strongly recommended for layered issues (CSS specificity vs. Tailwind, production-only config, CI-vs-local mismatches). It acts as the final safety valve before declaring a tricky bug “done.”
 
-> For full GitHub-based Claude review automation (`@claude-review`), see the "Claude AI Code Review Integration" section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
+> For full GitHub-based Claude review automation (`@claude`), see the "Claude AI Code Review Integration" section below. The escalation loop here is for targeted, one-off deep dives on tricky bugs where empirical checks are failing or inconclusive.
 
 #### Planning-time Claude CLI review
 
@@ -657,15 +657,25 @@ Claude AI code review is fully integrated and manually verified working in GitHu
 **Workflow File**: `.github/workflows/claude-code-review.yml`
 
 **Triggers**:
-- PR events: `opened`, `synchronize`, `reopened`  
-- Comment events: `@claude` mentions
-- Label events: `claude-review` label
+- Comment events: a comment containing `@claude` on a PR, a PR review, or a PR
+  review comment.
+- PR events: `opened`, `synchronize`, `reopened`. These produce a real review
+  only when the PR's **body or title** contains `@claude` - `checkContainsTrigger`
+  tests both (`src/github/validation/trigger.ts`). Otherwise the action logs
+  "No trigger found, skipping remaining steps" and returns *without* failing, so
+  the job finishes in seconds and still reports a green `claude-review` check.
+  **A green check here does not mean Claude reviewed the PR** - observed skipped
+  runs on this repo completed in 10-12s.
+- Label events: **not supported.** `claude-code-action` gates its label trigger
+  on `isIssuesEvent(context) && eventAction === "labeled"`
+  (`src/github/validation/trigger.ts`), i.e. the `issues` webhook only - a PR
+  label never reaches it, whatever `pull_request` types are subscribed.
 
 **Authentication**: Uses both `ANTHROPIC_API_KEY` and GitHub OIDC tokens
 
 **Permissions**: 
 - `id-token: write` (for OIDC authentication)
-- `contents: read` (to read PR files)
+- `contents: write` (to read PR files and push commits Claude makes)
 - `pull-requests: write` (to post review comments)
 
 ### 📊 Performance Metrics (Verified)
@@ -720,70 +730,12 @@ Claude AI code review is fully integrated and manually verified working in GitHu
 
 Claude reviews integrate seamlessly with existing PR workflows:
 
-1. **PR Creation** → Claude runs automatically (agent mode)
-2. **Manual Trigger** → `@claude-review` comment for on-demand reviews  
+1. **PR Creation** → reviews only if the PR body **or title** contains
+   `@claude`; otherwise the workflow exits early (see Triggers above)
+2. **Manual Trigger** → an `@claude` comment on the PR. The configured
+   `trigger_phrase` is `@claude`, not `@claude-review`  
 3. **Review Response** → Detailed feedback posted as PR comment
 4. **Iterative Process** → Request follow-up reviews after fixes
 
 The Claude integration follows the same hypothesis-driven methodology as other automated tools - waiting for complete execution and including automated feedback in evaluation process.
 
-## 🚀 Phase 1 Enhancement: GitHub Suggestion Comments
-
-### New Feature: `@claude-suggest` Command
-
-The enhanced Claude integration now supports **one-click code suggestions** through GitHub's native suggestion comment system.
-
-#### How It Works
-
-1. **Trigger**: Comment `@claude-suggest` on any PR
-2. **Analysis**: Claude analyzes changed files and generates specific code improvements
-3. **Suggestions**: Posted as GitHub suggestion comments on individual lines
-4. **Apply**: Click "Apply suggestion" button to implement changes immediately
-
-#### Suggestion Format
-
-Claude generates suggestions in the proper GitHub format:
-
-```markdown
-**🤖 Claude Suggestion**
-
-[Explanation of why this improves the code]
-
-```suggestion
-[actual code replacement]
-```
-```
-
-#### Benefits Over Regular Comments
-
-- **One-click application**: No copy/paste needed
-- **Line-specific**: Suggestions appear exactly where needed
-- **Version control**: Applied suggestions create proper commits
-- **Batch application**: Apply multiple suggestions efficiently
-- **Conflict prevention**: GitHub handles merge conflicts automatically
-
-#### Usage Examples
-
-**Security Fix Suggestion:**
-```suggestion
-return 0 if items.nil? || items.empty?
-```
-
-**Ruby Idiom Improvement:**
-```suggestion
-items.sum { |item| item.fetch('price', 0) }
-```
-
-**Performance Optimization:**
-```suggestion
-User.includes(:reviews).where(active: true)
-```
-
-#### Technical Implementation
-
-- **Workflow**: `.github/workflows/claude-code-review-suggestions.yml`
-- **Trigger**: `@claude-suggest` comments (separate from `@claude`)
-- **Parser**: Python script handles suggestion formatting and GitHub API
-- **Review API**: Uses GitHub's pull request review system for line comments
-
-This enhancement maintains all existing Claude functionality while adding actionable, one-click code improvements.
