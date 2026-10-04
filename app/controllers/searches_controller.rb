@@ -30,9 +30,9 @@ class SearchesController < ApplicationController
     @search = Search.find(params.expect(:id))
     @search.coffeeshops = []
     @search.update!(search_params)
-    if Coffeeshop.get_search_results(@search) == 'error'
-      flash[:error] = t('something_went_wrong')
-      redirect_to static_home_url
+    search_result = Coffeeshop.get_search_results(@search)
+    if search_error_result?(search_result)
+      handle_search_error(search_result)
     else
       @search.save
       flash[:success] = t('success.update', model: 'search')
@@ -68,7 +68,7 @@ class SearchesController < ApplicationController
     flash[:error] = if search_result.include?('not configured')
       search_result  # Show API key setup message
     else
-      t('something_went_wrong')  # Generic message for other errors
+      t('error.something_went_wrong')  # Generic message for other errors
                     end
     redirect_to static_home_url
   end
