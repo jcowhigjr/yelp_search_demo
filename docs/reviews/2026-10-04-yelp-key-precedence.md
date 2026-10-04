@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|-------|
 | Date (UTC) | 2026-10-04 |
-| Commit(s) reviewed | `9161fe8c4dfc47c5bf18789141d15dc56b5cc7c1` (range `6445996b7c70dda6f2a60f77b386ebec42c00ef5..9161fe8c4dfc47c5bf18789141d15dc56b5cc7c1`); earlier local iterations `d9d073e` and `af7d6b2` were reviewed before being amended into it |
+| Commit(s) reviewed | `9161fe8c4dfc47c5bf18789141d15dc56b5cc7c1` (range `6445996b7c70dda6f2a60f77b386ebec42c00ef5..9161fe8c4dfc47c5bf18789141d15dc56b5cc7c1`) |
 | Reviewer | `claude/opus` |
-| Invocation | Claude Code CLI session: `git show` of each iteration, `git diff af7d6b2 9161fe8`, reading `app/controllers/searches_controller.rb`, `app/models/coffeeshop.rb`, `config/locales/*.yml`, `config/routes.rb`, then the verification commands below |
+| Invocation | Claude Code CLI session: review of the final commit and its local amendment history, reading `app/controllers/searches_controller.rb`, `app/models/coffeeshop.rb`, `config/locales/*.yml`, `config/routes.rb`, then the verification commands below |
 | Requested by | repository owner, interactively |
 | Authored the change? | no - the change was authored by a separate Codex session |
 | Fresh context? | no - the reviewer saw the author's summary of the change and reviewed three successive iterations, so later passes were informed by its own earlier findings |
@@ -40,9 +40,8 @@
 
 ## Not reviewed
 
-- Production behaviour on Heroku: whether `YELP_API_KEY` is actually set on the `dorkbob` app was not checked; deployment depends on it.
+- Heroku runtime behaviour after deployment, including whether `YELP_API_KEY` is set on the `dorkbob` app, was not verified.
 - Real Yelp API responses; all Yelp traffic in tests is stubbed with WebMock or Mocha.
-- System tests (`mise run test-system`) were not run for this change.
 
 ## Verification
 
@@ -55,4 +54,7 @@ mise exec -- bin/rails test test/models/coffeeshop_test.rb test/controllers/sear
 
 mise exec -- bundle exec rubocop app/controllers/searches_controller.rb app/models/coffeeshop.rb test/controllers/searches_controller_test.rb test/models/coffeeshop_test.rb
 4 files inspected, no offenses detected
+
+Pre-push hook:
+36 system tests, 169 assertions, 0 failures, 5 skips
 ```
