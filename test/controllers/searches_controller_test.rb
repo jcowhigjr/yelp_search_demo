@@ -56,6 +56,15 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Successfully created search.', flash[:success]
   end
 
+  test '#create renders the translated generic error when Yelp fails' do
+    Coffeeshop.stubs(:get_search_results).returns('error: Unable to connect to Yelp.')
+
+    post searches_path, params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
+
+    assert_redirected_to static_home_url
+    assert_equal I18n.t('error.something_went_wrong'), flash[:error]
+  end
+
   test '#show' do
     @search.coffeeshops.create!(
       name: 'Linked Phone Cafe',
@@ -109,6 +118,15 @@ class SearchesControllerTest < ActionDispatch::IntegrationTest
     @search = Search.last
     patch search_url(@search.id), params: { search: { query: 'tacos', latitude: 0, longitude: 0 } }
     assert_equal 'tacos', @search.reload.query
+  end
+
+  test '#update renders the translated generic error when Yelp fails' do
+    Coffeeshop.stubs(:get_search_results).returns('error: Unable to connect to Yelp.')
+
+    patch search_url(nil, @search.id), params: { search: { query: 'yoga', latitude: 0, longitude: 0 } }
+
+    assert_redirected_to static_home_url
+    assert_equal I18n.t('error.something_went_wrong'), flash[:error]
   end
 
 end
