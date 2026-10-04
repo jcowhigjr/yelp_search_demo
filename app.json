@@ -21,7 +21,7 @@
       "value": "production"
     }
   },
-  "stack": "heroku-22",
+  "stack": "heroku-24",
   "buildpacks": [
     {
       "url": "heroku/ruby"
