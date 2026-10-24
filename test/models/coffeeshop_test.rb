@@ -12,6 +12,13 @@ class CoffeeshopTest < ActiveSupport::TestCase
     }],
   }.to_json.freeze
 
+  CONNECTION_ERRORS = [
+    SocketError,
+    Errno::ECONNREFUSED,
+    Errno::ECONNRESET,
+    JSON::ParserError,
+  ].freeze
+
   # test "the truth" do
   #   assert true
   # end
@@ -63,6 +70,28 @@ class CoffeeshopTest < ActiveSupport::TestCase
                      headers: { 'Authorization' => 'Bearer credentials-key' }
   end
 
+  test 'encodes the user query as one Yelp term parameter' do
+    search = @coffeeshop.search
+    query = 'coffee & tea#fresh=1'
+    search.update!(query:)
+    captured_request = nil
+    stub_request(:get, %r{api\.yelp\.com/v3/businesses/search})
+      .with(headers: { 'Authorization' => 'Bearer environment-key' })
+      .to_return do |request|
+        captured_request = request
+        { status: 200, body: API_RESPONSE }
+      end
+
+    with_yelp_api_key('environment-key') do
+      Coffeeshop.get_search_results(search)
+    end
+
+    assert captured_request
+    params = URI.decode_www_form(captured_request.uri.query).to_h
+    assert_equal query, params['term']
+    assert_equal %w[latitude longitude term], params.keys.sort
+  end
+
   test 'returns a generic error without logging the exception message' do
     stub_request(:get, %r{api\.yelp\.com/v3/businesses/search})
       .with(headers: { 'Authorization' => 'Bearer environment-key' })
@@ -77,6 +106,22 @@ class CoffeeshopTest < ActiveSupport::TestCase
 
     assert_match(/RestClient::Unauthorized.*HTTP 401/, log.string)
     assert_no_match(/sensitive Yelp response/, log.string)
+  end
+
+  CONNECTION_ERRORS.each do |error_class|
+    test "returns a generic error for #{error_class} without logging details" do
+      RestClient::Request.stubs(:execute).raises(error_class.new('sensitive upstream details'))
+      log = StringIO.new
+      Rails.stubs(:logger).returns(Logger.new(log))
+
+      with_yelp_api_key('environment-key') do
+        assert_equal 'error: Unable to connect to Yelp. Please try again later.',
+                     Coffeeshop.get_search_results(@coffeeshop.search)
+      end
+
+      assert_match(/#{Regexp.escape(error_class.name)}/, log.string)
+      assert_no_match(/sensitive upstream details/, log.string)
+    end
   end
 
   private
