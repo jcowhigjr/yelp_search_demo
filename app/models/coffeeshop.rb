@@ -22,15 +22,22 @@ class Coffeeshop < ApplicationRecord
         return 'error: Yelp API key not configured. Please set a valid YELP_API_KEY environment variable. ' \
                'Get your API key from: https://www.yelp.com/developers/v3/manage_app'
       end
-      
+
       response = RestClient::Request.execute(
         method: 'GET',
-        url: "https://api.yelp.com/v3/businesses/search?term=#{query}&latitude=#{lat}&longitude=#{long}",
-        headers: { Authorization: "Bearer #{api_key}" },
+        url: 'https://api.yelp.com/v3/businesses/search',
+        headers: {
+          Authorization: "Bearer #{api_key}",
+          params: { term: query, latitude: lat, longitude: long },
+        },
       )
       results = JSON.parse(response)
-    rescue RestClient::Exception => e
-      status = e.http_code
+    rescue RestClient::Exception,
+           SocketError,
+           Errno::ECONNREFUSED,
+           Errno::ECONNRESET,
+           JSON::ParserError => e
+      status = e.respond_to?(:http_code) ? e.http_code : nil
       suffix = status ? " (HTTP #{status})" : ''
       Rails.logger.error("Yelp API request failed: #{e.class}#{suffix}")
       return 'error: Unable to connect to Yelp. Please try again later.'
