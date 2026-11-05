@@ -62,8 +62,8 @@ class SearchesController < ApplicationController
     search_result.is_a?(String) && search_result.start_with?('error')
   end
 
-  def handle_search_error(search_result)
-    record_search_error(@search)
+  def handle_search_error(search_result, category: 'yelp_error')
+    record_search_error(@search, category:)
     # Display generic error message; detailed errors are logged server-side
     flash[:error] = if search_result.include?('not configured')
       search_result  # Show API key setup message
@@ -74,7 +74,8 @@ class SearchesController < ApplicationController
   end
 
   def handle_search_success
-    @search.save
+    return handle_search_error('error: Search could not be saved.', category: 'validation_error') unless @search.save
+
     record_search_success(@search)
     flash[:success] = t('success.create', model: 'search')
     redirect_to_proper_path
@@ -88,13 +89,13 @@ class SearchesController < ApplicationController
     )
   end
 
-  def record_search_error(search)
+  def record_search_error(search, category:)
     OutcomeEvents.record(
       'search_error',
       user: current_user,
       payload: {
         query: search.query,
-        error_category: 'yelp_error',
+        error_category: category,
       },
     )
   end
