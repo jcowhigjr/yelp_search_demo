@@ -9,7 +9,7 @@
 # Fixed GitHub Actions failure by removing invalid [plugins] section
 
 [tools]
-ruby = "3.3.12"
+ruby = "3.3.13"
 bun = "1.1.38"  # For local development only (not used in CI/CD)
 jq = "1.8.2"
 # lefthook is installed via Homebrew
