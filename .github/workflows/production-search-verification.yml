@@ -1,0 +1,114 @@
+name: Production Search Verification
+
+on:
+  pull_request:
+    branches: [develop]
+    paths: ['.github/workflows/production-search-verification.yml']
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Ruby on Rails CI']
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-search-verification
+  cancel-in-progress: false
+
+jobs:
+  search:
+    if: >-
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'develop' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Replay production search creation
+        shell: bash
+        run: |
+          ruby <<'RUBY'
+          require 'net/http'
+          require 'uri'
+          require 'cgi'
+          require 'json'
+          require 'time'
+
+          origin = URI('https://dorkbob.herokuapp.com')
+          cases = [
+            ['coffee ', '35.933449', '-79.029773'],
+            ['espresso ', '35.907751', '-78.991132']
+          ]
+          evidence = { checked_at: Time.now.utc.iso8601, deployed_revision: 'unverified', checks: [] }
+          request = lambda do |path, cookie = nil, form = nil|
+            uri = URI.join(origin.to_s, path)
+            raise 'Refusing request outside production origin' unless uri.scheme == origin.scheme && uri.host == origin.host && uri.port == origin.port
+            client = Net::HTTP.new(uri.host, uri.port)
+            client.use_ssl = true
+            client.open_timeout = 15
+            client.read_timeout = 30
+            req = form ? Net::HTTP::Post.new(uri) : Net::HTTP::Get.new(uri)
+            req['Cookie'] = cookie if cookie
+            req['User-Agent'] = 'DorkBob-Production-Search-Verification'
+            req['Origin'] = origin.to_s if form
+            req.set_form_data(form) if form
+            client.request(req)
+          end
+          cookies = lambda do |response|
+            (response.get_fields('set-cookie') || []).map { |value| value.split(';', 2).first }.join('; ')
+          end
+
+          cases.each do |query, latitude, longitude|
+            check = { query: query, result: 'failed' }
+            evidence[:checks] << check
+            begin
+              home = request.call('/')
+              raise "Homepage HTTP #{home.code}" unless home.code == '200'
+              token = nil
+              home.body.scan(/<input\b[^>]*>/i).each do |input|
+                attrs = input.scan(/([\w-]+)\s*=\s*["']([^"']*)["']/).to_h
+                token = CGI.unescapeHTML(attrs['value'].to_s) if attrs['name'] == 'authenticity_token'
+              end
+              raise 'Missing CSRF token' if token.nil? || token.empty?
+              cookie = cookies.call(home)
+              post = request.call('/searches', cookie, {
+                'authenticity_token' => token, 'search[query]' => query,
+                'search[latitude]' => latitude, 'search[longitude]' => longitude
+              })
+              check[:post_status] = post.code.to_i
+              raise "Search POST HTTP #{post.code}" unless %w[302 303].include?(post.code)
+              target = URI.join(origin.to_s, post['location'].to_s)
+              raise 'Search redirected outside production origin' unless target.scheme == origin.scheme && target.host == origin.host && target.port == origin.port
+              check[:redirect_path] = target.path
+              raise "Search did not redirect to a saved search: #{target.path}" unless target.path.match?(%r{\A/(?:[a-z]{2}(?:-[A-Z]{2})?/)?searches/\d+\z})
+              updated_cookie = cookies.call(post)
+              result = request.call(target.to_s, updated_cookie.empty? ? cookie : updated_cookie)
+              check[:get_status] = result.code.to_i
+              raise "Results GET HTTP #{result.code}" unless result.code == '200'
+              raise 'Missing search results' unless result.body.include?('search-results')
+              raise 'Missing business cards' unless result.body.include?('coffeeshop-card')
+              check[:result] = 'passed'
+            rescue StandardError => error
+              check[:error] = error.message
+            end
+          end
+
+          File.write('production-search-evidence.json', JSON.pretty_generate(evidence))
+          summary = "## Production search verification\n\nDeployed revision: **unverified**. These checks prove current behavior, not commit identity.\n\n"
+          evidence[:checks].each do |check|
+            summary << "- #{check[:query].inspect}: **#{check[:result]}**; POST #{check[:post_status]}, redirect #{check[:redirect_path]}, GET #{check[:get_status]}\n"
+            summary << "  Error: #{check[:error]}\n" if check[:error]
+          end
+          File.open(ENV.fetch('GITHUB_STEP_SUMMARY'), 'a') { |file| file.write(summary) }
+          puts JSON.pretty_generate(evidence)
+          exit(evidence[:checks].all? { |check| check[:result] == 'passed' } ? 0 : 1)
+          RUBY
+      - name: Retain production evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-search-evidence
+          path: production-search-evidence.json
+          if-no-files-found: error
