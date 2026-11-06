@@ -3,7 +3,12 @@ name: Production Search Verification
 on:
   pull_request:
     branches: [develop]
-    paths: ['.github/workflows/production-search-verification.yml']
+    paths:
+      - '.github/workflows/production-search-verification.yml'
+      - 'scripts/production-search-verification.rb'
+      - 'test/scripts/production_verification_test.rb'
+      - 'lib/build_revision.rb'
+      - 'lib/tasks/build_revision.rake'
   workflow_dispatch:
   workflow_run:
     workflows: ['Ruby on Rails CI']
@@ -12,155 +17,45 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: production-search-verification
-  cancel-in-progress: false
-
 jobs:
-  search:
-    if: >-
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) ||
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_branch == 'develop' && github.event.workflow_run.conclusion == 'success')
+  checker-tests:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Verify current Heroku release revision
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.base.sha || github.sha }}
-        shell: bash
-        run: |
-          ruby <<'RUBY'
-          require 'net/http'
-          require 'json'
-          require 'time'
-          evidence = { checked_at: Time.now.utc.iso8601, expected_revision: ENV.fetch('EXPECTED_SHA'), result: 'failed' }
-          begin
-            key = ENV.fetch('HEROKU_API_KEY', '')
-            raise 'HEROKU_API_KEY is unavailable; deployed revision cannot be verified' if key.empty?
-            api_get = lambda do |path|
-              uri = URI("https://api.heroku.com#{path}")
-              request = Net::HTTP::Get.new(uri)
-              request['Accept'] = 'application/vnd.heroku+json; version=3'
-              request['Authorization'] = "Bearer #{key}"
-              request['User-Agent'] = 'DorkBob-Production-Release-Verification'
-              request['Range'] = 'version ..; order=desc,max=20' if path.end_with?('/releases')
-              response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 15, read_timeout: 30) { |http| http.request(request) }
-              raise "Heroku API HTTP #{response.code}" unless %w[200 206].include?(response.code)
-              JSON.parse(response.body)
-            end
-            releases = api_get.call('/apps/dorkbob/releases')
-            release = releases.find { |item| item['current'] == true }
-            raise 'No current release identified in recent release metadata' unless release
-            evidence[:release_version] = release.fetch('version')
-            evidence[:release_status] = release.fetch('status')
-            raise 'Current release has not succeeded' unless release['status'] == 'succeeded'
-            slug_id = release.dig('slug', 'id').to_s
-            raise 'Current release has no valid slug ID' unless slug_id.match?(/\A[0-9a-f-]{36}\z/)
-            slug = api_get.call("/apps/dorkbob/slugs/#{slug_id}")
-            evidence[:deployed_revision] = slug['commit']
-            raise 'Current production revision differs from expected commit' unless slug['commit'] == evidence[:expected_revision]
-            evidence[:result] = 'passed'
-          rescue StandardError => error
-            evidence[:error] = error.is_a?(RuntimeError) ? error.message : error.class.name
-          ensure
-            File.write('production-release-evidence.json', JSON.pretty_generate(evidence))
-            puts JSON.pretty_generate(evidence)
-            File.open(ENV.fetch('GITHUB_STEP_SUMMARY'), 'a') do |file|
-              file.puts "## Production release verification\n\n#{evidence[:result]}: expected #{evidence[:expected_revision]}, deployed #{evidence[:deployed_revision] || 'unknown'}, release #{evidence[:release_version] || 'unknown'}"
-              file.puts evidence[:error] if evidence[:error]
-            end
-          end
-          exit(evidence[:result] == 'passed' ? 0 : 1)
-          RUBY
-      - name: Replay production search creation
-        if: always()
-        shell: bash
-        run: |
-          ruby <<'RUBY'
-          require 'net/http'
-          require 'uri'
-          require 'cgi'
-          require 'json'
-          require 'time'
-
-          origin = URI('https://dorkbob.herokuapp.com')
-          cases = [
-            ['coffee ', '35.933449', '-79.029773'],
-            ['espresso ', '35.907751', '-78.991132']
-          ]
-          evidence = { checked_at: Time.now.utc.iso8601, deployed_revision: 'unverified', checks: [] }
-          request = lambda do |path, cookie = nil, form = nil|
-            uri = URI.join(origin.to_s, path)
-            raise 'Refusing request outside production origin' unless uri.scheme == origin.scheme && uri.host == origin.host && uri.port == origin.port
-            client = Net::HTTP.new(uri.host, uri.port)
-            client.use_ssl = true
-            client.open_timeout = 15
-            client.read_timeout = 30
-            req = form ? Net::HTTP::Post.new(uri) : Net::HTTP::Get.new(uri)
-            req['Cookie'] = cookie if cookie
-            req['User-Agent'] = 'DorkBob-Production-Search-Verification'
-            req['Origin'] = origin.to_s if form
-            req.set_form_data(form) if form
-            client.request(req)
-          end
-          cookies = lambda do |response|
-            (response.get_fields('set-cookie') || []).map { |value| value.split(';', 2).first }.join('; ')
-          end
-
-          cases.each do |query, latitude, longitude|
-            check = { query: query, result: 'failed' }
-            evidence[:checks] << check
-            begin
-              home = request.call('/')
-              raise "Homepage HTTP #{home.code}" unless home.code == '200'
-              token = nil
-              home.body.scan(/<input\b[^>]*>/i).each do |input|
-                attrs = input.scan(/([\w-]+)\s*=\s*["']([^"']*)["']/).to_h
-                token = CGI.unescapeHTML(attrs['value'].to_s) if attrs['name'] == 'authenticity_token'
-              end
-              raise 'Missing CSRF token' if token.nil? || token.empty?
-              cookie = cookies.call(home)
-              post = request.call('/searches', cookie, {
-                'authenticity_token' => token, 'search[query]' => query,
-                'search[latitude]' => latitude, 'search[longitude]' => longitude
-              })
-              check[:post_status] = post.code.to_i
-              raise "Search POST HTTP #{post.code}" unless %w[302 303].include?(post.code)
-              target = URI.join(origin.to_s, post['location'].to_s)
-              raise 'Search redirected outside production origin' unless target.scheme == origin.scheme && target.host == origin.host && target.port == origin.port
-              check[:redirect_path] = target.path
-              raise "Search did not redirect to a saved search: #{target.path}" unless target.path.match?(%r{\A/(?:[a-z]{2}(?:-[A-Z]{2})?/)?searches/\d+\z})
-              updated_cookie = cookies.call(post)
-              result = request.call(target.to_s, updated_cookie.empty? ? cookie : updated_cookie)
-              check[:get_status] = result.code.to_i
-              raise "Results GET HTTP #{result.code}" unless result.code == '200'
-              raise 'Missing search results' unless result.body.include?('search-results')
-              raise 'Missing business cards' unless result.body.include?('coffeeshop-card')
-              check[:result] = 'passed'
-            rescue StandardError => error
-              check[:error] = error.message
-            end
-          end
-
-          File.write('production-search-evidence.json', JSON.pretty_generate(evidence))
-          summary = "## Production search verification\n\nDeployed revision: **unverified**. These checks prove current behavior, not commit identity.\n\n"
-          evidence[:checks].each do |check|
-            summary << "- #{check[:query].inspect}: **#{check[:result]}**; POST #{check[:post_status]}, redirect #{check[:redirect_path]}, GET #{check[:get_status]}\n"
-            summary << "  Error: #{check[:error]}\n" if check[:error]
-          end
-          File.open(ENV.fetch('GITHUB_STEP_SUMMARY'), 'a') { |file| file.write(summary) }
-          puts JSON.pretty_generate(evidence)
-          exit(evidence[:checks].all? { |check| check[:result] == 'passed' } ? 0 : 1)
-          RUBY
-      - name: Retain production evidence
-        if: always()
-        uses: actions/upload-artifact@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          name: production-search-evidence
-          path: |
-            production-search-evidence.json
-            production-release-evidence.json
+          persist-credentials: false
+      - name: Test checker with simulated HTTP responses
+        run: ruby test/scripts/production_verification_test.rb
+
+  production:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.head_branch == 'develop' &&
+       github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: production-search-verification
+      cancel-in-progress: false
+    steps:
+      - name: Checkout trusted verifier from develop
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: develop
+          persist-credentials: false
+      - name: Verify serving revision and search journey
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: ruby scripts/production-search-verification.rb
+      - name: Retain minimal verification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: production-verification-evidence
+          path: production-verification-evidence.json
+          retention-days: 7
           if-no-files-found: error
