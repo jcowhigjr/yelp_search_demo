@@ -26,7 +26,57 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Verify current Heroku release revision
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha || github.event.pull_request.base.sha || github.sha }}
+        shell: bash
+        run: |
+          ruby <<'RUBY'
+          require 'net/http'
+          require 'json'
+          require 'time'
+          evidence = { checked_at: Time.now.utc.iso8601, expected_revision: ENV.fetch('EXPECTED_SHA'), result: 'failed' }
+          begin
+            key = ENV.fetch('HEROKU_API_KEY', '')
+            raise 'HEROKU_API_KEY is unavailable; deployed revision cannot be verified' if key.empty?
+            api_get = lambda do |path|
+              uri = URI("https://api.heroku.com#{path}")
+              request = Net::HTTP::Get.new(uri)
+              request['Accept'] = 'application/vnd.heroku+json; version=3'
+              request['Authorization'] = "Bearer #{key}"
+              request['User-Agent'] = 'DorkBob-Production-Release-Verification'
+              request['Range'] = 'version ..; order=desc,max=20' if path.end_with?('/releases')
+              response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 15, read_timeout: 30) { |http| http.request(request) }
+              raise "Heroku API HTTP #{response.code}" unless %w[200 206].include?(response.code)
+              JSON.parse(response.body)
+            end
+            releases = api_get.call('/apps/dorkbob/releases')
+            release = releases.find { |item| item['current'] == true }
+            raise 'No current release identified in recent release metadata' unless release
+            evidence[:release_version] = release.fetch('version')
+            evidence[:release_status] = release.fetch('status')
+            raise 'Current release has not succeeded' unless release['status'] == 'succeeded'
+            slug_id = release.dig('slug', 'id').to_s
+            raise 'Current release has no valid slug ID' unless slug_id.match?(/\A[0-9a-f-]{36}\z/)
+            slug = api_get.call("/apps/dorkbob/slugs/#{slug_id}")
+            evidence[:deployed_revision] = slug['commit']
+            raise 'Current production revision differs from expected commit' unless slug['commit'] == evidence[:expected_revision]
+            evidence[:result] = 'passed'
+          rescue StandardError => error
+            evidence[:error] = error.is_a?(RuntimeError) ? error.message : error.class.name
+          ensure
+            File.write('production-release-evidence.json', JSON.pretty_generate(evidence))
+            puts JSON.pretty_generate(evidence)
+            File.open(ENV.fetch('GITHUB_STEP_SUMMARY'), 'a') do |file|
+              file.puts "## Production release verification\n\n#{evidence[:result]}: expected #{evidence[:expected_revision]}, deployed #{evidence[:deployed_revision] || 'unknown'}, release #{evidence[:release_version] || 'unknown'}"
+              file.puts evidence[:error] if evidence[:error]
+            end
+          end
+          exit(evidence[:result] == 'passed' ? 0 : 1)
+          RUBY
       - name: Replay production search creation
+        if: always()
         shell: bash
         run: |
           ruby <<'RUBY'
@@ -110,5 +160,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: production-search-evidence
-          path: production-search-evidence.json
+          path: |
+            production-search-evidence.json
+            production-release-evidence.json
           if-no-files-found: error
