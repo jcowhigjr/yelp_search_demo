@@ -56,7 +56,7 @@ group :postgres, optional: true do
 end
 
 if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-  gem 'sqlite3', '~> 2.9', require: false, group: :development
+  gem 'sqlite3', '~> 2.10', require: false, group: :development
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.22'
@@ -147,7 +147,7 @@ group :test do
   # gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 4.6'
+gem 'tailwindcss-rails', '~> 4.7'
 
 gem 'flipper'
 
