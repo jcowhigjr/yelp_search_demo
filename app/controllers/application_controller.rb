@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :logged_in?, :check_login, :flipper_enabled?
 
+  before_action :set_build_revision
   around_action :set_locale
   helper_method :resolve_locale
 
@@ -23,5 +24,10 @@ class ApplicationController < ActionController::Base
 
   def redirect_if_logged_in
     redirect_to current_user if logged_in?
+  end
+  private
+
+  def set_build_revision
+    response.set_header('X-App-Revision', BuildRevision.current)
   end
 end

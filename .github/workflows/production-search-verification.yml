@@ -1,0 +1,61 @@
+name: Production Search Verification
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - '.github/workflows/production-search-verification.yml'
+      - 'scripts/production-search-verification.rb'
+      - 'test/scripts/production_verification_test.rb'
+      - 'lib/build_revision.rb'
+      - 'lib/tasks/build_revision.rake'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Ruby on Rails CI']
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  checker-tests:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Test checker with simulated HTTP responses
+        run: ruby test/scripts/production_verification_test.rb
+
+  production:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.head_branch == 'develop' &&
+       github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: production-search-verification
+      cancel-in-progress: false
+    steps:
+      - name: Checkout trusted verifier from develop
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: develop
+          persist-credentials: false
+      - name: Verify serving revision and search journey
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: ruby scripts/production-search-verification.rb
+      - name: Retain minimal verification evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: production-verification-evidence
+          path: production-verification-evidence.json
+          retention-days: 7
+          if-no-files-found: error
