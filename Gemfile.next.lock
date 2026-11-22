@@ -251,9 +251,9 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0722)
     mini_mime (1.1.5)
-    minitest (6.0.2)
+    minitest (6.1.0)
       drb (~> 2.0)
-      prism (~> 1.5)
+      prism (>= 1.5, < 3)
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
@@ -335,7 +335,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (8.0.0)
+    puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.16)
@@ -461,9 +461,9 @@ GEM
     sprockets-exporters_pack (0.1.2)
       brotli (>= 0.2.0)
       sprockets (>= 4.0.0.beta3)
-    sqlite3 (2.9.0-arm64-darwin)
-    sqlite3 (2.9.0-x86_64-darwin)
-    sqlite3 (2.9.0-x86_64-linux-gnu)
+    sqlite3 (2.10.2-arm64-darwin)
+    sqlite3 (2.10.2-x86_64-darwin)
+    sqlite3 (2.10.2-x86_64-linux-gnu)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
@@ -477,12 +477,12 @@ GEM
       prettier_print
       rbs
       syntax_tree (>= 2.0.1)
-    tailwindcss-rails (4.6.0)
+    tailwindcss-rails (4.7.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.3.1-arm64-darwin)
-    tailwindcss-ruby (4.3.1-x86_64-darwin)
-    tailwindcss-ruby (4.3.1-x86_64-linux-gnu)
+    tailwindcss-ruby (4.3.4-arm64-darwin)
+    tailwindcss-ruby (4.3.4-x86_64-darwin)
+    tailwindcss-ruby (4.3.4-x86_64-linux-gnu)
     temple (0.10.4)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
@@ -554,7 +554,7 @@ DEPENDENCIES
   json
   magic_test
   matrix
-  minitest (~> 6.0)
+  minitest (~> 6.1)
   mocha
   next_rails (= 1.7.0)
   omniauth-google-oauth2
@@ -562,7 +562,7 @@ DEPENDENCIES
   pg
   prettier
   propshaft
-  puma (~> 8.0)
+  puma (~> 8.1)
   rack-brotli
   rack-livereload
   rails (>= 8.1.0.beta1, < 8.2)
@@ -574,8 +574,8 @@ DEPENDENCIES
   rubocop-rails
   selenium-webdriver
   sprockets-exporters_pack
-  sqlite3 (~> 2.9)
-  tailwindcss-rails (~> 4.6)
+  sqlite3 (~> 2.10)
+  tailwindcss-rails (~> 4.7)
   turbo-rails (~> 2.0)
   web-console
   webmock

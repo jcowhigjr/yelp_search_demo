@@ -16,7 +16,7 @@ gem 'bundler', '~> 2.5'
 
 # Pin minitest to 5.x due to incompatibility with Rails 8.1.1
 # See issue #1337 for details
-gem 'minitest', '~> 6.0'
+gem 'minitest', '~> 6.1'
 
 # Bundle edge Rails instead: gem 'rails', "~> 8.0"
 # gem 'rails', "~> 8.0"
@@ -38,7 +38,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'json'
 gem 'rest-client'
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 8.0'
+gem 'puma', '~> 8.1'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -56,7 +56,7 @@ group :postgres, optional: true do
 end
 
 if ENV.fetch('DB_ALL', nil) || !/mysql|postgres/.match?(ENV.fetch('DB', nil))
-  gem 'sqlite3', '~> 2.9', require: false, group: :development
+  gem 'sqlite3', '~> 2.10', require: false, group: :development
 end
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.22'
@@ -147,7 +147,7 @@ group :test do
   # gem 'minitest-retry'
 end
 
-gem 'tailwindcss-rails', '~> 4.6'
+gem 'tailwindcss-rails', '~> 4.7'
 
 gem 'flipper'
 
